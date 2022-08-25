@@ -9,8 +9,7 @@ public class WFCGenerator : MonoBehaviour
     [Header("Init Data")]
     public WFCModule[] moduleSetup;
     [Header("Runtime")]
-    public bool doGizmos;
-    public static int stepsPerTick = 10;
+    public static int stepsPerTick = 1;
     public static int steps = 0;
     public static WFCModule[] allModules;
     public static WFCState state = null;
@@ -37,7 +36,6 @@ public class WFCGenerator : MonoBehaviour
             WFCModule module = moduleSetup[i];
             if (module.enabled)
             {
-                maxEntropy += module.weight;
                 WFCModule[] m = { module };
                 if (module.flip)
                     m = FlipVariations(m);
@@ -49,7 +47,6 @@ public class WFCGenerator : MonoBehaviour
             }
         }
         allModules = newModules.ToArray();
-        maxEntropy *= WorldUtils.MAX_HEIGHT + 1;
     }
     private WFCModule[] FlipVariations(WFCModule[] m)
     {
@@ -154,6 +151,7 @@ public class WFCGenerator : MonoBehaviour
                 MarkDirty(x, y);
             }
         }
+        maxEntropy = state.GetSlot(0, 0).TotalEntropy;
     }
 
     public static void MarkNeighborsDirty(Vector2Int pos, IEnumerable<Vector2Int> offsets)
@@ -206,37 +204,4 @@ public class WFCGenerator : MonoBehaviour
         state = stateStack.Pop();
         state.RemoveSlotOption(lastCollapsedSlot, lastCollapsedTo);
     }
-
-    /*private void OnDrawGizmos()
-    {
-        if (doGizmos && state != null)
-        {
-            for (int x = 0; x < WorldUtils.worldSize.x + 1; x++)
-            {
-                for (int y = 0; y < WorldUtils.worldSize.y + 1; y++)
-                {
-                    Vector3 basePos = WorldUtils.SlotToWorldPos(x, y);
-                    (bool vt, bool vf) = state.GetValidPassagesAt(x, y, true);
-                    Gizmos.color = vt ? (vf ? Color.yellow : Color.green) : Color.red;
-                    Gizmos.DrawLine(basePos + Vector3.up * 0.2f, basePos + Vector3.up * 0.8f);
-                    (bool ht, bool hf) = state.GetValidPassagesAt(x, y, false);
-                    Gizmos.color = ht ? (hf ? Color.yellow : Color.green) : Color.red;
-                    Gizmos.DrawLine(basePos + Vector3.right * 0.2f, basePos + Vector3.right * 0.8f);
-                }
-            }
-            for (int x = -1; x < WorldUtils.worldSize.x + 1; x++)
-            {
-                for (int y = -1; y < WorldUtils.worldSize.y + 1; y++)
-                {
-                    Vector3 basePos = WorldUtils.TileToWorldPos(new Vector3Int(x,y,-1));
-                    HashSet<int> heights = state.GetValidHeightsAtTile(x, y);
-                    foreach (int h in heights)
-                    {
-                        Gizmos.color = h == 0 ? Color.magenta : Color.red;
-                        Gizmos.DrawWireCube(basePos, (2 + h) * 0.075f * Vector3.one);
-                    }
-                }
-            }
-        }
-    }*/
 }

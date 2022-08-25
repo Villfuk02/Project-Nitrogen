@@ -2,7 +2,7 @@ using UnityEngine;
 
 public static class WorldUtils
 {
-    public static readonly Vector2Int WORLD_SIZE = new(60, 30);
+    public static readonly Vector2Int WORLD_SIZE = new(35, 19);
     public const int MAX_HEIGHT = 3;
     public const float HEIGHT_STEP = 0.5f;
     public static readonly Vector2Int[] CARDINAL_DIRS = new Vector2Int[] { new Vector2Int(0, 1), new Vector2Int(1, 0), new Vector2Int(0, -1), new Vector2Int(-1, 0) };

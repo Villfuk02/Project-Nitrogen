@@ -210,7 +210,7 @@ MonoBehaviour:
     terrainTypes: 00000000000000000000000000000000
     graphicsHeightOffset: 0
   - name: Straight 2-high Cliff
-    enabled: 0
+    enabled: 1
     flip: 0
     rotate: 4
     sprite: {fileID: -1914601412, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
@@ -220,7 +220,7 @@ MonoBehaviour:
     terrainTypes: 00000000000000000000000000000000
     graphicsHeightOffset: 0
   - name: T Cliff Triple
-    enabled: 0
+    enabled: 1
     flip: 1
     rotate: 4
     sprite: {fileID: -715228067, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
@@ -230,7 +230,7 @@ MonoBehaviour:
     terrainTypes: 00000000000000000000000000000000
     graphicsHeightOffset: 0
   - name: Cross Cliff Triple
-    enabled: 0
+    enabled: 1
     flip: 0
     rotate: 4
     sprite: {fileID: 710651908, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
@@ -239,22 +239,12 @@ MonoBehaviour:
     heightOffsets: {x: -1, y: -2, z: -1}
     terrainTypes: 00000000000000000000000000000000
     graphicsHeightOffset: 0
-  - name: Flat Blocker
-    enabled: 0
-    flip: 0
-    rotate: 0
-    sprite: {fileID: -442253794, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
-    weight: 4
-    passable: 00000000
-    heightOffsets: {x: 0, y: 0, z: 0}
-    terrainTypes: 00000000000000000000000000000000
-    graphicsHeightOffset: 0
   - name: Straight Bank
     enabled: 1
     flip: 1
     rotate: 2
     sprite: {fileID: -1084285527, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
-    weight: 4
+    weight: 8
     passable: 00010001
     heightOffsets: {x: 0, y: 0, z: 0}
     terrainTypes: 00000000010000000100000000000000
@@ -264,12 +254,11 @@ MonoBehaviour:
     flip: 1
     rotate: 0
     sprite: {fileID: 399047419, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
-    weight: 4
+    weight: 8
     passable: 00000000
     heightOffsets: {x: 0, y: -1, z: -1}
     terrainTypes: 01000000000000000000000001000000
     graphicsHeightOffset: 0
-  doGizmos: 0
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,7 +312,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 15
+  orthographic size: 10.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

@@ -20,6 +20,7 @@ public class WFCSlot
 
     public WFCSlot(int moduleCount, int x, int y)
     {
+        Dictionary<float, int> weights = new();
         validModules = new(moduleCount);
         validHeights = new(moduleCount);
         for (int i = 0; i < moduleCount; i++)
@@ -30,9 +31,11 @@ public class WFCSlot
             {
                 validHeights[i].Add(h);
             }
-            totalEntropy += WFCGenerator.allModules[i].weight * (WorldUtils.MAX_HEIGHT + 1);
+            float w = WFCGenerator.allModules[i].weight;
+            weights[w] = (weights.ContainsKey(w) ? weights[w] : 0) + (WorldUtils.MAX_HEIGHT + 1);
         }
         pos = new Vector2Int(x, y);
+        totalEntropy = CalculateEntropy(weights);
         WFCGenerator.state.uncollapsed++;
         WFCGenerator.state.entropyQueue.Add(pos);
     }
@@ -92,6 +95,7 @@ public class WFCSlot
 
         bool changed = false;
         WFCSlot n = new(pos);
+        Dictionary<float, int> weights = new();
 
         for (int i = validModules.Count - 1; i >= 0; i--)
         {
@@ -119,7 +123,7 @@ public class WFCSlot
                         && vHeights[3].Contains(h + module.heightOffsets.z))
                     {
                         newHeights.Add(h);
-                        n.totalEntropy += module.weight;
+                        weights[module.weight] = (weights.ContainsKey(module.weight) ? weights[module.weight] : 0) + 1;
                     }
                     else
                     {
@@ -135,7 +139,8 @@ public class WFCSlot
         }
         if (!changed)
             return (null, false);
-        if (n.totalEntropy == 0)
+        n.totalEntropy = CalculateEntropy(weights);
+        if (n.validModules.Count == 0)
             return (null, true);
         return (n, false);
     }
@@ -208,6 +213,22 @@ public class WFCSlot
             }
         }
         return toUpdate;
+    }
+
+    static float CalculateEntropy(Dictionary<float, int> weights)
+    {
+        float totalWeight = 0;
+        foreach (var w in weights)
+        {
+            totalWeight += w.Value * w.Key;
+        }
+        float totalEntropy = 0;
+        foreach (var w in weights)
+        {
+            float p = w.Key / totalWeight;
+            totalEntropy -= p * w.Value * Mathf.Log(p, 2);
+        }
+        return totalEntropy;
     }
 
 }
