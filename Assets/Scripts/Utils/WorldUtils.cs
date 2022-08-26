@@ -6,7 +6,8 @@ public static class WorldUtils
     public const int MAX_HEIGHT = 3;
     public const float HEIGHT_STEP = 0.5f;
     public static readonly Vector2Int[] CARDINAL_DIRS = new Vector2Int[] { new Vector2Int(0, 1), new Vector2Int(1, 0), new Vector2Int(0, -1), new Vector2Int(-1, 0) };
-    public enum TerrainTypes { White, Blue };
+    public enum Slant { None, North, East, South, West };
+    public enum TerrainType { White, Blue };
     public static Vector3 TileToWorldPos(Vector3Int tilePos)
     {
         return new Vector3(
@@ -44,5 +45,23 @@ public static class WorldUtils
     public static bool IsInRange(int x, int y, int sizeX, int sizeY)
     {
         return x >= 0 && y >= 0 && x < sizeX && y < sizeY;
+    }
+
+    public static Slant FlipSlant(Slant s)
+    {
+        return s switch
+        {
+            Slant.East => Slant.West,
+            Slant.West => Slant.East,
+            _ => s,
+        };
+    }
+    public static Slant RotateSlant(Slant s, int r)
+    {
+        if (s == Slant.None || r == 0)
+        {
+            return s;
+        }
+        return (Slant)(((int)s + r - 1) % 4 + 1);
     }
 }

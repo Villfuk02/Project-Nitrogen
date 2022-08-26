@@ -178,6 +178,7 @@ MonoBehaviour:
     passable: 01010101
     heightOffsets: {x: 0, y: 0, z: 0}
     terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
     graphicsHeightOffset: 0
   - name: Straight Cliff
     enabled: 1
@@ -188,6 +189,7 @@ MonoBehaviour:
     passable: 01000100
     heightOffsets: {x: 0, y: -1, z: -1}
     terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
     graphicsHeightOffset: 0
   - name: Corner Cliff
     enabled: 1
@@ -198,6 +200,7 @@ MonoBehaviour:
     passable: 00010100
     heightOffsets: {x: -1, y: -1, z: -1}
     terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
     graphicsHeightOffset: 0
   - name: Inner Corner Cliff
     enabled: 1
@@ -208,9 +211,10 @@ MonoBehaviour:
     passable: 01000001
     heightOffsets: {x: 0, y: -1, z: 0}
     terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
     graphicsHeightOffset: 0
   - name: Straight 2-high Cliff
-    enabled: 1
+    enabled: 0
     flip: 0
     rotate: 4
     sprite: {fileID: -1914601412, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
@@ -218,9 +222,10 @@ MonoBehaviour:
     passable: 01000100
     heightOffsets: {x: 0, y: -2, z: -2}
     terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
     graphicsHeightOffset: 0
   - name: T Cliff Triple
-    enabled: 1
+    enabled: 0
     flip: 1
     rotate: 4
     sprite: {fileID: -715228067, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
@@ -228,9 +233,10 @@ MonoBehaviour:
     passable: 01000000
     heightOffsets: {x: 0, y: -1, z: -2}
     terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
     graphicsHeightOffset: 0
   - name: Cross Cliff Triple
-    enabled: 1
+    enabled: 0
     flip: 0
     rotate: 4
     sprite: {fileID: 710651908, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
@@ -238,9 +244,10 @@ MonoBehaviour:
     passable: 00000000
     heightOffsets: {x: -1, y: -2, z: -1}
     terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
     graphicsHeightOffset: 0
   - name: Straight Bank
-    enabled: 1
+    enabled: 0
     flip: 1
     rotate: 2
     sprite: {fileID: -1084285527, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
@@ -248,9 +255,10 @@ MonoBehaviour:
     passable: 00010001
     heightOffsets: {x: 0, y: 0, z: 0}
     terrainTypes: 00000000010000000100000000000000
+    slants: 00000000000000000000000000000000
     graphicsHeightOffset: 0
   - name: Waterfall Down
-    enabled: 1
+    enabled: 0
     flip: 1
     rotate: 0
     sprite: {fileID: 399047419, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
@@ -258,6 +266,73 @@ MonoBehaviour:
     passable: 00000000
     heightOffsets: {x: 0, y: -1, z: -1}
     terrainTypes: 01000000000000000000000001000000
+    slants: 00000000000000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Straight Slant Down
+    enabled: 1
+    flip: 1
+    rotate: 4
+    sprite: {fileID: 1645495366, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
+    weight: 16
+    passable: 01010001
+    heightOffsets: {x: 0, y: 0, z: 0}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000300000000000000
+    graphicsHeightOffset: 0
+  - name: Inner Corner Cliff Slant Down
+    enabled: 1
+    flip: 1
+    rotate: 4
+    sprite: {fileID: -325571313, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
+    weight: 16
+    passable: 01000001
+    heightOffsets: {x: 0, y: -1, z: 0}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000003000000
+    graphicsHeightOffset: 0
+  - name: Corner Cliff Slant Up
+    enabled: 1
+    flip: 1
+    rotate: 4
+    sprite: {fileID: -937654483, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
+    weight: 16
+    passable: 00010100
+    heightOffsets: {x: 0, y: -1, z: -1}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000030000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Straight Slant Up
+    enabled: 1
+    flip: 1
+    rotate: 4
+    sprite: {fileID: 1669737312, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
+    weight: 16
+    passable: 00010101
+    heightOffsets: {x: -1, y: -1, z: -1}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 03000000000000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Flat Slant Down
+    enabled: 1
+    flip: 0
+    rotate: 4
+    sprite: {fileID: 1295884546, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
+    weight: 16
+    passable: 01010101
+    heightOffsets: {x: 0, y: 0, z: 0}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000300000003000000
+    graphicsHeightOffset: 0
+  - name: Flat Slant Up
+    enabled: 1
+    flip: 0
+    rotate: 4
+    sprite: {fileID: -316555724, guid: d6f656e5edf069342ae535d4607a4d65, type: 3}
+    weight: 16
+    passable: 01010101
+    heightOffsets: {x: 0, y: -1, z: -1}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 03000000030000000000000000000000
     graphicsHeightOffset: 0
 --- !u!1 &963194225
 GameObject:

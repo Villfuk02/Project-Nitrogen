@@ -91,7 +91,8 @@ public class WFCSlot
     {
         (bool passable, bool unpassable)[] vPassages = WFCGenerator.state.GetValidPassagesAtSlot(pos.x, pos.y);
         HashSet<int>[] vHeights = WFCGenerator.state.GetValidHeightsAtSlot(pos.x, pos.y);
-        HashSet<WorldUtils.TerrainTypes>[] vTypes = WFCGenerator.state.GetValidTypesAtSlot(pos.x, pos.y);
+        HashSet<WorldUtils.TerrainType>[] vTypes = WFCGenerator.state.GetValidTypesAtSlot(pos.x, pos.y);
+        HashSet<WorldUtils.Slant>[] vSlants = WFCGenerator.state.GetValidSlantsAtSlot(pos.x, pos.y);
 
         bool changed = false;
         WFCSlot n = new(pos);
@@ -103,7 +104,7 @@ public class WFCSlot
             bool invalid = false;
             for (int d = 0; d < 4; d++)
             {
-                if (!(module.passable[d] ? vPassages[d].passable : vPassages[d].unpassable) || !vTypes[d].Contains(module.terrainTypes[d]))
+                if (!(module.passable[d] ? vPassages[d].passable : vPassages[d].unpassable) || !vTypes[d].Contains(module.terrainTypes[d]) || !vSlants[d].Contains(module.slants[d]))
                 {
                     invalid = true;
                     changed = true;
@@ -149,11 +150,13 @@ public class WFCSlot
         //Init Available
         (bool passable, bool unpassable)[] aPassages = new (bool, bool)[4];
         HashSet<int>[] aHeights = new HashSet<int>[4];
-        HashSet<WorldUtils.TerrainTypes>[] aTypes = new HashSet<WorldUtils.TerrainTypes>[4];
+        HashSet<WorldUtils.TerrainType>[] aTypes = new HashSet<WorldUtils.TerrainType>[4];
+        HashSet<WorldUtils.Slant>[] aSlants = new HashSet<WorldUtils.Slant>[4];
         for (int i = 0; i < 4; i++)
         {
             aHeights[i] = new();
             aTypes[i] = new();
+            aSlants[i] = new();
         }
 
         //Calculate Available
@@ -167,6 +170,7 @@ public class WFCSlot
                 else
                     aPassages[i].unpassable = true;
                 aTypes[i].Add(module.terrainTypes[i]);
+                aSlants[i].Add(module.slants[i]);
             }
             foreach (int h in validHeights[m])
             {
@@ -180,11 +184,13 @@ public class WFCSlot
         //Previous
         (bool passable, bool unpassable)[] pPassages = WFCGenerator.state.GetValidPassagesAtSlot(pos.x, pos.y);
         HashSet<int>[] pHeights = WFCGenerator.state.GetValidHeightsAtSlot(pos.x, pos.y);
-        HashSet<WorldUtils.TerrainTypes>[] pTypes = WFCGenerator.state.GetValidTypesAtSlot(pos.x, pos.y);
+        HashSet<WorldUtils.TerrainType>[] pTypes = WFCGenerator.state.GetValidTypesAtSlot(pos.x, pos.y);
+        HashSet<WorldUtils.Slant>[] pSlants = WFCGenerator.state.GetValidSlantsAtSlot(pos.x, pos.y);
         //New
         (bool passable, bool unpassable)[] nPassages = new (bool, bool)[4];
         HashSet<int>[] nHeights = new HashSet<int>[4];
-        HashSet<WorldUtils.TerrainTypes>[] nTypes = new HashSet<WorldUtils.TerrainTypes>[4];
+        HashSet<WorldUtils.TerrainType>[] nTypes = new HashSet<WorldUtils.TerrainType>[4];
+        HashSet<WorldUtils.Slant>[] nSlants = new HashSet<WorldUtils.Slant>[4];
         for (int i = 0; i < 4; i++)
         {
             nPassages[i] = (pPassages[i].passable && aPassages[i].passable, pPassages[i].unpassable && aPassages[i].unpassable);
@@ -192,18 +198,21 @@ public class WFCSlot
             nHeights[i] = aHeights[i];
             aTypes[i].IntersectWith(pTypes[i]);
             nTypes[i] = aTypes[i];
+            aSlants[i].IntersectWith(pSlants[i]);
+            nSlants[i] = aSlants[i];
         }
         //Update State
         WFCGenerator.state.SetValidPassagesAtSlot(pos.x, pos.y, nPassages);
         WFCGenerator.state.SetValidHeightsAtSlot(pos.x, pos.y, nHeights);
         WFCGenerator.state.SetValidTypesAtSlot(pos.x, pos.y, nTypes);
+        WFCGenerator.state.SetValidSlantsAtSlot(pos.x, pos.y, nSlants);
         //MarkDirty
         HashSet<Vector2Int> toUpdate = new();
         for (int d = 0; d < 4; d++)
         {
             if (pPassages[d].passable != nPassages[d].passable || pPassages[d].unpassable != nPassages[d].unpassable)
                 toUpdate.Add(WorldUtils.CARDINAL_DIRS[d]);
-            if (!pHeights[d].IsSubsetOf(nHeights[d]) || !pTypes[d].IsSubsetOf(nTypes[d]))
+            if (!pHeights[d].IsSubsetOf(nHeights[d]) || !pTypes[d].IsSubsetOf(nTypes[d]) || !pSlants[d].IsSubsetOf(nSlants[d]))
             {
                 Vector2Int a = WorldUtils.CARDINAL_DIRS[(d + 3) % 4];
                 Vector2Int b = WorldUtils.CARDINAL_DIRS[d];

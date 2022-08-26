@@ -64,7 +64,8 @@ public class WFCGenerator : MonoBehaviour
             f.passable = new bool[] { f.passable[0], f.passable[3], f.passable[2], f.passable[1] };
             f.graphicsHeightOffset += f.heightOffsets.x;
             f.heightOffsets = new Vector3Int(-f.heightOffsets.x, f.heightOffsets.z - f.heightOffsets.x, f.heightOffsets.y - f.heightOffsets.x);
-            f.terrainTypes = new WorldUtils.TerrainTypes[] { f.terrainTypes[1], f.terrainTypes[0], f.terrainTypes[3], f.terrainTypes[2] };
+            f.terrainTypes = new WorldUtils.TerrainType[] { f.terrainTypes[1], f.terrainTypes[0], f.terrainTypes[3], f.terrainTypes[2] };
+            f.slants = new WorldUtils.Slant[] { WorldUtils.FlipSlant(f.slants[1]), WorldUtils.FlipSlant(f.slants[0]), WorldUtils.FlipSlant(f.slants[3]), WorldUtils.FlipSlant(f.slants[2]) };
 
             n[i * 2] = o;
             n[i * 2 + 1] = f;
@@ -96,7 +97,13 @@ public class WFCGenerator : MonoBehaviour
                 c.passable = new bool[] { c.passable[(4 - r) % 4], c.passable[(5 - r) % 4], c.passable[(6 - r) % 4], c.passable[(7 - r) % 4] };
                 c.heightOffsets = heightRotations[r];
                 c.graphicsHeightOffset = graphicsHeightRotations[r];
-                c.terrainTypes = new WorldUtils.TerrainTypes[] { c.terrainTypes[(4 - r) % 4], c.terrainTypes[(5 - r) % 4], c.terrainTypes[(6 - r) % 4], c.terrainTypes[(7 - r) % 4] };
+                c.terrainTypes = new WorldUtils.TerrainType[] { c.terrainTypes[(4 - r) % 4], c.terrainTypes[(5 - r) % 4], c.terrainTypes[(6 - r) % 4], c.terrainTypes[(7 - r) % 4] };
+                c.slants = new WorldUtils.Slant[] {
+                    WorldUtils.RotateSlant(c.slants[(4 - r) % 4], r),
+                    WorldUtils.RotateSlant(c.slants[(5 - r) % 4], r),
+                    WorldUtils.RotateSlant(c.slants[(6 - r) % 4], r),
+                    WorldUtils.RotateSlant(c.slants[(7 - r) % 4], r)
+                };
 
                 n[(i * 4 + r) / div] = c;
             }
@@ -128,7 +135,7 @@ public class WFCGenerator : MonoBehaviour
             while (dirty.Count > 0)
             {
                 UpdateNext();
-                if (WaitForStep()) yield return null;
+                //if (WaitForStep()) yield return null;
             }
             Backup();
             state.CollapseRandom();

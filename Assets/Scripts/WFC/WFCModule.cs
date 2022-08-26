@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -15,8 +13,8 @@ public class WFCModule
     public float weight;
     public bool[] passable;
     public Vector3Int heightOffsets;
-    public WorldUtils.TerrainTypes[] terrainTypes;
-    //tile slopes
+    public WorldUtils.TerrainType[] terrainTypes;
+    public WorldUtils.Slant[] slants;
     [Header("Debug")]
     public int graphicsHeightOffset;
 
@@ -31,7 +29,8 @@ public class WFCModule
             sprite = sprite,
             passable = (bool[])passable.Clone(),
             heightOffsets = new Vector3Int(heightOffsets.x, heightOffsets.y, heightOffsets.z),
-            terrainTypes = (WorldUtils.TerrainTypes[])terrainTypes.Clone(),
+            terrainTypes = (WorldUtils.TerrainType[])terrainTypes.Clone(),
+            slants = (WorldUtils.Slant[])slants.Clone(),
             graphicsHeightOffset = graphicsHeightOffset,
         };
         return m;
