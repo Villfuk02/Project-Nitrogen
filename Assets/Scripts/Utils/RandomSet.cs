@@ -1,18 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RandomizedSet<T>
+public class RandomSet<T>
 {
     readonly List<T> _list;
     readonly HashSet<T> _set;
     public int Count { get => _list.Count; }
-
-    public RandomizedSet()
+    public IEnumerable<T> AllEntries => _list;
+    public RandomSet()
     {
         _list = new();
         _set = new();
     }
-    public RandomizedSet(RandomizedSet<T> original)
+    public RandomSet(RandomSet<T> original)
     {
         _list = new(original._list);
         _set = new(original._set);

@@ -31,13 +31,13 @@ public class WFCSlot
             {
                 validHeights[i].Add(h);
             }
-            float w = WFCGenerator.allModules[i].weight;
+            float w = WFCGenerator.ALL_MODULES[i].weight;
             weights[w] = (weights.ContainsKey(w) ? weights[w] : 0) + (WorldUtils.MAX_HEIGHT + 1);
         }
         pos = new Vector2Int(x, y);
         totalEntropy = CalculateEntropy(weights);
         WFCGenerator.state.uncollapsed++;
-        WFCGenerator.state.entropyQueue.Add(pos);
+        WFCGenerator.state.entropyQueue.Add(pos, 0.001f);
     }
     public WFCSlot(Vector2Int pos)
     {
@@ -56,7 +56,7 @@ public class WFCSlot
         {
             foreach (int h in validHeights[m])
             {
-                weightAccumulator += WFCGenerator.allModules[m].weight;
+                weightAccumulator += WFCGenerator.ALL_MODULES[m].weight;
                 stateScale.Add((weightAccumulator, h, m));
             }
         }
@@ -90,9 +90,7 @@ public class WFCSlot
     (WFCSlot newSlot, bool backtrack) UpdateValidModules()
     {
         (bool passable, bool unpassable)[] vPassages = WFCGenerator.state.GetValidPassagesAtSlot(pos.x, pos.y);
-        HashSet<int>[] vHeights = WFCGenerator.state.GetValidHeightsAtSlot(pos.x, pos.y);
-        HashSet<WorldUtils.TerrainType>[] vTypes = WFCGenerator.state.GetValidTypesAtSlot(pos.x, pos.y);
-        HashSet<WorldUtils.Slant>[] vSlants = WFCGenerator.state.GetValidSlantsAtSlot(pos.x, pos.y);
+        WFCTile[] vTiles = WFCGenerator.state.GetVaildTilesAtSlot(pos);
 
         bool changed = false;
         WFCSlot n = new(pos);
@@ -100,11 +98,11 @@ public class WFCSlot
 
         for (int i = validModules.Count - 1; i >= 0; i--)
         {
-            WFCModule module = WFCGenerator.allModules[validModules[i]];
+            WFCModule module = WFCGenerator.ALL_MODULES[validModules[i]];
             bool invalid = false;
             for (int d = 0; d < 4; d++)
             {
-                if (!(module.passable[d] ? vPassages[d].passable : vPassages[d].unpassable) || !vTypes[d].Contains(module.terrainTypes[d]) || !vSlants[d].Contains(module.slants[d]))
+                if (!(module.passable[d] ? vPassages[d].passable : vPassages[d].unpassable) || !vTiles[d].terrainTypes.Contains(module.terrainTypes[d]) || !vTiles[d].slants.Contains(module.slants[d]))
                 {
                     invalid = true;
                     changed = true;
@@ -118,10 +116,10 @@ public class WFCSlot
                 foreach (int h in heights)
                 {
                     if (!(invalidModule.module == validModules[i] && invalidModule.height == h)
-                        && vHeights[0].Contains(h)
-                        && vHeights[1].Contains(h + module.heightOffsets.x)
-                        && vHeights[2].Contains(h + module.heightOffsets.y)
-                        && vHeights[3].Contains(h + module.heightOffsets.z))
+                        && vTiles[0].heights.Contains(h)
+                        && vTiles[1].heights.Contains(h + module.heightOffsets.x)
+                        && vTiles[2].heights.Contains(h + module.heightOffsets.y)
+                        && vTiles[3].heights.Contains(h + module.heightOffsets.z))
                     {
                         newHeights.Add(h);
                         weights[module.weight] = (weights.ContainsKey(module.weight) ? weights[module.weight] : 0) + 1;
@@ -141,6 +139,7 @@ public class WFCSlot
         if (!changed)
             return (null, false);
         n.totalEntropy = CalculateEntropy(weights);
+        WFCGenerator.state.entropyQueue.UpdateWeight(pos, WFCGenerator.maxEntropy + 0.001f - n.totalEntropy);
         if (n.validModules.Count == 0)
             return (null, true);
         return (n, false);
@@ -149,78 +148,70 @@ public class WFCSlot
     {
         //Init Available
         (bool passable, bool unpassable)[] aPassages = new (bool, bool)[4];
-        HashSet<int>[] aHeights = new HashSet<int>[4];
-        HashSet<WorldUtils.TerrainType>[] aTypes = new HashSet<WorldUtils.TerrainType>[4];
-        HashSet<WorldUtils.Slant>[] aSlants = new HashSet<WorldUtils.Slant>[4];
+        WFCTile[] aTiles = new WFCTile[4];
         for (int i = 0; i < 4; i++)
         {
-            aHeights[i] = new();
-            aTypes[i] = new();
-            aSlants[i] = new();
+            aTiles[i] = new(false);
         }
 
         //Calculate Available
         foreach (int m in validModules)
         {
-            WFCModule module = WFCGenerator.allModules[m];
+            WFCModule module = WFCGenerator.ALL_MODULES[m];
             for (int i = 0; i < 4; i++)
             {
                 if (module.passable[i])
                     aPassages[i].passable = true;
                 else
                     aPassages[i].unpassable = true;
-                aTypes[i].Add(module.terrainTypes[i]);
-                aSlants[i].Add(module.slants[i]);
+                aTiles[i].terrainTypes.Add(module.terrainTypes[i]);
+                aTiles[i].slants.Add(module.slants[i]);
             }
             foreach (int h in validHeights[m])
             {
-                aHeights[0].Add(h);
-                aHeights[1].Add(h + module.heightOffsets.x);
-                aHeights[2].Add(h + module.heightOffsets.y);
-                aHeights[3].Add(h + module.heightOffsets.z);
+                aTiles[0].heights.Add(h);
+                aTiles[1].heights.Add(h + module.heightOffsets.x);
+                aTiles[2].heights.Add(h + module.heightOffsets.y);
+                aTiles[3].heights.Add(h + module.heightOffsets.z);
             }
         }
 
         //Previous
         (bool passable, bool unpassable)[] pPassages = WFCGenerator.state.GetValidPassagesAtSlot(pos.x, pos.y);
-        HashSet<int>[] pHeights = WFCGenerator.state.GetValidHeightsAtSlot(pos.x, pos.y);
-        HashSet<WorldUtils.TerrainType>[] pTypes = WFCGenerator.state.GetValidTypesAtSlot(pos.x, pos.y);
-        HashSet<WorldUtils.Slant>[] pSlants = WFCGenerator.state.GetValidSlantsAtSlot(pos.x, pos.y);
+        WFCTile[] pTiles = WFCGenerator.state.GetVaildTilesAtSlot(pos);
         //New
-        (bool passable, bool unpassable)[] nPassages = new (bool, bool)[4];
-        HashSet<int>[] nHeights = new HashSet<int>[4];
-        HashSet<WorldUtils.TerrainType>[] nTypes = new HashSet<WorldUtils.TerrainType>[4];
-        HashSet<WorldUtils.Slant>[] nSlants = new HashSet<WorldUtils.Slant>[4];
+        HashSet<Vector2Int> toUpdate = new();
         for (int i = 0; i < 4; i++)
         {
-            nPassages[i] = (pPassages[i].passable && aPassages[i].passable, pPassages[i].unpassable && aPassages[i].unpassable);
-            aHeights[i].IntersectWith(pHeights[i]);
-            nHeights[i] = aHeights[i];
-            aTypes[i].IntersectWith(pTypes[i]);
-            nTypes[i] = aTypes[i];
-            aSlants[i].IntersectWith(pSlants[i]);
-            nSlants[i] = aSlants[i];
-        }
-        //Update State
-        WFCGenerator.state.SetValidPassagesAtSlot(pos.x, pos.y, nPassages);
-        WFCGenerator.state.SetValidHeightsAtSlot(pos.x, pos.y, nHeights);
-        WFCGenerator.state.SetValidTypesAtSlot(pos.x, pos.y, nTypes);
-        WFCGenerator.state.SetValidSlantsAtSlot(pos.x, pos.y, nSlants);
-        //MarkDirty
-        HashSet<Vector2Int> toUpdate = new();
-        for (int d = 0; d < 4; d++)
-        {
-            if (pPassages[d].passable != nPassages[d].passable || pPassages[d].unpassable != nPassages[d].unpassable)
-                toUpdate.Add(WorldUtils.CARDINAL_DIRS[d]);
-            if (!pHeights[d].IsSubsetOf(nHeights[d]) || !pTypes[d].IsSubsetOf(nTypes[d]) || !pSlants[d].IsSubsetOf(nSlants[d]))
+            if (pPassages[i].passable == aPassages[i].passable && pPassages[i].unpassable == aPassages[i].unpassable)
             {
-                Vector2Int a = WorldUtils.CARDINAL_DIRS[(d + 3) % 4];
-                Vector2Int b = WorldUtils.CARDINAL_DIRS[d];
+                aPassages[i] = pPassages[i];
+            }
+            else
+            {
+                aPassages[i] = (pPassages[i].passable && aPassages[i].passable, pPassages[i].unpassable && aPassages[i].unpassable);
+                toUpdate.Add(WorldUtils.CARDINAL_DIRS[i]);
+            }
+            if (pTiles[i].heights.IsSubsetOf(aTiles[i].heights) && !pTiles[i].terrainTypes.IsSubsetOf(aTiles[i].terrainTypes) && !pTiles[i].slants.IsSubsetOf(aTiles[i].slants))
+            {
+                aTiles[i] = pTiles[i];
+            }
+            else
+            {
+                aTiles[i].heights.IntersectWith(pTiles[i].heights);
+                aTiles[i].terrainTypes.IntersectWith(pTiles[i].terrainTypes);
+                aTiles[i].slants.IntersectWith(pTiles[i].slants);
+                Vector2Int a = WorldUtils.CARDINAL_DIRS[(i + 3) % 4];
+                Vector2Int b = WorldUtils.CARDINAL_DIRS[i];
                 toUpdate.Add(a);
                 toUpdate.Add(a + b);
                 toUpdate.Add(b);
             }
         }
+        //Update State
+        WFCGenerator.state.SetValidPassagesAtSlot(pos.x, pos.y, aPassages);
+        WFCGenerator.state.SetValidTilesAtSlot(pos, aTiles);
+
         return toUpdate;
     }
 

@@ -288,17 +288,41 @@ namespace System.Collections.Generic
                 _nodes[lastNodeIndex] = default;
             }
         }
-        public void DecreaseElement(TElement element, TPriority priority)
+        public void ChangePriority(TElement element, TPriority priority)
         {
+            if (!_positions.ContainsKey(element))
+                throw new Exception("Cannot change priority of element not contained in the queue.");
             int elementIndex = _positions[element];
             if (_comparer == null)
             {
-                MoveUpDefaultComparer((element, priority), elementIndex);
+                if (Comparer<TPriority>.Default.Compare(priority, _nodes[elementIndex].Priority) > 0)
+                {
+                    MoveDownDefaultComparer((element, priority), elementIndex);
+                }
+                else
+                {
+                    MoveUpDefaultComparer((element, priority), elementIndex);
+                }
             }
             else
             {
-                MoveUpCustomComparer((element, priority), elementIndex);
+                if (_comparer.Compare(priority, _nodes[elementIndex].Priority) > 0)
+                {
+                    MoveDownCustomComparer((element, priority), elementIndex);
+                }
+                else
+                {
+                    MoveUpCustomComparer((element, priority), elementIndex);
+                }
             }
+        }
+        public bool Contains(TElement item)
+        {
+            return _positions.ContainsKey(item);
+        }
+        public TPriority PeekPriority(TElement item)
+        {
+            return _nodes[_positions[item]].Priority;
         }
         public void TrimExcess()
         {

@@ -2,31 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WFCGenerator : MonoBehaviour
+public class WFCGenerator : LevelGeneratorPart
 {
     [Header("References")]
     public GameObject slotPrefab;
     [Header("Init Data")]
     public WFCModule[] moduleSetup;
+    public Gradient pathDistanceGradient;
     [Header("Runtime")]
-    public static int stepsPerTick = 1;
+    public static int stepsPerTick = 8;
     public static int steps = 0;
-    public static WFCModule[] allModules;
+    public static WFCModule[] ALL_MODULES;
     public static WFCState state = null;
-    static readonly RandomizedSet<WFCSlot> dirty = new();
+    static readonly RandomSet<WFCSlot> dirty = new();
 
-    const int BACKUP_DEPTH = 1;
+    const int BACKUP_DEPTH = 5;
     static readonly FixedStack<WFCState> stateStack = new(BACKUP_DEPTH);
     public static float maxEntropy = 0;
-
-    public void Awake()
-    {
-        GenerateModuleVariations();
-        StartCoroutine(DoWFC());
-    }
-    public void Update()
-    {
-    }
 
     private void GenerateModuleVariations()
     {
@@ -46,7 +38,7 @@ public class WFCGenerator : MonoBehaviour
                 newModules.AddRange(m);
             }
         }
-        allModules = newModules.ToArray();
+        ALL_MODULES = newModules.ToArray();
     }
     private WFCModule[] FlipVariations(WFCModule[] m)
     {
@@ -123,25 +115,30 @@ public class WFCGenerator : MonoBehaviour
         return false;
     }
 
+    public override void Init()
+    {
+        GenerateModuleVariations();
+        StartCoroutine(DoWFC());
+    }
+
     private IEnumerator DoWFC()
     {
-        yield return null;
-        yield return null;
         System.DateTime start = System.DateTime.Now;
         InitWFC();
-        if (WaitForStep()) yield return null;
+        yield return null;
         while (state.uncollapsed > 0)
         {
             while (dirty.Count > 0)
             {
                 UpdateNext();
-                //if (WaitForStep()) yield return null;
+                if (WaitForStep()) yield return null;
             }
             Backup();
             state.CollapseRandom();
-            if (WaitForStep()) yield return null;
+            yield return null;
         }
-        Debug.Log($"Generated in {System.DateTime.Now - start}");
+        Debug.Log($"WFC finished in {System.DateTime.Now - start}");
+        stopped = true;
     }
 
     private void InitWFC()
@@ -152,13 +149,36 @@ public class WFCGenerator : MonoBehaviour
             for (int y = 0; y < WorldUtils.WORLD_SIZE.y + 1; y++)
             {
                 WFCSlotDisplay sd = Instantiate(slotPrefab, WorldUtils.SlotToWorldPos(x, y), Quaternion.identity, transform).GetComponent<WFCSlotDisplay>();
-                WFCSlot s = new(allModules.Length, x, y);
+                WFCSlot s = new(ALL_MODULES.Length, x, y);
                 sd.slotPos = s.pos;
                 state.InitSlot(x, y, s);
                 MarkDirty(x, y);
             }
         }
         maxEntropy = state.GetSlot(0, 0).TotalEntropy;
+        WFCTile centerTile = state.GetTile((WorldUtils.WORLD_SIZE + Vector2Int.one) / 2);
+        centerTile.slants.Clear();
+        centerTile.slants.Add(WorldUtils.Slant.None);
+
+        for (int x = 0; x < PathGenerator.nodes.GetLength(0); x++)
+        {
+            for (int y = 0; y < PathGenerator.nodes.GetLength(1); y++)
+            {
+                int n = PathGenerator.nodes[x, y];
+                if (n != int.MaxValue)
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Vector2Int p = new Vector2Int(x, y) + WorldUtils.CARDINAL_DIRS[i];
+                        Vector2Int pp = (new Vector2Int(2 * x + 1, 2 * y + 1) + WorldUtils.CARDINAL_DIRS[i]) / 2;
+                        if (p.x < 0 || p.y < 0 || p.x >= PathGenerator.nodes.GetLength(0) || p.y >= PathGenerator.nodes.GetLength(1) || PathGenerator.nodes[p.x, p.y] - n == 1 || PathGenerator.nodes[p.x, p.y] - n == -1)
+                            state.SetValidPassagesAt(pp.x, pp.y, i % 2 == 1, (true, false));
+                        else if (PathGenerator.nodes[p.x, p.y] != int.MaxValue)
+                            state.SetValidPassagesAt(pp.x, pp.y, i % 2 == 1, (false, true));
+                    }
+                }
+            }
+        }
     }
 
     public static void MarkNeighborsDirty(Vector2Int pos, IEnumerable<Vector2Int> offsets)
@@ -203,7 +223,7 @@ public class WFCGenerator : MonoBehaviour
         Debug.Log("Backtrackin' time");
         if (stateStack.Count == 0)
         {
-            throw new System.Exception($"Invalid Settings - not satisfiable within {BACKUP_DEPTH} backtracks");
+            throw new System.Exception($"Invalid Settings - not satisfiable");
         }
         dirty.Clear();
         Vector2Int lastCollapsedSlot = state.lastCollapsedSlot;

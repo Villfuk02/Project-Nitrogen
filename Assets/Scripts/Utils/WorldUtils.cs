@@ -1,13 +1,22 @@
+using System.Linq;
 using UnityEngine;
 
 public static class WorldUtils
 {
-    public static readonly Vector2Int WORLD_SIZE = new(35, 19);
+    public static readonly Vector2Int WORLD_SIZE = new(15, 15);
     public const int MAX_HEIGHT = 3;
+    public static readonly int[] ALL_HEIGHTS = Enumerable.Range(0, MAX_HEIGHT + 1).ToArray();
     public const float HEIGHT_STEP = 0.5f;
-    public static readonly Vector2Int[] CARDINAL_DIRS = new Vector2Int[] { new Vector2Int(0, 1), new Vector2Int(1, 0), new Vector2Int(0, -1), new Vector2Int(-1, 0) };
+    public static readonly Vector2Int[] CARDINAL_DIRS = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+    public static readonly Vector2Int[] ADJACENT_DIRS = new Vector2Int[] { Vector2Int.up, Vector2Int.one, Vector2Int.right, new(1, -1), Vector2Int.down, new(-1, -1), Vector2Int.left, new(-1, 1) };
     public enum Slant { None, North, East, South, West };
+    public static readonly Slant[] ALL_SLANTS = (Slant[])System.Enum.GetValues(typeof(Slant));
     public enum TerrainType { White, Blue };
+    public static readonly TerrainType[] ALL_TERRAIN_TYPES = (TerrainType[])System.Enum.GetValues(typeof(TerrainType));
+    public const int MIN_PATH_LENGTH = 10;
+    public const int MAX_PATH_LENGTH = 16;
+    public const int PATH_COUNT = 3;
+
     public static Vector3 TileToWorldPos(Vector3Int tilePos)
     {
         return new Vector3(
