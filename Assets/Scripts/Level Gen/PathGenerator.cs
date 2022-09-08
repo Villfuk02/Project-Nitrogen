@@ -175,26 +175,27 @@ public class PathGenerator : LevelGeneratorPart
                     prevPos = pos;
                 }
             }
-        }
-        Gizmos.color = Color.magenta;
-        foreach (var path in done)
-        {
-            Vector3? prevPos = null;
-            foreach (var node in path.path)
+
+            Gizmos.color = Color.magenta;
+            foreach (var path in done)
             {
-                Vector3 pos = WorldUtils.TileToWorldPos((Vector3Int)node.pos);
-                Gizmos.DrawWireCube(pos, Vector3.one * 0.3f);
-                if (prevPos != null)
+                Vector3? prevPos = null;
+                foreach (var node in path.path)
                 {
-                    Gizmos.DrawLine(prevPos.Value, pos);
+                    Vector3 pos = WorldUtils.TileToWorldPos((Vector3Int)node.pos);
+                    Gizmos.DrawWireCube(pos, Vector3.one * 0.3f);
+                    if (prevPos != null)
+                    {
+                        Gizmos.DrawLine(prevPos.Value, pos);
+                    }
+                    prevPos = pos;
                 }
-                prevPos = pos;
             }
-        }
-        Gizmos.color = Color.magenta;
-        if (origin.x > 0)
-        {
-            Gizmos.DrawWireCube(WorldUtils.TileToWorldPos((Vector3Int)origin), Vector3.one * 0.5f);
+            Gizmos.color = Color.magenta;
+            if (origin.x > 0)
+            {
+                Gizmos.DrawWireCube(WorldUtils.TileToWorldPos((Vector3Int)origin), Vector3.one * 0.5f);
+            }
         }
     }
 }
