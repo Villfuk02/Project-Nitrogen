@@ -9,7 +9,7 @@ public class WFCModule
     public bool flip;
     public int rotate;
     [Header("Data")]
-    public Sprite sprite;
+    public Mesh mesh;
     public float weight;
     public bool[] passable;
     public Vector3Int heightOffsets;
@@ -26,7 +26,7 @@ public class WFCModule
             flip = flip,
             rotate = rotate,
             weight = weight,
-            sprite = sprite,
+            mesh = mesh,
             passable = (bool[])passable.Clone(),
             heightOffsets = new Vector3Int(heightOffsets.x, heightOffsets.y, heightOffsets.z),
             terrainTypes = (WorldUtils.TerrainType[])terrainTypes.Clone(),

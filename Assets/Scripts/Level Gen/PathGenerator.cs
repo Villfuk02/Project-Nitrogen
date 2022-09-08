@@ -7,14 +7,15 @@ public class PathGenerator : LevelGeneratorPart
 {
     public int stepsUntilFail;
     public int steps;
-    public int[] targetLengths;
+    public int[] targetLengthsSetup;
+    public static int[] targetLengths;
     static float minDist;
     int startPos;
     public bool allowOneSteps;
     public static Vector2Int origin = -Vector2Int.one;
     static readonly RandomSet<Vector2Int> oddTargets = new();
     static readonly RandomSet<Vector2Int> evenTargets = new();
-    static readonly List<Vector2Int> chosenTargets = new();
+    public static readonly List<Vector2Int> chosenTargets = new();
     public static int[,] nodes;
     public static HashSet<((Vector2Int pos, int dist) prev, (Vector2Int pos, int dist) next, (Vector2Int pos, int dist) me)> blacklist = new();
     public static WeightedRandomSet<PathGeneratorPath> queue = new();
@@ -22,6 +23,7 @@ public class PathGenerator : LevelGeneratorPart
 
     public override void Init()
     {
+        targetLengths = targetLengthsSetup;
         origin = (WorldUtils.WORLD_SIZE - Vector2Int.one) / 2;
         nodes = new int[WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y];
         minDist = (WorldUtils.WORLD_SIZE.x + WorldUtils.WORLD_SIZE.y) / targetLengths.Length * 0.7f;
@@ -90,12 +92,10 @@ public class PathGenerator : LevelGeneratorPart
     {
         foreach ((var path, var _) in queue.AllEntries)
         {
-            yield return null;
             path.Step(false, allowOneSteps);
         }
         while (queue.Count > 0)
         {
-            yield return null;
             queue.PopRandom().Step(true, allowOneSteps);
             steps++;
             if (steps >= stepsUntilFail)
@@ -153,24 +153,27 @@ public class PathGenerator : LevelGeneratorPart
 
     private void OnDrawGizmos()
     {
-        foreach (var (path, weight) in queue.AllEntries)
+        if (started && !stopped)
         {
-            Vector3? prevPos = null;
-            foreach (var node in path.path)
+            foreach (var (path, weight) in queue.AllEntries)
             {
-                Vector3 pos = WorldUtils.TileToWorldPos((Vector3Int)node.pos);
-                Handles.Label(pos, node.dist.ToString());
-                bool isPrev = path.prev != null && node.pos == path.prev.Value.pos;
-                bool isCurrent = path.next != null && node.pos == path.next.Value.pos;
-                bool isShort = prevPos != null && (prevPos.Value - pos).sqrMagnitude < 2;
-                Gizmos.color = isPrev || isCurrent ? Color.cyan : Color.red;
-                Gizmos.DrawWireCube(pos, Vector3.one * 0.3f);
-                if (prevPos != null)
+                Vector3? prevPos = null;
+                foreach (var node in path.path)
                 {
-                    Gizmos.color = isShort ? Color.yellow : (isCurrent ? Color.cyan : Color.red);
-                    Gizmos.DrawLine(prevPos.Value, pos);
+                    Vector3 pos = WorldUtils.TileToWorldPos((Vector3Int)node.pos);
+                    Handles.Label(pos, node.dist.ToString());
+                    bool isPrev = path.prev != null && node.pos == path.prev.Value.pos;
+                    bool isCurrent = path.next != null && node.pos == path.next.Value.pos;
+                    bool isShort = prevPos != null && (prevPos.Value - pos).sqrMagnitude < 2;
+                    Gizmos.color = isPrev || isCurrent ? Color.cyan : Color.red;
+                    Gizmos.DrawWireCube(pos, Vector3.one * 0.3f);
+                    if (prevPos != null)
+                    {
+                        Gizmos.color = isShort ? Color.yellow : (isCurrent ? Color.cyan : Color.red);
+                        Gizmos.DrawLine(prevPos.Value, pos);
+                    }
+                    prevPos = pos;
                 }
-                prevPos = pos;
             }
         }
         Gizmos.color = Color.magenta;
@@ -188,7 +191,10 @@ public class PathGenerator : LevelGeneratorPart
                 prevPos = pos;
             }
         }
+        Gizmos.color = Color.magenta;
         if (origin.x > 0)
+        {
             Gizmos.DrawWireCube(WorldUtils.TileToWorldPos((Vector3Int)origin), Vector3.one * 0.5f);
+        }
     }
 }

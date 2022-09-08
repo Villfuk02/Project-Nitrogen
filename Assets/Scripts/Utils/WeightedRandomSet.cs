@@ -32,7 +32,7 @@ public class WeightedRandomSet<T>
     public void Remove(T item)
     {
         if (!_positions.ContainsKey(item))
-            return;
+            throw new System.Exception($"Set does not contain item {item}.");
         int pos = _positions[item];
         totalWeight -= _list[pos].weight;
         _positions.Remove(item);

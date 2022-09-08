@@ -17,20 +17,28 @@ public static class WorldUtils
     public const int MAX_PATH_LENGTH = 16;
     public const int PATH_COUNT = 3;
 
-    public static Vector3 TileToWorldPos(Vector3Int tilePos)
+    public static Vector3 TileToWorldPos(Vector3 tilePos)
     {
         return new Vector3(
             tilePos.x - (WORLD_SIZE.x - 1) / 2f,
-            tilePos.y - (WORLD_SIZE.y - 1) / 2f,
-            tilePos.z * HEIGHT_STEP
+            tilePos.z * HEIGHT_STEP,
+            tilePos.y - (WORLD_SIZE.y - 1) / 2f
             );
     }
     public static Vector3 SlotToWorldPos(int x, int y)
     {
         return new Vector3(
             x - WORLD_SIZE.x / 2f,
-            y - WORLD_SIZE.y / 2f,
-            0
+            0,
+            y - WORLD_SIZE.y / 2f
+            );
+    }
+    public static Vector3 SlotToWorldPos(int x, int y, int height)
+    {
+        return new Vector3(
+            x - WORLD_SIZE.x / 2f,
+            height * HEIGHT_STEP,
+            y - WORLD_SIZE.y / 2f
             );
     }
 
@@ -38,8 +46,8 @@ public static class WorldUtils
     {
         return new Vector3Int(
             Mathf.RoundToInt(worldPos.x + (WORLD_SIZE.x - 1) / 2f),
-            Mathf.RoundToInt(worldPos.y + (WORLD_SIZE.y - 1) / 2f),
-            Mathf.RoundToInt(worldPos.z / HEIGHT_STEP)
+            Mathf.RoundToInt(worldPos.z / HEIGHT_STEP),
+            Mathf.RoundToInt(worldPos.y + (WORLD_SIZE.y - 1) / 2f)
             );
     }
 
@@ -47,7 +55,7 @@ public static class WorldUtils
     {
         return new Vector2Int(
             Mathf.RoundToInt(worldPos.x + WORLD_SIZE.x / 2f),
-            Mathf.RoundToInt(worldPos.y + WORLD_SIZE.y / 2f)
+            Mathf.RoundToInt(worldPos.z + WORLD_SIZE.y / 2f)
             );
     }
 

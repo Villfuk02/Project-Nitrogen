@@ -10,13 +10,13 @@ public class WFCGenerator : LevelGeneratorPart
     public WFCModule[] moduleSetup;
     public Gradient pathDistanceGradient;
     [Header("Runtime")]
-    public static int stepsPerTick = 8;
+    public static int stepsPerTick = 20;
     public static int steps = 0;
     public static WFCModule[] ALL_MODULES;
     public static WFCState state = null;
     static readonly RandomSet<WFCSlot> dirty = new();
 
-    const int BACKUP_DEPTH = 5;
+    const int BACKUP_DEPTH = 8;
     static readonly FixedStack<WFCState> stateStack = new(BACKUP_DEPTH);
     public static float maxEntropy = 0;
 
@@ -102,18 +102,6 @@ public class WFCGenerator : LevelGeneratorPart
         }
         return n;
     }
-    public static bool WaitForStep()
-    {
-        if (stepsPerTick <= 0)
-            return false;
-        steps++;
-        if (steps >= stepsPerTick)
-        {
-            steps %= stepsPerTick;
-            return true;
-        }
-        return false;
-    }
 
     public override void Init()
     {
@@ -125,19 +113,17 @@ public class WFCGenerator : LevelGeneratorPart
     {
         System.DateTime start = System.DateTime.Now;
         InitWFC();
-        yield return null;
         while (state.uncollapsed > 0)
         {
             while (dirty.Count > 0)
             {
                 UpdateNext();
-                if (WaitForStep()) yield return null;
             }
             Backup();
             state.CollapseRandom();
-            yield return null;
         }
         Debug.Log($"WFC finished in {System.DateTime.Now - start}");
+        yield return null;
         stopped = true;
     }
 
@@ -195,7 +181,7 @@ public class WFCGenerator : LevelGeneratorPart
         WFCSlot s = state.GetSlot(x, y);
         if (s == null || s.Collapsed != -1)
             return;
-        dirty.Add(s);
+        dirty.TryAdd(s);
     }
     private void UpdateNext()
     {
@@ -221,14 +207,17 @@ public class WFCGenerator : LevelGeneratorPart
     public void Backtrack()
     {
         Debug.Log("Backtrackin' time");
+        dirty.Clear();
+        Vector2Int lastCollapsedSlot = state.lastCollapsedSlot;
+        (int module, int height) lastCollapsedTo = state.lastCollapsedTo;
         if (stateStack.Count == 0)
         {
             throw new System.Exception($"Invalid Settings - not satisfiable");
         }
-        dirty.Clear();
-        Vector2Int lastCollapsedSlot = state.lastCollapsedSlot;
-        (int module, int height) lastCollapsedTo = state.lastCollapsedTo;
-        state = stateStack.Pop();
-        state.RemoveSlotOption(lastCollapsedSlot, lastCollapsedTo);
+        else
+        {
+            state = stateStack.Pop();
+            state.RemoveSlotOption(lastCollapsedSlot, lastCollapsedTo);
+        }
     }
 }
