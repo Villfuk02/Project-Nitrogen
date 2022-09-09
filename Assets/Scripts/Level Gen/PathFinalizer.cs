@@ -139,6 +139,13 @@ public class PathFinalizer : LevelGeneratorPart
                 prev = current;
             }
         }
+        for (int i = 0; i < paths.Length; i++)
+        {
+            PathNode n = paths[i];
+            Vector2Int realStart = n.pos + WorldUtils.GetMainDir(PathGenerator.origin, n.pos);
+            paths[i] = new(realStart, i);
+            paths[i].next.Add(n);
+        }
     }
 
     private void OnDrawGizmosSelected()
@@ -163,7 +170,7 @@ public class PathFinalizer : LevelGeneratorPart
             Gizmos.color = Color.magenta;
             if (paths != null)
             {
-                void DrawPath(Vector3? from, PathNode n)
+                static void DrawPath(Vector3? from, PathNode n)
                 {
                     Vector3 pos = WorldUtils.TileToWorldPos((Vector3Int)n.pos);
                     Gizmos.DrawWireCube(pos, Vector3.one * 0.3f);

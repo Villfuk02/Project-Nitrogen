@@ -105,7 +105,7 @@ public class Scatterer : LevelGeneratorPart
             Vector2Int pos = tilesLeft.PopRandom();
             for (int i = 0; i < m.triesPerTile; i++)
             {
-                Vector2 p = pos + Vector2.up * Random.Range(-0.6f, 0.6f) + Vector2.right * Random.Range(-0.6f, 0.6f);
+                Vector2 p = pos + Random.insideUnitCircle * 0.75f;
                 if (p.x > -0.5f && p.y > -0.5f && p.x < WorldUtils.WORLD_SIZE.x - 0.5f && p.y < WorldUtils.WORLD_SIZE.y - 0.5f)
                 {
                     float e = m.EvaluateAt(p);

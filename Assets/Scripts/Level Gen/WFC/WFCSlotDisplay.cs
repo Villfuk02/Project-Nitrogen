@@ -21,7 +21,7 @@ public class WFCSlotDisplay : MonoBehaviour
                 meshFilter.mesh = WFCGenerator.ALL_MODULES[slot.Collapsed].mesh;
                 meshCollider.sharedMesh = meshFilter.mesh;
                 transform.localPosition = WorldUtils.SlotToWorldPos(slotPos.x, slotPos.y, slot.Height - WFCGenerator.ALL_MODULES[slot.Collapsed].graphicsHeightOffset);
-                transform.localScale = new Vector3(WFCGenerator.ALL_MODULES[slot.Collapsed].flip ? -1 : 1, 1, 1);
+                transform.localScale = new Vector3(WFCGenerator.ALL_MODULES[slot.Collapsed].flip ? -1 : 1, 1, 1) * 1.01f;
                 transform.localRotation = Quaternion.Euler(0, 90 * WFCGenerator.ALL_MODULES[slot.Collapsed].rotate, 0);
                 meshRenderer.material.color = colorGradient.Evaluate(transform.localPosition.y * 0.35f + Random.value * 0.2f);
             }

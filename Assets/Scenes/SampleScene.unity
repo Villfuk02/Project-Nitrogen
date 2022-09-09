@@ -123,6 +123,57 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &251780497
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 251780498}
+  - component: {fileID: 251780499}
+  m_Layer: 0
+  m_Name: PathRenderer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &251780498
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 251780497}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 918196941}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &251780499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 251780497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ec9b605cb7d2014a913bd541c60f375, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  linePrefab: {fileID: 315257208492628400, guid: 6918aa5953bda704e8d611a0d7a7f1a6, type: 3}
+  inset: 0.2
+  height: 0.2
+  scrollSpeed: -1
+  offset: 0
+  width: 0.4
+  mat: {fileID: 2100000, guid: fc1ea633985178c4781bf2efc98cba6d, type: 2}
 --- !u!1 &918196940
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,6 +209,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2006791433}
+  - {fileID: 251780498}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -811,7 +863,7 @@ MonoBehaviour:
   persistingColliders: []
   decorationScattererModules:
   - name: Grass
-    enabled: 1
+    enabled: 0
     prefab: {fileID: 4218540203227292527, guid: f2fba83db66ce3d45a4419958811e5f3, type: 3}
     triesPerTile: 100
     placementRadius: 0.1
@@ -834,9 +886,9 @@ MonoBehaviour:
       data:
         enabled: 1
         noise:
-          octaves: 4
+          octaves: 3
           bias: 0.2
-          baseAmplitude: 1
+          baseAmplitude: 0.5
           amplitudeMult: 0.637
           baseFrequency: 0.16
           frequencyMult: 2.13

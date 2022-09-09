@@ -25,19 +25,7 @@ public class PathGeneratorPath
 
     static Vector2Int GetOffset(Vector2Int origin, Vector2Int target, int magnitude)
     {
-        Vector2Int o = target - origin;
-        if (Mathf.Abs(o.x) == Mathf.Abs(o.y))
-        {
-            o += (Random.value < 0.5f) ? Vector2Int.right : Vector2Int.left;
-        }
-        if (Mathf.Abs(o.x) > Mathf.Abs(o.y))
-        {
-            return origin + new Vector2Int((int)Mathf.Sign(o.x) * magnitude, 0);
-        }
-        else
-        {
-            return origin + new Vector2Int(0, (int)Mathf.Sign(o.y) * magnitude);
-        }
+        return origin + WorldUtils.GetMainDir(origin, target) * magnitude;
     }
 
     public void Step(bool reAdd, bool allowOneSteps)

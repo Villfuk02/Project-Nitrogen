@@ -27,6 +27,12 @@ public static class WorldUtils
             tilePos.y - (WORLD_SIZE.y - 1) / 2f
             );
     }
+    public static Vector3 TileToWorldSurface(Vector2 tilePos)
+    {
+        Vector3 rayOrigin = TileToWorldPos(tilePos) + (MAX_HEIGHT + 1) * HEIGHT_STEP * Vector3.up;
+        Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayOrigin.y + 1, LayerMask.GetMask("CoarseTerrain"));
+        return hit.point;
+    }
     public static Vector3 SlotToWorldPos(int x, int y)
     {
         return new Vector3(
@@ -59,6 +65,23 @@ public static class WorldUtils
             Mathf.RoundToInt(worldPos.x + WORLD_SIZE.x / 2f),
             Mathf.RoundToInt(worldPos.z + WORLD_SIZE.y / 2f)
             );
+    }
+
+    public static Vector2Int GetMainDir(Vector2Int origin, Vector2Int tilePos)
+    {
+        Vector2Int o = tilePos - origin;
+        if (Mathf.Abs(o.x) == Mathf.Abs(o.y))
+        {
+            o += (Random.value < 0.5f) ? Vector2Int.right : Vector2Int.left;
+        }
+        if (Mathf.Abs(o.x) > Mathf.Abs(o.y))
+        {
+            return new((int)Mathf.Sign(o.x), 0);
+        }
+        else
+        {
+            return new(0, (int)Mathf.Sign(o.y));
+        }
     }
 
     public static bool IsInRange(int x, int y, int sizeX, int sizeY)

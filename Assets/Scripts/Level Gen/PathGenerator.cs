@@ -26,7 +26,7 @@ public class PathGenerator : LevelGeneratorPart
         targetLengths = targetLengthsSetup;
         origin = (WorldUtils.WORLD_SIZE - Vector2Int.one) / 2;
         nodes = new int[WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y];
-        minDist = (WorldUtils.WORLD_SIZE.x + WorldUtils.WORLD_SIZE.y) / targetLengths.Length * 0.7f;
+        minDist = (WorldUtils.WORLD_SIZE.x + WorldUtils.WORLD_SIZE.y) / targetLengths.Length * 0.9f;
         minDist *= minDist;
         for (int x = 0; x < WorldUtils.WORLD_SIZE.x; x++)
         {
