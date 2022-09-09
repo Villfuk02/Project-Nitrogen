@@ -15,6 +15,7 @@ public class Blocker
     public WorldUtils.TerrainType[] validTerrainTypes;
     public bool onSlants;
     public float[] forces;
+    public string copyModules;
     [SerializeReference, SubclassSelector] public ScattererObjectModule[] scattererModules;
 
     public int placed;

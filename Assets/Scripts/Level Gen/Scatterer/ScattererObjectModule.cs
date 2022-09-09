@@ -14,6 +14,7 @@ public class ScattererObjectModule
     public float sizeGain;
     public float radiusGain;
     public float angleSpread;
+    public float minValue = float.NegativeInfinity;
     [SerializeReference, SubclassSelector] public ScattererValueModule[] valueModules;
 
     public float EvaluateAt(Vector2 tilePos)
@@ -21,7 +22,8 @@ public class ScattererObjectModule
         float ret = 0;
         foreach (ScattererValueModule svm in valueModules)
         {
-            ret += svm.EvaluateAt(tilePos, this);
+            if (svm != null)
+                ret += svm.EvaluateAt(tilePos, this);
         }
         return ret;
     }
@@ -32,5 +34,23 @@ public class ScattererObjectModule
         if (s < 0)
             return baseRadius / (1 - s);
         return baseRadius * (1 + s);
+    }
+
+    public ScattererObjectModule Clone()
+    {
+        return new()
+        {
+            name = name,
+            enabled = enabled,
+            prefab = prefab,
+            triesPerTile = triesPerTile,
+            placementRadius = placementRadius,
+            persistingRadius = persistingRadius,
+            sizeGain = sizeGain,
+            radiusGain = radiusGain,
+            angleSpread = angleSpread,
+            valueModules = valueModules,
+            minValue = minValue
+        };
     }
 }

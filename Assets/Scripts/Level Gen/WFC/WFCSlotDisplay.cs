@@ -7,6 +7,7 @@ public class WFCSlotDisplay : MonoBehaviour
     public MeshRenderer meshRenderer;
     public Vector2Int slotPos;
     public Gradient entropyGradient;
+    public Gradient colorGradient;
     public Mesh defaultMesh;
     public int lastCollapsed;
 
@@ -22,7 +23,7 @@ public class WFCSlotDisplay : MonoBehaviour
                 transform.localPosition = WorldUtils.SlotToWorldPos(slotPos.x, slotPos.y, slot.Height - WFCGenerator.ALL_MODULES[slot.Collapsed].graphicsHeightOffset);
                 transform.localScale = new Vector3(WFCGenerator.ALL_MODULES[slot.Collapsed].flip ? -1 : 1, 1, 1);
                 transform.localRotation = Quaternion.Euler(0, 90 * WFCGenerator.ALL_MODULES[slot.Collapsed].rotate, 0);
-                meshRenderer.material.color = Color.white;
+                meshRenderer.material.color = colorGradient.Evaluate(transform.localPosition.y * 0.35f + Random.value * 0.2f);
             }
             else
             {

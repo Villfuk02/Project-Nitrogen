@@ -13,7 +13,8 @@ public class LimitSVM : ScattererValueModule
         float ret = 0;
         foreach (ScattererValueModule svm in svms)
         {
-            ret += svm.EvaluateAt(pos, som);
+            if (svm != null)
+                ret += svm.EvaluateAt(pos, som);
         }
         if (ret == float.NegativeInfinity)
             return float.NegativeInfinity;

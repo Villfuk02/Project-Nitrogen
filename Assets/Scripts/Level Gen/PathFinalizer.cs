@@ -38,6 +38,7 @@ public class PathFinalizer : LevelGeneratorPart
             forbidden[i] = new();
             paths[i] = new(PathGenerator.chosenTargets[i], i);
             nodeMap[paths[i].pos] = paths[i];
+            pathTiles[paths[i].pos.x, paths[i].pos.y] = true;
         }
         StartCoroutine(FinalizePaths());
     }
@@ -58,7 +59,6 @@ public class PathFinalizer : LevelGeneratorPart
     void TracePath(int index, BlockerGenerator.Node n, int pathCount, List<Vector2Int> path, int distToMerge)
     {
         path.Add(n.pos);
-        pathTiles[n.pos.x, n.pos.y] = true;
         if (n.dist == 0)
         {
             if (pathsLeft[index] > 0)
@@ -128,6 +128,7 @@ public class PathFinalizer : LevelGeneratorPart
                 {
                     current = new(node, index);
                     nodeMap[node] = current;
+                    pathTiles[node.x, node.y] = true;
                 }
                 if (prev != null && !prev.next.Contains(current))
                 {

@@ -23,7 +23,7 @@ public abstract class SDFSVM : ScattererValueModule
         Vector2Int rounded = new(Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y));
         bool inside = tiles[rounded.x, rounded.y];
         float prevMinDist = float.PositiveInfinity;
-        for (int r = 0; r < Mathf.Max(WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y); r++)
+        for (int r = 0; r < Mathf.Max(WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y) + 1; r++)
         {
             float minDist = float.PositiveInfinity;
             Vector2Int boundsMin = new(Mathf.Max(rounded.x - r, 0), Mathf.Max(rounded.y - r, 0));
@@ -88,6 +88,10 @@ public abstract class SDFSVM : ScattererValueModule
                 {
                     prevMinDist = minDist;
                 }
+            }
+            else if (prevMinDist != float.PositiveInfinity)
+            {
+                return inside ? -prevMinDist : prevMinDist;
             }
         }
         return inside ? -1_000_000 : 1_000_000;

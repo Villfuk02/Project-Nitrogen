@@ -9,6 +9,7 @@ public static class WorldUtils
     public const float HEIGHT_STEP = 0.5f;
     public static readonly Vector2Int[] CARDINAL_DIRS = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
     public static readonly Vector2Int[] ADJACENT_DIRS = new Vector2Int[] { Vector2Int.up, Vector2Int.one, Vector2Int.right, new(1, -1), Vector2Int.down, new(-1, -1), Vector2Int.left, new(-1, 1) };
+    public static readonly Vector3[] WORLD_CARDINAL_DIRS = new Vector3[] { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
     public enum Slant { None, North, East, South, West };
     public static readonly Slant[] ALL_SLANTS = (Slant[])System.Enum.GetValues(typeof(Slant));
     public enum TerrainType { White, Blue };
@@ -16,6 +17,7 @@ public static class WorldUtils
     public const int MIN_PATH_LENGTH = 10;
     public const int MAX_PATH_LENGTH = 16;
     public const int PATH_COUNT = 3;
+
 
     public static Vector3 TileToWorldPos(Vector3 tilePos)
     {

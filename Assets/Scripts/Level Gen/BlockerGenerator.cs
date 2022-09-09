@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BlockerGenerator : LevelGeneratorPart
@@ -30,6 +31,19 @@ public class BlockerGenerator : LevelGeneratorPart
 
     public override void Init()
     {
+        Scatterer s = gameObject.GetComponent<Scatterer>();
+        for (int i = 0; i < ALL_BLOCKERS.Length; i++)
+        {
+            if (ALL_BLOCKERS[i].copyModules != "")
+            {
+                ScattererObjectModule[] original = ALL_BLOCKERS.First(m => m.name == ALL_BLOCKERS[i].copyModules).scattererModules;
+                ALL_BLOCKERS[i].scattererModules = new ScattererObjectModule[original.Length];
+                for (int j = 0; j < original.Length; j++)
+                {
+                    ALL_BLOCKERS[i].scattererModules[j] = original[j].Clone();
+                }
+            }
+        }
         for (int i = 0; i < ALL_BLOCKERS.Length; i++)
         {
             if (ALL_BLOCKERS[i].enabled)
@@ -49,7 +63,7 @@ public class BlockerGenerator : LevelGeneratorPart
                     for (int j = 0; j < ALL_BLOCKERS[i].scattererModules.Length; j++)
                     {
                         ALL_BLOCKERS[i].scattererModules[j].validTiles = vt;
-                        Scatterer.SCATTERER_MODULES.Add(ALL_BLOCKERS[i].scattererModules[j]);
+                        s.SCATTERER_MODULES.Add(ALL_BLOCKERS[i].scattererModules[j]);
                     }
                 }
             }
@@ -109,7 +123,6 @@ public class BlockerGenerator : LevelGeneratorPart
                 {
                     if (layers[layer].TrueForAll(b => ALL_BLOCKERS[b].placed >= ALL_BLOCKERS[b].min))
                     {
-
                         layer++;
                     }
                     tilesLeft = new(emptyTiles);

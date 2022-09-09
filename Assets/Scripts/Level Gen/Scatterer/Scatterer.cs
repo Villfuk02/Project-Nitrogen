@@ -13,8 +13,10 @@ public class Scatterer : LevelGeneratorPart
     public List<GameObject> persistingColliders;
 
     public ScattererObjectModule[] decorationScattererModules;
-    public static List<ScattererObjectModule> SCATTERER_MODULES = new();
+    public List<ScattererObjectModule> SCATTERER_MODULES = new();
     readonly static RandomSet<Vector2Int> allTiles = new();
+
+    public int debugModule;
 
     public override void Init()
     {
@@ -31,10 +33,13 @@ public class Scatterer : LevelGeneratorPart
 
     IEnumerator Scatter()
     {
-        while (SCATTERER_MODULES.Count > 0)
+        while (debugModule >= 0 && debugModule < SCATTERER_MODULES.Count)
         {
-            ScattererObjectModule m = SCATTERER_MODULES[0];
-            SCATTERER_MODULES.RemoveAt(0);
+            DisplayField(SCATTERER_MODULES[debugModule]);
+            yield return null;
+        }
+        foreach (var m in SCATTERER_MODULES)
+        {
             if (m.enabled)
             {
                 DisplayField(m);
@@ -43,6 +48,11 @@ public class Scatterer : LevelGeneratorPart
                 yield return null;
             }
         }
+        foreach (GameObject c in persistingColliders)
+        {
+            Destroy(c);
+        }
+        debugPlane.enabled = false;
         stopped = true;
     }
 
@@ -99,25 +109,28 @@ public class Scatterer : LevelGeneratorPart
                 if (p.x > -0.5f && p.y > -0.5f && p.x < WorldUtils.WORLD_SIZE.x - 0.5f && p.y < WorldUtils.WORLD_SIZE.y - 0.5f)
                 {
                     float e = m.EvaluateAt(p);
-                    float r = m.GetScaled(m.placementRadius, m.radiusGain, e);
-                    if (Physics2D.CircleCast(p, r, Vector2.zero, 0, 1 << 7).collider == null)
+                    if (e >= m.minValue && e != float.NegativeInfinity)
                     {
-                        float s = m.GetScaled(1, m.sizeGain, e);
-                        Vector3 rayOrigin = WorldUtils.TileToWorldPos(p) + (WorldUtils.MAX_HEIGHT + 1) * WorldUtils.HEIGHT_STEP * Vector3.up;
-                        Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayOrigin.y + 1, LayerMask.GetMask("CoarseTerrain"));
-                        GameObject g = Instantiate(m.prefab, hit.point, Quaternion.Euler(Vector3.up * Random.Range(0f, 360f) + Random.onUnitSphere * m.angleSpread), transform);
-                        g.transform.localScale *= s;
-                        if (r > 0)
+                        float r = m.GetScaled(m.placementRadius, m.radiusGain, e);
+                        if (Physics2D.CircleCast(p, r, Vector2.zero, 0, 1 << 7).collider == null)
                         {
-                            GameObject tc = Instantiate(tempColliderPrefab, p, Quaternion.identity, transform);
-                            temporaryColliders.Add(tc);
-                            tc.GetComponent<CircleCollider2D>().radius = r;
-                        }
-                        if (m.persistingRadius > 0)
-                        {
-                            GameObject pc = Instantiate(persistentColliderPrefab, p, Quaternion.identity, transform);
-                            persistingColliders.Add(pc);
-                            pc.GetComponent<CircleCollider2D>().radius = m.persistingRadius * s;
+                            float s = m.GetScaled(1, m.sizeGain, e);
+                            Vector3 rayOrigin = WorldUtils.TileToWorldPos(p) + (WorldUtils.MAX_HEIGHT + 1) * WorldUtils.HEIGHT_STEP * Vector3.up;
+                            Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayOrigin.y + 1, LayerMask.GetMask("CoarseTerrain"));
+                            GameObject g = Instantiate(m.prefab, hit.point, Quaternion.Euler(Vector3.up * Random.Range(0f, 360f) + Random.onUnitSphere * m.angleSpread), transform);
+                            g.transform.localScale *= s;
+                            if (r > 0)
+                            {
+                                GameObject tc = Instantiate(tempColliderPrefab, p, Quaternion.identity, transform);
+                                temporaryColliders.Add(tc);
+                                tc.GetComponent<CircleCollider2D>().radius = r;
+                            }
+                            if (m.persistingRadius > 0)
+                            {
+                                GameObject pc = Instantiate(persistentColliderPrefab, p, Quaternion.identity, transform);
+                                persistingColliders.Add(pc);
+                                pc.GetComponent<CircleCollider2D>().radius = m.persistingRadius * s;
+                            }
                         }
                     }
                 }

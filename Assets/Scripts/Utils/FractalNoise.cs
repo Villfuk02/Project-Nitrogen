@@ -11,36 +11,30 @@ public class FractalNoise
     public float frequencyMult;
 
     Vector2[] offsets;
-    float[] amplitudes;
-    float[] frequencies;
 
     void Init()
     {
         offsets = new Vector2[octaves];
-        amplitudes = new float[octaves];
-        frequencies = new float[octaves];
-        float a = baseAmplitude;
-        float f = baseFrequency;
         for (int i = 0; i < octaves; i++)
         {
             offsets[i] = Random.insideUnitCircle * 1000;
-            amplitudes[i] = a;
-            a *= amplitudeMult;
-            frequencies[i] = f;
-            f *= frequencyMult;
         }
     }
 
     public float EvaluateAt(Vector2 pos)
     {
-        if (offsets == null)
+        if (offsets == null || offsets.Length != octaves)
         {
             Init();
         }
         float ret = bias;
+        float a = baseAmplitude;
+        float f = baseFrequency;
         for (int i = 0; i < octaves; i++)
         {
-            ret += amplitudes[i] * GetNormalizedNoiseAt(offsets[i] + pos * frequencies[i]);
+            ret += a * GetNormalizedNoiseAt(offsets[i] + pos * f);
+            a *= amplitudeMult;
+            f *= frequencyMult;
         }
         return ret;
     }
