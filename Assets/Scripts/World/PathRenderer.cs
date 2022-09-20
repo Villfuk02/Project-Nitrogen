@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static InfiniteCombo.Nitrogen.Assets.Scripts.LevelGenOld.PathFinalizer;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts
+namespace InfiniteCombo.Nitrogen.Assets.Scripts.World
 {
     public class PathRenderer : MonoBehaviour
     {

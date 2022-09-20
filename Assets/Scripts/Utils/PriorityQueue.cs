@@ -1,18 +1,18 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// MODIFIED
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
-namespace System.Collections.Generic
+namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
 {
     [DebuggerDisplay("Count = {Count}")]
     public class PriorityQueue<TElement, TPriority>
     {
         private (TElement Element, TPriority Priority)[] _nodes;
-        private readonly IComparer<TPriority>? _comparer;
-        private UnorderedItemsCollection? _unorderedItems;
+        private readonly IComparer<TPriority> _comparer;
+        private UnorderedItemsCollection _unorderedItems;
         private int _size;
         private int _version;
         private const int Arity = 4;
@@ -26,13 +26,13 @@ namespace System.Collections.Generic
             _positions = new();
         }
         public PriorityQueue(int initialCapacity) : this(initialCapacity, comparer: null) { }
-        public PriorityQueue(IComparer<TPriority>? comparer)
+        public PriorityQueue(IComparer<TPriority> comparer)
         {
             _nodes = Array.Empty<(TElement, TPriority)>();
             _comparer = InitializeComparer(comparer);
             _positions = new();
         }
-        public PriorityQueue(int initialCapacity, IComparer<TPriority>? comparer)
+        public PriorityQueue(int initialCapacity, IComparer<TPriority> comparer)
         {
             if (initialCapacity < 0)
             {
@@ -44,7 +44,7 @@ namespace System.Collections.Generic
             _positions = new(initialCapacity);
         }
         public PriorityQueue(IEnumerable<(TElement Element, TPriority Priority)> items) : this(items, comparer: null) { }
-        public PriorityQueue(IEnumerable<(TElement Element, TPriority Priority)> items, IComparer<TPriority>? comparer)
+        public PriorityQueue(IEnumerable<(TElement Element, TPriority Priority)> items, IComparer<TPriority> comparer)
         {
             if (items == null)
                 throw new ArgumentNullException();
@@ -371,7 +371,7 @@ namespace System.Collections.Generic
                 _nodes[lastNodeIndex] = default;
             }
         }
-        private static int GetParentIndex(int index) => (index - 1) >> Log2Arity;
+        private static int GetParentIndex(int index) => index - 1 >> Log2Arity;
         private static int GetFirstChildIndex(int index) => (index << Log2Arity) + 1;
         private void Heapify()
         {
@@ -525,7 +525,7 @@ namespace System.Collections.Generic
             nodes[nodeIndex] = node;
             _positions[node.Element] = nodeIndex;
         }
-        private static IComparer<TPriority>? InitializeComparer(IComparer<TPriority>? comparer)
+        private static IComparer<TPriority> InitializeComparer(IComparer<TPriority> comparer)
         {
             if (typeof(TPriority).IsValueType)
             {
@@ -599,7 +599,7 @@ namespace System.Collections.Generic
                 public bool MoveNext()
                 {
                     PriorityQueue<TElement, TPriority> localQueue = _queue;
-                    if (_version == localQueue._version && ((uint)_index < (uint)localQueue._size))
+                    if (_version == localQueue._version && (uint)_index < (uint)localQueue._size)
                     {
                         _current = localQueue._nodes[_index];
                         _index++;
