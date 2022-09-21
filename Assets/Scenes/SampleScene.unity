@@ -591,7 +591,7 @@ MonoBehaviour:
     - 0
     copyModules: 
     scattererModules:
-    - rid: 7585231865017270372
+    - rid: 7585231865017270272
     placed: 0
   - name: Big Rocks
     enabled: 1
@@ -609,7 +609,7 @@ MonoBehaviour:
     - 0
     copyModules: 
     scattererModules:
-    - rid: 7585231865017270412
+    - rid: 7585231865017270272
     - rid: 7585231865017270547
     placed: 0
   - name: Small Rocks
@@ -628,7 +628,7 @@ MonoBehaviour:
     - -0.1
     copyModules: 
     scattererModules:
-    - rid: 7585231865017270429
+    - rid: 7585231865017270272
     placed: 0
   - name: Small Rocks FILLER
     enabled: 1
@@ -652,6 +652,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 7585231865017270272
       type: {class: ScattererObjectModule, ns: , asm: Assembly-CSharp}
       data:
@@ -700,143 +702,6 @@ MonoBehaviour:
         enabled: 1
         internalMultiplier: -3
         externalMultiplier: 0
-    - rid: 7585231865017270372
-      type: {class: ScattererObjectModule, ns: , asm: Assembly-CSharp}
-      data:
-        name: Minerals
-        enabled: 1
-        prefab: {fileID: 5603213057010211334, guid: 92551c2876c1bed498c8a2d06dc43d2c, type: 3}
-        triesPerTile: 30
-        placementRadius: 0.15
-        persistingRadius: 0.15
-        sizeGain: 1
-        radiusGain: -2
-        angleSpread: 25
-        minValue: -Infinity
-        valueModules:
-        - rid: 7585231865017270385
-    - rid: 7585231865017270385
-      type: {class: LimitSVM, ns: , asm: Assembly-CSharp}
-      data:
-        enabled: 1
-        min: -3
-        max: 0.8
-        svms:
-        - rid: 7585231865017270386
-        - rid: 7585231865017270387
-        - rid: 7585231865017270395
-    - rid: 7585231865017270386
-      type: {class: ValidTileSDFSVM, ns: , asm: Assembly-CSharp}
-      data:
-        enabled: 1
-        internalMultiplier: 1
-        externalMultiplier: -1
-    - rid: 7585231865017270387
-      type: {class: FractalNoiseSVM, ns: , asm: Assembly-CSharp}
-      data:
-        enabled: 1
-        noise:
-          octaves: 2
-          bias: 0
-          baseAmplitude: 0.4
-          amplitudeMult: 0.777
-          baseFrequency: 0.61
-          frequencyMult: 2.137
-    - rid: 7585231865017270395
-      type: {class: PathSDFSVM, ns: , asm: Assembly-CSharp}
-      data:
-        enabled: 1
-        internalMultiplier: -3
-        externalMultiplier: 0
-    - rid: 7585231865017270412
-      type: {class: ScattererObjectModule, ns: , asm: Assembly-CSharp}
-      data:
-        name: Big Rocks
-        enabled: 1
-        prefab: {fileID: 5603213057010211334, guid: 6736ad555de077d4e88cb2e6d8c4078b, type: 3}
-        triesPerTile: 10
-        placementRadius: 0.25
-        persistingRadius: 0.25
-        sizeGain: 1.5
-        radiusGain: -1
-        angleSpread: 15
-        minValue: -Infinity
-        valueModules:
-        - rid: 7585231865017270413
-    - rid: 7585231865017270413
-      type: {class: LimitSVM, ns: , asm: Assembly-CSharp}
-      data:
-        enabled: 1
-        min: -3
-        max: 0.3
-        svms:
-        - rid: 7585231865017270414
-        - rid: 7585231865017270415
-        - rid: 7585231865017270416
-    - rid: 7585231865017270414
-      type: {class: ValidTileSDFSVM, ns: , asm: Assembly-CSharp}
-      data:
-        enabled: 1
-        internalMultiplier: 1
-        externalMultiplier: -2
-    - rid: 7585231865017270415
-      type: {class: FractalNoiseSVM, ns: , asm: Assembly-CSharp}
-      data:
-        enabled: 1
-        noise:
-          octaves: 2
-          bias: 0
-          baseAmplitude: 0.8
-          amplitudeMult: 0.689
-          baseFrequency: 0.71
-          frequencyMult: 1.973
-    - rid: 7585231865017270416
-      type: {class: PathSDFSVM, ns: , asm: Assembly-CSharp}
-      data:
-        enabled: 1
-        internalMultiplier: -4
-        externalMultiplier: 0
-    - rid: 7585231865017270429
-      type: {class: ScattererObjectModule, ns: , asm: Assembly-CSharp}
-      data:
-        name: Small Rocks
-        enabled: 1
-        prefab: {fileID: 5603213057010211334, guid: b0eefb10f73b60d41ac092eff22a1af5, type: 3}
-        triesPerTile: 40
-        placementRadius: 0.12
-        persistingRadius: 0.05
-        sizeGain: 1.2
-        radiusGain: -2
-        angleSpread: 40
-        minValue: -Infinity
-        valueModules:
-        - rid: 7585231865017270430
-    - rid: 7585231865017270430
-      type: {class: LimitSVM, ns: , asm: Assembly-CSharp}
-      data:
-        enabled: 1
-        min: -2
-        max: 0.2
-        svms:
-        - rid: 7585231865017270431
-        - rid: 7585231865017270432
-    - rid: 7585231865017270431
-      type: {class: ValidTileSDFSVM, ns: , asm: Assembly-CSharp}
-      data:
-        enabled: 1
-        internalMultiplier: 1
-        externalMultiplier: -1
-    - rid: 7585231865017270432
-      type: {class: FractalNoiseSVM, ns: , asm: Assembly-CSharp}
-      data:
-        enabled: 1
-        noise:
-          octaves: 2
-          bias: -0.3
-          baseAmplitude: 1
-          amplitudeMult: 0.673
-          baseFrequency: 0.63
-          frequencyMult: 2.147
     - rid: 7585231865017270547
       type: {class: ScattererObjectModule, ns: , asm: Assembly-CSharp}
       data:
@@ -925,6 +790,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 7585231865017270638
       type: {class: FractalNoiseSVM, ns: , asm: Assembly-CSharp}
       data:
@@ -1159,7 +1026,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1838770608}
-  - component: {fileID: 1838770607}
+  - component: {fileID: 1838770609}
   m_Layer: 0
   m_Name: Level Generator 2
   m_TagString: Untagged
@@ -1167,21 +1034,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1838770607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1838770606}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a488f2a7fc6493b48aafb5e6a096d7c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  w: {fileID: 0}
-  stops: 0
-  done: 0
 --- !u!4 &1838770608
 Transform:
   m_ObjectHideFlags: 0
@@ -1197,6 +1049,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1838770609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1838770606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dee31a8d936f684195bbe788b5a11f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2006791431
 GameObject:
   m_ObjectHideFlags: 0
