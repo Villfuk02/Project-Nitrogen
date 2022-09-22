@@ -1,7 +1,6 @@
 using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
 using System.Collections.Generic;
 using UnityEngine;
-using static InfiniteCombo.Nitrogen.Assets.Scripts.LevelGenOld.PathFinalizer;
 
 namespace InfiniteCombo.Nitrogen.Assets.Scripts.World
 {
@@ -16,6 +15,10 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.World
         public Material mat;
         bool done = false;
         readonly HashSet<(Vector2, Vector2)> taken = new();
+        private void OnApplicationQuit()
+        {
+            mat.SetTextureOffset("_MainTex", Vector2.zero);
+        }
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.P) && !done)

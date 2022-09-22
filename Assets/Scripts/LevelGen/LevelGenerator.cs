@@ -1,3 +1,4 @@
+using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path;
 using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
 using System;
 using System.Collections;
@@ -13,11 +14,20 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
         [SerializeField] bool stepped;
         [SerializeField] StepType stepType;
         [Header("References")]
+        public static LevelGenerator inst;
         [SerializeField] GizmoManager gizmos;
+        [SerializeField] PathPlanner pathPlanner;
         //[Header("Settings")]
         //[Header("Runtime Values")]
         public enum StepType { None, Phase, Step, Substep }
 
+        private void Awake()
+        {
+            if (inst == null)
+                inst = this;
+            else
+                Debug.LogError("There can be only one!");
+        }
         void Start()
         {
             StartCoroutine(Generate());
@@ -32,32 +42,37 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
 
         IEnumerator Generate()
         {
-            yield break;
+            (JobDataInterface pickTargets, Vector2Int[] targets) = pathPlanner.PickTargets();
+            yield return new WaitUntil(() => pickTargets.IsFinished);
+            foreach (var t in targets)
+            {
+                Debug.Log(t);
+            }
         }
         IEnumerator Animate()
         {
             yield break;
         }
 
-        public void RegisterGizmos(StepType duration, Func<List<GizmoManager.GizmoObject>> objectProvider)
+        public static void RegisterGizmos(StepType duration, Func<List<GizmoManager.GizmoObject>> objectProvider)
         {
-            if (duration <= stepType)
+            if (duration <= inst.stepType)
             {
-                gizmos.Add(duration, objectProvider());
+                inst.gizmos.Add(duration, objectProvider());
             }
         }
-        public void RegisterGizmos(StepType duration, Func<GizmoManager.GizmoObject[]> objectProvider)
+        public static void RegisterGizmos(StepType duration, Func<GizmoManager.GizmoObject[]> objectProvider)
         {
-            if (duration <= stepType)
+            if (duration <= inst.stepType)
             {
-                gizmos.Add(duration, objectProvider());
+                inst.gizmos.Add(duration, objectProvider());
             }
         }
-        public void RegisterGizmos(StepType duration, Func<GizmoManager.GizmoObject> objectProvider)
+        public static void RegisterGizmos(StepType duration, Func<GizmoManager.GizmoObject> objectProvider)
         {
-            if (duration <= stepType)
+            if (duration <= inst.stepType)
             {
-                gizmos.Add(duration, objectProvider());
+                inst.gizmos.Add(duration, objectProvider());
             }
         }
 
@@ -73,9 +88,9 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
             return true;
         }
 
-        public void WaitForStep(StepType type)
+        public static void WaitForStep(StepType type)
         {
-            while (!CanStep(type))
+            while (!inst.CanStep(type))
             {
                 Thread.Sleep(15);
             }

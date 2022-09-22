@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
 {
@@ -7,17 +6,20 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
     {
         readonly List<T> _list;
         readonly Dictionary<T, int> _positions;
+        readonly ThreadSafeRandom _random;
         public int Count { get => _list.Count; }
         public IEnumerable<T> AllEntries => _list;
         public RandomSet()
         {
             _list = new();
             _positions = new();
+            _random = new();
         }
         public RandomSet(RandomSet<T> original)
         {
             _list = new(original._list);
             _positions = new(original._positions);
+            _random = new();
         }
 
         public void TryAdd(T item)
@@ -53,7 +55,9 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
         }
         public T PopRandom()
         {
-            int r = Random.Range(0, _list.Count);
+            if (_list.Count == 0)
+                throw new System.Exception("Cannot pop from an empty set.");
+            int r = _random.Next(_list.Count);
             T ret = _list[r];
             Remove(ret);
             return ret;
