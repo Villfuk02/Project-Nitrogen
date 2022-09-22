@@ -10,20 +10,13 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
         public static readonly int[] ALL_HEIGHTS = Enumerable.Range(0, MAX_HEIGHT + 1).ToArray();
         public const float HEIGHT_STEP = 0.5f;
         public static readonly Vector2Int ORIGIN = (WORLD_SIZE - Vector2Int.one) / 2;
-        public static readonly Vector2Int UP2 = new(0, 1);
-        public static readonly Vector2Int DOWN2 = new(0, -1);
-        public static readonly Vector2Int RIGHT2 = new(1, 0);
-        public static readonly Vector2Int LEFT2 = new(-1, 0);
-        public static readonly Vector2Int[] CARDINAL_DIRS = new Vector2Int[] { UP2, RIGHT2, DOWN2, LEFT2 };
-        public static readonly Vector2Int[] ADJACENT_DIRS = new Vector2Int[] { UP2, new(1, 1), RIGHT2, new(1, -1), DOWN2, new(-1, -1), LEFT2, new(-1, 1) };
+        public static readonly Vector2Int[] CARDINAL_DIRS = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+        public static readonly Vector2Int[] ADJACENT_DIRS = new Vector2Int[] { Vector2Int.up, Vector2Int.one, Vector2Int.right, new(1, -1), Vector2Int.down, new(-1, -1), Vector2Int.left, new(-1, 1) };
         public static readonly Vector3[] WORLD_CARDINAL_DIRS = new Vector3[] { Vector3.up, Vector3.right, Vector3.back, Vector3.left };
         public enum Slant { None, North, East, South, West };
         public static readonly Slant[] ALL_SLANTS = (Slant[])System.Enum.GetValues(typeof(Slant));
         public enum TerrainType { White, Blue };
         public static readonly TerrainType[] ALL_TERRAIN_TYPES = (TerrainType[])System.Enum.GetValues(typeof(TerrainType));
-        public const int MIN_PATH_LENGTH = 10;
-        public const int MAX_PATH_LENGTH = 16;
-        public const int PATH_COUNT = 3;
 
 
         public static Vector3 TileToWorldPos(Vector3 tilePos)
@@ -34,12 +27,11 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
                 tilePos.y - (WORLD_SIZE.y - 1) / 2f
                 );
         }
-        public static Vector3 TileToWorldSurface(Vector2 tilePos)
+        public static Vector3 TileToWorldPos(Vector2Int tilePos)
         {
-            Vector3 rayOrigin = TileToWorldPos(tilePos) + (MAX_HEIGHT + 1) * HEIGHT_STEP * Vector3.up;
-            Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayOrigin.y + 1, LayerMask.GetMask("CoarseTerrain"));
-            return hit.point;
+            return TileToWorldPos((Vector2)tilePos);
         }
+
         public static Vector3 SlotToWorldPos(int x, int y)
         {
             return new Vector3(

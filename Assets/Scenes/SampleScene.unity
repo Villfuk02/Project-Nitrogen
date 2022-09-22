@@ -437,7 +437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stepped: 1
-  stepType: 0
+  stepType: 3
   gizmos: {fileID: 1838770610}
   pathPlanner: {fileID: 1087793668}
 --- !u!114 &1838770610

@@ -170,6 +170,8 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                 WaitForStep(StepType.Phase);
                 Debug.Log("Picking Targets");
 
+                RegisterGizmos(StepType.Phase, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(WorldUtils.ORIGIN), 0.4f));
+
                 WaitForStep(StepType.Step);
 
                 RandomSet<Vector2Int> oddTargets = new();
@@ -196,7 +198,9 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                     WaitForStep(StepType.Substep);
                     ChooseTarget(targetLengths[i], minDist, targetLengths[i] % 2 == 0 ? evenTargets : oddTargets, pickedTargets);
                     picked[i] = pickedTargets[i];
+                    RegisterGizmos(StepType.Phase, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(pickedTargets[i]), 0.4f));
                 }
+
             }
             void ChooseTarget(int length, float minDist, RandomSet<Vector2Int> available, List<Vector2Int> picked)
             {

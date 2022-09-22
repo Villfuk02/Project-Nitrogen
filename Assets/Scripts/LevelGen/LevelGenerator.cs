@@ -76,6 +76,28 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
             }
         }
 
+        public static void RegisterGizmos<T>(StepType duration, T job, Func<T, List<GizmoManager.GizmoObject>> objectProvider)
+        {
+            if (duration <= inst.stepType)
+            {
+                inst.gizmos.Add(duration, objectProvider(job));
+            }
+        }
+        public static void RegisterGizmos<T>(StepType duration, T job, Func<T, GizmoManager.GizmoObject[]> objectProvider)
+        {
+            if (duration <= inst.stepType)
+            {
+                inst.gizmos.Add(duration, objectProvider(job));
+            }
+        }
+        public static void RegisterGizmos<T>(StepType duration, T job, Func<T, GizmoManager.GizmoObject> objectProvider)
+        {
+            if (duration <= inst.stepType)
+            {
+                inst.gizmos.Add(duration, objectProvider(job));
+            }
+        }
+
         bool CanStep(StepType type)
         {
             if (type <= stepType)
