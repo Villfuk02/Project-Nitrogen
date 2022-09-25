@@ -281,6 +281,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetLengths: 0f0000001100000012000000
+  stepsUntilFail: 600
 --- !u!4 &1087793669
 Transform:
   m_ObjectHideFlags: 0
@@ -402,7 +403,7 @@ GameObject:
   - component: {fileID: 1838770609}
   - component: {fileID: 1838770610}
   m_Layer: 0
-  m_Name: Level Generator 2
+  m_Name: Level Generator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

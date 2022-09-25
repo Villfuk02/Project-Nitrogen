@@ -11,43 +11,58 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
 
         void Draw()
         {
-            foreach (var list in objects)
+            lock (this)
             {
-                foreach (var gizmoObject in list.Value)
+                foreach ((var _, var list) in objects)
                 {
-                    if (Gizmos.color != gizmoObject.color)
-                        Gizmos.color = gizmoObject.color;
-                    gizmoObject.Draw();
+                    foreach (var gizmoObject in list)
+                    {
+                        if (Gizmos.color != gizmoObject.color)
+                            Gizmos.color = gizmoObject.color;
+                        gizmoObject.Draw();
+                    }
                 }
             }
         }
 
         public void Add(object duration, GizmoObject obj)
         {
-            if (objects.ContainsKey(duration))
-                objects[duration].Add(obj);
-            else
-                objects[duration] = new() { obj };
+            lock (this)
+            {
+                if (objects.ContainsKey(duration))
+                    objects[duration].Add(obj);
+                else
+                    objects[duration] = new() { obj };
+            }
         }
         public void Add(object duration, List<GizmoObject> obj)
         {
-            if (objects.ContainsKey(duration))
-                objects[duration].AddRange(obj);
-            else
-                objects[duration] = obj;
+            lock (this)
+            {
+                if (objects.ContainsKey(duration))
+                    objects[duration].AddRange(obj);
+                else
+                    objects[duration] = obj;
+            }
         }
         public void Add(object duration, params GizmoObject[] obj)
         {
-            if (objects.ContainsKey(duration))
-                objects[duration].AddRange(obj);
-            else
-                objects[duration] = new(obj);
+            lock (this)
+            {
+                if (objects.ContainsKey(duration))
+                    objects[duration].AddRange(obj);
+                else
+                    objects[duration] = new(obj);
+            }
         }
 
         public void Expire(object duration)
         {
-            if (objects.ContainsKey(duration))
-                objects[duration].Clear();
+            lock (this)
+            {
+                if (objects.ContainsKey(duration))
+                    objects[duration].Clear();
+            }
         }
 
         private void OnDrawGizmos()

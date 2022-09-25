@@ -17,6 +17,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
         public static readonly Slant[] ALL_SLANTS = (Slant[])System.Enum.GetValues(typeof(Slant));
         public enum TerrainType { White, Blue };
         public static readonly TerrainType[] ALL_TERRAIN_TYPES = (TerrainType[])System.Enum.GetValues(typeof(TerrainType));
+        static ThreadSafeRandom _random = new();
 
 
         public static Vector3 TileToWorldPos(Vector3 tilePos)
@@ -71,7 +72,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
             Vector2Int o = tilePos - origin;
             if (Mathf.Abs(o.x) == Mathf.Abs(o.y))
             {
-                o += UnityEngine.Random.value < 0.5f ? Vector2Int.right : Vector2Int.left;
+                o += _random.NextFloat() < 0.5f ? Vector2Int.right : Vector2Int.left;
             }
             if (Mathf.Abs(o.x) > Mathf.Abs(o.y))
             {

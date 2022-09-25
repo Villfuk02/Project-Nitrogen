@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
 {
@@ -7,6 +6,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
     {
         readonly List<(T item, float weight)> _list;
         readonly Dictionary<T, int> _positions;
+        readonly ThreadSafeRandom _random;
         float totalWeight;
         public int Count { get => _list.Count; }
         public IEnumerable<(T, float)> AllEntries => _list;
@@ -14,12 +14,14 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
         {
             _list = new();
             _positions = new();
+            _random = new();
             totalWeight = 0;
         }
         public WeightedRandomSet(WeightedRandomSet<T> original)
         {
             _list = new(original._list);
             _positions = new(original._positions);
+            _random = new();
             totalWeight = original.totalWeight;
         }
 
@@ -47,7 +49,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
         }
         public T PopRandom()
         {
-            float r = Random.Range(0, totalWeight);
+            float r = _random.NextFloat(0, totalWeight);
             int pos = 0;
             for (int i = 0; i < _list.Count; i++)
             {
