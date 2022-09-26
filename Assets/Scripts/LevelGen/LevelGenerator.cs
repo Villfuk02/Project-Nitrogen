@@ -1,4 +1,5 @@
 using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path;
+using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC;
 using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
 using System;
 using System.Collections;
@@ -17,6 +18,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
         public static LevelGenerator inst;
         [SerializeField] GizmoManager gizmos;
         [SerializeField] PathPlanner pathPlanner;
+        [SerializeField] WFCGenerator WFC;
         //[Header("Settings")]
         //[Header("Runtime Values")]
         public readonly static StepType[] STEP_TYPES = (StepType[])Enum.GetValues(typeof(StepType));
@@ -43,29 +45,34 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
 
         IEnumerator Generate()
         {
-            PlannedPath[] paths;
+
+            WFC.Prepare();
             do
             {
                 (JobDataInterface pickTargets, Vector2Int[] targets) = pathPlanner.PickTargets();
                 yield return new WaitUntil(() => pickTargets.IsFinished);
-                (JobDataInterface pickPaths, PlannedPath[] ps) = pathPlanner.PickPaths(targets);
+                (JobDataInterface pickPaths, int[] nodes) = pathPlanner.PickPaths(targets);
                 yield return new WaitUntil(() => pickPaths.IsFinished);
-                paths = ps;
-            } while (paths == null);
+                if (pickPaths.Failed)
+                {
+                    continue;
+                }
+                (JobDataInterface WFCGenerate, int[] _) = WFC.Generate(nodes);
+                yield return new WaitUntil(() => WFCGenerate.IsFinished);
+                if (WFCGenerate.Failed)
+                {
+                    continue;
+                }
+                yield break;
+            } while (true);
+
         }
         IEnumerator Animate()
         {
             yield break;
         }
 
-        public static void RegisterGizmos(StepType duration, Func<List<GizmoManager.GizmoObject>> objectProvider)
-        {
-            if (duration <= inst.stepType)
-            {
-                inst.gizmos.Add(duration, objectProvider());
-            }
-        }
-        public static void RegisterGizmos(StepType duration, Func<GizmoManager.GizmoObject[]> objectProvider)
+        public static void RegisterGizmos(StepType duration, Func<IEnumerable<GizmoManager.GizmoObject>> objectProvider)
         {
             if (duration <= inst.stepType)
             {
@@ -75,6 +82,13 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
         public static void RegisterGizmos(StepType duration, Func<GizmoManager.GizmoObject> objectProvider)
         {
             if (duration <= inst.stepType)
+            {
+                inst.gizmos.Add(duration, objectProvider());
+            }
+        }
+        public static void RegisterGizmosIfExactly(StepType duration, Func<IEnumerable<GizmoManager.GizmoObject>> objectProvider)
+        {
+            if (duration == inst.stepType)
             {
                 inst.gizmos.Add(duration, objectProvider());
             }

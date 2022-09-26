@@ -12,11 +12,14 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
         readonly Allocator _allocator;
         readonly Dictionary<Array, (bool output, NativeArrayWrapper native)> _map = new();
         bool _finished;
+        bool[] _failed;
         public bool IsFinished { get => _finished; }
+        public bool Failed { get => _failed[0]; }
 
         public JobDataInterface(in Allocator allocator)
         {
             _allocator = allocator;
+            _failed = new bool[1];
         }
 
         public NativeArray<T> Register<T>(in T[] array, bool output) where T : struct
@@ -35,6 +38,11 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
             if (typeof(T) != _map[array].native.Type())
                 throw new Exception("Types don't match");
             return ((NativeArrayWrapper<T>)_map[array].native).Native;
+        }
+
+        public NativeArray<bool> RegisterFailed()
+        {
+            return Register(_failed, true);
         }
 
         public void RegisterHandle(MonoBehaviour owner, JobHandle handle)

@@ -123,6 +123,260 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &134019241
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 134019242}
+  - component: {fileID: 134019243}
+  m_Layer: 0
+  m_Name: WFC Generator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &134019242
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 134019241}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1838770608}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &134019243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 134019241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae7ffa78c409d444a811db7a82ec12a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moduleSetup:
+  - name: Flat
+    enabled: 1
+    flip: 0
+    rotate: 0
+    mesh: {fileID: -2432090755550338912, guid: eab7df53e9e76344ba4592d5bd763504, type: 3}
+    weight: 80
+    passable: 01010101
+    heightOffsets: {x: 0, y: 0, z: 0}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Straight Cliff
+    enabled: 1
+    flip: 0
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: 47a26ce767b2d4e429aabcd4c133ad4e, type: 3}
+    weight: 16
+    passable: 01000100
+    heightOffsets: {x: 0, y: -1, z: -1}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Corner Cliff
+    enabled: 1
+    flip: 0
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: 240af820a1d27e14f8e76bf0946b0466, type: 3}
+    weight: 16
+    passable: 00010100
+    heightOffsets: {x: -1, y: -1, z: -1}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Inner Corner Cliff
+    enabled: 1
+    flip: 0
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: 063e6e27eef0fa444a39715d3b92a4a7, type: 3}
+    weight: 16
+    passable: 01000001
+    heightOffsets: {x: 0, y: -1, z: 0}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Straight 2-high Cliff
+    enabled: 1
+    flip: 0
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: ddb569a8f2a786c41b03b71fcf5c43af, type: 3}
+    weight: 8
+    passable: 01000100
+    heightOffsets: {x: 0, y: -2, z: -2}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
+    graphicsHeightOffset: 0
+  - name: T Cliff Triple
+    enabled: 1
+    flip: 1
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: a2710d054e46cf940ae258b9a3cef2dc, type: 3}
+    weight: 2
+    passable: 01000000
+    heightOffsets: {x: 0, y: -1, z: -2}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Cross Cliff Triple
+    enabled: 1
+    flip: 0
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: 18ee41a388524ca45817da9083397b44, type: 3}
+    weight: 2
+    passable: 00000000
+    heightOffsets: {x: -1, y: -2, z: -1}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Straight Bank
+    enabled: 0
+    flip: 1
+    rotate: 2
+    mesh: {fileID: -2432090755550338912, guid: 7fe86b42dfcc40b4ebafd156dc28e0be, type: 3}
+    weight: 8
+    passable: 00010001
+    heightOffsets: {x: 0, y: 0, z: 0}
+    terrainTypes: 00000000010000000100000000000000
+    slants: 00000000000000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Waterfall Down
+    enabled: 0
+    flip: 1
+    rotate: 0
+    mesh: {fileID: -2432090755550338912, guid: 7fe86b42dfcc40b4ebafd156dc28e0be, type: 3}
+    weight: 8
+    passable: 00000000
+    heightOffsets: {x: 0, y: -1, z: -1}
+    terrainTypes: 01000000000000000000000001000000
+    slants: 00000000000000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Straight Slant Down
+    enabled: 1
+    flip: 1
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: e9eb1d297b195624e97a75d7de0950a0, type: 3}
+    weight: 32
+    passable: 01010001
+    heightOffsets: {x: 0, y: 0, z: 0}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000300000000000000
+    graphicsHeightOffset: 0
+  - name: Inner Corner Cliff Slant Down
+    enabled: 0
+    flip: 1
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: 7fe86b42dfcc40b4ebafd156dc28e0be, type: 3}
+    weight: 32
+    passable: 01000001
+    heightOffsets: {x: 0, y: -1, z: 0}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000003000000
+    graphicsHeightOffset: 0
+  - name: Corner Cliff Slant Up
+    enabled: 1
+    flip: 1
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: a462c53effa938c4582149594a7f335b, type: 3}
+    weight: 32
+    passable: 00010100
+    heightOffsets: {x: 0, y: -1, z: -1}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000030000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Straight Slant Up
+    enabled: 0
+    flip: 1
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: 7fe86b42dfcc40b4ebafd156dc28e0be, type: 3}
+    weight: 32
+    passable: 00010101
+    heightOffsets: {x: -1, y: -1, z: -1}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 03000000000000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Flat Slant Down
+    enabled: 1
+    flip: 0
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: de151f71e48a3744f9acb5ac5039fd90, type: 3}
+    weight: 64
+    passable: 01010101
+    heightOffsets: {x: 0, y: 0, z: 0}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000300000003000000
+    graphicsHeightOffset: 0
+  - name: Flat Slant Up
+    enabled: 1
+    flip: 0
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: ee20f743997f24d4ba3f07f9a4d9286a, type: 3}
+    weight: 64
+    passable: 01010101
+    heightOffsets: {x: 0, y: -1, z: -1}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 03000000030000000000000000000000
+    graphicsHeightOffset: 0
+  - name: Slant Down Straight Cliff
+    enabled: 1
+    flip: 1
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: 5d31e4344f310d3489ffdc50f58443f0, type: 3}
+    weight: 32
+    passable: 00010001
+    heightOffsets: {x: -1, y: -1, z: 0}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000000000003000000
+    graphicsHeightOffset: 0
+  - name: Slant Up Straight Cliff
+    enabled: 1
+    flip: 1
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: 42d017757a81da54aad522dd8b71e325, type: 3}
+    weight: 32
+    passable: 00010001
+    heightOffsets: {x: -1, y: 0, z: 0}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000000000000100000000000000
+    graphicsHeightOffset: 0
+  - name: Double Slant Down Corner Cliff
+    enabled: 0
+    flip: 0
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: 7fe86b42dfcc40b4ebafd156dc28e0be, type: 3}
+    weight: 32
+    passable: 01000001
+    heightOffsets: {x: 0, y: -1, z: 0}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000020000000000000003000000
+    graphicsHeightOffset: 0
+  - name: Double Slant Up Corner Cliff
+    enabled: 1
+    flip: 0
+    rotate: 4
+    mesh: {fileID: -2432090755550338912, guid: 06493f4b7669dbc4c8687b87d5db1656, type: 3}
+    weight: 32
+    passable: 00010100
+    heightOffsets: {x: 0, y: -1, z: 0}
+    terrainTypes: 00000000000000000000000000000000
+    slants: 00000000030000000000000002000000
+    graphicsHeightOffset: 0
 --- !u!1 &599020454
 GameObject:
   m_ObjectHideFlags: 0
@@ -280,7 +534,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 968f04958a37df4499c678ad74db82cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLengths: 0f0000001100000012000000
+  targetLengths: 110000001500000012000000
   stepsUntilFail: 600
 --- !u!4 &1087793669
 Transform:
@@ -422,6 +676,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1087793669}
+  - {fileID: 134019242}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -438,9 +693,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stepped: 1
-  stepType: 3
+  stepType: 2
   gizmos: {fileID: 1838770610}
   pathPlanner: {fileID: 1087793668}
+  WFC: {fileID: 134019243}
 --- !u!114 &1838770610
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -17,7 +17,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
         public static readonly Slant[] ALL_SLANTS = (Slant[])System.Enum.GetValues(typeof(Slant));
         public enum TerrainType { White, Blue };
         public static readonly TerrainType[] ALL_TERRAIN_TYPES = (TerrainType[])System.Enum.GetValues(typeof(TerrainType));
-        static ThreadSafeRandom _random = new();
+        static readonly ThreadSafeRandom _random = new();
 
 
         public static Vector3 TileToWorldPos(Vector3 tilePos)

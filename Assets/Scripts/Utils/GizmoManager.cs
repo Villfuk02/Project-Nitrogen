@@ -9,6 +9,11 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
         public bool onlySelected;
         readonly Dictionary<object, List<GizmoObject>> objects = new();
 
+        private void Awake()
+        {
+            objects.Clear();
+        }
+
         void Draw()
         {
             lock (this)
@@ -35,17 +40,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
                     objects[duration] = new() { obj };
             }
         }
-        public void Add(object duration, List<GizmoObject> obj)
-        {
-            lock (this)
-            {
-                if (objects.ContainsKey(duration))
-                    objects[duration].AddRange(obj);
-                else
-                    objects[duration] = obj;
-            }
-        }
-        public void Add(object duration, params GizmoObject[] obj)
+        public void Add(object duration, IEnumerable<GizmoObject> obj)
         {
             lock (this)
             {
@@ -83,7 +78,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
 
         public abstract class GizmoObject
         {
-            public Color color;
+            public readonly Color color;
             public GizmoObject(Color color)
             {
                 this.color = color;
@@ -93,8 +88,8 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
 
         public class Line : GizmoObject
         {
-            Vector3 from;
-            Vector3 to;
+            readonly Vector3 from;
+            readonly Vector3 to;
             public Line(Color color, Vector3 from, Vector3 to) : base(color)
             {
                 this.from = from;
@@ -108,8 +103,8 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
 
         public class Cube : GizmoObject
         {
-            Vector3 pos;
-            Vector3 size;
+            readonly Vector3 pos;
+            readonly Vector3 size;
             public Cube(Color color, Vector3 pos, Vector3 size) : base(color)
             {
                 this.pos = pos;
@@ -123,6 +118,33 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
             public override void Draw()
             {
                 Gizmos.DrawWireCube(pos, size);
+            }
+        }
+        public class Mesh : GizmoObject
+        {
+            readonly UnityEngine.Mesh mesh;
+            readonly Vector3 pos;
+            readonly Vector3 scale;
+            readonly Quaternion rotation;
+
+            public Mesh(Color color, UnityEngine.Mesh mesh, Vector3 pos) : base(color)
+            {
+                this.mesh = mesh;
+                this.pos = pos;
+                scale = Vector3.one;
+                rotation = Quaternion.identity;
+            }
+            public Mesh(Color color, UnityEngine.Mesh mesh, Vector3 pos, Vector3 scale, Quaternion rotation) : base(color)
+            {
+                this.mesh = mesh;
+                this.pos = pos;
+                this.scale = scale;
+                this.rotation = rotation;
+            }
+
+            public override void Draw()
+            {
+                Gizmos.DrawWireMesh(mesh, pos, rotation, scale);
             }
         }
     }

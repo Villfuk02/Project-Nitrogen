@@ -93,23 +93,28 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
             }
         }
 
-        public (JobDataInterface jobData, PlannedPath[] paths) PickPaths(Vector2Int[] targets)
+        public (JobDataInterface jobData, int[] flatNodes) PickPaths(Vector2Int[] targets)
         {
+            int[] flatNodes = new int[WorldUtils.WORLD_SIZE.x * WorldUtils.WORLD_SIZE.y];
             JobDataInterface jobData = new(Allocator.Persistent);
             JobHandle handle = new PickPathsJob
             {
                 targetLengths = jobData.Register(targetLengths, false),
                 targets = jobData.Register(targets, false),
-                stepsUntilFail = stepsUntilFail
+                retNodes = jobData.Register(flatNodes, true),
+                stepsUntilFail = stepsUntilFail,
+                failed = jobData.RegisterFailed()
             }.Schedule();
             jobData.RegisterHandle(this, handle);
-            return (jobData, null);
+            return (jobData, flatNodes);
         }
 
         struct PickPathsJob : IJob
         {
             public NativeArray<int> targetLengths;
             public NativeArray<Vector2Int> targets;
+            public NativeArray<int> retNodes;
+            public NativeArray<bool> failed;
             public int stepsUntilFail;
             public void Execute()
             {
@@ -161,7 +166,20 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                     steps++;
                     RegisterGizmos(StepType.Step, () => DrawPaths(paths));
                 }
-                //return if finished
+                if (queue.Count == 0)
+                {
+                    for (int x = 0; x < WorldUtils.WORLD_SIZE.x; x++)
+                    {
+                        for (int y = 0; y < WorldUtils.WORLD_SIZE.y; y++)
+                        {
+                            retNodes[x + y * WorldUtils.WORLD_SIZE.x] = nodes[x, y];
+                        }
+                    }
+                }
+                else
+                {
+                    failed[0] = true;
+                }
             }
 
             static List<GizmoManager.GizmoObject> DrawPaths(PlannedPath[] paths)
