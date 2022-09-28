@@ -55,7 +55,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
 
                 f.name += " F";
                 f.passable = new bool[] { f.passable[0], f.passable[3], f.passable[2], f.passable[1] };
-                f.graphicsHeightOffset += f.heightOffsets.x;
+                f.meshHeightOffset += f.heightOffsets.x;
                 f.heightOffsets = new Vector3Int(-f.heightOffsets.x, f.heightOffsets.z - f.heightOffsets.x, f.heightOffsets.y - f.heightOffsets.x);
                 f.terrainTypes = new WorldUtils.TerrainType[] { f.terrainTypes[1], f.terrainTypes[0], f.terrainTypes[3], f.terrainTypes[2] };
                 f.slants = new WorldUtils.Slant[] { WorldUtils.FlipSlant(f.slants[1]), WorldUtils.FlipSlant(f.slants[0]), WorldUtils.FlipSlant(f.slants[3]), WorldUtils.FlipSlant(f.slants[2]) };
@@ -75,7 +75,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
                 Vector3Int[] heightRotations = new Vector3Int[4];
                 int[] graphicsHeightRotations = new int[4];
                 heightRotations[0] = m[i].heightOffsets;
-                graphicsHeightRotations[0] = m[i].graphicsHeightOffset;
+                graphicsHeightRotations[0] = m[i].meshHeightOffset;
                 for (int r = 1; r < 4; r++)
                 {
                     Vector3Int h = heightRotations[r - 1];
@@ -89,7 +89,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
                     c.rotate = r;
                     c.passable = new bool[] { c.passable[(4 - r) % 4], c.passable[(5 - r) % 4], c.passable[(6 - r) % 4], c.passable[(7 - r) % 4] };
                     c.heightOffsets = heightRotations[r];
-                    c.graphicsHeightOffset = graphicsHeightRotations[r];
+                    c.meshHeightOffset = graphicsHeightRotations[r];
                     c.terrainTypes = new WorldUtils.TerrainType[] { c.terrainTypes[(4 - r) % 4], c.terrainTypes[(5 - r) % 4], c.terrainTypes[(6 - r) % 4], c.terrainTypes[(7 - r) % 4] };
                     c.slants = new WorldUtils.Slant[] {
                     WorldUtils.RotateSlant(c.slants[(4 - r) % 4], r),
@@ -104,25 +104,28 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
             return n;
         }
 
-        public (JobDataInterface jobData, int[] flatSlots) Generate(int[] nodes)
+        public (JobDataInterface jobData, int[] modules, int[] heights) Generate(int[] nodes)
         {
-            int[] flatSlots = new int[(WorldUtils.WORLD_SIZE.x + 1) * (WorldUtils.WORLD_SIZE.y + 1)];
+            int[] flatModules = new int[(WorldUtils.WORLD_SIZE.x + 1) * (WorldUtils.WORLD_SIZE.y + 1)];
+            int[] flatHeights = new int[(WorldUtils.WORLD_SIZE.x + 1) * (WorldUtils.WORLD_SIZE.y + 1)];
             JobDataInterface jobData = new(Allocator.Persistent);
             JobHandle handle = new GenerateJob
             {
                 flatNodes = jobData.Register(nodes, false),
-                flatSlots = jobData.Register(flatSlots, true),
+                flatModules = jobData.Register(flatModules, true),
+                flatHeights = jobData.Register(flatHeights, true),
                 failed = jobData.RegisterFailed()
 
             }.Schedule();
             jobData.RegisterHandle(this, handle);
-            return (jobData, flatSlots);
+            return (jobData, flatModules, flatHeights);
         }
 
         struct GenerateJob : IJob
         {
             public NativeArray<int> flatNodes;
-            public NativeArray<int> flatSlots;
+            public NativeArray<int> flatModules;
+            public NativeArray<int> flatHeights;
             public NativeArray<bool> failed;
             public void Execute()
             {
@@ -172,7 +175,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
                                     gizmos.Add(new GizmoManager.Mesh(
                                         Color.white,
                                         m.mesh,
-                                        WorldUtils.SlotToWorldPos(s.pos.x, s.pos.y, s.Height - m.graphicsHeightOffset),
+                                        WorldUtils.SlotToWorldPos(s.pos.x, s.pos.y, s.Height - m.meshHeightOffset),
                                         new Vector3(m.flip ? -1 : 1, 1, 1),
                                         Quaternion.Euler(0, 90 * m.rotate, 0)
                                         ));
@@ -181,6 +184,15 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
                         }
                         return gizmos;
                     });
+                }
+                for (int x = 0; x < WorldUtils.WORLD_SIZE.x + 1; x++)
+                {
+                    for (int y = 0; y < WorldUtils.WORLD_SIZE.y + 1; y++)
+                    {
+                        WFCSlot s = state.GetSlot(x, y);
+                        flatModules[x + y * (WorldUtils.WORLD_SIZE.x + 1)] = s.Collapsed;
+                        flatHeights[x + y * (WorldUtils.WORLD_SIZE.x + 1)] = s.Height;
+                    }
                 }
             }
             static List<GizmoManager.GizmoObject> DrawEntropy(WFCState state, RandomSet<WFCSlot> dirty)

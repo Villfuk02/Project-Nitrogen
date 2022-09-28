@@ -57,12 +57,29 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
                 {
                     continue;
                 }
-                (JobDataInterface WFCGenerate, int[] _) = WFC.Generate(nodes);
+                (JobDataInterface WFCGenerate, int[] modules, int[] heights) = WFC.Generate(nodes);
                 yield return new WaitUntil(() => WFCGenerate.IsFinished);
                 if (WFCGenerate.Failed)
                 {
                     continue;
                 }
+                Debug.Log("DONE");
+                RegisterGizmos(StepType.None, () =>
+                {
+                    int sampleCount = 2000;
+                    GizmoManager.GizmoObject[] gizmos = new GizmoManager.GizmoObject[sampleCount];
+                    for (int i = 0; i < sampleCount; i++)
+                    {
+                        Vector2Int slot = new(UnityEngine.Random.Range(0, WorldUtils.WORLD_SIZE.x + 1), UnityEngine.Random.Range(0, WorldUtils.WORLD_SIZE.y + 1));
+                        Vector2 offset = new Vector2(UnityEngine.Random.value, UnityEngine.Random.value) - Vector2.one * 0.5f;
+                        int index = slot.x + slot.y * (WorldUtils.WORLD_SIZE.x + 1);
+                        float h = WFCGenerator.ALL_MODULES[modules[index]].GetBaseHeight(offset.x, offset.y) + heights[index];
+                        Vector3 box = WorldUtils.SlotToWorldPos(slot.x + offset.x, slot.y + offset.y, h);
+                        gizmos[i] = new GizmoManager.Cube(Color.red, box, 0.1f);
+                    }
+                    return gizmos;
+                });
+
                 yield break;
             } while (true);
 

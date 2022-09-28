@@ -156,7 +156,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                 }
                 int steps = 0;
                 List<PlannedPath> done = new();
-                while (queue.Count > 0 || steps >= stepsUntilFail)
+                while (queue.Count > 0 && steps < stepsUntilFail)
                 {
                     WaitForStep(StepType.Step);
                     PlannedPath path = queue.PopRandom();
@@ -175,6 +175,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                             retNodes[x + y * WorldUtils.WORLD_SIZE.x] = nodes[x, y];
                         }
                     }
+                    Debug.Log($"Picked Paths in {steps}");
                 }
                 else
                 {

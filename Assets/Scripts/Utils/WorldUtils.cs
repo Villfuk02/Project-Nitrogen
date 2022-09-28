@@ -35,13 +35,9 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
 
         public static Vector3 SlotToWorldPos(int x, int y)
         {
-            return new Vector3(
-                x - WORLD_SIZE.x / 2f,
-                0,
-                y - WORLD_SIZE.y / 2f
-                );
+            return SlotToWorldPos(x, y, 0);
         }
-        public static Vector3 SlotToWorldPos(int x, int y, int height)
+        public static Vector3 SlotToWorldPos(float x, float y, float height)
         {
             return new Vector3(
                 x - WORLD_SIZE.x / 2f,
