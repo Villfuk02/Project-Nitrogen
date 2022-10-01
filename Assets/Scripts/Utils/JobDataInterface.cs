@@ -10,9 +10,10 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
     public class JobDataInterface
     {
         readonly Allocator _allocator;
-        readonly Dictionary<Array, (bool output, NativeArrayWrapper native)> _map = new();
+        readonly Dictionary<Array, (bool output, NativeArrayWrapper native)> _arrayMap = new();
+        readonly Dictionary<IList, (bool output, NativeListWrapper native)> _listMap = new();
         bool _finished;
-        bool[] _failed;
+        readonly bool[] _failed;
         public bool IsFinished { get => _finished; }
         public bool Failed { get => _failed[0]; }
 
@@ -24,20 +25,19 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
 
         public NativeArray<T> Register<T>(in T[] array, bool output) where T : struct
         {
-            if (_map.ContainsKey(array))
+            if (_arrayMap.ContainsKey(array))
                 throw new Exception("Array already registered.");
             NativeArrayWrapper<T> native = new(array, _allocator);
-            _map.Add(array, (output, native));
+            _arrayMap.Add(array, (output, native));
             return native.Native;
         }
-
-        public NativeArray<T> GetNative<T>(in T[] array) where T : struct
+        public NativeList<T> Register<T>(in List<T> list, bool output) where T : unmanaged
         {
-            if (!_map.ContainsKey(array))
-                throw new Exception("Array not foud.");
-            if (typeof(T) != _map[array].native.Type())
-                throw new Exception("Types don't match");
-            return ((NativeArrayWrapper<T>)_map[array].native).Native;
+            if (_listMap.ContainsKey(list))
+                throw new Exception("List already registered.");
+            NativeListWrapper<T> native = new(list, _allocator);
+            _listMap.Add(list, (output, native));
+            return native.Native;
         }
 
         public NativeArray<bool> RegisterFailed()
@@ -53,12 +53,21 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
         {
             yield return new WaitUntil(() => handle.IsCompleted);
             handle.Complete();
-            foreach (var pair in _map)
+            foreach (var pair in _arrayMap)
             {
                 (Array array, (bool output, NativeArrayWrapper native)) = pair;
                 if (output)
                 {
                     native.CopyTo(array);
+                }
+                native.Dispose();
+            }
+            foreach (var pair in _listMap)
+            {
+                (IList list, (bool output, NativeListWrapper native)) = pair;
+                if (output)
+                {
+                    native.CopyTo(list);
                 }
                 native.Dispose();
             }
@@ -88,6 +97,43 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
             public override void CopyTo(Array array)
             {
                 _native.CopyTo((T[])array);
+            }
+
+            public override void Dispose()
+            {
+                _native.Dispose();
+            }
+        }
+
+        public abstract class NativeListWrapper
+        {
+            public abstract Type Type();
+            public abstract void CopyTo(IList list);
+            public abstract void Dispose();
+        }
+
+        public class NativeListWrapper<T> : NativeListWrapper where T : unmanaged
+        {
+            NativeList<T> _native;
+            public NativeList<T> Native { get => _native; }
+            public NativeListWrapper(List<T> list, in Allocator allocator)
+            {
+                _native = new NativeList<T>(list.Count, allocator);
+                for (int i = 0; i < list.Count; i++)
+                {
+                    _native.AddNoResize(list[i]);
+                }
+            }
+            public override Type Type()
+            {
+                return typeof(T);
+            }
+
+            public override void CopyTo(IList list)
+            {
+                List<T> realList = (List<T>)list;
+                realList.Clear();
+                realList.AddRange(_native.ToArray());
             }
 
             public override void Dispose()

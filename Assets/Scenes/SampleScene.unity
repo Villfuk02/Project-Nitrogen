@@ -505,6 +505,131 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 30, y: 45, z: 0}
+--- !u!1 &987874898
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 987874900}
+  - component: {fileID: 987874899}
+  m_Layer: 0
+  m_Name: Blocker Generator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &987874899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987874898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afb9807e767ffe24d81d3c78caa1005c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockerSetup:
+  - name: Crystals
+    enabled: 1
+    type: 2
+    layer: 0
+    min: 3
+    max: 3
+    baseProbability: 1
+    validTerrainTypes: 00000000
+    onSlants: 0
+    forces:
+    - -10
+    - 0
+    - 0
+    - 0
+    copyModules: 
+    placed: 0
+  - name: Minerals
+    enabled: 1
+    type: 3
+    layer: 1
+    min: 4
+    max: 6
+    baseProbability: 0.3
+    validTerrainTypes: 00000000
+    onSlants: 0
+    forces:
+    - -2
+    - 0.5
+    - 0
+    - 0
+    copyModules: 
+    placed: 0
+  - name: Big Rocks
+    enabled: 1
+    type: 1
+    layer: 2
+    min: 0
+    max: 10
+    baseProbability: 0.2
+    validTerrainTypes: 00000000
+    onSlants: 1
+    forces:
+    - -1
+    - 0.1
+    - -1
+    - 0
+    copyModules: 
+    placed: 0
+  - name: Small Rocks
+    enabled: 1
+    type: 0
+    layer: 3
+    min: 0
+    max: 1000
+    baseProbability: 0.1
+    validTerrainTypes: 00000000
+    onSlants: 1
+    forces:
+    - -0.1
+    - 0
+    - 0.4
+    - -0.1
+    copyModules: 
+    placed: 0
+  - name: Small Rocks FILLER
+    enabled: 1
+    type: 0
+    layer: -1
+    min: 0
+    max: 1000
+    baseProbability: 0.1
+    validTerrainTypes: 00000000
+    onSlants: 1
+    forces:
+    - -0.1
+    - 0
+    - 0.4
+    - -0.1
+    copyModules: Small Rocks
+    placed: 0
+--- !u!4 &987874900
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987874898}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1838770608}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1087793667
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,6 +802,7 @@ Transform:
   m_Children:
   - {fileID: 1087793669}
   - {fileID: 134019242}
+  - {fileID: 987874900}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -693,10 +819,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stepped: 1
-  stepType: 2
+  stepType: 1
   gizmos: {fileID: 1838770610}
   pathPlanner: {fileID: 1087793668}
   WFC: {fileID: 134019243}
+  blockerGenerator: {fileID: 987874899}
 --- !u!114 &1838770610
 MonoBehaviour:
   m_ObjectHideFlags: 0

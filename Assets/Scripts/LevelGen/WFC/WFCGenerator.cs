@@ -152,6 +152,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
                         UpdateNext(ref state, ref dirty, ref stateStack);
                         if (state == null)
                         {
+                            Debug.Log("WFC failed");
                             failed[0] = true;
                             return;
                         }
@@ -161,29 +162,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
                     stateStack.Push(new(state));
                     state.CollapseRandom(ref dirty);
                     RegisterGizmosIfExactly(StepType.Step, () => DrawEntropy(state, dirty));
-                    RegisterGizmos(StepType.Step, () =>
-                    {
-                        List<GizmoManager.GizmoObject> gizmos = new();
-                        for (int x = 0; x < WorldUtils.WORLD_SIZE.x + 1; x++)
-                        {
-                            for (int y = 0; y < WorldUtils.WORLD_SIZE.y + 1; y++)
-                            {
-                                WFCSlot s = state.GetSlot(x, y);
-                                if (s.Collapsed != -1)
-                                {
-                                    WFCModule m = ALL_MODULES[s.Collapsed];
-                                    gizmos.Add(new GizmoManager.Mesh(
-                                        Color.white,
-                                        m.mesh,
-                                        WorldUtils.SlotToWorldPos(s.pos.x, s.pos.y, s.Height - m.meshHeightOffset),
-                                        new Vector3(m.flip ? -1 : 1, 1, 1),
-                                        Quaternion.Euler(0, 90 * m.rotate, 0)
-                                        ));
-                                }
-                            }
-                        }
-                        return gizmos;
-                    });
+                    RegisterGizmos(StepType.Step, () => DrawMesh(state));
                 }
                 for (int x = 0; x < WorldUtils.WORLD_SIZE.x + 1; x++)
                 {
@@ -194,6 +173,8 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
                         flatHeights[x + y * (WorldUtils.WORLD_SIZE.x + 1)] = s.Height;
                     }
                 }
+                RegisterGizmos(StepType.Phase, () => DrawMesh(state));
+                Debug.Log("WFC Done");
             }
             static List<GizmoManager.GizmoObject> DrawEntropy(WFCState state, RandomSet<WFCSlot> dirty)
             {
@@ -218,6 +199,30 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
                         WorldUtils.SlotToWorldPos(pos.x, pos.y),
                         size * 0.6f
                         ));
+                }
+                return gizmos;
+            }
+
+            static List<GizmoManager.GizmoObject> DrawMesh(WFCState state)
+            {
+                List<GizmoManager.GizmoObject> gizmos = new();
+                for (int x = 0; x < WorldUtils.WORLD_SIZE.x + 1; x++)
+                {
+                    for (int y = 0; y < WorldUtils.WORLD_SIZE.y + 1; y++)
+                    {
+                        WFCSlot s = state.GetSlot(x, y);
+                        if (s.Collapsed != -1)
+                        {
+                            WFCModule m = ALL_MODULES[s.Collapsed];
+                            gizmos.Add(new GizmoManager.Mesh(
+                                Color.white,
+                                m.mesh,
+                                WorldUtils.SlotToWorldPos(s.pos.x, s.pos.y, s.Height - m.meshHeightOffset),
+                                new Vector3(m.flip ? -1 : 1, 1, 1),
+                                Quaternion.Euler(0, 90 * m.rotate, 0)
+                                ));
+                        }
+                    }
                 }
                 return gizmos;
             }

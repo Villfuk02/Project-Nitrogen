@@ -9,7 +9,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
 {
     public class PathPlanner : MonoBehaviour
     {
-        [SerializeField] int[] targetLengths;
+        public int[] targetLengths;
         [SerializeField] int stepsUntilFail;
 
         public (JobDataInterface jobData, Vector2Int[] targets) PickTargets()
@@ -175,7 +175,8 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                             retNodes[x + y * WorldUtils.WORLD_SIZE.x] = nodes[x, y];
                         }
                     }
-                    Debug.Log($"Picked Paths in {steps}");
+                    Debug.Log($"Picked Paths in {steps} steps");
+                    RegisterGizmos(StepType.Phase, () => DrawPaths(paths));
                 }
                 else
                 {

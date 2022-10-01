@@ -1,4 +1,6 @@
+using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers;
 using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path;
+using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils;
 using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC;
 using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
 using System;
@@ -19,8 +21,11 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
         [SerializeField] GizmoManager gizmos;
         [SerializeField] PathPlanner pathPlanner;
         [SerializeField] WFCGenerator WFC;
+        [SerializeField] BlockerGenerator blockerGenerator;
         //[Header("Settings")]
-        //[Header("Runtime Values")]
+        [Header("Runtime Values")]
+        LevelGenTiles tiles;
+        public static LevelGenTiles Tiles { get => inst.tiles; }
         public readonly static StepType[] STEP_TYPES = (StepType[])Enum.GetValues(typeof(StepType));
         public enum StepType { None, Phase, Step, Substep }
 
@@ -47,6 +52,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
         {
 
             WFC.Prepare();
+            blockerGenerator.Prepare();
             do
             {
                 (JobDataInterface pickTargets, Vector2Int[] targets) = pathPlanner.PickTargets();
@@ -63,23 +69,10 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
                 {
                     continue;
                 }
+                tiles = new(modules, heights, nodes);
+                (JobDataInterface placeBlockers, List<Vector2Int> blockerPositions, List<int> blockerTypes) = blockerGenerator.PlaceBlockers(targets, pathPlanner.targetLengths);
+                yield return new WaitUntil(() => placeBlockers.IsFinished);
                 Debug.Log("DONE");
-                RegisterGizmos(StepType.None, () =>
-                {
-                    int sampleCount = 2000;
-                    GizmoManager.GizmoObject[] gizmos = new GizmoManager.GizmoObject[sampleCount];
-                    for (int i = 0; i < sampleCount; i++)
-                    {
-                        Vector2Int slot = new(UnityEngine.Random.Range(0, WorldUtils.WORLD_SIZE.x + 1), UnityEngine.Random.Range(0, WorldUtils.WORLD_SIZE.y + 1));
-                        Vector2 offset = new Vector2(UnityEngine.Random.value, UnityEngine.Random.value) - Vector2.one * 0.5f;
-                        int index = slot.x + slot.y * (WorldUtils.WORLD_SIZE.x + 1);
-                        float h = WFCGenerator.ALL_MODULES[modules[index]].GetBaseHeight(offset.x, offset.y) + heights[index];
-                        Vector3 box = WorldUtils.SlotToWorldPos(slot.x + offset.x, slot.y + offset.y, h);
-                        gizmos[i] = new GizmoManager.Cube(Color.red, box, 0.1f);
-                    }
-                    return gizmos;
-                });
-
                 yield break;
             } while (true);
 

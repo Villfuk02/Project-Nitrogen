@@ -102,5 +102,6 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
             }
             return (Slant)(((int)s + r - 1) % 4 + 1);
         }
+
     }
 }
