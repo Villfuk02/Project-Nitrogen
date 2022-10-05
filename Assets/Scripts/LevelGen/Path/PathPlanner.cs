@@ -1,3 +1,4 @@
+using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils;
 using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -10,7 +11,9 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
     public class PathPlanner : MonoBehaviour
     {
         public int[] targetLengths;
+        [SerializeField] int maxPathsPerTarget;
         [SerializeField] int stepsUntilFail;
+        [SerializeField] int minMergeDistance;
 
         public (JobDataInterface jobData, Vector2Int[] targets) PickTargets()
         {
@@ -207,6 +210,146 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                 return gizmos;
             }
         }
+        public JobDataInterface FinalisePaths(Vector2Int[] targets)
+        {
+            JobDataInterface jobData = new(Allocator.Persistent);
+            JobHandle handle = new FinalisePathsJob
+            {
+                targets = jobData.Register(targets, false),
+                maxPathsPerTarget = maxPathsPerTarget,
+                minMergeDistance = minMergeDistance
+            }.Schedule();
+            jobData.RegisterHandle(this, handle);
+            return jobData;
+        }
+        struct FinalisePathsJob : IJob
+        {
+            public NativeArray<Vector2Int> targets;
+            public int maxPathsPerTarget;
+            public int minMergeDistance;
+            public void Execute()
+            {
+                WaitForStep(StepType.Phase);
+                Debug.Log("Finalizing Paths");
 
+                int targetCount = targets.Length;
+                bool[,] pathTiles = new bool[WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y];
+                LevelGenTile[] paths = new LevelGenTile[targetCount];
+                for (int i = 0; i < targetCount; i++)
+                {
+                    paths[i] = Tiles[targets[i]];
+                    pathTiles[paths[i].pos.x, paths[i].pos.y] = true;
+                }
+                for (int i = 0; i < targetCount; i++)
+                {
+                    WaitForStep(StepType.Step);
+                    TracePathQueued(paths[i], maxPathsPerTarget, minMergeDistance);
+                }
+                WaitForStep(StepType.Step);
+                foreach (var tile in Tiles)
+                {
+                    if (tile.pathNext.Count == 0)
+                        tile.dist = int.MaxValue;
+                }
+                Debug.Log("Paths finalised");
+            }
+
+            void TracePathQueued(LevelGenTile t, int pathsLeft, int minMergeDistance)
+            {
+                RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(t.pos), 0.3f));
+                HashSet<Vector2Int> taken = new();
+                LinkedList<(LevelGenTile t, Vector2Int[] path, int distToMerge)> queue = new();
+                queue.AddFirst((t, new Vector2Int[] { t.pos }, 0));
+                bool lastFound = false;
+                while (pathsLeft > 0 && queue.Count > 0)
+                {
+                    WaitForStep(StepType.Substep);
+                    (LevelGenTile u, Vector2Int[] path, int distToMerge) = lastFound ? queue.First.Value : queue.Last.Value;
+                    if (lastFound)
+                        queue.RemoveFirst();
+                    else
+                        queue.RemoveLast();
+                    lastFound = TracePath(u, path, distToMerge);
+                }
+
+                bool TracePath(LevelGenTile t, Vector2Int[] path, int distToMerge)
+                {
+                    RegisterGizmos(StepType.Substep, () =>
+                    {
+                        List<GizmoManager.GizmoObject> gizmos = new()
+                        {
+                            new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(t.pos), 0.2f)
+                        };
+                        LevelGenTile prev = null;
+                        foreach (var pos in path)
+                        {
+                            LevelGenTile current = Tiles[pos];
+                            if (prev != null)
+                            {
+                                prev.pathNext.Add(current);
+                                gizmos.Add(new GizmoManager.Line(Color.magenta, WorldUtils.TileToWorldPos(pos), WorldUtils.TileToWorldPos(prev.pos)));
+                            }
+                            prev = current;
+                        }
+                        return gizmos;
+                    });
+                    if (t.dist == 0 || taken.Contains(t.pos))
+                    {
+                        if (pathsLeft > 0)
+                        {
+                            pathsLeft--;
+                            LevelGenTile prev = null;
+                            foreach (var pos in path)
+                            {
+                                taken.Add(pos);
+                                LevelGenTile current = Tiles[pos];
+                                if (prev != null)
+                                {
+                                    prev.pathNext.Add(current);
+                                    RegisterGizmos(StepType.Phase, () => new GizmoManager.Line(Color.cyan, WorldUtils.TileToWorldPos(pos), WorldUtils.TileToWorldPos(prev.pos)));
+                                }
+                                prev = current;
+                            }
+                        }
+                        return true;
+                    }
+                    distToMerge--;
+                    int count = 0;
+                    RandomSet<int> order = new();
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (t.neighbors[i] != null && t.neighbors[i].dist == t.dist - 1)
+                        {
+                            if (distToMerge <= 0 || !taken.Contains(t.neighbors[i].pos))
+                            {
+                                count++;
+                                order.Add(i);
+                            }
+                        }
+                    }
+                    if (count == 0)
+                    {
+                        return false;
+                    }
+                    if (count > 1)
+                    {
+                        distToMerge = minMergeDistance;
+                    }
+                    while (order.Count > 0)
+                    {
+                        int c = order.PopRandom();
+                        LevelGenTile u = t.neighbors[c];
+                        Vector2Int[] newPath = new Vector2Int[path.Length + 1];
+                        for (int i = 0; i < path.Length; i++)
+                        {
+                            newPath[i] = path[i];
+                        }
+                        newPath[^1] = u.pos;
+                        queue.AddLast((u, newPath, distToMerge));
+                    }
+                    return false;
+                }
+            }
+        }
     }
 }

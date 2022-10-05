@@ -1,4 +1,5 @@
 using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils
@@ -11,5 +12,6 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils
         public LevelGenTile[] neighbors;
         public bool passable;
         public int dist;
+        public HashSet<LevelGenTile> pathNext = new();
     }
 }

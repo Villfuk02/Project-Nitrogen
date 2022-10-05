@@ -120,6 +120,20 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
                 Gizmos.DrawWireCube(pos, size);
             }
         }
+        public class Sphere : GizmoObject
+        {
+            readonly Vector3 pos;
+            readonly float radius;
+            public Sphere(Color color, Vector3 pos, float radius) : base(color)
+            {
+                this.pos = pos;
+                this.radius = radius;
+            }
+            public override void Draw()
+            {
+                Gizmos.DrawWireSphere(pos, radius);
+            }
+        }
         public class Mesh : GizmoObject
         {
             readonly UnityEngine.Mesh mesh;

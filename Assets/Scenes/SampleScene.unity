@@ -660,7 +660,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetLengths: 110000001500000012000000
+  maxPathsPerTarget: 3
   stepsUntilFail: 450
+  minMergeDistance: 3
 --- !u!4 &1087793669
 Transform:
   m_ObjectHideFlags: 0
