@@ -104,21 +104,21 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
             return n;
         }
 
-        public (JobDataInterface jobData, int[] modules, int[] heights) Generate(int[] nodes)
+        public JobDataInterface Generate(int[] nodes, out int[] modules, out int[] heights)
         {
-            int[] flatModules = new int[(WorldUtils.WORLD_SIZE.x + 1) * (WorldUtils.WORLD_SIZE.y + 1)];
-            int[] flatHeights = new int[(WorldUtils.WORLD_SIZE.x + 1) * (WorldUtils.WORLD_SIZE.y + 1)];
+            modules = new int[(WorldUtils.WORLD_SIZE.x + 1) * (WorldUtils.WORLD_SIZE.y + 1)];
+            heights = new int[(WorldUtils.WORLD_SIZE.x + 1) * (WorldUtils.WORLD_SIZE.y + 1)];
             JobDataInterface jobData = new(Allocator.Persistent);
             JobHandle handle = new GenerateJob
             {
                 flatNodes = jobData.Register(nodes, false),
-                flatModules = jobData.Register(flatModules, true),
-                flatHeights = jobData.Register(flatHeights, true),
+                flatModules = jobData.Register(modules, true),
+                flatHeights = jobData.Register(heights, true),
                 failed = jobData.RegisterFailed()
 
             }.Schedule();
             jobData.RegisterHandle(this, handle);
-            return (jobData, flatModules, flatHeights);
+            return jobData;
         }
 
         struct GenerateJob : IJob

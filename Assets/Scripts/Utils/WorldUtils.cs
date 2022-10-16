@@ -12,6 +12,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
         public static readonly Vector2Int ORIGIN = (WORLD_SIZE - Vector2Int.one) / 2;
         public static readonly Vector2Int[] CARDINAL_DIRS = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
         public static readonly Vector2Int[] ADJACENT_DIRS = new Vector2Int[] { Vector2Int.up, Vector2Int.one, Vector2Int.right, new(1, -1), Vector2Int.down, new(-1, -1), Vector2Int.left, new(-1, 1) };
+        public static readonly Vector2Int[] ADJACENT_AND_ZERO = new Vector2Int[] { Vector2Int.zero, Vector2Int.up, Vector2Int.one, Vector2Int.right, new(1, -1), Vector2Int.down, new(-1, -1), Vector2Int.left, new(-1, 1) };
         public static readonly Vector3[] WORLD_CARDINAL_DIRS = new Vector3[] { Vector3.up, Vector3.right, Vector3.back, Vector3.left };
         public enum Slant { None, North, East, South, West };
         public static readonly Slant[] ALL_SLANTS = (Slant[])System.Enum.GetValues(typeof(Slant));

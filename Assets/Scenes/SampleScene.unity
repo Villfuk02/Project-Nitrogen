@@ -377,6 +377,128 @@ MonoBehaviour:
     terrainTypes: 00000000000000000000000000000000
     slants: 00000000030000000000000002000000
     meshHeightOffset: 0
+--- !u!1 &449949342
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 449949344}
+  - component: {fileID: 449949343}
+  m_Layer: 0
+  m_Name: Scatterer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &449949343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 449949342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad1fd1cbdf7258d40a22bdaf03c71303, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SOMSetup:
+  - name: Crystals
+    enabled: 1
+    prefab: {fileID: 5603213057010211334, guid: c6f3c987c4fa6524bbd11c5f1bc9b3f3, type: 3}
+    triesPerTile: 50
+    placementRadius: 0.1
+    persistingRadius: 0.25
+    sizeGain: 1
+    radiusGain: -2
+    angleSpread: 15
+    minValue: -100
+    valueModules:
+    - rid: 767574830561886208
+  - name: Minerals
+    enabled: 1
+    prefab: {fileID: 5603213057010211334, guid: 92551c2876c1bed498c8a2d06dc43d2c, type: 3}
+    triesPerTile: 30
+    placementRadius: 0.15
+    persistingRadius: 0.15
+    sizeGain: 1
+    radiusGain: -2
+    angleSpread: 25
+    minValue: -100
+    valueModules:
+    - rid: 767574830561886208
+  - name: Big Rocks
+    enabled: 1
+    prefab: {fileID: 5603213057010211334, guid: 6736ad555de077d4e88cb2e6d8c4078b, type: 3}
+    triesPerTile: 10
+    placementRadius: 0.25
+    persistingRadius: 0.25
+    sizeGain: 1.5
+    radiusGain: -1
+    angleSpread: 15
+    minValue: -100
+    valueModules:
+    - rid: 767574830561886208
+  - name: Small Rocks
+    enabled: 1
+    prefab: {fileID: 5603213057010211334, guid: b0eefb10f73b60d41ac092eff22a1af5, type: 3}
+    triesPerTile: 40
+    placementRadius: 0.12
+    persistingRadius: 0.05
+    sizeGain: 1.2
+    radiusGain: -2
+    angleSpread: 40
+    minValue: -100
+    valueModules:
+    - rid: 767574830561886208
+  references:
+    version: 2
+    RefIds:
+    - rid: 767574830561886208
+      type: {class: LimitSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: Assembly-CSharp}
+      data:
+        enabled: 1
+        min: -2
+        max: 0.2
+        svms:
+        - rid: 767574830561886209
+        - rid: 767574830561886210
+    - rid: 767574830561886209
+      type: {class: ValidTileSDFSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: Assembly-CSharp}
+      data:
+        enabled: 1
+        internalMultiplier: 1
+        externalMultiplier: -1
+    - rid: 767574830561886210
+      type: {class: FractalNoiseSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: Assembly-CSharp}
+      data:
+        enabled: 1
+        noise:
+          octaves: 2
+          bias: -0.3
+          baseAmplitude: 1
+          amplitudeMult: 0.673
+          baseFrequency: 0.63
+          frequencyMult: 2.147
+--- !u!4 &449949344
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 449949342}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1838770608}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &599020454
 GameObject:
   m_ObjectHideFlags: 0
@@ -659,10 +781,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 968f04958a37df4499c678ad74db82cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLengths: 110000001500000012000000
+  targetLengths: 0f0000001200000015000000
   maxPathsPerTarget: 3
   stepsUntilFail: 450
-  minMergeDistance: 3
+  minMergeDistance: 4
 --- !u!4 &1087793669
 Transform:
   m_ObjectHideFlags: 0
@@ -805,6 +927,7 @@ Transform:
   - {fileID: 1087793669}
   - {fileID: 134019242}
   - {fileID: 987874900}
+  - {fileID: 449949344}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -826,6 +949,7 @@ MonoBehaviour:
   pathPlanner: {fileID: 1087793668}
   WFC: {fileID: 134019243}
   blockerGenerator: {fileID: 987874899}
+  scatterer: {fileID: 449949343}
 --- !u!114 &1838770610
 MonoBehaviour:
   m_ObjectHideFlags: 0

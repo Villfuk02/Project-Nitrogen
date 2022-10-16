@@ -22,6 +22,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
         [SerializeField] PathPlanner pathPlanner;
         [SerializeField] WFCGenerator WFC;
         [SerializeField] BlockerGenerator blockerGenerator;
+        [SerializeField] Scatterer.Scatterer scatterer;
         //[Header("Settings")]
         [Header("Runtime Values")]
         LevelGenTiles tiles;
@@ -53,31 +54,35 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
 
             WFC.Prepare();
             blockerGenerator.Prepare();
+            scatterer.Prepare();
+            Vector2Int[] targets;
             do
             {
-                (JobDataInterface pickTargets, Vector2Int[] targets) = pathPlanner.PickTargets();
+                JobDataInterface pickTargets = pathPlanner.PickTargets(out targets);
                 yield return new WaitUntil(() => pickTargets.IsFinished);
-                (JobDataInterface pickPaths, int[] nodes) = pathPlanner.PickPaths(targets);
+                JobDataInterface pickPaths = pathPlanner.PickPaths(targets, out int[] nodes);
                 yield return new WaitUntil(() => pickPaths.IsFinished);
                 if (pickPaths.Failed)
                 {
                     continue;
                 }
-                (JobDataInterface WFCGenerate, int[] modules, int[] heights) = WFC.Generate(nodes);
+                JobDataInterface WFCGenerate = WFC.Generate(nodes, out int[] modules, out int[] heights);
                 yield return new WaitUntil(() => WFCGenerate.IsFinished);
                 if (WFCGenerate.Failed)
                 {
                     continue;
                 }
                 tiles = new(modules, heights, nodes);
-                (JobDataInterface placeBlockers, List<Vector2Int> blockerPositions, List<int> blockerTypes) = blockerGenerator.PlaceBlockers(targets, pathPlanner.targetLengths);
-                yield return new WaitUntil(() => placeBlockers.IsFinished);
-                JobDataInterface finalizePaths = pathPlanner.FinalisePaths(targets);
-                yield return new WaitUntil(() => finalizePaths.IsFinished);
-                Debug.Log("DONE");
-                yield break;
+                break;
             } while (true);
-
+            JobDataInterface placeBlockers = blockerGenerator.PlaceBlockers(targets, pathPlanner.targetLengths, out List<Vector2Int> blockerPositions, out List<int> blockerTypes);
+            yield return new WaitUntil(() => placeBlockers.IsFinished);
+            JobDataInterface finalizePaths = pathPlanner.FinalisePaths(targets);
+            yield return new WaitUntil(() => finalizePaths.IsFinished);
+            JobDataInterface scatter = scatterer.Scatter(out List<int> typeCounts, out List<Vector2> positions, out List<float> scales);
+            yield return new WaitUntil(() => scatter.IsFinished);
+            Debug.Log("DONE");
+            yield break;
         }
         IEnumerator Animate()
         {
@@ -106,24 +111,24 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
             }
         }
 
-        bool CanStep(StepType type)
+        public static bool CanStep(StepType type)
         {
-            if (type <= stepType)
+            if (type <= inst.stepType)
             {
-                if (stepped)
+                if (inst.stepped)
                     return false;
                 for (StepType t = type; t <= STEP_TYPES[^1]; t++)
                 {
-                    gizmos.Expire(t);
+                    inst.gizmos.Expire(t);
                 }
-                stepped = true;
+                inst.stepped = true;
             }
             return true;
         }
 
         public static void WaitForStep(StepType type)
         {
-            while (!inst.CanStep(type))
+            while (!CanStep(type))
             {
                 Thread.Sleep(15);
             }

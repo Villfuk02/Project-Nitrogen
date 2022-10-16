@@ -15,17 +15,17 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
         [SerializeField] int stepsUntilFail;
         [SerializeField] int minMergeDistance;
 
-        public (JobDataInterface jobData, Vector2Int[] targets) PickTargets()
+        public JobDataInterface PickTargets(out Vector2Int[] targets)
         {
-            Vector2Int[] ret = new Vector2Int[targetLengths.Length];
+            targets = new Vector2Int[targetLengths.Length];
             JobDataInterface jobData = new(Allocator.Persistent);
             JobHandle handle = new PickTargetsJob
             {
                 targetLengths = jobData.Register(targetLengths, false),
-                picked = jobData.Register(ret, true)
+                picked = jobData.Register(targets, true)
             }.Schedule();
             jobData.RegisterHandle(this, handle);
-            return (jobData, ret);
+            return jobData;
         }
 
         struct PickTargetsJob : IJob
@@ -96,9 +96,9 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
             }
         }
 
-        public (JobDataInterface jobData, int[] flatNodes) PickPaths(Vector2Int[] targets)
+        public JobDataInterface PickPaths(Vector2Int[] targets, out int[] flatNodes)
         {
-            int[] flatNodes = new int[WorldUtils.WORLD_SIZE.x * WorldUtils.WORLD_SIZE.y];
+            flatNodes = new int[WorldUtils.WORLD_SIZE.x * WorldUtils.WORLD_SIZE.y];
             JobDataInterface jobData = new(Allocator.Persistent);
             JobHandle handle = new PickPathsJob
             {
@@ -109,7 +109,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                 failed = jobData.RegisterFailed()
             }.Schedule();
             jobData.RegisterHandle(this, handle);
-            return (jobData, flatNodes);
+            return jobData;
         }
 
         struct PickPathsJob : IJob
@@ -232,6 +232,23 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                 WaitForStep(StepType.Phase);
                 Debug.Log("Finalizing Paths");
 
+                RegisterGizmos(StepType.Phase, () =>
+                {
+                    List<GizmoManager.GizmoObject> gizmos = new();
+                    foreach (LevelGenTile tile in Tiles)
+                    {
+                        Vector3 pos = WorldUtils.TileToWorldPos(tile.pos);
+                        if (!tile.passable)
+                            gizmos.Add(new GizmoManager.Cube(Color.red, pos, 0.4f));
+                        for (int i = 0; i < 4; i++)
+                        {
+                            if (tile.neighbors[i] == null)
+                                gizmos.Add(new GizmoManager.Cube(Color.red, (WorldUtils.TileToWorldPos(tile.pos + WorldUtils.CARDINAL_DIRS[i]) + pos) * 0.5f, 0.25f));
+                        }
+                    }
+                    return gizmos;
+                });
+
                 int targetCount = targets.Length;
                 bool[,] pathTiles = new bool[WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y];
                 LevelGenTile[] paths = new LevelGenTile[targetCount];
@@ -293,7 +310,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                         }
                         return gizmos;
                     });
-                    if (t.dist == 0 || taken.Contains(t.pos))
+                    if (t.dist == 0 || (taken.Contains(t.pos) && distToMerge <= 0))
                     {
                         if (pathsLeft > 0)
                         {

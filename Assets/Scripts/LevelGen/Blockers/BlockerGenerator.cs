@@ -18,10 +18,10 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers
             ALL_BLOCKERS = blockerSetup;
         }
 
-        public (JobDataInterface jobData, List<Vector2Int> positions, List<int> blockers) PlaceBlockers(Vector2Int[] targets, int[] lengths)
+        public JobDataInterface PlaceBlockers(Vector2Int[] targets, int[] lengths, out List<Vector2Int> positions, out List<int> blockers)
         {
-            List<Vector2Int> positions = new();
-            List<int> blockers = new();
+            positions = new();
+            blockers = new();
             JobDataInterface jobData = new(Allocator.Persistent);
             JobHandle handle = new PlaceBlockersJob
             {
@@ -31,7 +31,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers
                 blockers = jobData.Register(blockers, true)
             }.Schedule();
             jobData.RegisterHandle(this, handle);
-            return (jobData, positions, blockers);
+            return jobData;
         }
 
         struct PlaceBlockersJob : IJob
@@ -42,21 +42,6 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers
             public NativeList<int> blockers;
             public void Execute()
             {
-                /*
-                Scatterer.Scatterer s = gameObject.GetComponent<Scatterer.Scatterer>();
-                for (int i = 0; i < ALL_BLOCKERS.Length; i++)
-                {
-                    if (ALL_BLOCKERS[i].copyModules != "")
-                    {
-                        Scatterer.ScattererObjectModule[] original = ALL_BLOCKERS.First(m => m.name == ALL_BLOCKERS[i].copyModules).scattererModules;
-                        ALL_BLOCKERS[i].scattererModules = new Scatterer.ScattererObjectModule[original.Length];
-                        for (int j = 0; j < original.Length; j++)
-                        {
-                            ALL_BLOCKERS[i].scattererModules[j] = original[j].Clone();
-                        }
-                    }
-                }
-                */
                 WaitForStep(StepType.Phase);
                 Debug.Log("Picking Blockers");
 
@@ -82,17 +67,6 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers
                             layers[l] = new();
                         }
                         layers[l].Add(i);
-                        /*
-                        if (ALL_BLOCKERS[i].scattererModules.Length > 0)
-                        {
-                            bool[,] vt = new bool[WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y];
-                            for (int j = 0; j < ALL_BLOCKERS[i].scattererModules.Length; j++)
-                            {
-                                ALL_BLOCKERS[i].scattererModules[j].validTiles = vt;
-                                s.SCATTERER_MODULES.Add(ALL_BLOCKERS[i].scattererModules[j]);
-                            }
-                        }
-                        */
                     }
                 }
                 RandomSet<Vector2Int> emptyTiles = new();
