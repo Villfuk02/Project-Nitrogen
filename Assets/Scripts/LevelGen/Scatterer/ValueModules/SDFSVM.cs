@@ -10,21 +10,21 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
         public float internalMultiplier;
         public float externalMultiplier;
 
-        protected float ScaledResult(Vector2 tilePos, bool[,] tiles)
+        protected float ScaledResult(Vector2 tilePos, Predicate<Vector2Int> isPosIn)
         {
-            float sdf = EvaluateSDF(tilePos, tiles);
+            float sdf = EvaluateSDF(tilePos, isPosIn);
             if (sdf > 0)
                 return externalMultiplier * sdf;
             else
                 return -internalMultiplier * sdf;
         }
 
-        float EvaluateSDF(Vector2 tilePos, bool[,] tiles)
+        float EvaluateSDF(Vector2 tilePos, Predicate<Vector2Int> isPosIn)
         {
-            if (tiles == null)
+            if (isPosIn == null)
                 return -Mathf.Min(tilePos.x + 0.5f, tilePos.y + 0.5f, WorldUtils.WORLD_SIZE.x - 0.5f - tilePos.x, WorldUtils.WORLD_SIZE.y - 0.5f - tilePos.y);
             Vector2Int rounded = new(Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y));
-            bool inside = tiles[rounded.x, rounded.y];
+            bool inside = isPosIn(rounded);
             float prevMinDist = float.PositiveInfinity;
             for (int r = 0; r < Mathf.Max(WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y) + 1; r++)
             {
@@ -35,7 +35,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
                 {
                     for (int y = boundsMin.y; y <= boundsMax.y; y++)
                     {
-                        if (tiles[boundsMin.x, y] != inside)
+                        if (isPosIn(new(boundsMin.x, y)) != inside)
                         {
                             float dist = GetSD(tilePos, new(boundsMin.x, y));
                             if (dist < minDist)
@@ -47,7 +47,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
                 {
                     for (int y = boundsMin.y; y <= boundsMax.y; y++)
                     {
-                        if (tiles[boundsMax.x, y] != inside)
+                        if (isPosIn(new(boundsMax.x, y)) != inside)
                         {
                             float dist = GetSD(tilePos, new(boundsMax.x, y));
                             if (dist < minDist)
@@ -59,7 +59,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
                 {
                     for (int x = boundsMin.x; x <= boundsMax.x; x++)
                     {
-                        if (tiles[x, boundsMin.y] != inside)
+                        if (isPosIn(new(x, boundsMin.y)) != inside)
                         {
                             float dist = GetSD(tilePos, new(x, boundsMin.y));
                             if (dist < minDist)
@@ -71,7 +71,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
                 {
                     for (int x = boundsMin.x; x <= boundsMax.x; x++)
                     {
-                        if (tiles[x, boundsMax.y] != inside)
+                        if (isPosIn(new(x, boundsMax.y)) != inside)
                         {
                             float dist = GetSD(tilePos, new(x, boundsMax.y));
                             if (dist < minDist)

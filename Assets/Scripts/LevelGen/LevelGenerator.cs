@@ -75,7 +75,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
                 tiles = new(modules, heights, nodes);
                 break;
             } while (true);
-            JobDataInterface placeBlockers = blockerGenerator.PlaceBlockers(targets, pathPlanner.targetLengths, out List<Vector2Int> blockerPositions, out List<int> blockerTypes);
+            JobDataInterface placeBlockers = blockerGenerator.PlaceBlockers(targets, pathPlanner.targetLengths);
             yield return new WaitUntil(() => placeBlockers.IsFinished);
             JobDataInterface finalizePaths = pathPlanner.FinalisePaths(targets);
             yield return new WaitUntil(() => finalizePaths.IsFinished);

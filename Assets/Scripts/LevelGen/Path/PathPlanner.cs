@@ -265,7 +265,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                 WaitForStep(StepType.Step);
                 foreach (var tile in Tiles)
                 {
-                    if (tile.pathNext.Count == 0)
+                    if (tile.pathNext.Count == 0 && tile.pos != WorldUtils.ORIGIN)
                         tile.dist = int.MaxValue;
                 }
                 Debug.Log("Paths finalised");

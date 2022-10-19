@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using static InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.LevelGenerator;
 
 namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
 {
@@ -8,7 +9,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
     {
         protected override float EvaluateInternal(Vector2 pos, ScattererObjectModule som)
         {
-            return 0;// ScaledResult(pos, PathFinalizer.pathTiles);
+            return ScaledResult(pos, (p) => Tiles[p].dist != int.MaxValue);
         }
     }
 }

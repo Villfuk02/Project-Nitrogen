@@ -18,17 +18,13 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers
             ALL_BLOCKERS = blockerSetup;
         }
 
-        public JobDataInterface PlaceBlockers(Vector2Int[] targets, int[] lengths, out List<Vector2Int> positions, out List<int> blockers)
+        public JobDataInterface PlaceBlockers(Vector2Int[] targets, int[] lengths)
         {
-            positions = new();
-            blockers = new();
             JobDataInterface jobData = new(Allocator.Persistent);
             JobHandle handle = new PlaceBlockersJob
             {
                 pathTargets = jobData.Register(targets, false),
-                pathLengths = jobData.Register(lengths, false),
-                positions = jobData.Register(positions, true),
-                blockers = jobData.Register(blockers, true)
+                pathLengths = jobData.Register(lengths, false)
             }.Schedule();
             jobData.RegisterHandle(this, handle);
             return jobData;
@@ -38,8 +34,6 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers
         {
             public NativeArray<Vector2Int> pathTargets;
             public NativeArray<int> pathLengths;
-            public NativeList<Vector2Int> positions;
-            public NativeList<int> blockers;
             public void Execute()
             {
                 WaitForStep(StepType.Phase);
@@ -111,8 +105,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers
                             int? b = TryPlace(p, layers[layer], emptyTiles, weightFields, false);
                             if (b.HasValue)
                             {
-                                positions.Add(p);
-                                blockers.Add(b.Value);
+                                Tiles[p].blocker = b.Value;
                             }
                         }
                     }
@@ -143,8 +136,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers
                     }
                     if (!valid)
                     {
-                        positions.Add(pos);
-                        blockers.Add(TryPlace(pos, layers[layer], emptyTiles, weightFields, true).Value);
+                        Tiles[pos].blocker = TryPlace(pos, layers[layer], emptyTiles, weightFields, true).Value;
                         Tiles[pos].passable = false;
                     }
                 }

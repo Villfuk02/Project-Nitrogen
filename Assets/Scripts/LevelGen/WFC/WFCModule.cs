@@ -38,46 +38,5 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
             };
             return m;
         }
-
-        public float GetBaseHeight(float x, float y)
-        {
-            float baseHeight = float.NegativeInfinity;
-            if (x <= 0 && y >= 0)
-            {
-                baseHeight = Mathf.Max(baseHeight, GetQuadrantBaseHeight(x, y - 1, 0));
-            }
-            if (x >= 0 && y >= 0)
-            {
-                baseHeight = Mathf.Max(baseHeight, GetQuadrantBaseHeight(x - 1, y - 1, 1));
-            }
-            if (x >= 0 && y <= 0)
-            {
-                baseHeight = Mathf.Max(baseHeight, GetQuadrantBaseHeight(x - 1, y, 2));
-            }
-            if (x <= 0 && y <= 0)
-            {
-                baseHeight = Mathf.Max(baseHeight, GetQuadrantBaseHeight(x, y, 3));
-            }
-            return baseHeight;
-        }
-
-        float GetQuadrantBaseHeight(float x, float y, int quadrant)
-        {
-            return quadrant switch
-            {
-                1 => heightOffsets.x,
-                2 => heightOffsets.y,
-                3 => heightOffsets.z,
-                _ => 0,
-            }
-            + slants[quadrant] switch
-            {
-                WorldUtils.Slant.North => -1 - y,
-                WorldUtils.Slant.East => -1 - x,
-                WorldUtils.Slant.South => y,
-                WorldUtils.Slant.West => x,
-                _ => 0,
-            };
-        }
     }
 }

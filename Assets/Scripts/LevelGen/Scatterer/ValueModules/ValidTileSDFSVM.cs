@@ -1,14 +1,24 @@
 using System;
 using UnityEngine;
+using static InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.LevelGenerator;
 
 namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
 {
     [Serializable]
     public class ValidTileSDFSVM : SDFSVM
     {
+        [SerializeField] int[] validBlockers;
         protected override float EvaluateInternal(Vector2 pos, ScattererObjectModule som)
         {
-            return 0;// ScaledResult(pos, som.validTiles);
+            return ScaledResult(pos, (p) =>
+            {
+                for (int i = 0; i < validBlockers.Length; i++)
+                {
+                    if (Tiles[p].blocker == validBlockers[i])
+                        return true;
+                }
+                return false;
+            });
         }
     }
 }

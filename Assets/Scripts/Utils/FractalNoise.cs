@@ -13,13 +13,14 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
         public float frequencyMult;
 
         Vector2[] offsets;
+        ThreadSafeRandom _rand = new();
 
         void Init()
         {
             offsets = new Vector2[octaves];
             for (int i = 0; i < octaves; i++)
             {
-                offsets[i] = Random.insideUnitCircle * 1000;
+                offsets[i] = _rand.InsideUnitCircle() * 1000;
             }
         }
 

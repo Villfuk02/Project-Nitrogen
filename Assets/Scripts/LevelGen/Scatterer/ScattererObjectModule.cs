@@ -16,7 +16,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
         public float sizeGain;
         public float radiusGain;
         public float angleSpread;
-        public float minValue = float.NegativeInfinity;
+        public float valueThreshold = float.NegativeInfinity;
         [SerializeReference, SubclassSelector] public ScattererValueModule[] valueModules;
 
         public float EvaluateAt(Vector2 tilePos)
@@ -30,12 +30,27 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
             return ret;
         }
 
-        public float GetScaled(float baseRadius, float strength, float evaluated)
+        float GetScaled(float baseRadius, float strength, float evaluated)
         {
             float s = strength * evaluated;
             if (s < 0)
                 return baseRadius / (1 - s);
             return baseRadius * (1 + s);
+        }
+
+        public float GetScale(float evaluated)
+        {
+            return GetScaled(1, sizeGain, evaluated);
+        }
+
+        public float GetPlacementSize(float evaluated)
+        {
+            return GetScaled(placementRadius, radiusGain, evaluated);
+        }
+
+        public float GetColliderSize(float evaluated)
+        {
+            return GetScaled(persistingRadius, sizeGain, evaluated);
         }
 
         public ScattererObjectModule Clone()
@@ -52,7 +67,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
                 radiusGain = radiusGain,
                 angleSpread = angleSpread,
                 valueModules = valueModules,
-                minValue = minValue
+                valueThreshold = valueThreshold
             };
         }
     }

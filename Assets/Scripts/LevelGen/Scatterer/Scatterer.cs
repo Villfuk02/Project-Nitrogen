@@ -12,7 +12,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
 {
     public class Scatterer : MonoBehaviour
     {
-        [SerializeField] ScattererObjectModule[] SOMSetup;
+        public ScattererObjectModule[] SOMSetup;
         public static ScattererObjectModule[] SCATTERER_MODULES;
         static bool isDone = false;
         static readonly RandomSet<Vector2Int> allTiles = new();
@@ -93,10 +93,6 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
                 RandomSet<Vector2Int> tilesLeft = new(allTiles);
                 while (tilesLeft.Count > 0)
                 {
-                    while (!CanStep(StepType.Substep))
-                    {
-                        yield return null;
-                    }
                     RandomSet<Vector2Int> leftToTry = new(tilesLeft);
                     List<Vector2Int> selected = new();
                     HashSet<Vector2Int> blocked = new();
@@ -145,7 +141,30 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
                             colliders.Add(selected[i], pCol);
                         tempColliders.Add(selected[i], tCol);
                     }
+                    while (!CanStep(StepType.Substep))
+                    {
+                        yield return null;
+                    }
                 }
+                RegisterGizmos(StepType.Step, () =>
+                {
+                    List<GizmoManager.GizmoObject> gizmos = new();
+                    foreach (var p in colliders)
+                    {
+                        foreach (var v in p.Value)
+                        {
+                            gizmos.Add(new GizmoManager.Sphere(Color.red, WorldUtils.TileToWorldPos(new Vector3(v.x, v.y)), v.z));
+                        }
+                    }
+                    foreach (var p in tempColliders)
+                    {
+                        foreach (var v in p.Value)
+                        {
+                            gizmos.Add(new GizmoManager.Sphere(Color.magenta, WorldUtils.TileToWorldPos(new Vector3(v.x, v.y)), v.z));
+                        }
+                    }
+                    return gizmos;
+                });
             }
             yield break;
         }
@@ -200,9 +219,38 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
             public NativeArray<Vector3> colliders;
             public void Execute()
             {
-                generated.Add(tile);
-                colliderSizes.Add(new(0.3f, 0.4f));
-                scales.Add(0.2f);
+                ScattererObjectModule som = SCATTERER_MODULES[SOMIndex];
+                ThreadSafeRandom rand = new();
+                for (int i = 0; i < som.triesPerTile; i++)
+                {
+                    Vector2 pos = tile + new Vector2(rand.NextFloat(), rand.NextFloat()) - Vector2.one * 0.5f;
+                    TryPosition(som, pos);
+                }
+            }
+
+            void TryPosition(ScattererObjectModule som, Vector2 pos)
+            {
+                float v = som.EvaluateAt(pos);
+                if (v > som.valueThreshold)
+                {
+                    float placementRadius = som.GetPlacementSize(v);
+                    for (int i = 0; i < colliders.Length; i++)
+                    {
+                        if (Vector2.Distance(pos, new(colliders[i].x, colliders[i].y)) < colliders[i].z + placementRadius)
+                            return;
+                    }
+                    for (int i = 0; i < generated.Length; i++)
+                    {
+                        float dist = Vector2.Distance(pos, generated[i]);
+                        if (colliderSizes[i].x > 0 && dist < colliderSizes[i].x + placementRadius)
+                            return;
+                        if (colliderSizes[i].y > 0 && dist < colliderSizes[i].y + placementRadius)
+                            return;
+                    }
+                    generated.Add(pos);
+                    colliderSizes.Add(new(som.GetColliderSize(v), placementRadius));
+                    scales.Add(som.GetScale(v));
+                }
             }
         }
     }

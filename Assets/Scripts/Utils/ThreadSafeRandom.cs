@@ -1,13 +1,14 @@
 //Based on https://stackoverflow.com/a/11109361
 
 using System;
+using UnityEngine;
 
 namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
 {
     public class ThreadSafeRandom
     {
-        private static readonly Random _global = new();
-        [ThreadStatic] private static Random _local;
+        private static readonly System.Random _global = new();
+        [ThreadStatic] private static System.Random _local;
 
         /// <summary>
         /// Returns random int between 0 (inclusive) and int.MaxValue (exclusive)
@@ -58,8 +59,18 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
                 {
                     seed = _global.Next();
                 }
-                _local = new Random(seed);
+                _local = new System.Random(seed);
             }
+        }
+
+        public Vector2 InsideUnitCircle()
+        {
+            Vector2 result;
+            do
+            {
+                result = new(NextFloat(-1, 1), NextFloat(-1, 1));
+            } while (result.sqrMagnitude > 1);
+            return result;
         }
     }
 }

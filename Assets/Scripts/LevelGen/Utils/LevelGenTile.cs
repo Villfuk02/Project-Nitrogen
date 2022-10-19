@@ -11,7 +11,21 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils
         public WorldUtils.Slant slant;
         public LevelGenTile[] neighbors;
         public bool passable;
+        public int blocker;
         public int dist;
         public HashSet<LevelGenTile> pathNext = new();
+
+        public float GetHeight(Vector2 relativePos)
+        {
+            float offset = slant switch
+            {
+                WorldUtils.Slant.North => -relativePos.y - 0.5f,
+                WorldUtils.Slant.East => -relativePos.x - 0.5f,
+                WorldUtils.Slant.South => relativePos.y - 0.5f,
+                WorldUtils.Slant.West => relativePos.x - 0.5f,
+                _ => 0,
+            };
+            return height + offset;
+        }
     }
 }

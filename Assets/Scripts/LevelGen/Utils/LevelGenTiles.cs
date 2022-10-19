@@ -44,6 +44,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils
                     t.passable = true;
                     t.neighbors = connections;
                     t.dist = distances[x + y * WorldUtils.WORLD_SIZE.x];
+                    t.blocker = -1;
                 }
             }
         }
@@ -91,6 +92,14 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils
                     }
                 }
             }
+        }
+
+        public float? GetHeightAt(Vector2 pos)
+        {
+            Vector2Int tilePos = new(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y));
+            if (tilePos.x < 0 || tilePos.y < 0 || tilePos.x >= WorldUtils.WORLD_SIZE.x || tilePos.y >= WorldUtils.WORLD_SIZE.y)
+                return null;
+            return this[tilePos].GetHeight(pos - tilePos);
         }
     }
 }

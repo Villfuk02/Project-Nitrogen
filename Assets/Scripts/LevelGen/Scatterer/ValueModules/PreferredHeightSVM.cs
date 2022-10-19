@@ -1,6 +1,6 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
 using System;
 using UnityEngine;
+using static InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.LevelGenerator;
 
 namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
 {
@@ -11,9 +11,8 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
         public float penaltyMultiplier;
         protected override float EvaluateInternal(Vector2 pos, ScattererObjectModule som)
         {
-            Vector3 rayOrigin = WorldUtils.TileToWorldPos(pos) + (WorldUtils.MAX_HEIGHT + 1) * WorldUtils.HEIGHT_STEP * Vector3.up;
-            Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayOrigin.y + 1, LayerMask.GetMask("CoarseTerrain"));
-            float heightDiff = preferredHeight - hit.point.y / WorldUtils.HEIGHT_STEP;
+            float height = Tiles.GetHeightAt(pos).Value;
+            float heightDiff = preferredHeight - height;
             return -penaltyMultiplier * Mathf.Abs(heightDiff);
         }
     }
