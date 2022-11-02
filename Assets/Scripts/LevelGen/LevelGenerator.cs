@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using static InfiniteCombo.Nitrogen.Assets.Scripts.World.World;
 
 namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
 {
@@ -23,6 +24,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
         [SerializeField] WFCGenerator WFC;
         [SerializeField] BlockerGenerator blockerGenerator;
         [SerializeField] Scatterer.Scatterer scatterer;
+        [SerializeField] WorldBuilder wb;
         //[Header("Settings")]
         [Header("Runtime Values")]
         LevelGenTiles tiles;
@@ -45,16 +47,29 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.S) || Input.GetKey(KeyCode.M))
-                stepped = false;
+            if (stepType != StepType.None)
+            {
+                if (Input.GetKeyDown(KeyCode.T) || Input.GetKey(KeyCode.H))
+                    stepped = false;
+
+                if (Input.GetKeyDown(KeyCode.N))
+                    stepType = StepType.None;
+                else if (Input.GetKeyDown(KeyCode.P))
+                    stepType = StepType.Phase;
+                else if (Input.GetKeyDown(KeyCode.S))
+                    stepType = StepType.Step;
+                else if (Input.GetKeyDown(KeyCode.M))
+                    stepType = StepType.Substep;
+            }
         }
 
         IEnumerator Generate()
         {
-
+            WORLD_DATA = new();
             WFC.Prepare();
             blockerGenerator.Prepare();
             scatterer.Prepare();
+            wb.Begin();
             Vector2Int[] targets;
             do
             {
@@ -73,6 +88,20 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
                     continue;
                 }
                 tiles = new(modules, heights, nodes);
+                WORLD_DATA.tiles = tiles;
+                int[,] modules2d = new int[WorldUtils.WORLD_SIZE.x + 1, WorldUtils.WORLD_SIZE.y + 1];
+                int[,] heights2d = new int[WorldUtils.WORLD_SIZE.x + 1, WorldUtils.WORLD_SIZE.y + 1];
+                for (int x = 0; x < WorldUtils.WORLD_SIZE.x + 1; x++)
+                {
+                    for (int y = 0; y < WorldUtils.WORLD_SIZE.y + 1; y++)
+                    {
+                        int index = x + y * (WorldUtils.WORLD_SIZE.x + 1);
+                        modules2d[x, y] = modules[index];
+                        heights2d[x, y] = heights[index];
+                    }
+                }
+                WORLD_DATA.modules = modules2d;
+                WORLD_DATA.moduleHeights = heights2d;
                 break;
             } while (true);
             JobDataInterface placeBlockers = blockerGenerator.PlaceBlockers(targets, pathPlanner.targetLengths);
@@ -81,6 +110,16 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
             yield return new WaitUntil(() => finalizePaths.IsFinished);
             JobDataInterface scatter = scatterer.Scatter(out List<int> typeCounts, out List<Vector2> positions, out List<float> scales);
             yield return new WaitUntil(() => scatter.IsFinished);
+            WORLD_DATA.decorationPositions = new List<Vector2>[typeCounts.Count];
+            WORLD_DATA.decorationScales = new List<float>[typeCounts.Count];
+            int p = 0;
+            for (int i = 0; i < typeCounts.Count; i++)
+            {
+                int t = typeCounts[i];
+                WORLD_DATA.decorationPositions[i] = positions.GetRange(p, t);
+                WORLD_DATA.decorationScales[i] = scales.GetRange(p, t);
+                p += t;
+            }
             Debug.Log("DONE");
             yield break;
         }
