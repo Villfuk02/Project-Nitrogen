@@ -5,6 +5,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using static InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.LevelGenerator;
+using static InfiniteCombo.Nitrogen.Assets.Scripts.Utils.VectorUtils;
 
 namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers
 {
@@ -64,14 +65,10 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers
                     }
                 }
                 RandomSet<Vector2Int> emptyTiles = new();
-                for (int x = 0; x < WorldUtils.WORLD_SIZE.x; x++)
+                foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
                 {
-                    for (int y = 0; y < WorldUtils.WORLD_SIZE.y; y++)
-                    {
-                        Vector2Int v = new(x, y);
-                        if (Tiles[v].dist == int.MaxValue)
-                            emptyTiles.Add(v);
-                    }
+                    if (Tiles[v].dist == int.MaxValue)
+                        emptyTiles.Add(v);
                 }
 
                 int layer = 0;

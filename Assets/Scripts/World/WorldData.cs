@@ -11,5 +11,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.World
         public int[,] moduleHeights;
         public List<Vector2>[] decorationPositions;
         public List<float>[] decorationScales;
+        public Vector2Int[] firstPathNodes;
+        public Vector2Int[] pathStarts;
     }
 }

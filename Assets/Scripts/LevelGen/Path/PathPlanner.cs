@@ -43,17 +43,14 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
 
                 RandomSet<Vector2Int> oddTargets = new();
                 RandomSet<Vector2Int> evenTargets = new();
-                for (int x = 0; x < WorldUtils.WORLD_SIZE.x; x++)
+                foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
                 {
-                    for (int y = 0; y < WorldUtils.WORLD_SIZE.y; y++)
+                    if (v.x == 0 || v.y == 0 || v.x == WorldUtils.WORLD_SIZE.x - 1 || v.y == WorldUtils.WORLD_SIZE.y - 1)
                     {
-                        if (x == 0 || y == 0 || x == WorldUtils.WORLD_SIZE.x - 1 || y == WorldUtils.WORLD_SIZE.y - 1)
-                        {
-                            if ((x + y - WorldUtils.ORIGIN.x - WorldUtils.ORIGIN.y) % 2 == 0)
-                                evenTargets.Add(new(x, y));
-                            else
-                                oddTargets.Add(new(x, y));
-                        }
+                        if ((v.x + v.y - WorldUtils.ORIGIN.x - WorldUtils.ORIGIN.y) % 2 == 0)
+                            evenTargets.Add(v);
+                        else
+                            oddTargets.Add(v);
                     }
                 }
                 int targetCount = targetLengths.Length;
@@ -125,13 +122,8 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
 
                 int pathCount = targetLengths.Length;
                 int[,] nodes = new int[WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y];
-                for (int x = 0; x < WorldUtils.WORLD_SIZE.x; x++)
-                {
-                    for (int y = 0; y < WorldUtils.WORLD_SIZE.y; y++)
-                    {
-                        nodes[x, y] = int.MaxValue;
-                    }
-                }
+                foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
+                    nodes[v.x, v.y] = int.MaxValue;
                 int startPos = pathCount <= 4 ? 1 : 2;
                 nodes[WorldUtils.ORIGIN.x, WorldUtils.ORIGIN.y] = 0;
                 if (startPos > 1)
@@ -171,13 +163,8 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                 }
                 if (queue.Count == 0)
                 {
-                    for (int x = 0; x < WorldUtils.WORLD_SIZE.x; x++)
-                    {
-                        for (int y = 0; y < WorldUtils.WORLD_SIZE.y; y++)
-                        {
-                            retNodes[x + y * WorldUtils.WORLD_SIZE.x] = nodes[x, y];
-                        }
-                    }
+                    foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
+                        retNodes[v.x + v.y * WorldUtils.WORLD_SIZE.x] = nodes[v.x, v.y];
                     Debug.Log($"Picked Paths in {steps} steps");
                     RegisterGizmos(StepType.Phase, () => DrawPaths(paths));
                 }
@@ -213,6 +200,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
         public JobDataInterface FinalisePaths(Vector2Int[] targets)
         {
             JobDataInterface jobData = new(Allocator.Persistent);
+
             JobHandle handle = new FinalisePathsJob
             {
                 targets = jobData.Register(targets, false),

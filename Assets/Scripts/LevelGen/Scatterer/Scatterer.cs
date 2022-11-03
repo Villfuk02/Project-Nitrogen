@@ -21,13 +21,8 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
         {
             SCATTERER_MODULES = SOMSetup;
             allTiles.Clear();
-            for (int x = 0; x < WorldUtils.WORLD_SIZE.x; x++)
-            {
-                for (int y = 0; y < WorldUtils.WORLD_SIZE.y; y++)
-                {
-                    allTiles.Add(new(x, y));
-                }
-            }
+            foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
+                allTiles.Add(v);
         }
 
         public JobDataInterface Scatter(out List<int> typeCounts, out List<Vector2> positions, out List<float> scales)

@@ -172,6 +172,7 @@ MonoBehaviour:
   tiles: {fileID: 961600660}
   terrain: {fileID: 1281044095}
   decorations: {fileID: 1746230470}
+  pr: {fileID: 1455657881}
   slotPrefab: {fileID: 3874263679433659877, guid: a3d794d9db79033458fe5418f7001169, type: 3}
   terrainGradient:
     serializedVersion: 2
@@ -725,6 +726,7 @@ Transform:
   m_Children:
   - {fileID: 10349200}
   - {fileID: 961600660}
+  - {fileID: 1455657880}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1141,6 +1143,57 @@ Transform:
   m_Father: {fileID: 10349200}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1455657879
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1455657880}
+  - component: {fileID: 1455657881}
+  m_Layer: 0
+  m_Name: Path Renderer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1455657880
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1455657879}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 599020456}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1455657881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1455657879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a18d53f3decbb654c8ee9638702fed8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  linePrefab: {fileID: 315257208492628400, guid: 6918aa5953bda704e8d611a0d7a7f1a6, type: 3}
+  inset: 0.2
+  height: 0.2
+  scrollSpeed: -1
+  offset: 0
+  width: 0.4
+  mat: {fileID: 2100000, guid: fc1ea633985178c4781bf2efc98cba6d, type: 2}
 --- !u!1 &1746230469
 GameObject:
   m_ObjectHideFlags: 0

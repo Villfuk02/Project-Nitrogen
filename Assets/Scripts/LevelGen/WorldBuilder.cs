@@ -1,6 +1,7 @@
 using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer;
 using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC;
 using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using InfiniteCombo.Nitrogen.Assets.Scripts.World;
 using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
         [SerializeField] Transform tiles;
         [SerializeField] Transform terrain;
         [SerializeField] Transform decorations;
+        [SerializeField] PathRenderer pr;
         [Header("Setup")]
         [SerializeField] GameObject slotPrefab;
         [SerializeField] Gradient terrainGradient;
@@ -26,6 +28,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
             StartCoroutine(PlaceTiles(1));
             StartCoroutine(BuildTerrain(1));
             StartCoroutine(PlaceDecorations(1));
+            StartCoroutine(RenderPath());
         }
         private void Update()
         {
@@ -73,6 +76,14 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
                     }
                 }
             }
+            done++;
+        }
+
+        IEnumerator RenderPath()
+        {
+            while (WORLD_DATA == null || WORLD_DATA.tiles == null || WORLD_DATA.pathStarts == null)
+                yield return null;
+            pr.RenderPaths();
             done++;
         }
 

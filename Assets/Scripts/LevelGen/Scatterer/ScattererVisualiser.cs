@@ -25,18 +25,15 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
             if (cols == null || cols.Length != texSize.x * texSize.y)
                 cols = new Color32[texSize.x * texSize.y];
             bool different = false;
-            for (int x = 0; x < texSize.x; x++)
+            foreach (Vector2Int v in texSize)
             {
-                for (int y = 0; y < texSize.y; y++)
-                {
-                    int i = x + y * texSize.x;
-                    Vector2 tilePos = new Vector2(x + 0.5f, y + 0.5f) / pixelsPerUnit - Vector2.one * 0.5f;
-                    float e = m.EvaluateAt(tilePos);
-                    Color32 c = gradient.Evaluate(1 / (1 + Mathf.Exp(-e)));
-                    if (c.r != cols[i].r || c.g != cols[i].g || c.b != cols[i].b)
-                        different = true;
-                    cols[i] = c;
-                }
+                int i = v.x + v.y * texSize.x;
+                Vector2 tilePos = (Vector2.one * 0.5f + v) / pixelsPerUnit - Vector2.one * 0.5f;
+                float e = m.EvaluateAt(tilePos);
+                Color32 c = gradient.Evaluate(1 / (1 + Mathf.Exp(-e)));
+                if (c.r != cols[i].r || c.g != cols[i].g || c.b != cols[i].b)
+                    different = true;
+                cols[i] = c;
             }
             if (tex == null)
             {

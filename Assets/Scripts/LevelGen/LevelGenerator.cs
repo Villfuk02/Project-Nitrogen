@@ -91,14 +91,11 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
                 WORLD_DATA.tiles = tiles;
                 int[,] modules2d = new int[WorldUtils.WORLD_SIZE.x + 1, WorldUtils.WORLD_SIZE.y + 1];
                 int[,] heights2d = new int[WorldUtils.WORLD_SIZE.x + 1, WorldUtils.WORLD_SIZE.y + 1];
-                for (int x = 0; x < WorldUtils.WORLD_SIZE.x + 1; x++)
+                foreach (Vector2Int v in WorldUtils.WORLD_SIZE + Vector2Int.one)
                 {
-                    for (int y = 0; y < WorldUtils.WORLD_SIZE.y + 1; y++)
-                    {
-                        int index = x + y * (WorldUtils.WORLD_SIZE.x + 1);
-                        modules2d[x, y] = modules[index];
-                        heights2d[x, y] = heights[index];
-                    }
+                    int index = v.x + v.y * (WorldUtils.WORLD_SIZE.x + 1);
+                    modules2d[v.x, v.y] = modules[index];
+                    heights2d[v.x, v.y] = heights[index];
                 }
                 WORLD_DATA.modules = modules2d;
                 WORLD_DATA.moduleHeights = heights2d;
@@ -108,6 +105,13 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
             yield return new WaitUntil(() => placeBlockers.IsFinished);
             JobDataInterface finalizePaths = pathPlanner.FinalisePaths(targets);
             yield return new WaitUntil(() => finalizePaths.IsFinished);
+            WORLD_DATA.firstPathNodes = targets;
+            Vector2Int[] pathStarts = new Vector2Int[targets.Length];
+            for (int i = 0; i < targets.Length; i++)
+            {
+                pathStarts[i] = targets[i] + WorldUtils.GetMainDir(WorldUtils.ORIGIN, targets[i]);
+            }
+            WORLD_DATA.pathStarts = pathStarts;
             JobDataInterface scatter = scatterer.Scatter(out List<int> typeCounts, out List<Vector2> positions, out List<float> scales);
             yield return new WaitUntil(() => scatter.IsFinished);
             WORLD_DATA.decorationPositions = new List<Vector2>[typeCounts.Count];
