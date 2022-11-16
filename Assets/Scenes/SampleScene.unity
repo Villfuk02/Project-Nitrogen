@@ -492,7 +492,7 @@ MonoBehaviour:
     enabled: 1
     prefab: {fileID: 5603213057010211334, guid: c6f3c987c4fa6524bbd11c5f1bc9b3f3, type: 3}
     triesPerTile: 50
-    placementRadius: 0.1
+    placementRadius: 0.05
     persistingRadius: 0.25
     sizeGain: 1
     radiusGain: -2

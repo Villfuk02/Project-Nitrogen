@@ -85,6 +85,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
                 }
                 Debug.Log($"Step {index}");
                 Dictionary<Vector2Int, List<Vector3>> tempColliders = new();
+                Dictionary<Vector2Int, List<Vector3>> futureColliders = new();
                 RandomSet<Vector2Int> tilesLeft = new(allTiles);
                 while (tilesLeft.Count > 0)
                 {
@@ -127,19 +128,26 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
                             Vector2 col = jobs[i].colliderSizes[j];
                             if (col.x > 0)
                                 pCol.Add(new(p.x, p.y, col.x));
-                            if (col.y > 0 && col.y > col.x)
+                            if (col.y > 0)
                                 tCol.Add(new(p.x, p.y, col.y));
                         }
-                        if (colliders.ContainsKey(selected[i]))
-                            colliders[selected[i]].AddRange(pCol);
+                        if (futureColliders.ContainsKey(selected[i]))
+                            futureColliders[selected[i]].AddRange(pCol);
                         else
-                            colliders.Add(selected[i], pCol);
+                            futureColliders.Add(selected[i], pCol);
                         tempColliders.Add(selected[i], tCol);
                     }
                     while (!CanStep(StepType.Substep))
                     {
                         yield return null;
                     }
+                }
+                foreach ((var tile, var list) in futureColliders)
+                {
+                    if (colliders.ContainsKey(tile))
+                        colliders[tile].AddRange(list);
+                    else
+                        colliders.Add(tile, list);
                 }
                 RegisterGizmos(StepType.Step, () =>
                 {
@@ -237,8 +245,6 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
                     for (int i = 0; i < generated.Length; i++)
                     {
                         float dist = Vector2.Distance(pos, generated[i]);
-                        if (colliderSizes[i].x > 0 && dist < colliderSizes[i].x + placementRadius)
-                            return;
                         if (colliderSizes[i].y > 0 && dist < colliderSizes[i].y + placementRadius)
                             return;
                     }
