@@ -8,7 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using static InfiniteCombo.Nitrogen.Assets.Scripts.World.World;
+using static InfiniteCombo.Nitrogen.Assets.Scripts.Utils.WorldUtils;
+using static InfiniteCombo.Nitrogen.Assets.Scripts.World.WorldData.WorldData;
 
 namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
 {
@@ -24,7 +25,6 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
         [SerializeField] WFCGenerator WFC;
         [SerializeField] BlockerGenerator blockerGenerator;
         [SerializeField] Scatterer.Scatterer scatterer;
-        [SerializeField] WorldBuilder wb;
         //[Header("Settings")]
         [Header("Runtime Values")]
         LevelGenTiles tiles;
@@ -38,6 +38,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
                 inst = this;
             else
                 Debug.LogError("There can be only one!");
+            WORLD_DATA = null;
         }
         void Start()
         {
@@ -69,7 +70,6 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
             WFC.Prepare();
             blockerGenerator.Prepare();
             scatterer.Prepare();
-            wb.Begin();
             Vector2Int[] targets;
             do
             {
@@ -87,13 +87,30 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
                 {
                     continue;
                 }
-                tiles = new(modules, heights, nodes);
-                WORLD_DATA.tiles = tiles;
-                int[,] modules2d = new int[WorldUtils.WORLD_SIZE.x + 1, WorldUtils.WORLD_SIZE.y + 1];
-                int[,] heights2d = new int[WorldUtils.WORLD_SIZE.x + 1, WorldUtils.WORLD_SIZE.y + 1];
-                foreach (Vector2Int v in WorldUtils.WORLD_SIZE + Vector2Int.one)
+
+                bool[,] passable = new bool[(WORLD_SIZE.x + 1) * (WORLD_SIZE.y + 1), 4];
+                Slant[] slants = new Slant[(WORLD_SIZE.x + 1) * (WORLD_SIZE.y + 1)];
+                foreach (Vector2Int v in WORLD_SIZE)
                 {
-                    int index = v.x + v.y * (WorldUtils.WORLD_SIZE.x + 1);
+                    int index = (v.x + 1) + v.y * (WORLD_SIZE.x + 1);
+                    WFCModule m = WFCGenerator.ALL_MODULES[modules[index]];
+                    slants[index] = m.slants[0];
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Vector2Int pos = v + CARDINAL_DIRS[i];
+                        Vector2Int pp = i / 2 == 0 ? v + Vector2Int.one : v;
+                        if (pos.x >= 0 && pos.y >= 0 && pos.x < WORLD_SIZE.x && pos.y < WORLD_SIZE.y
+                            && WFCGenerator.ALL_MODULES[modules[pp.x + pp.y * (WORLD_SIZE.x + 1)]].passable[3 - i])
+                            passable[index, i] = true;
+                    }
+                }
+                tiles = new(passable, heights, slants, nodes);
+                WORLD_DATA.tiles = tiles;
+                int[,] modules2d = new int[WORLD_SIZE.x + 1, WORLD_SIZE.y + 1];
+                int[,] heights2d = new int[WORLD_SIZE.x + 1, WORLD_SIZE.y + 1];
+                foreach (Vector2Int v in WORLD_SIZE + Vector2Int.one)
+                {
+                    int index = v.x + v.y * (WORLD_SIZE.x + 1);
                     modules2d[v.x, v.y] = modules[index];
                     heights2d[v.x, v.y] = heights[index];
                 }
@@ -109,7 +126,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
             Vector2Int[] pathStarts = new Vector2Int[targets.Length];
             for (int i = 0; i < targets.Length; i++)
             {
-                pathStarts[i] = targets[i] + WorldUtils.GetMainDir(WorldUtils.ORIGIN, targets[i]);
+                pathStarts[i] = targets[i] + GetMainDir(ORIGIN, targets[i]);
             }
             WORLD_DATA.pathStarts = pathStarts;
             JobDataInterface scatter = scatterer.Scatter(out List<int> typeCounts, out List<Vector2> positions, out List<float> scales);

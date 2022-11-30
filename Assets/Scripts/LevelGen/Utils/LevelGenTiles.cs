@@ -1,4 +1,3 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC;
 using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +8,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils
     {
         readonly LevelGenTile[,] _graph;
 
-        public LevelGenTiles(int[] modules, int[] heights, int[] distances)
+        public LevelGenTiles(bool[,] passable, int[] heights, WorldUtils.Slant[] slants, int[] distances)
         {
             _graph = new LevelGenTile[WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y];
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
@@ -18,22 +17,20 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
             {
                 int index = (v.x + 1) + v.y * (WorldUtils.WORLD_SIZE.x + 1);
-                WFCModule m = WFCGenerator.ALL_MODULES[modules[index]];
                 LevelGenTile[] connections = new LevelGenTile[4];
                 for (int i = 0; i < 4; i++)
                 {
                     Vector2Int p = v + WorldUtils.CARDINAL_DIRS[i];
-                    Vector2Int pp = i / 2 == 0 ? v + Vector2Int.one : v;
-                    if (p.x >= 0 && p.y >= 0 && p.x < WorldUtils.WORLD_SIZE.x && p.y < WorldUtils.WORLD_SIZE.y
-                        && WFCGenerator.ALL_MODULES[modules[pp.x + pp.y * (WorldUtils.WORLD_SIZE.x + 1)]].passable[3 - i])
+                    if (p.x >= 0 && p.y >= 0 && p.x < WorldUtils.WORLD_SIZE.x && p.y < WorldUtils.WORLD_SIZE.y && passable[index, i])
                         connections[i] = this[p];
                     else
                         connections[i] = null;
                 }
+
                 LevelGenTile t = _graph[v.x, v.y];
                 t.pos = v;
                 t.height = heights[index];
-                t.slant = m.slants[0];
+                t.slant = slants[index];
                 t.passable = true;
                 t.neighbors = connections;
                 t.dist = distances[v.x + v.y * WorldUtils.WORLD_SIZE.x];

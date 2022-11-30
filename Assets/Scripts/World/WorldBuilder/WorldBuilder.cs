@@ -5,9 +5,9 @@ using InfiniteCombo.Nitrogen.Assets.Scripts.World;
 using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
-using static InfiniteCombo.Nitrogen.Assets.Scripts.World.World;
+using static InfiniteCombo.Nitrogen.Assets.Scripts.World.WorldData.WorldData;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
+namespace Assets.Scripts.World.WorldBuilder
 {
     public class WorldBuilder : MonoBehaviour
     {
@@ -18,16 +18,15 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
         [SerializeField] PathRenderer pr;
         [Header("Setup")]
         [SerializeField] GameObject slotPrefab;
-        [SerializeField] Gradient terrainGradient;
         [Header("Runtime")]
         [SerializeField] int done;
         readonly Stopwatch frameTimer = new();
         const int MILLIS_PER_FRAME = 12;
-        public void Begin()
+        public void Start()
         {
             StartCoroutine(PlaceTiles(1));
-            StartCoroutine(BuildTerrain(1));
-            StartCoroutine(PlaceDecorations(1));
+            StartCoroutine(BuildTerrain(10));
+            StartCoroutine(PlaceDecorations(10));
             StartCoroutine(RenderPath());
         }
         private void Update()
@@ -95,13 +94,12 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
             t.position = WorldUtils.SlotToWorldPos(x, y, WORLD_DATA.moduleHeights[x, y] - m.meshHeightOffset);
             t.localScale = new Vector3(m.flip ? -1 : 1, 1, 1) * 1.01f;
             t.localRotation = Quaternion.Euler(0, 90 * m.rotate, 0);
-            t.GetComponent<MeshRenderer>().material.color = terrainGradient.Evaluate(t.localPosition.y * 0.35f + Random.value * 0.2f);
             t.GetComponent<MeshFilter>().mesh = m.mesh;
             t.GetComponent<MeshCollider>().sharedMesh = m.mesh;
         }
         private void PlaceDecoration(int module, Vector2 pos, float scale)
         {
-            ScattererObjectModule m = Scatterer.Scatterer.SCATTERER_MODULES[module];
+            ScattererObjectModule m = Scatterer.SCATTERER_MODULES[module];
             Transform t = Instantiate(m.prefab, decorations).transform;
             t.position = WorldUtils.TileToWorldPos(pos.x, pos.y, WORLD_DATA.tiles.GetHeightAt(pos).Value);
             t.localScale = Vector3.one * scale;

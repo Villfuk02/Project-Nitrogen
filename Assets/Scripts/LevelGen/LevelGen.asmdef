@@ -1,0 +1,20 @@
+{
+    "name": "LevelGen",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c16294785e7a44148be2e5f8661f54ad",
+        "GUID:a6edeec7d0040c142ac51a431be73a6a",
+        "GUID:1c042d5262b6b6241b4ddedf2537433d",
+        "GUID:e0cd26848372d4e5c891c569017e11f1",
+        "GUID:49b49c76ee64f6b41bf28ef951cb0e50"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

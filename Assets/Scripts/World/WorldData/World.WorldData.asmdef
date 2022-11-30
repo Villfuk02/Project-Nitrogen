@@ -1,0 +1,16 @@
+{
+    "name": "WorldData",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1c042d5262b6b6241b4ddedf2537433d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

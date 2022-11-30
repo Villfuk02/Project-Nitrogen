@@ -2,7 +2,7 @@ using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils;
 using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
 using System.Collections.Generic;
 using UnityEngine;
-using static InfiniteCombo.Nitrogen.Assets.Scripts.World.World;
+using static InfiniteCombo.Nitrogen.Assets.Scripts.World.WorldData.WorldData;
 
 namespace InfiniteCombo.Nitrogen.Assets.Scripts.World
 {
@@ -54,7 +54,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.World
             LineRenderer lr = Instantiate(linePrefab, transform).GetComponent<LineRenderer>();
             Vector2 off = 0.5f * width * ((Vector2)(end - start)).normalized;
             float endHeight = WORLD_DATA.tiles.GetHeightAt(end).GetValueOrDefault(0);
-            float startHeight = WORLD_DATA.tiles.GetHeightAt(start).GetValueOrDefault(endHeight);
+            float startHeight = WORLD_DATA.tiles.GetHeightAt(start).GetValueOrDefault(WORLD_DATA.tiles.GetHeightAt(0.6f * (Vector2)end + 0.4f * (Vector2)start).GetValueOrDefault(endHeight));
             lr.SetPositions(new Vector3[] {
             WorldUtils.TileToWorldPos(start - off) + Vector3.up * (height + startHeight * WorldUtils.HEIGHT_STEP),
             WorldUtils.TileToWorldPos(start + off) + Vector3.up * (height + startHeight * WorldUtils.HEIGHT_STEP),

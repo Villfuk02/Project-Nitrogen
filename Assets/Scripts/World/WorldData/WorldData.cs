@@ -2,10 +2,12 @@ using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.World
+namespace InfiniteCombo.Nitrogen.Assets.Scripts.World.WorldData
 {
     public class WorldData
     {
+        public static WorldData WORLD_DATA;
+
         public LevelGenTiles tiles;
         public int[,] modules;
         public int[,] moduleHeights;
