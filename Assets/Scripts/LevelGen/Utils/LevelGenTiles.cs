@@ -62,7 +62,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils
                 this[pos].dist = dist;
                 foreach (var n in this[pos].neighbors)
                 {
-                    if (n != null)
+                    if (n is not null)
                     {
                         if (n.dist == int.MaxValue && n.passable)
                         {

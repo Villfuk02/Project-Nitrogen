@@ -24,7 +24,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
             float ret = 0;
             foreach (ScattererValueModule svm in valueModules)
             {
-                if (svm != null)
+                if (svm is not null)
                     ret += svm.EvaluateAt(tilePos, this);
             }
             return ret;

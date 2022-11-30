@@ -183,13 +183,13 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                     foreach (var node in path.path)
                     {
                         Vector3 pos = WorldUtils.TileToWorldPos((Vector3Int)node.pos);
-                        bool isPrev = path.prev != null && node.pos == path.prev.Value.pos;
-                        bool isCurrent = path.next != null && node.pos == path.next.Value.pos;
-                        bool isShort = prevPos != null && (prevPos.Value - pos).sqrMagnitude < 2;
+                        bool isPrev = path.prev is not null && node.pos == path.prev.Value.pos;
+                        bool isCurrent = path.next is not null && node.pos == path.next.Value.pos;
+                        bool isShort = prevPos is not null && (prevPos.Value - pos).sqrMagnitude < 2;
                         gizmos.Add(new GizmoManager.Cube(isPrev || isCurrent ? Color.cyan : Color.red, pos, 0.3f));
-                        if (prevPos != null)
+                        if (prevPos is Vector3 pp)
                         {
-                            gizmos.Add(new GizmoManager.Line(isShort ? Color.yellow : isCurrent ? Color.cyan : Color.red, prevPos.Value, pos));
+                            gizmos.Add(new GizmoManager.Line(isShort ? Color.yellow : isCurrent ? Color.cyan : Color.red, pp, pos));
                         }
                         prevPos = pos;
                     }
@@ -230,7 +230,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                             gizmos.Add(new GizmoManager.Cube(Color.red, pos, 0.4f));
                         for (int i = 0; i < 4; i++)
                         {
-                            if (tile.neighbors[i] == null)
+                            if (tile.neighbors[i] is null)
                                 gizmos.Add(new GizmoManager.Cube(Color.red, (WorldUtils.TileToWorldPos(tile.pos + WorldUtils.CARDINAL_DIRS[i]) + pos) * 0.5f, 0.25f));
                         }
                     }
@@ -289,7 +289,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                         foreach (var pos in path)
                         {
                             LevelGenTile current = Tiles[pos];
-                            if (prev != null)
+                            if (prev is not null)
                             {
                                 prev.pathNext.Add(current);
                                 gizmos.Add(new GizmoManager.Line(Color.magenta, WorldUtils.TileToWorldPos(pos), WorldUtils.TileToWorldPos(prev.pos)));
@@ -308,7 +308,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                             {
                                 taken.Add(pos);
                                 LevelGenTile current = Tiles[pos];
-                                if (prev != null)
+                                if (prev is not null)
                                 {
                                     prev.pathNext.Add(current);
                                     RegisterGizmos(StepType.Phase, () => new GizmoManager.Line(Color.cyan, WorldUtils.TileToWorldPos(pos), WorldUtils.TileToWorldPos(prev.pos)));
@@ -323,9 +323,9 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                     RandomSet<int> order = new();
                     for (int i = 0; i < 4; i++)
                     {
-                        if (t.neighbors[i] != null && t.neighbors[i].dist == t.dist - 1)
+                        if (t.neighbors[i] is LevelGenTile neighbor && neighbor.dist == t.dist - 1)
                         {
-                            if (distToMerge <= 0 || !taken.Contains(t.neighbors[i].pos))
+                            if (distToMerge <= 0 || !taken.Contains(neighbor.pos))
                             {
                                 count++;
                                 order.Add(i);

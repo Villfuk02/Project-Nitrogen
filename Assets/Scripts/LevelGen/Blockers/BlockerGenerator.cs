@@ -251,7 +251,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers
                     gizmos.Add(new GizmoManager.Cube(c, pos, 0.2f));
                     foreach (var n in tile.neighbors)
                     {
-                        if (n != null)
+                        if (n is not null)
                         {
                             Vector3 other = WorldUtils.TileToWorldPos((Vector3Int)n.pos);
                             gizmos.Add(new GizmoManager.Line(c, pos, Vector3.Lerp(pos, other, 0.5f)));

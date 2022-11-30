@@ -22,7 +22,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
         void DisplayField(ScattererObjectModule m)
         {
             Vector2Int texSize = WorldUtils.WORLD_SIZE * pixelsPerUnit;
-            if (cols == null || cols.Length != texSize.x * texSize.y)
+            if (cols is null || cols.Length != texSize.x * texSize.y)
                 cols = new Color32[texSize.x * texSize.y];
             bool different = false;
             foreach (Vector2Int v in texSize)
@@ -35,7 +35,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
                     different = true;
                 cols[i] = c;
             }
-            if (tex == null)
+            if (tex is null)
             {
                 tex = new(texSize.x, texSize.y)
                 {

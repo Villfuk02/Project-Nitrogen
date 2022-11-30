@@ -21,7 +21,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
 
         float EvaluateSDF(Vector2 tilePos, Predicate<Vector2Int> isPosIn)
         {
-            if (isPosIn == null)
+            if (isPosIn is null)
                 return -Mathf.Min(tilePos.x + 0.5f, tilePos.y + 0.5f, WorldUtils.WORLD_SIZE.x - 0.5f - tilePos.x, WorldUtils.WORLD_SIZE.y - 0.5f - tilePos.y);
             Vector2Int rounded = new(Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y));
             bool inside = isPosIn(rounded);

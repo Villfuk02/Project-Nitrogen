@@ -42,7 +42,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                 return null;
             }
 
-            if (next == null)
+            if (next is null)
             {
                 prev = path.First;
                 next = prev.Next;
@@ -89,7 +89,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                 {
                     newNode = (secondary.PopRandom(), dist);
                 }
-                if (newNode == null)
+                if (newNode is null)
                 {
                     if (prev != path.First)
                     {
@@ -113,7 +113,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                     next = next.Next;
                 }
             }
-            while (next != null && prev != null && prev.Value.dist + 1 >= next.Value.dist)
+            while (next is not null && prev is not null && prev.Value.dist + 1 >= next.Value.dist)
             {
                 prev = next;
                 next = next.Next;

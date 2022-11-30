@@ -26,7 +26,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
 
         public float EvaluateAt(Vector2 pos)
         {
-            if (offsets == null || offsets.Length != octaves)
+            if (offsets is null || offsets.Length != octaves)
             {
                 Init();
             }

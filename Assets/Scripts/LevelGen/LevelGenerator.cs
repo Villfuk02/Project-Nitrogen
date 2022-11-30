@@ -34,7 +34,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
 
         private void Awake()
         {
-            if (inst == null)
+            if (inst is null)
                 inst = this;
             else
                 Debug.LogError("There can be only one!");

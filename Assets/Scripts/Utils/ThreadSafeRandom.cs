@@ -52,7 +52,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
 
         void Check()
         {
-            if (_local == null)
+            if (_local is null)
             {
                 int seed;
                 lock (_global)

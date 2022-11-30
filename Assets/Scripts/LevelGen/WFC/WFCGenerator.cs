@@ -150,7 +150,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
                     {
                         WaitForStep(StepType.Substep);
                         UpdateNext(ref state, ref dirty, ref stateStack);
-                        if (state == null)
+                        if (state is null)
                         {
                             Debug.Log("WFC failed");
                             failed[0] = true;
@@ -270,13 +270,13 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
             {
                 WFCSlot s = dirty.PopRandom();
                 (WFCSlot n, bool backtrack) = s.UpdateValidModules(state);
-                if (n != null)
+                if (n is not null)
                     MarkNeighborsDirty(n.pos, n.UpdateConstraints(state), state, ref dirty);
                 if (backtrack)
                 {
                     Backtrack(ref state, ref dirty, ref stateStack);
                 }
-                else if (n != null)
+                else if (n is not null)
                 {
                     state.OverwriteSlot(n);
                 }
@@ -312,7 +312,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
             if (!WorldUtils.IsInRange(x, y, WorldUtils.WORLD_SIZE.x + 1, WorldUtils.WORLD_SIZE.y + 1))
                 return;
             WFCSlot s = state.GetSlot(x, y);
-            if (s == null || s.Collapsed != -1)
+            if (s is null || s.Collapsed != -1)
                 return;
             dirty.TryAdd(s);
         }

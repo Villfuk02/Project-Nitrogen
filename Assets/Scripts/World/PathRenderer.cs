@@ -30,7 +30,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.World
         {
             void DrawPath(Vector2Int? from, LevelGenTile t)
             {
-                if (from != null)
+                if (from is not null)
                 {
                     if (!taken.Contains((from.Value, t.pos)))
                     {

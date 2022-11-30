@@ -15,7 +15,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
             float ret = 0;
             foreach (ScattererValueModule svm in svms)
             {
-                if (svm != null)
+                if (svm is not null)
                     ret += svm.EvaluateAt(pos, som);
             }
             if (ret == float.NegativeInfinity)

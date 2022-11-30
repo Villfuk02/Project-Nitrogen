@@ -41,7 +41,7 @@ namespace Assets.Scripts.World.WorldBuilder
         }
         IEnumerator BuildTerrain(int batchSize)
         {
-            while (WORLD_DATA == null || WORLD_DATA.modules == null)
+            while (WORLD_DATA?.modules is null)
                 yield return null;
             int p = 0;
             for (int x = 0; x < WorldUtils.WORLD_SIZE.x + 1; x++)
@@ -60,7 +60,7 @@ namespace Assets.Scripts.World.WorldBuilder
         }
         IEnumerator PlaceDecorations(int batchSize)
         {
-            while (WORLD_DATA == null || WORLD_DATA.decorationPositions == null)
+            while (WORLD_DATA?.decorationPositions is null)
                 yield return null;
             int p = 0;
             for (int i = 0; i < WORLD_DATA.decorationPositions.Length; i++)
@@ -80,7 +80,7 @@ namespace Assets.Scripts.World.WorldBuilder
 
         IEnumerator RenderPath()
         {
-            while (WORLD_DATA == null || WORLD_DATA.tiles == null || WORLD_DATA.pathStarts == null)
+            while (WORLD_DATA?.tiles is null || WORLD_DATA.pathStarts is null)
                 yield return null;
             pr.RenderPaths();
             done++;
