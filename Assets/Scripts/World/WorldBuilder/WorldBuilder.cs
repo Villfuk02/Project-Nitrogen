@@ -1,4 +1,6 @@
+using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers;
 using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer;
+using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils;
 using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC;
 using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
 using InfiniteCombo.Nitrogen.Assets.Scripts.World;
@@ -12,19 +14,21 @@ namespace Assets.Scripts.World.WorldBuilder
     public class WorldBuilder : MonoBehaviour
     {
         [Header("References")]
+        [SerializeField] World world;
         [SerializeField] Transform tiles;
         [SerializeField] Transform terrain;
         [SerializeField] Transform decorations;
         [SerializeField] PathRenderer pr;
         [Header("Setup")]
         [SerializeField] GameObject slotPrefab;
+        [SerializeField] GameObject tilePrefab;
         [Header("Runtime")]
         [SerializeField] int done;
         readonly Stopwatch frameTimer = new();
         const int MILLIS_PER_FRAME = 12;
         public void Start()
         {
-            StartCoroutine(PlaceTiles(1));
+            StartCoroutine(PlaceTiles(20));
             StartCoroutine(BuildTerrain(10));
             StartCoroutine(PlaceDecorations(10));
             StartCoroutine(RenderPath());
@@ -36,6 +40,21 @@ namespace Assets.Scripts.World.WorldBuilder
 
         IEnumerator PlaceTiles(int batchSize)
         {
+            while (done < 3)
+                yield return null;
+            int p = 0;
+            for (int x = 0; x < WorldUtils.WORLD_SIZE.x; x++)
+            {
+                for (int y = 0; y < WorldUtils.WORLD_SIZE.y; y++)
+                {
+                    PlaceTile(x, y);
+                    p++;
+                    if (p % batchSize == 0 && frameTimer.ElapsedMilliseconds >= MILLIS_PER_FRAME)
+                    {
+                        yield return null;
+                    }
+                }
+            }
             done++;
             yield break;
         }
@@ -105,6 +124,20 @@ namespace Assets.Scripts.World.WorldBuilder
             t.localScale = Vector3.one * scale;
             Vector2 r = Random.insideUnitCircle * m.angleSpread;
             t.localRotation = Quaternion.Euler(r.x, Random.Range(0, 360f), r.y);
+        }
+        void PlaceTile(int x, int y)
+        {
+            Tile t = Instantiate(tilePrefab, tiles).GetComponent<Tile>();
+            t.pos = new(x, y);
+            LevelGenTile tt = WORLD_DATA.tiles[t.pos];
+            t.slant = tt.slant != WorldUtils.Slant.None;
+            if (tt.dist != int.MaxValue)
+                t.obstacle = Tile.Obstacle.Path;
+            else if (tt.blocker == -1)
+                t.obstacle = Tile.Obstacle.None;
+            else
+                t.obstacle = (Tile.Obstacle)((int)BlockerGenerator.ALL_BLOCKERS[tt.blocker].type + 2);
+            t.transform.localPosition = WorldUtils.TileToWorldPos(x, y, WORLD_DATA.tiles.GetHeightAt(new Vector2(x, y)).GetValueOrDefault(-2));
         }
     }
 }
