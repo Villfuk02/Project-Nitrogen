@@ -169,13 +169,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c32fd935d0b5142a15b99ff42b5c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  world: {fileID: 599020455}
   tiles: {fileID: 961600660}
   terrain: {fileID: 1281044095}
   decorations: {fileID: 1746230470}
   pr: {fileID: 1455657881}
-  terrainMaterial: {fileID: 2100000, guid: fccfa01402859324cbc5ac9a1761ff4a, type: 2}
   slotPrefab: {fileID: 3874263679433659877, guid: a3d794d9db79033458fe5418f7001169, type: 3}
-  terrainColor: {r: 0.5188679, g: 0.29009178, b: 0.18356177, a: 1}
+  tilePrefab: {fileID: 4614210074223665215, guid: 3dcdbc617cd4d5140b472b21427843f2, type: 3}
   done: 0
 --- !u!1 &134019241
 GameObject:
@@ -752,6 +752,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -818,13 +819,43 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.23911765, y: 0.3696438, z: -0.09904577, w: 0.89239913}
-  m_LocalPosition: {x: -10, y: 9.3, z: -10}
+  m_LocalPosition: {x: -10, y: 11, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 30, y: 45, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48402bea0dc14794b87378bbab797437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 963194227}
+  distBounds: {x: 0, y: 0}
+  moveSpeed: 2
+  zoomSpeed: -1
+  minZoom: 2.5
+  maxZoom: 7.2
+  minAngle: 90
+  maxAngle: 30
+  camHeight: 10
+  interpolationSpeed: 10
+  rotAcceleration: 5
+  rotDamping: 40
+  rotation: 45
+  rotationVel: 0
+  rotationTarget: 45
+  camSpacePos: {x: 0, y: 7.2, z: 0}
+  camSpacePosTarget: {x: 0, y: 7.2, z: 0}
+  angle: 30
 --- !u!1 &987874898
 GameObject:
   m_ObjectHideFlags: 0
