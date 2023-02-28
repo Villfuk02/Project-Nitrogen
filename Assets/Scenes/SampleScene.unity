@@ -843,7 +843,7 @@ MonoBehaviour:
   moveSpeed: 2
   zoomSpeed: -1
   minZoom: 2.5
-  maxZoom: 7.2
+  maxZoom: 6.6
   minAngle: 90
   maxAngle: 30
   camHeight: 10

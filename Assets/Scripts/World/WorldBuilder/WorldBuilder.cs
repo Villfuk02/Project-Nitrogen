@@ -36,6 +36,8 @@ namespace Assets.Scripts.World.WorldBuilder
         private void Update()
         {
             frameTimer.Restart();
+            if (done >= 4)
+                world.ready = true;
         }
 
         IEnumerator PlaceTiles(int batchSize)

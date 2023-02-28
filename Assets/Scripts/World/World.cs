@@ -7,7 +7,6 @@ namespace Assets.Scripts.World
         //[Header("References")]
         [Header("Runtime")]
         [SerializeField] Tile[,] tiles;
-
-
+        public bool ready;
     }
 }

@@ -1,6 +1,6 @@
-- [ ] organize project
-- [ ] send links
-- [ ] figure out how I di d what's done
+- [x] organize project
+- [x] send links
+- [ ] figure out how I did what's done
 - [ ] game design document
 - [ ] split [[Level Gen]] jobs into fns
 - [ ] REFACTOR [[Level Gen]]
