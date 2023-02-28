@@ -1,0 +1,11 @@
+{
+  "spellcheck": false,
+  "useTab": false,
+  "alwaysUpdateLinks": true,
+  "showUnsupportedFiles": true,
+  "promptDelete": false,
+  "showLineNumber": true,
+  "newFileLocation": "current",
+  "attachmentFolderPath": "./",
+  "fileSortOrder": "alphabetical"
+}

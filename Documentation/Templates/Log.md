@@ -1,0 +1,7 @@
+#LOG
+{{date}}
+
+## Activity
+- 
+
+## Notes

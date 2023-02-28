@@ -1,0 +1,16 @@
+{
+  "blue-topaz-theme@@transparent-setting-panel": false,
+  "blue-topaz-theme@@color-scheme-options": "color-scheme-options-avocado-topaz",
+  "blue-topaz-theme@@layout-style-options": "layout-style-options-default",
+  "blue-topaz-theme@@hide-vault-name": true,
+  "things-style@@font-monospace": "Cascadia Mono",
+  "things-style@@default-font-color": false,
+  "things-style@@tag-background-color-d": "#53248C",
+  "things-style@@h4-color": "#2E80F2",
+  "things-style@@h5-color": "#2E80F2",
+  "things-style@@h2-color": "#E5B567",
+  "things-style@@strong-color": "#3EB4BF",
+  "things-style@@em-color": "#BDE1D3",
+  "things-style@@green": "#DAB1D2",
+  "things-style@@tag-font-color-d": "#ECECEC"
+}

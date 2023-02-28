@@ -1,0 +1,158 @@
+{
+  "main": {
+    "id": "eb710c6eb28dca64",
+    "type": "split",
+    "children": [
+      {
+        "id": "9f4e2246546e8029",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "Project Nitrogen/Notes.md",
+            "mode": "source",
+            "source": false
+          }
+        }
+      },
+      {
+        "id": "8219615b3ec275ab",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "Project Nitrogen/Tickets/Level Gen.md",
+            "mode": "source",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "bf743dec36cf306b",
+    "type": "split",
+    "children": [
+      {
+        "id": "248684d9a9c2eff3",
+        "type": "tabs",
+        "dimension": 60.929648241206024,
+        "children": [
+          {
+            "id": "c384fcd47f1d623b",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Project Nitrogen/Notes.md"
+              }
+            }
+          },
+          {
+            "id": "d421786265fce296",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "eefd47e88fa79039",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "tag:#WIP",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "4a48f43fc05641f0",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          },
+          {
+            "id": "7b9961686e878739",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          }
+        ],
+        "currentTab": 1
+      },
+      {
+        "id": "50de2a0222dc7a3d",
+        "type": "tabs",
+        "dimension": 39.07035175879397,
+        "children": [
+          {
+            "id": "bc08a7732768c5cf",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Project Nitrogen/Notes.md",
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": false
+              }
+            }
+          },
+          {
+            "id": "4a6602ba575d84af",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Project Nitrogen/Notes.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "bda479d19aedac81",
+    "type": "split",
+    "children": [],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "9f4e2246546e8029",
+  "lastOpenFiles": [
+    "Project Nitrogen/Tickets/Level Gen.md",
+    "Project Nitrogen/Notes.md",
+    "Project Nitrogen/Project Nitrogen.md",
+    "Octopus.md",
+    "Krakin.md",
+    "Project Nitrogen/Tickets/Scatterer.md",
+    "Project Nitrogen/Tickets/Terrain Blocker.md",
+    "Project Nitrogen/Tickets/Decorations.md",
+    "Project Nitrogen/Tickets/Game Over.md",
+    "Project Nitrogen/Tickets/Minerals.md"
+  ]
+}

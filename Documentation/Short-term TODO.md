@@ -1,0 +1,7 @@
+- [ ] organize project
+- [ ] send links
+- [ ] figure out how I di d what's done
+- [ ] game design document
+- [ ] split [[Level Gen]] jobs into fns
+- [ ] REFACTOR [[Level Gen]]
+- [ ] get settings from [[Terrain Type]]

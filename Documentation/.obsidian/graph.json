@@ -1,0 +1,93 @@
+{
+  "collapse-filter": true,
+  "search": "",
+  "showTags": false,
+  "showAttachments": true,
+  "hideUnresolved": false,
+  "showOrphans": true,
+  "collapse-color-groups": true,
+  "colorGroups": [
+    {
+      "query": "tag:#TODO",
+      "color": {
+        "a": 1,
+        "rgb": 13277256
+      }
+    },
+    {
+      "query": "tag:#WIP",
+      "color": {
+        "a": 1,
+        "rgb": 2451655
+      }
+    },
+    {
+      "query": "tag:#MVP",
+      "color": {
+        "a": 1,
+        "rgb": 42948
+      }
+    },
+    {
+      "query": "tag:#DONE",
+      "color": {
+        "a": 1,
+        "rgb": 308499
+      }
+    },
+    {
+      "query": "tag:#CLOSED",
+      "color": {
+        "a": 1,
+        "rgb": 0
+      }
+    },
+    {
+      "query": "tag:#BUG",
+      "color": {
+        "a": 1,
+        "rgb": 16724736
+      }
+    },
+    {
+      "query": "tag:#FIXED",
+      "color": {
+        "a": 1,
+        "rgb": 4618310
+      }
+    },
+    {
+      "query": "tag:#IDEA",
+      "color": {
+        "a": 1,
+        "rgb": 11094
+      }
+    },
+    {
+      "query": "tag:#DESIGN",
+      "color": {
+        "a": 1,
+        "rgb": 6241419
+      }
+    },
+    {
+      "query": "tag:#LOG",
+      "color": {
+        "a": 1,
+        "rgb": 9063307
+      }
+    }
+  ],
+  "collapse-display": true,
+  "showArrow": false,
+  "textFadeMultiplier": -1,
+  "nodeSizeMultiplier": 1.74230769230769,
+  "lineSizeMultiplier": 5,
+  "collapse-forces": true,
+  "centerStrength": 0.518713248970312,
+  "repelStrength": 14.0879120879121,
+  "linkStrength": 1,
+  "linkDistance": 30,
+  "scale": 0.4946903560085378,
+  "close": false
+}
