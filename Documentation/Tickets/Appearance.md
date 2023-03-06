@@ -1,5 +1,5 @@
 #IDEA 
 #art
 
-[[Level Gen]] and [[Buildings]], [[Enemies]] low poly for now
+[[Level Generation]] and [[Buildings]], [[Enemies]] low poly for now
 UI idk

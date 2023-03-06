@@ -8,5 +8,5 @@ real-time waves
 cooldowns and production wave-based
 
 ### Blocked by
-- [[Level Gen]]
+- [[Level Generation]]
 - 

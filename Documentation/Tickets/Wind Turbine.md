@@ -4,5 +4,5 @@
 [[Economic buildings]]
 
 main source of [[Energy]]
-needs to be next to a path
-blocks 3x3 space 
+some restriction to compete for space with towers
+- needs to be next to a path?

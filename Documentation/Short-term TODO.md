@@ -1,7 +1,5 @@
-- [x] organize project
-- [x] send links
-- [ ] figure out how I did what's done
+- [ ] figure out how I did what's done (github archaeology)
 - [ ] game design document
-- [ ] split [[Level Gen]] jobs into fns
-- [ ] REFACTOR [[Level Gen]]
+- [ ] split [[Level Generation]] jobs into fns
+- [ ] REFACTOR [[Level Generation]]
 - [ ] get settings from [[Terrain Type]]

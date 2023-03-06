@@ -4,4 +4,4 @@
 "economy"
 Used for [[Spells]]
 
-produced by [[Hub]] and mined as ore ([[Terrain Blocker]])
+produced by [[Hub]]

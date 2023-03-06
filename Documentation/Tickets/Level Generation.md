@@ -8,6 +8,7 @@
 enforce path lengths, counts and overlap
 
 different [[Terrain Type]]s
+
 - [x] [[Path Generator]]
 - [x] [[WFC Algorithm]]
 - [x] [[Terrain Blocker]]s (finalize paths)
