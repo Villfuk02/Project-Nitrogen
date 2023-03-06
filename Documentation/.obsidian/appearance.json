@@ -4,5 +4,7 @@
   "monospaceFontFamily": "",
   "textFontFamily": "",
   "cssTheme": "Things",
-  "accentColor": ""
+  "accentColor": "",
+  "showViewHeader": false,
+  "nativeMenus": true
 }

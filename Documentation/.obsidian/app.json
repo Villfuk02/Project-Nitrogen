@@ -7,5 +7,6 @@
   "showLineNumber": true,
   "newFileLocation": "current",
   "attachmentFolderPath": "./",
-  "fileSortOrder": "alphabetical"
+  "fileSortOrder": "alphabetical",
+  "readableLineLength": false
 }
