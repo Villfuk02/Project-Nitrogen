@@ -57,7 +57,7 @@ namespace Assets.Scripts.GameCamera
                 Mathf.Clamp(camSpacePosTarget.z, -distBounds.y, distBounds.y));
             // update
             camSpacePos = Vector3.Lerp(camSpacePos, camSpacePosTarget, Time.deltaTime * interpolationSpeed);
-            angle = Mathf.Lerp(minAngle, maxAngle, Mathf.Pow((camSpacePos.y - minZoom) / (maxZoom - minZoom), 0.25f));
+            angle = Mathf.Lerp(minAngle, maxAngle, (camSpacePos.y - minZoom) / (maxZoom - minZoom));
             rotationVel *= (1 - rotDamping * Time.deltaTime);
             rotationVel += (rotationTarget - rotation) * rotAcceleration;
             rotation += rotationVel * Time.deltaTime;
