@@ -1,4 +1,4 @@
-- [ ] figure out how I did what's done (github archaeology)
+- [ ] fix path bug
 - [ ] game design document
 - [ ] split [[Level Generation]] jobs into fns
 - [ ] REFACTOR [[Level Generation]]

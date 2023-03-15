@@ -1,4 +1,4 @@
 #IDEA 
 #system 
 
-- sound cues
+- sound cues during [[Battle]]
