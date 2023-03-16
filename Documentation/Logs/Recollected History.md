@@ -275,8 +275,13 @@ New order of operations
 ## Game preparation
 
 - Transfer data from generation to gameplay
-- Assemble the scene
+    - Singleton WorldData object
+    - at generation start set to null
+    - then slowly filled out with data
+
+- Assemble the scene (WorldBuilder)
     - done in parallel with generation
+    - whenever new data appears in WorldData, use it to add more stuff to the world
     - place terrain models
     - place objects from scatterer
     - visualise paths ([image 13](https://drive.google.com/file/d/1Fy55vLD-yqXqLLYJ_h0HLU-jsLWzyKAe/view?usp=share_link))
