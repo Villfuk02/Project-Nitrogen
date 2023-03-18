@@ -1,5 +1,6 @@
 - [ ] fix path bug
-- [ ] game design document
+- [ ] copy algorithm descriptions from [[Recollected History]] into Notes
+- [ ] work on design
 - [ ] split [[Level Generation]] jobs into fns
 - [ ] REFACTOR [[Level Generation]]
 - [ ] get settings from [[Terrain Type]]
