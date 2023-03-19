@@ -1,4 +1,3 @@
-- [ ] fix path bug
 - [ ] copy algorithm descriptions from [[Recollected History]] into Notes
 - [ ] work on design
 - [ ] split [[Level Generation]] jobs into fns

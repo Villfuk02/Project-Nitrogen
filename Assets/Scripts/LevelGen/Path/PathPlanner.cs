@@ -291,7 +291,6 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                             LevelGenTile current = Tiles[pos];
                             if (prev is not null)
                             {
-                                prev.pathNext.Add(current);
                                 gizmos.Add(new GizmoManager.Line(Color.magenta, WorldUtils.TileToWorldPos(pos), WorldUtils.TileToWorldPos(prev.pos)));
                             }
                             prev = current;
