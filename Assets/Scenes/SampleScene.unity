@@ -850,7 +850,7 @@ MonoBehaviour:
   camHeight: 10
   interpolationSpeed: 10
   rotAcceleration: 5
-  rotDamping: 40
+  rotInertia: 1e-15
   rotation: 45
   rotationVel: 0
   rotationTarget: 45
@@ -1201,7 +1201,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   linePrefab: {fileID: 315257208492628400, guid: 6918aa5953bda704e8d611a0d7a7f1a6, type: 3}
   inset: 0.2
-  height: 0.2
+  height: 0.15
   scrollSpeed: -1
   offset: 0
   width: 0.4

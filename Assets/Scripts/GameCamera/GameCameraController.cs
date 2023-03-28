@@ -18,7 +18,7 @@ namespace Assets.Scripts.GameCamera
         [SerializeField] float camHeight;
         [SerializeField] float interpolationSpeed;
         [SerializeField] float rotAcceleration;
-        [SerializeField] float rotDamping;
+        [SerializeField] float rotInertia;
         [Header("Runtime")]
         [SerializeField] float rotation;
         [SerializeField] float rotationVel;
@@ -50,17 +50,20 @@ namespace Assets.Scripts.GameCamera
             if (Input.GetKey(KeyCode.D))
                 camSpacePosTarget += realMove * new Vector3(Mathf.Cos(rotationRad), 0, -Mathf.Sin(rotationRad));
             camSpacePosTarget += Input.mouseScrollDelta.y * zoomSpeed * Vector3.up;
+
             // limits
             camSpacePosTarget = new(
                 Mathf.Clamp(camSpacePosTarget.x, -distBounds.x, distBounds.x),
                 Mathf.Clamp(camSpacePosTarget.y, minZoom, maxZoom),
                 Mathf.Clamp(camSpacePosTarget.z, -distBounds.y, distBounds.y));
+
             // update
             camSpacePos = Vector3.Lerp(camSpacePos, camSpacePosTarget, Time.deltaTime * interpolationSpeed);
             angle = Mathf.Lerp(minAngle, maxAngle, (camSpacePos.y - minZoom) / (maxZoom - minZoom));
-            rotationVel *= (1 - rotDamping * Time.deltaTime);
+            rotationVel *= Mathf.Pow(rotInertia, Time.deltaTime);
             rotationVel += (rotationTarget - rotation) * rotAcceleration;
             rotation += rotationVel * Time.deltaTime;
+
             // apply
             rotationRad = rotation / 180 * Mathf.PI;
             transform.localPosition = new Vector3(camSpacePos.x, transform.localPosition.y, camSpacePos.z)

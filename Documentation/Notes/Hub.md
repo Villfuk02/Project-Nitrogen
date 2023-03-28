@@ -4,7 +4,7 @@
 
 Special [[Building]]
 
-Protect from [[Enemy]]
+Protect from [[Attacker]]
 [[Core Stability]] shared between [[Battle]]s, part of [[Macroeconomy]]
 Provides some basic resources ([[Microeconomy]]), can't be built
 Hub [[Upgrade]]?
