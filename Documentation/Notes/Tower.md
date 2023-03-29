@@ -25,5 +25,5 @@ powerful towers should have impact on terrain and camera
 - piercing
 - farther attacker = more damage
 
-### List of towers
+### List
 - [[Submachine gun]]

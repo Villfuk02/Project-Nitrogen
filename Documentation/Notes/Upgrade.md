@@ -1,7 +1,7 @@
 #TODO 
 #system 
 
-for upgrading [[Building]] and [[Spell]]
+for upgrading [[Building]] and [[Ability]]
 
 collect multiples of [[Blueprint]] and then upgrade them using [[Credit]]
 - linear or branching?

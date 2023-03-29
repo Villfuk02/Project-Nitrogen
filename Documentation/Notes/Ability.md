@@ -11,6 +11,7 @@ single target
 
 use on [[Attacker]]s
 use on your [[Building]]s
+global effect
 
-### List of Spells
+### List
 - 

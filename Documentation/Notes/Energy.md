@@ -2,7 +2,7 @@
 #component 
 
 "economy"
-Used for [[Spell]]
+Used for [[Ability]]
 Limited storage - incentive to use it
 ?If you don't have enough energy for a spell, [[Material]] will be used instead?
 

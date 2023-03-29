@@ -1,14 +1,9 @@
 #MVP
 #system 
 
+- randomised constraint solving programming
+
 - [x] pregenerate all [[Terrain Module]] variants (flips and rotations)
-
-
-ALG
-- [x] init
-- [x] randomly collapse slot
-    - [x] propagate constraints
-- [x] if invalid, backtrack
 
 NOTES
 - keep slots sorted by entropy

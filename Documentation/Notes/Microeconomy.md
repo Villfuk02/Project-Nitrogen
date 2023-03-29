@@ -3,7 +3,7 @@
 
 balance 
 - Offense - [[Fuel]]
-- defensive [[Tower]] and [[Spell]]
+- defensive [[Tower]] and [[Ability]]
 - [[Economic building]]
 
 these resources exist only within each [[Battle]]

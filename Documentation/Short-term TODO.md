@@ -1,4 +1,9 @@
 - [ ] work on design
 - [ ] split [[Level Generation]] jobs into fns
 - [ ] REFACTOR [[Level Generation]]
+- [ ] [[Attacker]]s
+- [ ] [[Building]]s
+- [ ] [[Wave Controller]]
+- [ ] ingame [[Blueprint]]s UI
+- [ ] [[Ability]]s
 - [ ] get settings from [[Terrain Type]]

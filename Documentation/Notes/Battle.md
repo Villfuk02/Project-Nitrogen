@@ -3,7 +3,7 @@
 
 [[Microeconomy]]
 
-each consists of several waves of [[Attacker]]s
+each consists of several waves of [[Attacker]]s, see [[Wave Controller]]
 each wave starts a fixed amount of time after the previous one, giving the player some time to prepare
 
 aftear each battle, get a few rewards 
@@ -15,7 +15,7 @@ aftear each battle, get a few rewards
 - use fixed updates for game logic
     - 20Hz
     - fixed time step 0.05s
-    - options to speed up - increasing fixed update rate
+    - options to speed up or possibly pause - changing fixed update rate
 - interpolate positions and visuals on Update
 - many visuals are game-speed agnostic 
     - use unscaledDeltaTime
