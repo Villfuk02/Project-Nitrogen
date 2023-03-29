@@ -1,0 +1,17 @@
+{
+    "name": "Battle",
+    "rootNamespace": "",
+    "references": [
+        "GUID:39396e230ea13e14b83488741c5aa89a",
+        "GUID:a6edeec7d0040c142ac51a431be73a6a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,8 +1,8 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using Assets.Scripts.Utils;
 using System;
 using UnityEngine;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
+namespace Assets.Scripts.LevelGen.Scatterer.ValueModules
 {
     [Serializable]
     public abstract class SDFSVM : ScattererValueModule

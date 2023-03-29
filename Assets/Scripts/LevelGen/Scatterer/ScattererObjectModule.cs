@@ -1,8 +1,8 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules;
+using Assets.Scripts.LevelGen.Scatterer.ValueModules;
 using System;
 using UnityEngine;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
+namespace Assets.Scripts.LevelGen.Scatterer
 {
     [Serializable]
     public class ScattererObjectModule

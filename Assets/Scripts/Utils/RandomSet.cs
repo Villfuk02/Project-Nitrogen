@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
+namespace Assets.Scripts.Utils
 {
     public class RandomSet<T>
     {

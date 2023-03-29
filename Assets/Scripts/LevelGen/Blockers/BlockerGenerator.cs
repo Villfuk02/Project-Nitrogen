@@ -1,13 +1,13 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using Assets.Scripts.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
-using static InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.LevelGenerator;
-using static InfiniteCombo.Nitrogen.Assets.Scripts.Utils.VectorUtils;
+using static Assets.Scripts.LevelGen.LevelGenerator;
+using static Assets.Scripts.Utils.VectorUtils;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers
+namespace Assets.Scripts.LevelGen.Blockers
 {
     public class BlockerGenerator : MonoBehaviour
     {

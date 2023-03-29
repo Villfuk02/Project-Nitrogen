@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
+namespace Assets.Scripts.Utils
 {
     public class GizmoManager : MonoBehaviour
     {

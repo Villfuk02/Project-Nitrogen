@@ -1,8 +1,8 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using Assets.Scripts.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils
+namespace Assets.Scripts.LevelGen.Utils
 {
     public class LevelGenTiles
     {

@@ -1,13 +1,12 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers;
-using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer;
-using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils;
-using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC;
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
-using InfiniteCombo.Nitrogen.Assets.Scripts.World;
+using Assets.Scripts.LevelGen.Blockers;
+using Assets.Scripts.LevelGen.Scatterer;
+using Assets.Scripts.LevelGen.Utils;
+using Assets.Scripts.LevelGen.WFC;
+using Assets.Scripts.Utils;
 using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
-using static InfiniteCombo.Nitrogen.Assets.Scripts.World.WorldData.WorldData;
+using static Assets.Scripts.World.WorldData.WorldData;
 
 namespace Assets.Scripts.World.WorldBuilder
 {
@@ -19,6 +18,7 @@ namespace Assets.Scripts.World.WorldBuilder
         [SerializeField] Transform terrain;
         [SerializeField] Transform decorations;
         [SerializeField] PathRenderer pr;
+        [SerializeField] GameObject[] enableWhenReady;
         [Header("Setup")]
         [SerializeField] GameObject slotPrefab;
         [SerializeField] GameObject tilePrefab;
@@ -37,7 +37,13 @@ namespace Assets.Scripts.World.WorldBuilder
         {
             frameTimer.Restart();
             if (done >= 4)
+            {
                 world.ready = true;
+                foreach (var o in enableWhenReady)
+                {
+                    o.SetActive(true);
+                }
+            }
         }
 
         IEnumerator PlaceTiles(int batchSize)

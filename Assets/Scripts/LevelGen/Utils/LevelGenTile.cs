@@ -1,8 +1,8 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using Assets.Scripts.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils
+namespace Assets.Scripts.LevelGen.Utils
 {
     public class LevelGenTile
     {
@@ -13,7 +13,7 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils
         public bool passable;
         public int blocker;
         public int dist;
-        public HashSet<LevelGenTile> pathNext = new();
+        public List<LevelGenTile> pathNext = new();
 
         public float GetHeight(Vector2 relativePos)
         {

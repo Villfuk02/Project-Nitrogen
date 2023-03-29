@@ -1,10 +1,10 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils;
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using Assets.Scripts.LevelGen.Utils;
+using Assets.Scripts.Utils;
 using System.Collections.Generic;
 using UnityEngine;
-using static InfiniteCombo.Nitrogen.Assets.Scripts.World.WorldData.WorldData;
+using static Assets.Scripts.World.WorldData.WorldData;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.World
+namespace Assets.Scripts.World
 {
     public class PathRenderer : MonoBehaviour
     {

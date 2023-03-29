@@ -1,4 +1,4 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using Assets.Scripts.Utils;
 using UnityEngine;
 
 namespace Assets.Scripts.GameCamera

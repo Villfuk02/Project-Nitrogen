@@ -1,8 +1,8 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils;
+using Assets.Scripts.LevelGen.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.World.WorldData
+namespace Assets.Scripts.World.WorldData
 {
     public class WorldData
     {

@@ -174,9 +174,59 @@ MonoBehaviour:
   terrain: {fileID: 1281044095}
   decorations: {fileID: 1746230470}
   pr: {fileID: 1455657881}
+  enableWhenReady:
+  - {fileID: 125072569}
   slotPrefab: {fileID: 3874263679433659877, guid: a3d794d9db79033458fe5418f7001169, type: 3}
   tilePrefab: {fileID: 4614210074223665215, guid: 3dcdbc617cd4d5140b472b21427843f2, type: 3}
   done: 0
+--- !u!1 &125072569
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 125072570}
+  - component: {fileID: 125072571}
+  m_Layer: 0
+  m_Name: WaveController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &125072570
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125072569}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 599020456}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &125072571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125072569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5594bc3e5279574b8a374e61835548b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackerPrefab: {fileID: 5845349189104484810, guid: 5c1c30ee895bdc7489707bc1a75935bd, type: 3}
+  spawnInterval: 1
+  spawnTimer: 0
+  currentIndex: 0
 --- !u!1 &134019241
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,7 +563,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 767574991213953024
-      type: {class: LimitSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: LimitSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         min: -3
@@ -523,14 +573,14 @@ MonoBehaviour:
         - rid: 767574991213953026
         - rid: 767574991213953027
     - rid: 767574991213953025
-      type: {class: ValidTileSDFSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: ValidTileSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         internalMultiplier: 1
         externalMultiplier: -1
         validBlockers: 00000000
     - rid: 767574991213953026
-      type: {class: FractalNoiseSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: FractalNoiseSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         noise:
@@ -541,13 +591,13 @@ MonoBehaviour:
           baseFrequency: 0.63
           frequencyMult: 2.147
     - rid: 767574991213953027
-      type: {class: PathSDFSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: PathSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         internalMultiplier: -3
         externalMultiplier: 0
     - rid: 767575005258579968
-      type: {class: LimitSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: LimitSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         min: -3
@@ -557,14 +607,14 @@ MonoBehaviour:
         - rid: 767575005258579970
         - rid: 767575005258579971
     - rid: 767575005258579969
-      type: {class: ValidTileSDFSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: ValidTileSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         internalMultiplier: 1
         externalMultiplier: -1
         validBlockers: 01000000
     - rid: 767575005258579970
-      type: {class: FractalNoiseSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: FractalNoiseSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         noise:
@@ -575,13 +625,13 @@ MonoBehaviour:
           baseFrequency: 0.61
           frequencyMult: 2.137
     - rid: 767575005258579971
-      type: {class: PathSDFSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: PathSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         internalMultiplier: -3
         externalMultiplier: 0
     - rid: 767575005258579972
-      type: {class: LimitSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: LimitSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         min: -3
@@ -591,14 +641,14 @@ MonoBehaviour:
         - rid: 767575005258579974
         - rid: 767575005258579975
     - rid: 767575005258579973
-      type: {class: ValidTileSDFSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: ValidTileSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         internalMultiplier: 1
         externalMultiplier: -2
         validBlockers: 02000000
     - rid: 767575005258579974
-      type: {class: FractalNoiseSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: FractalNoiseSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         noise:
@@ -609,13 +659,13 @@ MonoBehaviour:
           baseFrequency: 0.71
           frequencyMult: 1.973
     - rid: 767575005258579975
-      type: {class: PathSDFSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: PathSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         internalMultiplier: -4
         externalMultiplier: 0
     - rid: 767575005258579976
-      type: {class: LimitSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: LimitSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         min: -2
@@ -625,14 +675,14 @@ MonoBehaviour:
         - rid: 767575005258579978
         - rid: 1441366976532054016
     - rid: 767575005258579977
-      type: {class: ValidTileSDFSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: ValidTileSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         internalMultiplier: 1
         externalMultiplier: -1
         validBlockers: 0300000004000000
     - rid: 767575005258579978
-      type: {class: FractalNoiseSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: FractalNoiseSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         noise:
@@ -643,7 +693,7 @@ MonoBehaviour:
           baseFrequency: 0.63
           frequencyMult: 2.147
     - rid: 1441366976532054016
-      type: {class: PathSDFSVM, ns: InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
+      type: {class: PathSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
       data:
         enabled: 1
         internalMultiplier: -2
@@ -708,6 +758,7 @@ Transform:
   - {fileID: 10349200}
   - {fileID: 961600660}
   - {fileID: 1455657880}
+  - {fileID: 125072570}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1014,7 +1065,7 @@ MonoBehaviour:
   targetLengths: 0f0000001200000015000000
   maxPathsPerTarget: 3
   stepsUntilFail: 450
-  minMergeDistance: 4
+  minMergeDistance: 2
 --- !u!4 &1087793669
 Transform:
   m_ObjectHideFlags: 0

@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
-using static InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.LevelGenerator;
+using static Assets.Scripts.LevelGen.LevelGenerator;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
+namespace Assets.Scripts.LevelGen.Scatterer.ValueModules
 {
     [Serializable]
     public class ValidTileSDFSVM : SDFSVM

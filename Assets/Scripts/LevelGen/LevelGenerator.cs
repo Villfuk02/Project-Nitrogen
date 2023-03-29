@@ -1,17 +1,17 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers;
-using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path;
-using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils;
-using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC;
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using Assets.Scripts.LevelGen.Blockers;
+using Assets.Scripts.LevelGen.Path;
+using Assets.Scripts.LevelGen.Utils;
+using Assets.Scripts.LevelGen.WFC;
+using Assets.Scripts.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using static InfiniteCombo.Nitrogen.Assets.Scripts.Utils.WorldUtils;
-using static InfiniteCombo.Nitrogen.Assets.Scripts.World.WorldData.WorldData;
+using static Assets.Scripts.World.WorldData.WorldData;
+using static Assets.Scripts.Utils.WorldUtils;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen
+namespace Assets.Scripts.LevelGen
 {
     public class LevelGenerator : MonoBehaviour
     {

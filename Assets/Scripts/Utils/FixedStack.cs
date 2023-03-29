@@ -1,4 +1,4 @@
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
+namespace Assets.Scripts.Utils
 {
     public class FixedStack<T>
     {

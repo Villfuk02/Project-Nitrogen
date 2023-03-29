@@ -1,7 +1,7 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using Assets.Scripts.Utils;
 using System.Collections.Generic;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
+namespace Assets.Scripts.LevelGen.WFC
 {
     public class WFCTile
     {

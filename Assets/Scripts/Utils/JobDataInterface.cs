@@ -5,7 +5,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
+namespace Assets.Scripts.Utils
 {
     public class JobDataInterface
     {

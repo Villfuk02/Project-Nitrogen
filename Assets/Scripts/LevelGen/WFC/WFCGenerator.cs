@@ -1,11 +1,11 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using Assets.Scripts.Utils;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
-using static InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.LevelGenerator;
+using static Assets.Scripts.LevelGen.LevelGenerator;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.WFC
+namespace Assets.Scripts.LevelGen.WFC
 {
     public class WFCGenerator : MonoBehaviour
     {

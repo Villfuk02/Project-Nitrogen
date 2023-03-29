@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
+namespace Assets.Scripts.Utils
 {
     [System.Serializable]
     public class FractalNoise

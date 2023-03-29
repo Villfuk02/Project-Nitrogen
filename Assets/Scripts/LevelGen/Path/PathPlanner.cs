@@ -1,12 +1,12 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Utils;
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using Assets.Scripts.LevelGen.Utils;
+using Assets.Scripts.Utils;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
-using static InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.LevelGenerator;
+using static Assets.Scripts.LevelGen.LevelGenerator;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
+namespace Assets.Scripts.LevelGen.Path
 {
     public class PathPlanner : MonoBehaviour
     {
@@ -309,7 +309,8 @@ namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Path
                                 LevelGenTile current = Tiles[pos];
                                 if (prev is not null)
                                 {
-                                    prev.pathNext.Add(current);
+                                    if (!prev.pathNext.Contains(current))
+                                        prev.pathNext.Add(current);
                                     RegisterGizmos(StepType.Phase, () => new GizmoManager.Line(Color.cyan, WorldUtils.TileToWorldPos(pos), WorldUtils.TileToWorldPos(prev.pos)));
                                 }
                                 prev = current;

@@ -1,7 +1,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
+namespace Assets.Scripts.Utils
 {
     public static class WorldUtils
     {

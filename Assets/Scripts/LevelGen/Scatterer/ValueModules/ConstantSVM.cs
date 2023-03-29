@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer.ValueModules
+namespace Assets.Scripts.LevelGen.Scatterer.ValueModules
 {
     [Serializable]
     public class ConstantSVM : ScattererValueModule

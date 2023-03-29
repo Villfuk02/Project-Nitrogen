@@ -1,6 +1,6 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using Assets.Scripts.Utils;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Blockers
+namespace Assets.Scripts.LevelGen.Blockers
 {
     [System.Serializable]
     public class Blocker

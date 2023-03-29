@@ -1,7 +1,7 @@
-using InfiniteCombo.Nitrogen.Assets.Scripts.Utils;
+using Assets.Scripts.Utils;
 using UnityEngine;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.LevelGen.Scatterer
+namespace Assets.Scripts.LevelGen.Scatterer
 {
     public class ScattererVisualiser : MonoBehaviour
     {

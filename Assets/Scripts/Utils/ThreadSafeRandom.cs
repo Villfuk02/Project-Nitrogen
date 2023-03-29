@@ -3,7 +3,7 @@
 using System;
 using UnityEngine;
 
-namespace InfiniteCombo.Nitrogen.Assets.Scripts.Utils
+namespace Assets.Scripts.Utils
 {
     public class ThreadSafeRandom
     {
