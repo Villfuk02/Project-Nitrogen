@@ -1,3 +1,4 @@
+- [ ] Smart targetting range + visualisation
 - [ ] work on design
 - [ ] split [[Level Generation]] jobs into fns
 - [ ] REFACTOR [[Level Generation]]

@@ -1,6 +1,7 @@
 #WIP
 #system
 
+generate the level on which a [[Battle]] will take place
 
 [[Terrain Module]]s are dual to [[Tile]]s
 

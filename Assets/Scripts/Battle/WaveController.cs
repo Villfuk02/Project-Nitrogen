@@ -33,7 +33,9 @@ namespace Assets.Scripts.Battle
             uint selectedPath = index % paths;
             index /= paths;
             Attacker a = Instantiate(attackerPrefab, transform).GetComponent<Attacker>();
-            a.InitPath(WORLD_DATA.pathStarts[selectedPath], WORLD_DATA.firstPathNodes[selectedPath], index);
+            Vector2Int startingPoint = WORLD_DATA.pathStarts[selectedPath];
+            Vector2Int firstTile = WORLD_DATA.firstPathNodes[selectedPath];
+            a.InitPath(startingPoint, firstTile, index);
         }
     }
 }
