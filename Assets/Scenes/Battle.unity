@@ -507,7 +507,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 421106806}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.02, y: 1, z: 4.81}
+  m_LocalPosition: {x: -2.02, y: 2.3, z: 4.81}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -531,6 +531,7 @@ MonoBehaviour:
   parts:
   - {fileID: 2040693194}
   - {fileID: 1155016044}
+  checkLineOfSight: 1
   target: {fileID: 0}
 --- !u!1 &449949342
 GameObject:
@@ -855,6 +856,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 961600660}
+  - component: {fileID: 961600661}
   m_Layer: 0
   m_Name: Tiles
   m_TagString: Untagged
@@ -877,6 +879,20 @@ Transform:
   m_Father: {fileID: 599020456}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &961600661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 961600659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99604402dfd310c47b7777e5d712a42d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 963194227}
+  hoveredTile: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1678,8 +1694,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetting: {fileID: 0}
---- !u!135 &2040693195
-SphereCollider:
+--- !u!136 &2040693195
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1688,6 +1704,7 @@ SphereCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 2
   m_Radius: 4
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Height: 14
+  m_Direction: 1
+  m_Center: {x: 0, y: -2.25, z: 0}

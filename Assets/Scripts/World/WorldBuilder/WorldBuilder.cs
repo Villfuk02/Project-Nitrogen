@@ -146,10 +146,7 @@ namespace Assets.Scripts.World.WorldBuilder
             else
                 t.obstacle = (Tile.Obstacle)((int)BlockerGenerator.ALL_BLOCKERS[tt.blocker].type + 2);
             t.transform.localPosition = WorldUtils.TileToWorldPos(x, y, WORLD_DATA.tiles.GetHeightAt(new Vector2(x, y)).GetValueOrDefault(-2));
-            if (t.slant)
-            {
-                t.slantedParts.Rotate(WorldUtils.WORLD_CARDINAL_DIRS[((int)tt.slant) % 4] * WorldUtils.SLANT_ANGLE);
-            }
+            t.Init(tt.slant);
         }
     }
 }

@@ -154,6 +154,51 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1 &1603722898704636053
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8834317148766416842}
+  - component: {fileID: 2047181246147467335}
+  m_Layer: 11
+  m_Name: BlockerCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8834317148766416842
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603722898704636053}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7821336522203869552}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2047181246147467335
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603722898704636053}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.4, z: 1}
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!1 &2639554979504403088
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,7 +208,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2390359756930126932}
-  - component: {fileID: 6996832346169340845}
   - component: {fileID: 6401985119784765583}
   m_Layer: 7
   m_Name: SelectionCollider
@@ -187,19 +231,6 @@ Transform:
   m_Father: {fileID: 7821336522203869552}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6996832346169340845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2639554979504403088}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a1b8a2ac3a4af048be2752a09cbe3b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tile: {fileID: 736602127804814939}
 --- !u!65 &6401985119784765583
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -211,8 +242,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.01, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.02, y: 0.21, z: 1.02}
+  m_Center: {x: 0, y: -0.1, z: 0}
 --- !u!1 &2949649119493477035
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,6 +274,7 @@ Transform:
   m_Children:
   - {fileID: 2390359756930126932}
   - {fileID: 1103409162906064873}
+  - {fileID: 8834317148766416842}
   m_Father: {fileID: 6153100416974017944}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -293,6 +325,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slantedParts: {fileID: 7821336522203869552}
   selectionAnimator: {fileID: 3203102275641171740}
+  blockerCollider: {fileID: 1603722898704636053}
   pos: {x: 0, y: 0}
   obstacle: 0
   slant: 0

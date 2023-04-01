@@ -1,3 +1,4 @@
+using Assets.Scripts.Utils;
 using UnityEngine;
 
 namespace Assets.Scripts.World
@@ -5,8 +6,9 @@ namespace Assets.Scripts.World
     public class Tile : MonoBehaviour
     {
         [Header("References")]
-        public Transform slantedParts;
+        [SerializeField] Transform slantedParts;
         [SerializeField] Animator selectionAnimator;
+        [SerializeField] GameObject blockerCollider;
         [Header("Properties")]
         public Vector2Int pos;
         public enum Obstacle { None, Path, Short, Tall, Crystals, Minerals }
@@ -16,7 +18,12 @@ namespace Assets.Scripts.World
         public bool occupied; // change to building ref
         [SerializeField] bool hovered;
 
-
+        public void Init(WorldUtils.Slant slantDir)
+        {
+            if (slant)
+                slantedParts.Rotate(WorldUtils.WORLD_CARDINAL_DIRS[((int)slantDir) % 4] * WorldUtils.SLANT_ANGLE);
+            blockerCollider.SetActive(obstacle == Obstacle.Tall);
+        }
         public void Hover()
         {
             hovered = true;

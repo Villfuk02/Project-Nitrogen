@@ -7,9 +7,13 @@ namespace Assets.Scripts.Attackers.Simulation
 {
     public class Attacker : MonoBehaviour
     {
+        [Header("Constants")]
+        public const float SMALL_TARGET_HEIGHT = 0.3f;
+        public const float LARGE_TARGET_HEIGHT = 0.6f;
+        [Header("References")]
+        public Transform target;
         [Header("Stats")]
         public float speed;
-        public float centerHeight;
         [Header("Runtime values")]
         [SerializeField] float pathSegmentProgress;
         [SerializeField] Vector2Int pathSegmentTarget;
@@ -43,8 +47,8 @@ namespace Assets.Scripts.Attackers.Simulation
         private void UpdateWorldPosition()
         {
             Vector2 pos = Vector2.Lerp(lastTarget, pathSegmentTarget, pathSegmentProgress);
-            float height = WORLD_DATA.tiles.GetHeightAt(pos) ?? WORLD_DATA.tiles.GetHeightAt(pathSegmentTarget) ?? 0;
-            transform.localPosition = WorldUtils.TileToWorldPos(pos.x, pos.y, height) + Vector3.up * centerHeight;
+            float height = WORLD_DATA.tiles.GetHeightAt(pos) ?? WORLD_DATA.tiles.GetHeightAt(pathSegmentTarget) ?? -3;
+            transform.localPosition = WorldUtils.TileToWorldPos(pos.x, pos.y, height);
         }
 
         public void InitPath(Vector2Int start, Vector2Int firstNode, uint index)
@@ -67,7 +71,7 @@ namespace Assets.Scripts.Attackers.Simulation
             if (WORLD_DATA == null)
                 return;
             float height = WORLD_DATA.tiles.GetHeightAt(pathSegmentTarget) ?? 0;
-            Vector3 segTarget = WorldUtils.TileToWorldPos(pathSegmentTarget.x, pathSegmentTarget.y, height) + Vector3.up * centerHeight;
+            Vector3 segTarget = WorldUtils.TileToWorldPos(pathSegmentTarget.x, pathSegmentTarget.y, height);
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireCube(segTarget, Vector3.one * 0.15f);
             Gizmos.DrawLine(transform.position, segTarget);
