@@ -1,14 +1,14 @@
 #WIP
 #system 
 
+The level is divided into many square [[Tile]]s
+
+each can have when generated
 - slant
 - type 
 - height
-- [[Terrain Blocker]]?
-- has [[Material]] or [[Fuel]]?
+- [[Terrain Blocker]]s
 
-- correspond to vertices of [[Terrain Module]]s
+- dual to [[Terrain Module]]s
 
-- height - dependent model texturing
-
-- +[[Terrain Blocker]] colliders
+height dependent model texturing?

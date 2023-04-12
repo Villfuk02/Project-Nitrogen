@@ -1,9 +1,11 @@
 #TODO
-#system 
+#system [[Level Generation]]
 #art 
 
-each has its own set of [[Terrain Module]]s, [[Terrain Blocker]]s and [[Decoration]]
+each has its own set of [[Terrain Module]]s, [[Terrain Blocker]]s and [[Decoration]]s
 use blocky models for collision and detailed(-ish) modles for [[Appearance]]
+
+ideas
 - [ ] rocky with canyons
 - [ ] flat, sandy with monoliths
 - [ ] hilly, grassy with rivers
@@ -15,4 +17,4 @@ use blocky models for collision and detailed(-ish) modles for [[Appearance]]
 - [ ] abandoned ruins
 - [ ] electornic circuit
 - [ ] asteroids
-- [ ] pipes?
+- [ ] pipes

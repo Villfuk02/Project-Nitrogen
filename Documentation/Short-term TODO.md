@@ -1,5 +1,8 @@
-- [ ] work on design #WOD
-- [ ] finish targetting
+- [ ] finish targetting and range visualisation
+    - [ ] targetting base class
+    - [ ] targetting specialisations
+    - [ ] visualiser
 - [ ] split [[Level Generation]] jobs into fns
 - [ ] REFACTOR [[Level Generation]]
+- [ ] use unity events
 - [ ] get settings from [[Terrain Type]]

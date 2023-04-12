@@ -3,18 +3,8 @@
 
 generate the level on which a [[Battle]] will take place
 
-[[Terrain Module]]s are dual to [[Tile]]s
+[[Terrain Module]]s are dual to [[Tile]]s - each [[Terrain Module]] is centered on a vertex shared between four [[Tile]]s
 
-[[Terrain Module]]s have dynamic weights 
-enforce path lengths, counts and overlap
+enforce path lengths, counts and branching
 
-different [[Terrain Type]]s
-
-- [x] [[Path Generator]]
-- [x] [[WFC Algorithm]]
-- [x] [[Terrain Blocker]]s (finalize paths)
-    - ores
-- [x] [[Mesh Generator]] and place [[Terrain Blocker]]s
-- [x] [[Scatterer]]
-
-- [ ] import Settings from [[Terrain Type]]s
+[[Level Generation]] based on randomly selected [[Terrain Type]]

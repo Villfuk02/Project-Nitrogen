@@ -2,7 +2,8 @@
 #system 
 
 - organic
-- the grabber? ([[Story]])
+- introducing the [[Story]] in a way which gets the player invested
+    - all goes according to plan and then something happens
 - add UI elements slowly
 
 first part is normal and then something goes wrong ([[Story]])

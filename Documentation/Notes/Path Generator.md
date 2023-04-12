@@ -1,8 +1,7 @@
 #MVP 
-#system 
+#system [[Level Generation]]
 
-First generate paths to ensure passability during [[WFC Algorithm]]
-
+Generate paths for [[Attacker]]s to move along
 
 ALGORITHM
 - first pick *start points* from along the edges of the level (all paths end in the center of the level)
@@ -40,8 +39,11 @@ ALGORITHM
                 - set previous to next and next to the position after next (can become null)
         - if this loops too many times, restart the whole process, because a solution might not exist
 
-- Finalise paths
+now, the paths are prepared and [[WFC Algorithm]] will generate the terrain in a way that ensures these paths are passable
+
+- Then finalise paths
     - calculate the distance of each tile from the center
-    - DFS from path starts to center, only moving to tiles closer to the center
+    - DFS from path starts to center, only moving to tiles one step closer to the center
         - first found path is saved
+        - then brancing is attempted
         - whenever a branch would join an existing path, it is only allowed to do so if it is at least 4 tiles after it last split off

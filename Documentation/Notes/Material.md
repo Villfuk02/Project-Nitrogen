@@ -1,7 +1,6 @@
 #IDEA
-#component 
+#component [[Microeconomy]]
 
-"economy"
-used for [[Building]]
+used mainly for [[Building]]s
 
-produced by [[Hub]]
+produced by [[Hub]] and many [[Economic building]]s

@@ -1,26 +1,17 @@
 #MVP
-#system 
+#system [[Level Generation]]
 
-generate spaced models on surface of the mesh
-
-- [x] go through valid tiles one by one
-- [x] try random positions and place if fits
-    - [x] calculate radius
-
-Modules
-- [x] fractal noise
-- [x] height (raycast)
-- [x] SDF
-- [x] cliffs
-
+Scatters [[Decoration]]s on the terrain mesh
 
 ALGORITHM
-first compute weights based on various factors
+first compute weights based on various factors - set-up for each stage using scatterer modules
 - distance to path
 - height
 - distance to other blockers
+- cliff height (when over/under a cliff)
+- fractal noise
 
-then scatter decorations in stages, each stage again having one type of decoration and many parameters
+then scatter decorations in stages, each stage again having one type of decoration
 - for each stage put all tiles in a list
     - until it is empty
         - take a random subset such that no two picked tiles are adjecent (orthogonally and diagonally)

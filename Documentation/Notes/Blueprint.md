@@ -19,7 +19,7 @@ Important stats:
 
 [lenticular design](https://magic.wizards.com/en/news/making-magic/lenticular-design-2014-03-31) (18.3.23)
 
-Each blueprint can be modified with ~ 1 to 2 [[Augment]]s
+Each can be modified with ~ 1 to 2 [[Augment]]s
 
 Blueprint holds stats for itself and the [[Building]]/[[Ability]]/... it provides - for example damage, firerate
 [[Building]]s / [[Ability]]s provide behavior along with the necessary values needed fo executing the behavior

@@ -1,4 +1,9 @@
 #TODO
 #system 
 
-use [[Credit]]s to buy new [[Blueprint]]s and [[Augment]]s
+use [[Generic monetary unit]]s to buy stuff
+different specialisations - each offers different things to buy
+- [[Blueprint]]s
+- [[Augment]]s
+- [[Upgrade]]s
+- [[Core Stability]]

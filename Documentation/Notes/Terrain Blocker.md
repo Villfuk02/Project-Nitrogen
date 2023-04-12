@@ -1,12 +1,13 @@
 #MVP
-#system 
+#system [[Level Generation]]
 
 Placed on [[Tile]]s during generation
 Ores and other obstacles
-similar to [[Decoration]]
 models placed by [[Scatterer]]
 
 Different types defined for each [[Terrain Type]]
+
+some block projectiles and the line of sight of [[Tower]]
 
 Constraints
 - specific [[Tile]] type

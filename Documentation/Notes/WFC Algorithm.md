@@ -1,19 +1,7 @@
 #MVP
-#system 
+#system [[Level Generation]]
 
-- randomised constraint solving programming
-
-- [x] pregenerate all [[Terrain Module]] variants (flips and rotations)
-
-NOTES
-- keep slots sorted by entropy
-- each slot has possibilities per constraint
-    - [x] [[Tile]] height x4
-    - [x] [[Tile]] type x4 (can be unpassable)
-    - [x] [[Tile]] slant x4
-    - [x] passages x4
-- each slot updates possible modules lazily
-
+randomised constraint solving programming
 
 - *slots* offset compared to *tiles* 
     - less distinct variants
@@ -51,3 +39,12 @@ ALGORITHM
 - if a *slot* ends up with 0 *modules* in its *domain*, backtrack
     - pop a prevoiusly saved *state* from the stack and revert to it
     - remove the previously chosen *module* from the *domain* of the previously *collapsed slot*
+
+NOTES
+- keep slots sorted by entropy
+- each slot has possibilities per constraint
+    - [[Tile]] height x4
+    - [[Tile]] type x4 (can be unpassable)
+    - [[Tile]] slant x4
+    - passages x4
+- each slot updates possible modules lazily

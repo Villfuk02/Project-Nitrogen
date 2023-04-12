@@ -1,5 +1,5 @@
 #IDEA 
 #art
 
-[[Level Generation]] and [[Building]], [[Attacker]] low poly for now
+Terrain, [[Building]]s, [[Attacker]]s, everything low poly for now
 UI idk

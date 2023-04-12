@@ -4,6 +4,8 @@
 These resources are shared across [[Battle]]s
 
 - [[Core Stability]]
-- [[Credit]] (for upgrades and shops)
+- [[Generic monetary unit]]s
+- [[Blueprint]]s
+- [[Augment]]s
 
-Long term strong stuff must be short term weak
+Stuff that's provides long-term advantage should be bad in the short term
