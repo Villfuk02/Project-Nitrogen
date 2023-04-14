@@ -62,7 +62,9 @@ namespace Assets.Scripts.Utils
                 _local = new System.Random(seed);
             }
         }
-
+        /// <summary>
+        /// Returns a random point inside unit circle, including its border
+        /// </summary>
         public Vector2 InsideUnitCircle()
         {
             Vector2 result;

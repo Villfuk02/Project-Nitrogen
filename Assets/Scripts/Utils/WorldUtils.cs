@@ -26,6 +26,10 @@ namespace Assets.Scripts.Utils
         {
             return TileToWorldPos(tilePos.x, tilePos.y, tilePos.z);
         }
+        public static Vector3 TileToWorldPos(Vector2 tilePos, float height)
+        {
+            return TileToWorldPos(tilePos.x, tilePos.y, height);
+        }
         public static Vector3 TileToWorldPos(Vector2Int tilePos)
         {
             return TileToWorldPos((Vector2)tilePos);
@@ -52,20 +56,20 @@ namespace Assets.Scripts.Utils
                 );
         }
 
-        public static Vector3Int WorldToTilePos(Vector3 worldPos)
+        public static Vector3 WorldToTilePos(Vector3 worldPos)
         {
-            return new Vector3Int(
-                Mathf.RoundToInt(worldPos.x + (WORLD_SIZE.x - 1) / 2f),
-                Mathf.RoundToInt(worldPos.z / HEIGHT_STEP),
-                Mathf.RoundToInt(worldPos.y + (WORLD_SIZE.y - 1) / 2f)
+            return new Vector3(
+                worldPos.x + (WORLD_SIZE.x - 1) / 2f,
+                worldPos.z + (WORLD_SIZE.y - 1) / 2f,
+                worldPos.y / HEIGHT_STEP
                 );
         }
 
-        public static Vector2Int WorldToSlotPos(Vector3 worldPos)
+        public static Vector2 WorldToSlotPos(Vector3 worldPos)
         {
-            return new Vector2Int(
-                Mathf.RoundToInt(worldPos.x + WORLD_SIZE.x / 2f),
-                Mathf.RoundToInt(worldPos.z + WORLD_SIZE.y / 2f)
+            return new Vector2(
+                worldPos.x + WORLD_SIZE.x / 2f,
+                worldPos.z + WORLD_SIZE.y / 2f
                 );
         }
 

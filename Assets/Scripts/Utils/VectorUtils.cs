@@ -17,5 +17,14 @@ namespace Assets.Scripts.Utils
                 }
             }
         }
+
+        public static Vector2Int Round(this Vector2 v)
+        {
+            return new(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y));
+        }
+        public static Vector3Int Round(this Vector3 v)
+        {
+            return new(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y), Mathf.RoundToInt(v.z));
+        }
     }
 }
