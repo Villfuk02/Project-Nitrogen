@@ -1,6 +1,7 @@
-using Assets.Scripts.Utils;
 
-namespace Assets.Scripts.LevelGen.Blockers
+using Utils;
+
+namespace LevelGen.Blockers
 {
     [System.Serializable]
     public class Blocker

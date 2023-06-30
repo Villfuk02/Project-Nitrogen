@@ -1,8 +1,9 @@
-using Assets.Scripts.LevelGen.Scatterer.ValueModules;
+
+using LevelGen.Scatterer.ValueModules;
 using System;
 using UnityEngine;
 
-namespace Assets.Scripts.LevelGen.Scatterer
+namespace LevelGen.Scatterer
 {
     [Serializable]
     public class ScattererObjectModule

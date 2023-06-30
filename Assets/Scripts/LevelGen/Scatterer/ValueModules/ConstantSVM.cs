@@ -1,7 +1,8 @@
+
 using System;
 using UnityEngine;
 
-namespace Assets.Scripts.LevelGen.Scatterer.ValueModules
+namespace LevelGen.Scatterer.ValueModules
 {
     [Serializable]
     public class ConstantSVM : ScattererValueModule

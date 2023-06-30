@@ -1,8 +1,9 @@
-using Assets.Scripts.Utils;
+
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
-namespace Assets.Scripts.LevelGen.Path
+namespace LevelGen.Path
 {
     public class PlannedPath
     {

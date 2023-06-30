@@ -1,8 +1,9 @@
-using Assets.Scripts.Utils;
+
 using System;
 using UnityEngine;
+using Utils;
 
-namespace Assets.Scripts.LevelGen.Scatterer.ValueModules
+namespace LevelGen.Scatterer.ValueModules
 {
     [Serializable]
     public abstract class SDFSVM : ScattererValueModule
@@ -19,7 +20,7 @@ namespace Assets.Scripts.LevelGen.Scatterer.ValueModules
                 return -internalMultiplier * sdf;
         }
 
-        float EvaluateSDF(Vector2 tilePos, Predicate<Vector2Int> isPosIn)
+        float EvaluateSDF(Vector2 tilePos, Predicate<Vector2Int>? isPosIn)
         {
             if (isPosIn is null)
                 return -Mathf.Min(tilePos.x + 0.5f, tilePos.y + 0.5f, WorldUtils.WORLD_SIZE.x - 0.5f - tilePos.x, WorldUtils.WORLD_SIZE.y - 0.5f - tilePos.y);

@@ -1,10 +1,11 @@
-using Assets.Scripts.LevelGen.Utils;
-using Assets.Scripts.Utils;
+
+using LevelGen.Utils;
 using System.Collections.Generic;
 using UnityEngine;
-using static Assets.Scripts.World.WorldData.WorldData;
+using Utils;
+using static World.WorldData.WorldData;
 
-namespace Assets.Scripts.World
+namespace World
 {
     public class PathRenderer : MonoBehaviour
     {

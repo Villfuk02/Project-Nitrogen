@@ -1,9 +1,10 @@
-using Assets.Scripts.Utils;
+
 using UnityEngine;
-using static Assets.Scripts.World.WorldData.WorldData;
+using Utils;
+using static World.WorldData.WorldData;
 
 
-namespace Assets.Scripts.Attackers.Simulation
+namespace Attackers.Simulation
 {
     public class Attacker : MonoBehaviour
     {

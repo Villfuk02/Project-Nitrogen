@@ -1,9 +1,10 @@
-﻿using Assets.Scripts.Attackers.Simulation;
+﻿
+using Attackers.Simulation;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.Scripts.Buildings.Simulation.Towers.Targetting
+namespace Buildings.Simulation.Towers.Targetting
 {
     public interface ITargettingParent
     {

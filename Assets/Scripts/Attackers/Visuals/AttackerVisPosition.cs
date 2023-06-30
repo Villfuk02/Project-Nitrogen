@@ -1,7 +1,8 @@
-using Assets.Scripts.Attackers.Simulation;
+
+using Attackers.Simulation;
 using UnityEngine;
 
-namespace Assets.Scripts.Attackers.Appearance
+namespace Attackers.Visuals
 {
     public class AttackerVisPosition : MonoBehaviour
     {

@@ -1,0 +1,16 @@
+{
+    "name": "Data.Parsers",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0900e4d871f3dbb4eaddf25d1909436f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

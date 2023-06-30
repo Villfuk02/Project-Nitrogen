@@ -1,12 +1,13 @@
-using Assets.Scripts.LevelGen.Utils;
-using Assets.Scripts.Utils;
+
+using LevelGen.Utils;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
-using static Assets.Scripts.LevelGen.LevelGenerator;
+using Utils;
+using static LevelGen.LevelGenerator;
 
-namespace Assets.Scripts.LevelGen.Path
+namespace LevelGen.Path
 {
     public class PathPlanner : MonoBehaviour
     {

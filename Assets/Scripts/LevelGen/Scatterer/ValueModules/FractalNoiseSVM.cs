@@ -1,8 +1,9 @@
-using Assets.Scripts.Utils;
+
 using System;
 using UnityEngine;
+using Utils;
 
-namespace Assets.Scripts.LevelGen.Scatterer.ValueModules
+namespace LevelGen.Scatterer.ValueModules
 {
     [Serializable]
     public class FractalNoiseSVM : ScattererValueModule

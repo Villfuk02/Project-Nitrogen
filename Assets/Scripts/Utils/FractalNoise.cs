@@ -1,6 +1,7 @@
+
 using UnityEngine;
 
-namespace Assets.Scripts.Utils
+namespace Utils
 {
     [System.Serializable]
     public class FractalNoise
@@ -12,8 +13,18 @@ namespace Assets.Scripts.Utils
         public float baseFrequency;
         public float frequencyMult;
 
+        //TODO: FIX
         Vector2[] offsets;
         ThreadSafeRandom _rand = new();
+        public FractalNoise(int octaves, float bias, float baseAmplitude, float amplitudeMult, float baseFrequency, float frequencyMult)
+        {
+            this.octaves = octaves;
+            this.bias = bias;
+            this.baseAmplitude = baseAmplitude;
+            this.amplitudeMult = amplitudeMult;
+            this.baseFrequency = baseFrequency;
+            this.frequencyMult = frequencyMult;
+        }
 
         void Init()
         {

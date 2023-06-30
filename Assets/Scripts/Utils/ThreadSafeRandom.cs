@@ -1,9 +1,10 @@
+
 //Based on https://stackoverflow.com/a/11109361
 
 using System;
 using UnityEngine;
 
-namespace Assets.Scripts.Utils
+namespace Utils
 {
     public class ThreadSafeRandom
     {

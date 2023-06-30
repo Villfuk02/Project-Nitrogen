@@ -1,11 +1,12 @@
-using Assets.Scripts.Utils;
+
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
-using static Assets.Scripts.LevelGen.LevelGenerator;
+using Utils;
+using static LevelGen.LevelGenerator;
 
-namespace Assets.Scripts.LevelGen.WFC
+namespace LevelGen.WFC
 {
     public class WFCGenerator : MonoBehaviour
     {
@@ -266,7 +267,7 @@ namespace Assets.Scripts.LevelGen.WFC
                 return (dirty, state, maxEntropy);
             }
 
-            private void UpdateNext(ref WFCState state, ref RandomSet<WFCSlot> dirty, ref FixedStack<WFCState> stateStack)
+            private void UpdateNext(ref WFCState? state, ref RandomSet<WFCSlot> dirty, ref FixedStack<WFCState> stateStack)
             {
                 WFCSlot s = dirty.PopRandom();
                 (WFCSlot n, bool backtrack) = s.UpdateValidModules(state);
@@ -281,7 +282,7 @@ namespace Assets.Scripts.LevelGen.WFC
                     state.OverwriteSlot(n);
                 }
             }
-            void Backtrack(ref WFCState state, ref RandomSet<WFCSlot> dirty, ref FixedStack<WFCState> stateStack)
+            void Backtrack(ref WFCState? state, ref RandomSet<WFCSlot> dirty, ref FixedStack<WFCState> stateStack)
             {
                 Debug.Log("Backtrackin' time");
                 dirty.Clear();

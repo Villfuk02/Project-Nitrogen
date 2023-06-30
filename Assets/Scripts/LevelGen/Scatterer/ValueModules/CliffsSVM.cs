@@ -1,9 +1,10 @@
-using Assets.Scripts.Utils;
+
 using System;
 using UnityEngine;
-using static Assets.Scripts.LevelGen.LevelGenerator;
+using Utils;
+using static LevelGen.LevelGenerator;
 
-namespace Assets.Scripts.LevelGen.Scatterer.ValueModules
+namespace LevelGen.Scatterer.ValueModules
 {
     [Serializable]
     public class CliffsSVM : ScattererValueModule

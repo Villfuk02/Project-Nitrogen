@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,7 +6,8 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
-namespace Assets.Scripts.Utils
+
+namespace Utils
 {
     [DebuggerDisplay("Count = {Count}")]
     public class PriorityQueue<TElement, TPriority>
@@ -618,7 +620,7 @@ namespace Assets.Scripts.Utils
                     return false;
                 }
                 public (TElement Element, TPriority Priority) Current => _current;
-                object IEnumerator.Current => _current;
+                object? IEnumerator.Current => _current;
                 void IEnumerator.Reset()
                 {
                     if (_version != _queue._version)

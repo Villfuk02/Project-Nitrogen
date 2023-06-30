@@ -1,7 +1,8 @@
+
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Scripts.Utils
+namespace Utils
 {
     public class GizmoManager : MonoBehaviour
     {

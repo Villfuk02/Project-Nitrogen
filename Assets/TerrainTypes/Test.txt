@@ -1,0 +1,313 @@
+display_name Test
+# d - default
+surfaces d
+max_height 3
+
+modules {
+    * Flat {
+        weight 80
+        collision Terrain/Flat
+        shape {
+            d0x o d0x
+             o     o
+            d0x o d0x
+        }
+        # models Terrain/Flat
+    }
+
+    * StraightCliff {
+        weight 16
+        variants 4
+        collision Terrain/StraightCliff
+        height_offset 1
+        shape {
+            d1x o d1x
+             x     x
+            d0x o d0x
+        }
+    }
+
+    * CornerCliff {
+        weight 16
+        variants 4
+        collision Terrain/CurvedCliff
+        height_offset 1
+        shape {
+            d1x x d0x
+             x     o
+            d0x o d0x
+        }
+    }
+
+    * InnerCornerCliff {
+        weight 16
+        variants 4
+        collision Terrain/InnerCornerCliff
+        shape {
+            d0x o d0x
+             o     x
+            d0x x d1x
+        }
+    }
+
+    * StraightHighCliff {
+        weight 8
+        variants 4
+        collision Terrain/Straight2HighCliff
+        height_offset 2
+        shape {
+            d2x o d2x
+             x     x
+            d0x o d0x
+        }
+    }
+
+    * 3LevelTCliff {
+        weight 2
+        variants f4
+        collision Terrain/TCliffTriple
+        height_offset 2
+        shape {
+            d2x o d2x
+             x     x
+            d0x x d1x
+        }
+    }
+
+    * 3LevelCrossCliff {
+        weight 2
+        variants 4
+        collision Terrain/CrossCliffTriple
+        height_offset 2
+        shape {
+            d2x x d1x
+             x     x
+            d1x x d0x
+        }
+    }
+
+    * StraightSlantDown {
+        weight 32
+        variants f4
+        collision Terrain/StraightSlantDown
+        shape {
+            d0x o d0x
+             o     o
+            d0x x d0v
+        }
+    }
+
+    * CornerCliffSlantUp {
+        weight 32
+        variants f4
+        collision Terrain/CornerSlantUp
+        height_offset 1
+        shape {
+            d1x x d1v
+             x     o
+            d0x o d0x
+        }
+    }
+
+    * FlatSlantDown {
+        weight 64
+        variants 4
+        collision Terrain/FlatSlantDown
+        shape {
+            d0x o d0x
+             o     o
+            d0v o d0v
+        }
+    }
+
+    * FlatSlantUp {
+        weight 64
+        variants 4
+        collision Terrain/FlatSlantUp
+        shape {
+            d1v o d1v
+             o     o
+            d0x o d0x
+        }
+    }
+
+    * SlantDownStraightCliff {
+        weight 32
+        variants f4
+        collision Terrain/SlantDownStraightCliff
+        height_offset 1
+        shape {
+            d1x x d0x
+             o     o
+            d1v x d0x
+        }
+    }
+
+    * SlantUpStraightCliff {
+        weight 32
+        variants f4
+        collision Terrain/SlantUpStraightCliff
+        height_offset 1
+        shape {
+            d1x x d0x
+             o     o
+            d1x x d1^
+        }
+    }
+
+    * DoubleSlantUpCornerCliff {
+        weight 32
+        variants 4
+        collision Terrain/DoubleSlantUpCornerCliff
+        height_offset 1
+        shape {
+            d1x x d1v
+             x     o
+            d1> o d0x
+        }
+    }
+}
+
+blockers {
+    layers {
+        Fuel
+        Minerals
+        BigRocks
+        SmallRocks
+    }
+    fillers SmallRocks
+
+    * Fuel {
+        type f
+        min 3
+        max 3
+        base_probability 1
+        # valid_surfaces d
+        on_slants false
+        forces -10
+    }
+
+    * Minerals {
+        type s
+        min 4
+        max 6
+        base_probability 0.3
+        on_slants false
+        forces -2 0.5
+    }
+
+    * BigRocks {
+        type l
+        max 10
+        base_probability 0.2
+        forces -1 0 -1
+    }
+
+    * SmallRocks {
+        type s
+        base_probability 0.1
+        forces -0.1 0 0.4 -0.1
+    }
+}
+
+scatterer {
+    * Fuel {
+        prefab Terrain/Blockers/Crystals
+        tries_per_tile 50
+        placement_radius 0.05
+        persistent_radius 0.25
+        size_gain 1
+        radius_gain -2
+        angle_spread 15
+        value_threshold 0
+        value {
+            clamp -3 1 {
+                blocker Fuel 1 -1
+                fractal_noise {
+                    octaves 2
+                    bias 0
+                    base_amplitude 0.3
+                    amplitude_mult 0.673
+                    base_frequency 0.63
+                    frequency_mult 2.147
+                }
+                path -3 0
+            }
+        }
+    }
+
+    * Minerals {
+        prefab Terrain/Blockers/Minerals
+        tries_per_tile 30
+        placement_radius 0.15
+        persistent_radius 0.15
+        size_gain 1
+        radius_gain -2
+        angle_spread 25
+        value_threshold 0
+        value {
+            clamp -3 0.8 {
+                blocker Minerals 1 -1
+                fractal_noise {
+                    octaves 2
+                    bias 0
+                    base_amplitude 0.4
+                    amplitude_mult 0.777
+                    base_frequency 0.61
+                    frequency_mult 2.137
+                }
+                path -3 0
+            }
+        }
+    }
+
+    * BigRocks {
+        prefab Terrain/Blockers/BigRock
+        tries_per_tile 10
+        placement_radius 0.25
+        persistent_radius 0.25
+        size_gain 1.5
+        radius_gain -1
+        angle_spread 15
+        value_threshold -2
+        value {
+            clamp -3 0.3 {
+                blocker BigRocks 1 -2
+                fractal_noise {
+                    octaves 2
+                    bias 0
+                    base_amplitude 0.8
+                    amplitude_mult 0.689
+                    base_frequency 0.71
+                    frequency_mult 1.973
+                }
+                path -4 0
+            }
+        }
+    }
+
+    * SmallRocks {
+        prefab Terrain/Blockers/Rock
+        tries_per_tile 40
+        placement_radius 0.12
+        persistent_radius 0.05
+        size_gain 1.2
+        radius_gain -2
+        angle_spread 40
+        value_threshold -0.2
+        value {
+            clamp -2 0.2 {
+                blocker SmallRocks 1 -1
+                fractal_noise {
+                    octaves 2
+                    bias -0.3
+                    base_amplitude 1
+                    amplitude_mult 0.673
+                    base_frequency 0.63
+                    frequency_mult 2.147
+                }
+                path -2 0
+            }
+        }
+    }
+}

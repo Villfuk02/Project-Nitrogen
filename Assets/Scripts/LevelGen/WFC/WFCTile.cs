@@ -1,7 +1,8 @@
-using Assets.Scripts.Utils;
-using System.Collections.Generic;
 
-namespace Assets.Scripts.LevelGen.WFC
+using System.Collections.Generic;
+using Utils;
+
+namespace LevelGen.WFC
 {
     public class WFCTile
     {

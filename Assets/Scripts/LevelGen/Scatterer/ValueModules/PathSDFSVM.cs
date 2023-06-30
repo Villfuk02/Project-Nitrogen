@@ -1,8 +1,9 @@
+
 using System;
 using UnityEngine;
-using static Assets.Scripts.LevelGen.LevelGenerator;
+using static LevelGen.LevelGenerator;
 
-namespace Assets.Scripts.LevelGen.Scatterer.ValueModules
+namespace LevelGen.Scatterer.ValueModules
 {
     [Serializable]
     public class PathSDFSVM : SDFSVM

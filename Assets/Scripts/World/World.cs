@@ -1,6 +1,7 @@
+
 using UnityEngine;
 
-namespace Assets.Scripts.World
+namespace World
 {
     public class World : MonoBehaviour
     {

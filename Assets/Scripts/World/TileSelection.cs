@@ -1,7 +1,8 @@
-using Assets.Scripts.Utils;
-using UnityEngine;
 
-namespace Assets.Scripts.World
+using UnityEngine;
+using Utils;
+
+namespace World
 {
     public class TileSelection : MonoBehaviour
     {
@@ -17,7 +18,7 @@ namespace Assets.Scripts.World
         void Update()
         {
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            Tile newHoveredTile = null;
+            Tile? newHoveredTile = null;
             if (Physics.Raycast(ray, out RaycastHit hit, 100, tileSelectionMask))
                 newHoveredTile = hit.transform.GetComponentInParent<Tile>();
 

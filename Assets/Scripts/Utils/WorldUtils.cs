@@ -1,7 +1,10 @@
+
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.Scripts.Utils
+namespace Utils
 {
     public static class WorldUtils
     {
@@ -11,14 +14,15 @@ namespace Assets.Scripts.Utils
         public const float HEIGHT_STEP = 0.5f;
         public static readonly float SLANT_ANGLE = Mathf.Atan(HEIGHT_STEP) * Mathf.Rad2Deg;
         public static readonly Vector2Int ORIGIN = (WORLD_SIZE - Vector2Int.one) / 2;
-        public static readonly Vector2Int[] CARDINAL_DIRS = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
-        public static readonly Vector2Int[] ADJACENT_DIRS = new Vector2Int[] { Vector2Int.up, Vector2Int.one, Vector2Int.right, new(1, -1), Vector2Int.down, new(-1, -1), Vector2Int.left, new(-1, 1) };
-        public static readonly Vector2Int[] ADJACENT_AND_ZERO = new Vector2Int[] { Vector2Int.zero, Vector2Int.up, Vector2Int.one, Vector2Int.right, new(1, -1), Vector2Int.down, new(-1, -1), Vector2Int.left, new(-1, 1) };
-        public static readonly Vector3[] WORLD_CARDINAL_DIRS = new Vector3[] { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
+        public static readonly Vector2Int[] CARDINAL_DIRS = { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+        public static readonly Vector2Int[] ADJACENT_DIRS = { Vector2Int.up, Vector2Int.one, Vector2Int.right, new(1, -1), Vector2Int.down, new(-1, -1), Vector2Int.left, new(-1, 1) };
+        public static readonly Vector2Int[] ADJACENT_AND_ZERO = { Vector2Int.zero, Vector2Int.up, Vector2Int.one, Vector2Int.right, new(1, -1), Vector2Int.down, new(-1, -1), Vector2Int.left, new(-1, 1) };
+        public static readonly Vector3[] WORLD_CARDINAL_DIRS = { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
         public enum Slant { None, North, East, South, West };
-        public static readonly Slant[] ALL_SLANTS = (Slant[])System.Enum.GetValues(typeof(Slant));
+        public static readonly Slant[] ALL_SLANTS = (Slant[])Enum.GetValues(typeof(Slant));
+        // TODO: remove the following fileds
         public enum TerrainType { White, Blue };
-        public static readonly TerrainType[] ALL_TERRAIN_TYPES = (TerrainType[])System.Enum.GetValues(typeof(TerrainType));
+        public static readonly TerrainType[] ALL_TERRAIN_TYPES = (TerrainType[])Enum.GetValues(typeof(TerrainType));
         static readonly ThreadSafeRandom _random = new();
 
 
@@ -112,6 +116,65 @@ namespace Assets.Scripts.Utils
             }
             return (Slant)(((int)s + r - 1) % 4 + 1);
         }
+    }
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public struct OrthogonalDirs<T>
+    {
+        public T N;
+        public T E;
+        public T S;
+        public T W;
 
+        public OrthogonalDirs(T n, T e, T s, T w)
+        {
+            N = n;
+            E = e;
+            S = s;
+            W = w;
+        }
+
+        public T this[int index] => ((index % 4 + 4) % 4) switch
+        {
+            0 => N,
+            1 => E,
+            2 => S,
+            3 => W,
+            _ => throw new InvalidOperationException()
+        };
+
+        public OrthogonalDirs<T> Rotated(int steps) => new(this[steps], this[steps + 1], this[steps + 2], this[steps + 3]);
+        public OrthogonalDirs<T> Rotated(int steps, Func<T, int, T> rotate) => new(rotate(this[steps], steps), rotate(this[steps + 1], steps), rotate(this[steps + 2], steps), rotate(this[steps + 3], steps));
+        public OrthogonalDirs<T> Flipped() => new(N, W, S, E);
+        public OrthogonalDirs<T> Flipped(Func<T, T> flip) => new(flip(N), flip(W), flip(S), flip(E));
+    }
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public struct DiagonalDirs<T>
+    {
+        public T NW;
+        public T NE;
+        public T SE;
+        public T SW;
+
+        public DiagonalDirs(T nw, T ne, T se, T sw)
+        {
+            NW = nw;
+            NE = ne;
+            SE = se;
+            SW = sw;
+        }
+
+        public T this[int index] => ((index % 4 + 4) % 4) switch
+        {
+            0 => NW,
+            1 => NE,
+            2 => SE,
+            3 => SW,
+            _ => throw new InvalidOperationException()
+        };
+
+        public DiagonalDirs<T> Rotated(int steps) => new(this[steps], this[steps + 1], this[steps + 2], this[steps + 3]);
+        public DiagonalDirs<T> Rotated(int steps, Func<T, int, T> rotate) => new(rotate(this[steps], steps), rotate(this[steps + 1], steps), rotate(this[steps + 2], steps), rotate(this[steps + 3], steps));
+        public DiagonalDirs<T> Flipped() => new(NE, NW, SW, SE);
+        public DiagonalDirs<T> Flipped(Func<T, T> flip) => new(flip(NE), flip(NW), flip(SW), flip(SE));
     }
 }

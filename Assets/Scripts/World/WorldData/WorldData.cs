@@ -1,8 +1,9 @@
-using Assets.Scripts.LevelGen.Utils;
+
+using LevelGen.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Scripts.World.WorldData
+namespace World.WorldData
 {
     public class WorldData
     {

@@ -1,0 +1,17 @@
+{
+    "name": "LevelGen.TerrainType",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0900e4d871f3dbb4eaddf25d1909436f",
+        "GUID:5842b2db08a04c54d89124d9fe0c43f8"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

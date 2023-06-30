@@ -1,13 +1,13 @@
-using Assets.Scripts.Utils;
+
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
-using static Assets.Scripts.LevelGen.LevelGenerator;
-using static Assets.Scripts.Utils.VectorUtils;
+using Utils;
+using static LevelGen.LevelGenerator;
 
-namespace Assets.Scripts.LevelGen.Blockers
+namespace LevelGen.Blockers
 {
     public class BlockerGenerator : MonoBehaviour
     {

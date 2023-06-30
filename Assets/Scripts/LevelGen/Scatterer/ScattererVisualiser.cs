@@ -1,7 +1,8 @@
-using Assets.Scripts.Utils;
-using UnityEngine;
 
-namespace Assets.Scripts.LevelGen.Scatterer
+using UnityEngine;
+using Utils;
+
+namespace LevelGen.Scatterer
 {
     public class ScattererVisualiser : MonoBehaviour
     {

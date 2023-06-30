@@ -1,7 +1,8 @@
-using Assets.Scripts.Utils;
-using UnityEngine;
 
-namespace Assets.Scripts.World
+using UnityEngine;
+using Utils;
+
+namespace World
 {
     public class Tile : MonoBehaviour
     {

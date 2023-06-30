@@ -1,14 +1,15 @@
-using Assets.Scripts.LevelGen.Blockers;
-using Assets.Scripts.LevelGen.Scatterer;
-using Assets.Scripts.LevelGen.Utils;
-using Assets.Scripts.LevelGen.WFC;
-using Assets.Scripts.Utils;
+
+using LevelGen.Blockers;
+using LevelGen.Scatterer;
+using LevelGen.Utils;
+using LevelGen.WFC;
 using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
-using static Assets.Scripts.World.WorldData.WorldData;
+using Utils;
+using static World.WorldData.WorldData;
 
-namespace Assets.Scripts.World.WorldBuilder
+namespace World.WorldBuilder
 {
     public class WorldBuilder : MonoBehaviour
     {

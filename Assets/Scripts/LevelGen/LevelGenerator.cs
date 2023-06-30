@@ -1,17 +1,18 @@
-using Assets.Scripts.LevelGen.Blockers;
-using Assets.Scripts.LevelGen.Path;
-using Assets.Scripts.LevelGen.Utils;
-using Assets.Scripts.LevelGen.WFC;
-using Assets.Scripts.Utils;
+
+using LevelGen.Blockers;
+using LevelGen.Path;
+using LevelGen.Utils;
+using LevelGen.WFC;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using static Assets.Scripts.World.WorldData.WorldData;
-using static Assets.Scripts.Utils.WorldUtils;
+using Utils;
+using static Utils.WorldUtils;
+using static World.WorldData.WorldData;
 
-namespace Assets.Scripts.LevelGen
+namespace LevelGen
 {
     public class LevelGenerator : MonoBehaviour
     {

@@ -1,11 +1,12 @@
-using Assets.Scripts.Attackers.Simulation;
-using Assets.Scripts.Buildings.Simulation.Towers.Targetting;
-using Assets.Scripts.Utils;
+
+using Attackers.Simulation;
+using Buildings.Simulation.Towers.Targetting;
 using System.Collections.Generic;
 using UnityEngine;
-using static Assets.Scripts.World.WorldData.WorldData;
+using Utils;
+using static World.WorldData.WorldData;
 
-namespace Assets.Scripts.Buildings.Visuals.Towers
+namespace Buildings.Visuals.Towers
 {
     public class RangeVisualisation : MonoBehaviour
     {

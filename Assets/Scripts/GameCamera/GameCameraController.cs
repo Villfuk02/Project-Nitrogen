@@ -1,7 +1,8 @@
-using Assets.Scripts.Utils;
-using UnityEngine;
 
-namespace Assets.Scripts.GameCamera
+using UnityEngine;
+using Utils;
+
+namespace GameCamera
 {
     public class GameCameraController : MonoBehaviour
     {

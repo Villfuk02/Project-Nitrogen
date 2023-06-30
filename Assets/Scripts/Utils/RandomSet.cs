@@ -1,6 +1,7 @@
+
 using System.Collections.Generic;
 
-namespace Assets.Scripts.Utils
+namespace Utils
 {
     public class RandomSet<T>
     {

@@ -1,8 +1,9 @@
-using Assets.Scripts.Attackers.Simulation;
-using UnityEngine;
-using static Assets.Scripts.World.WorldData.WorldData;
 
-namespace Assets.Scripts.Battle
+using Attackers.Simulation;
+using UnityEngine;
+using static World.WorldData.WorldData;
+
+namespace Battle
 {
     public class WaveController : MonoBehaviour
     {

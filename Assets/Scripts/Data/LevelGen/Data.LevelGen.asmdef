@@ -1,0 +1,19 @@
+{
+    "name": "Data.LevelGen",
+    "rootNamespace": "",
+    "references": [
+        "GUID:377e0d80d200c2b48a75c7121911aa1f",
+        "GUID:d91363a89359ac14383a61fd29662cdd",
+        "GUID:0900e4d871f3dbb4eaddf25d1909436f",
+        "GUID:c16294785e7a44148be2e5f8661f54ad"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -9,11 +9,13 @@ abilites can be passive (eg. resistant fire), repeating periodically (eg. every 
 two sizes
 - small (target 0.3 units above ground)
 - large (target 0.6 units above ground)
+- flying? (target 0.6 units above ground)
 
 concepts
 - leaves barrier after death to protect others
 - pressure units (short term or long term threats) 
 - slimes - many types like balloons from Bloons TD
+- skeletons - like from crypt of the necrodancer + coffin dance
 
 ### List
 - 

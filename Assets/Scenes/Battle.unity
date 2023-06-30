@@ -576,7 +576,7 @@ MonoBehaviour:
     angleSpread: 15
     valueThreshold: 0
     valueModules:
-    - rid: 767574991213953024
+    - rid: -2
   - name: Minerals
     enabled: 1
     prefab: {fileID: 5603213057010211334, guid: 92551c2876c1bed498c8a2d06dc43d2c, type: 3}
@@ -588,7 +588,7 @@ MonoBehaviour:
     angleSpread: 25
     valueThreshold: 0
     valueModules:
-    - rid: 767575005258579968
+    - rid: -2
   - name: Big Rocks
     enabled: 1
     prefab: {fileID: 5603213057010211334, guid: 6736ad555de077d4e88cb2e6d8c4078b, type: 3}
@@ -600,7 +600,7 @@ MonoBehaviour:
     angleSpread: 15
     valueThreshold: -2
     valueModules:
-    - rid: 767575005258579972
+    - rid: -2
   - name: Small Rocks
     enabled: 1
     prefab: {fileID: 5603213057010211334, guid: b0eefb10f73b60d41ac092eff22a1af5, type: 3}
@@ -612,146 +612,12 @@ MonoBehaviour:
     angleSpread: 40
     valueThreshold: -0.2
     valueModules:
-    - rid: 767575005258579976
+    - rid: -2
   references:
     version: 2
     RefIds:
-    - rid: 767574991213953024
-      type: {class: LimitSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        min: -3
-        max: 1
-        svms:
-        - rid: 767574991213953025
-        - rid: 767574991213953026
-        - rid: 767574991213953027
-    - rid: 767574991213953025
-      type: {class: ValidTileSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        internalMultiplier: 1
-        externalMultiplier: -1
-        validBlockers: 00000000
-    - rid: 767574991213953026
-      type: {class: FractalNoiseSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        noise:
-          octaves: 2
-          bias: 0
-          baseAmplitude: 0.3
-          amplitudeMult: 0.673
-          baseFrequency: 0.63
-          frequencyMult: 2.147
-    - rid: 767574991213953027
-      type: {class: PathSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        internalMultiplier: -3
-        externalMultiplier: 0
-    - rid: 767575005258579968
-      type: {class: LimitSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        min: -3
-        max: 0.8
-        svms:
-        - rid: 767575005258579969
-        - rid: 767575005258579970
-        - rid: 767575005258579971
-    - rid: 767575005258579969
-      type: {class: ValidTileSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        internalMultiplier: 1
-        externalMultiplier: -1
-        validBlockers: 01000000
-    - rid: 767575005258579970
-      type: {class: FractalNoiseSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        noise:
-          octaves: 2
-          bias: 0
-          baseAmplitude: 0.4
-          amplitudeMult: 0.777
-          baseFrequency: 0.61
-          frequencyMult: 2.137
-    - rid: 767575005258579971
-      type: {class: PathSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        internalMultiplier: -3
-        externalMultiplier: 0
-    - rid: 767575005258579972
-      type: {class: LimitSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        min: -3
-        max: 0.3
-        svms:
-        - rid: 767575005258579973
-        - rid: 767575005258579974
-        - rid: 767575005258579975
-    - rid: 767575005258579973
-      type: {class: ValidTileSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        internalMultiplier: 1
-        externalMultiplier: -2
-        validBlockers: 02000000
-    - rid: 767575005258579974
-      type: {class: FractalNoiseSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        noise:
-          octaves: 2
-          bias: 0
-          baseAmplitude: 0.8
-          amplitudeMult: 0.689
-          baseFrequency: 0.71
-          frequencyMult: 1.973
-    - rid: 767575005258579975
-      type: {class: PathSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        internalMultiplier: -4
-        externalMultiplier: 0
-    - rid: 767575005258579976
-      type: {class: LimitSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        min: -2
-        max: 0.2
-        svms:
-        - rid: 767575005258579977
-        - rid: 767575005258579978
-        - rid: 1441366976532054016
-    - rid: 767575005258579977
-      type: {class: ValidTileSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        internalMultiplier: 1
-        externalMultiplier: -1
-        validBlockers: 0300000004000000
-    - rid: 767575005258579978
-      type: {class: FractalNoiseSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        noise:
-          octaves: 2
-          bias: -0.3
-          baseAmplitude: 1
-          amplitudeMult: 0.673
-          baseFrequency: 0.63
-          frequencyMult: 2.147
-    - rid: 1441366976532054016
-      type: {class: PathSDFSVM, ns: Assets.Scripts.LevelGen.Scatterer.ValueModules, asm: LevelGen}
-      data:
-        enabled: 1
-        internalMultiplier: -2
-        externalMultiplier: 0
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!4 &449949344
 Transform:
   m_ObjectHideFlags: 0
@@ -783,7 +649,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &599020455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1523,7 +1389,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1838770608
 Transform:
   m_ObjectHideFlags: 0
@@ -1798,3 +1664,50 @@ CapsuleCollider:
   m_Height: 14
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &2097053022
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2097053024}
+  - component: {fileID: 2097053023}
+  m_Layer: 0
+  m_Name: Loader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2097053023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2097053022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 611a6bf835a12024e907e8f5c79273c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onLoaded:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!4 &2097053024
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2097053022}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

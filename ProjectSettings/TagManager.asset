@@ -14,7 +14,7 @@ TagManager:
   - CoarseTerrain
   - TileSelection
   - Attacker
-  - Targetting
+  - Targeting
   - AttackerTarget
   - CoarseBlocker
   - 

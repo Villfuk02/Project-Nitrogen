@@ -1,7 +1,8 @@
-using Assets.Scripts.Utils;
-using UnityEngine;
 
-namespace Assets.Scripts.LevelGen.WFC
+using UnityEngine;
+using Utils;
+
+namespace LevelGen.WFC
 {
     [System.Serializable]
     public class WFCModule

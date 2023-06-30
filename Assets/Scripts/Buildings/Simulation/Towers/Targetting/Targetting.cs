@@ -1,10 +1,11 @@
-using Assets.Scripts.Attackers.Simulation;
-using Assets.Scripts.Utils;
+
+using Attackers.Simulation;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Utils;
 
-namespace Assets.Scripts.Buildings.Simulation.Towers.Targetting
+namespace Buildings.Simulation.Towers.Targetting
 {
     public abstract class Targetting : MonoBehaviour, ITargettingParent
     {

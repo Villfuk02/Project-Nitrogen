@@ -1,4 +1,5 @@
-namespace Assets.Scripts.Utils
+
+namespace Utils
 {
     public static class LayerNames
     {
@@ -10,7 +11,7 @@ namespace Assets.Scripts.Utils
         public const string COARSE_TERRAIN = "CoarseTerrain";
         public const string TILE_SELECTION = "TileSelection";
         public const string ATTACKER = "Attacker";
-        public const string TARGETTING = "Targetting";
+        public const string TARGETING = "Targeting";
         public const string ATTACKER_TARGET = "AttackerTarget";
         public const string COARSE_BLOCKER = "CoarseBlocker";
     }

@@ -18,3 +18,4 @@ ideas
 - [ ] electornic circuit
 - [ ] asteroids
 - [ ] pipes
+- [ ] islands in an ocean

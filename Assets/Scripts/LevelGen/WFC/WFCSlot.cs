@@ -1,8 +1,9 @@
-using Assets.Scripts.Utils;
+
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
-namespace Assets.Scripts.LevelGen.WFC
+namespace LevelGen.WFC
 {
     [System.Serializable]
     public class WFCSlot
