@@ -1,7 +1,6 @@
 using Data.Loader;
 using Data.Parsers;
 using System.IO;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Data.LevelGen
@@ -16,19 +15,20 @@ namespace Data.LevelGen
             path_ = path;
         }
 
-        public Task LoadAllAsync()
+        public void LoadAll()
         {
-            foreach (var fileName in Directory.GetFiles(path_, $"*.{FileExtension}"))
+            var files = Directory.GetFiles(path_, $"*.{FileExtension}");
+            var terrainTypes = new TerrainType[files.Length];
+
+            for (int i = 0; i < files.Length; i++)
             {
-                PreprocessedParseStream s = new(Path.Combine(path_, fileName));
+                PreprocessedParseStream s = new(Path.Combine(path_, files[i]));
                 TerrainType tt = TerrainType.Parse(s);
-                Debug.Log(tt);
-                foreach (var ttModule in tt.Modules)
-                {
-                    Debug.Log(ttModule);
-                }
+                terrainTypes[i] = tt;
             }
-            throw new System.NotImplementedException();
+
+            TerrainTypes.inst = new(terrainTypes);
+            Debug.Log($"Loaded {files.Length} terrain types");
         }
     }
 }

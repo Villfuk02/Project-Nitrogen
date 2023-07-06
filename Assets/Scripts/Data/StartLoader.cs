@@ -1,39 +1,48 @@
 using Data.LevelGen;
 using Data.Loader;
-using JetBrains.Annotations;
+using System.Collections;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace Data
 {
-    public class StartLoader : MonoBehaviour, ILoader
+    public class StartLoader : MonoBehaviour
     {
-        [CanBeNull] Task loadingTask_;
+        bool finishedLoading_;
         ILoader[] loaders_;
         [SerializeField] UnityEvent onLoaded;
 
         void Start()
         {
             loaders_ = new ILoader[] { new TerrainTypeLoader(Path.Combine(Application.dataPath, "TerrainTypes")) };
-            loadingTask_ = LoadAllAsync();
+            StartCoroutine(LoadAll());
         }
 
-        public Task LoadAllAsync()
+        public IEnumerator LoadAll()
         {
-            var tasks = loaders_.Select(x => x.LoadAllAsync());
-            return Task.WhenAll(tasks);
+            foreach (var loader in loaders_)
+            {
+                yield return null;
+                loader.LoadAll();
+            }
+            finishedLoading_ = true;
         }
 
         void Update()
         {
-            if (loadingTask_ is { IsCompletedSuccessfully: true })
+            if (finishedLoading_)
             {
-                loadingTask_ = null;
+                finishedLoading_ = false;
+                Debug.Log("Finished loading");
                 onLoaded.Invoke();
             }
+        }
+
+        public void ChangeScene(string sceneName)
+        {
+            SceneManager.LoadScene(sceneName);
         }
     }
 }
