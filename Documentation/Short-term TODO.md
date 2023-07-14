@@ -1,18 +1,14 @@
 - [ ] zápočťák
-    - [ ] [[Terrain Type]]
-        - [x] loader
-        - [ ] LOG LOADER
-    - [ ] level settings
-    - [ ] data flow
-        - [ ] make data only store data, no behavior
+    - [x] level settings
+    - [ ] random
     - [ ] determinism
     - [ ] parallelize wfc
     - [ ] reorganize assemblies
-- [ ] split [[Level Generation]] jobs into fns
-- [ ] encapsulation
-- [ ] REFACTOR [[Level Generation]]
-- [ ] use unity events
-- [ ] get settings from [[Terrain Type]]
+    - [ ] make data only store data, no behavior
+    - [ ] split [[Level Generation]] jobs into fns
+    - [ ] encapsulation
+    - [ ] REFACTOR [[Level Generation]]
+- [ ] use unity events?
 - [ ] reorganize (and rename)
 
 
