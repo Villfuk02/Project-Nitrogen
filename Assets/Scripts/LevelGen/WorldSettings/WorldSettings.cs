@@ -1,12 +1,12 @@
 using UnityEngine;
-using Random = UnityEngine.Random;
+using UnityRandom = UnityEngine.Random;
 
-namespace LevelGen
+namespace LevelGen.WorldSettings
 {
     public class WorldSettings : MonoBehaviour
     {
         public string terrainType;
-        public long seed;
+        public ulong seed;
         public int[] paths;
 
         [Header("Testing settings")]
@@ -18,8 +18,8 @@ namespace LevelGen
             if (randomSeed)
             {
                 // this is good enough for testing
-                seed = Random.Range(int.MinValue, int.MaxValue) +
-                       ((long)Random.Range(int.MinValue, int.MaxValue) << 32);
+                seed = (ulong)UnityRandom.Range(int.MinValue, int.MaxValue) +
+                       ((ulong)UnityRandom.Range(int.MinValue, int.MaxValue) << 32);
             }
         }
     }
