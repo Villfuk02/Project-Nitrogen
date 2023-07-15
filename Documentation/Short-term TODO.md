@@ -1,13 +1,21 @@
 - [ ] zápočťák
     - [x] level settings
-    - [ ] random
-    - [ ] determinism
+    - [x] random
+    - [x] rename LevelGen to WorldGen
+    - [ ] redo levelgen with determinism
+        - [x] pick path starts
+        - [ ] pick paths
+            - [ ] redo path picking
+        - [ ] WFC
+        - [ ] blockers
+        - [ ] finalize paths
+        - [ ] scatter decorations
     - [ ] parallelize wfc
     - [ ] reorganize assemblies
     - [ ] make data only store data, no behavior
-    - [ ] split [[Level Generation]] jobs into fns
+    - [ ] split [[World Generation]] jobs into fns
     - [ ] encapsulation
-    - [ ] REFACTOR [[Level Generation]]
+    - [ ] REFACTOR [[World Generation]]
 - [ ] use unity events?
 - [ ] reorganize (and rename)
 

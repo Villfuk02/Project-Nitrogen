@@ -1,5 +1,5 @@
 #TODO
-#system [[Level Generation]]
+#system [[World Generation]]
 #art 
 
 each has its own set of [[Terrain Module]]s, [[Terrain Blocker]]s and [[Decoration]]s

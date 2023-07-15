@@ -1,7 +1,7 @@
 #IDEA
 #system 
 
-[[Level Generation]]
+[[World Generation]]
 
 stitch together [[Terrain Module]] models
 not needed for now

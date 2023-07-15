@@ -37,7 +37,7 @@ the player needs to defend for some time and then move on to the next battle
         Some towers won't be able to shoot uphill or downhill - more interesting decisions for the player
 
 
-## [[Level Generation]]
+## [[World Generation]]
 Consists of multiple steps
 
 ### Terrain
@@ -206,7 +206,7 @@ the 4th step
 - I tried scattering decorative grass ([video 11](https://drive.google.com/file/d/17LniTN5iHf_n9-aTGm6tU8LlOh8W9OhF/view?usp=share_link), [image 12](https://drive.google.com/file/d/1m5Tqv1IPmuX9cUlbU9w9n-vd1ReXhs1E/view?usp=share_link))
     - low fps, better to do with shaders
 
-## [[Level Generation]] - PHASE 2
+## [[World Generation]] - PHASE 2
 DO EVERYTHING AGAIN, BUT BETTER
 
 - Use JOBS instead of coroutines

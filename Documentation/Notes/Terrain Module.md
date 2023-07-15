@@ -1,5 +1,5 @@
 #MVP
-#system [[Level Generation]]
+#system [[World Generation]]
 
 Each a puzzle piece making up the terrain
 

@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityRandom = UnityEngine.Random;
 
-namespace LevelGen.WorldSettings
+namespace WorldGen.WorldSettings
 {
     public class WorldSettings : MonoBehaviour
     {
         public string terrainType;
         public ulong seed;
-        public int[] paths;
+        //always keep these in ascending order
+        public int[] pathLengths;
 
         [Header("Testing settings")]
         [SerializeField]

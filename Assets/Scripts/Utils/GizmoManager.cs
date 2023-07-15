@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using static Utils.TimingUtils;
 
 namespace Utils
 {
@@ -8,18 +9,26 @@ namespace Utils
     {
         public bool draw;
         public bool onlySelected;
-        readonly Dictionary<object, List<GizmoObject>> objects = new();
+        readonly object lock_ = new();
+        readonly Dictionary<StepType, List<GizmoObject>> objects_ = new();
 
-        private void Awake()
+        void Awake()
         {
-            objects.Clear();
+            lock (lock_)
+            {
+                objects_.Clear();
+                foreach (var stepType in STEP_TYPES)
+                {
+                    objects_.Add(stepType, new());
+                }
+            }
         }
 
         void Draw()
         {
-            lock (this)
+            lock (lock_)
             {
-                foreach ((var _, var list) in objects)
+                foreach (var (_, list) in objects_)
                 {
                     foreach (var gizmoObject in list)
                     {
@@ -31,37 +40,30 @@ namespace Utils
             }
         }
 
-        public void Add(object duration, GizmoObject obj)
+        public void Add(StepType duration, GizmoObject obj)
         {
-            lock (this)
+            lock (lock_)
             {
-                if (objects.ContainsKey(duration))
-                    objects[duration].Add(obj);
-                else
-                    objects[duration] = new() { obj };
+                objects_[duration].Add(obj);
             }
         }
-        public void Add(object duration, IEnumerable<GizmoObject> obj)
+        public void Add(StepType duration, IEnumerable<GizmoObject> obj)
         {
-            lock (this)
+            lock (lock_)
             {
-                if (objects.ContainsKey(duration))
-                    objects[duration].AddRange(obj);
-                else
-                    objects[duration] = new(obj);
+                objects_[duration].AddRange(obj);
             }
         }
 
-        public void Expire(object duration)
+        public void Expire(StepType duration)
         {
-            lock (this)
+            lock (lock_)
             {
-                if (objects.ContainsKey(duration))
-                    objects[duration].Clear();
+                objects_[duration].Clear();
             }
         }
 
-        private void OnDrawGizmos()
+        void OnDrawGizmos()
         {
             if (draw && !onlySelected)
             {
@@ -69,7 +71,7 @@ namespace Utils
             }
         }
 
-        private void OnDrawGizmosSelected()
+        void OnDrawGizmosSelected()
         {
             if (draw && onlySelected)
             {
@@ -80,7 +82,8 @@ namespace Utils
         public abstract class GizmoObject
         {
             public readonly Color color;
-            public GizmoObject(Color color)
+
+            protected GizmoObject(Color color)
             {
                 this.color = color;
             }
@@ -89,77 +92,77 @@ namespace Utils
 
         public class Line : GizmoObject
         {
-            readonly Vector3 from;
-            readonly Vector3 to;
+            readonly Vector3 from_;
+            readonly Vector3 to_;
             public Line(Color color, Vector3 from, Vector3 to) : base(color)
             {
-                this.from = from;
-                this.to = to;
+                from_ = from;
+                to_ = to;
             }
             public override void Draw()
             {
-                Gizmos.DrawLine(from, to);
+                Gizmos.DrawLine(from_, to_);
             }
         }
 
         public class Cube : GizmoObject
         {
-            readonly Vector3 pos;
-            readonly Vector3 size;
+            readonly Vector3 pos_;
+            readonly Vector3 size_;
             public Cube(Color color, Vector3 pos, Vector3 size) : base(color)
             {
-                this.pos = pos;
-                this.size = size;
+                pos_ = pos;
+                size_ = size;
             }
             public Cube(Color color, Vector3 pos, float size) : base(color)
             {
-                this.pos = pos;
-                this.size = Vector3.one * size;
+                pos_ = pos;
+                size_ = Vector3.one * size;
             }
             public override void Draw()
             {
-                Gizmos.DrawWireCube(pos, size);
+                Gizmos.DrawWireCube(pos_, size_);
             }
         }
         public class Sphere : GizmoObject
         {
-            readonly Vector3 pos;
-            readonly float radius;
+            readonly Vector3 pos_;
+            readonly float radius_;
             public Sphere(Color color, Vector3 pos, float radius) : base(color)
             {
-                this.pos = pos;
-                this.radius = radius;
+                pos_ = pos;
+                radius_ = radius;
             }
             public override void Draw()
             {
-                Gizmos.DrawWireSphere(pos, radius);
+                Gizmos.DrawWireSphere(pos_, radius_);
             }
         }
         public class Mesh : GizmoObject
         {
-            readonly UnityEngine.Mesh mesh;
-            readonly Vector3 pos;
-            readonly Vector3 scale;
-            readonly Quaternion rotation;
+            readonly UnityEngine.Mesh mesh_;
+            readonly Vector3 pos_;
+            readonly Vector3 scale_;
+            readonly Quaternion rotation_;
 
             public Mesh(Color color, UnityEngine.Mesh mesh, Vector3 pos) : base(color)
             {
-                this.mesh = mesh;
-                this.pos = pos;
-                scale = Vector3.one;
-                rotation = Quaternion.identity;
+                mesh_ = mesh;
+                pos_ = pos;
+                scale_ = Vector3.one;
+                rotation_ = Quaternion.identity;
             }
             public Mesh(Color color, UnityEngine.Mesh mesh, Vector3 pos, Vector3 scale, Quaternion rotation) : base(color)
             {
-                this.mesh = mesh;
-                this.pos = pos;
-                this.scale = scale;
-                this.rotation = rotation;
+                mesh_ = mesh;
+                pos_ = pos;
+                scale_ = scale;
+                rotation_ = rotation;
             }
 
             public override void Draw()
             {
-                Gizmos.DrawWireMesh(mesh, pos, rotation, scale);
+                Gizmos.DrawWireMesh(mesh_, pos_, rotation_, scale_);
             }
         }
     }

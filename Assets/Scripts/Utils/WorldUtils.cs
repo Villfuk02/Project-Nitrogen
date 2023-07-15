@@ -20,11 +20,6 @@ namespace Utils
         public static readonly Vector3[] WORLD_CARDINAL_DIRS = { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
         public enum Slant { None, North, East, South, West };
         public static readonly Slant[] ALL_SLANTS = (Slant[])Enum.GetValues(typeof(Slant));
-        // TODO: remove the following fileds
-        public enum TerrainType { White, Blue };
-        public static readonly TerrainType[] ALL_TERRAIN_TYPES = (TerrainType[])Enum.GetValues(typeof(TerrainType));
-        static readonly ThreadSafeRandom _random = new();
-
 
         public static Vector3 TileToWorldPos(Vector3 tilePos)
         {
@@ -77,12 +72,12 @@ namespace Utils
                 );
         }
 
-        public static Vector2Int GetMainDir(Vector2Int origin, Vector2Int tilePos)
+        public static Vector2Int GetMainDir(Vector2Int origin, Vector2Int tilePos, Random.Random random)
         {
             Vector2Int o = tilePos - origin;
             if (Mathf.Abs(o.x) == Mathf.Abs(o.y))
             {
-                o += _random.NextFloat() < 0.5f ? Vector2Int.right : Vector2Int.left;
+                o += random.Float() < 0.5f ? Vector2Int.right : Vector2Int.left;
             }
             if (Mathf.Abs(o.x) > Mathf.Abs(o.y))
             {

@@ -7,4 +7,4 @@ generate the level on which a [[Battle]] will take place
 
 enforce path lengths, counts and branching
 
-[[Level Generation]] based on randomly selected [[Terrain Type]]
+[[World Generation]] based on randomly selected [[Terrain Type]]

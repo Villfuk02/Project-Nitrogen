@@ -1,5 +1,5 @@
 #MVP 
-#system [[Level Generation]]
+#system [[World Generation]]
 
 Generate paths for [[Attacker]]s to move along
 

@@ -35,8 +35,12 @@ namespace Random
         public float Float() => (float)InclusiveFraction();
         //get a random float between [min..max]
         public float Float(float minInclusive, float maxInclusive) => (float)(minInclusive + (maxInclusive - minInclusive) * InclusiveFraction());
+        //get a random float between [min..max)
+        public float FloatExclusive(float minInclusive, float maxExclusive) => (float)(minInclusive + (maxExclusive - minInclusive) * ExclusiveFraction());
+        //get a random int between [0..max)
+        public int Int(int maxExclusive) => (int)Math.Floor(maxExclusive * ExclusiveFraction());
         //get a random int between [min..max)
-        public int Int(int minInclusive, int maxExclusive) => (int)(minInclusive + (maxExclusive - minInclusive) * ExclusiveFraction());
+        public int Int(int minInclusive, int maxExclusive) => (int)Math.Floor(minInclusive + (maxExclusive - minInclusive) * ExclusiveFraction());
         //get a random seed for a new Random
         public ulong NewSeed()
         {

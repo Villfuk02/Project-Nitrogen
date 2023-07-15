@@ -1,5 +1,5 @@
 #MVP
-#system [[Level Generation]]
+#system [[World Generation]]
 
 Placed on [[Tile]]s during generation
 Ores and other obstacles

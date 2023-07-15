@@ -1,4 +1,5 @@
 
+using System;
 using UnityEngine;
 
 namespace Utils
@@ -14,8 +15,7 @@ namespace Utils
         public float frequencyMult;
 
         //TODO: FIX
-        Vector2[] offsets;
-        ThreadSafeRandom _rand = new();
+        Vector2[] offsets_;
         public FractalNoise(int octaves, float bias, float baseAmplitude, float amplitudeMult, float baseFrequency, float frequencyMult)
         {
             this.octaves = octaves;
@@ -26,27 +26,27 @@ namespace Utils
             this.frequencyMult = frequencyMult;
         }
 
-        void Init()
+        void Init(ulong randomSeed)
         {
-            offsets = new Vector2[octaves];
+            Random.Random random = new(randomSeed);
+            offsets_ = new Vector2[octaves];
             for (int i = 0; i < octaves; i++)
             {
-                offsets[i] = _rand.InsideUnitCircle() * 1000;
+                offsets_[i] = random.InsideUnitCircle() * 10000;
             }
         }
 
         public float EvaluateAt(Vector2 pos)
         {
-            if (offsets is null || offsets.Length != octaves)
-            {
-                Init();
-            }
+            if (offsets_ is null || offsets_.Length != octaves)
+                throw new InvalidOperationException("Noise has not been initialized.");
+
             float ret = bias;
             float a = baseAmplitude;
             float f = baseFrequency;
             for (int i = 0; i < octaves; i++)
             {
-                ret += a * GetNormalizedNoiseAt(offsets[i] + pos * f);
+                ret += a * GetNormalizedNoiseAt(offsets_[i] + pos * f);
                 a *= amplitudeMult;
                 f *= frequencyMult;
             }

@@ -1,5 +1,5 @@
 #MVP
-#system [[Level Generation]]
+#system [[World Generation]]
 
 Scatters [[Decoration]]s on the terrain mesh
 

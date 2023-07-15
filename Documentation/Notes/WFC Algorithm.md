@@ -1,5 +1,5 @@
 #MVP
-#system [[Level Generation]]
+#system [[World Generation]]
 
 randomised constraint solving programming
 
