@@ -52,5 +52,11 @@ namespace Utils
             else
                 return null;
         }
+
+        public static bool AllDistinct<T>(this IEnumerable<T> list)
+        {
+            var array = list.ToArray();
+            return array.Distinct().Count() == array.Length;
+        }
     }
 }

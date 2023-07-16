@@ -548,7 +548,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainType: Test
   seed: 0
-  pathLengths: 0f0000001200000015000000
+  pathLengths: c8000000
   randomSeed: 1
 --- !u!4 &815966620
 Transform:
@@ -798,8 +798,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startSpacingMultiplier: 0.42
+  crowdingPenaltyByDistance: 0a0000000200000001000000
+  startCrowdingPenalty: 20
+  startTemperature: 4
+  endTemperature: -5
+  stepsPerUnitLengthSquared: 0.15
   maxPathsPerStart: 3
-  stepsUntilFail: 450
   minMergeDistance: 4
 --- !u!4 &1087793669
 Transform:

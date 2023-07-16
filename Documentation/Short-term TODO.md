@@ -1,11 +1,7 @@
 - [ ] zápočťák
-    - [x] level settings
-    - [x] random
-    - [x] rename LevelGen to WorldGen
     - [ ] redo levelgen with determinism
         - [x] pick path starts
-        - [ ] pick paths
-            - [ ] redo path picking
+        - [x] plan paths
         - [ ] WFC
         - [ ] blockers
         - [ ] finalize paths

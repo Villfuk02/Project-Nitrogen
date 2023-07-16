@@ -70,12 +70,12 @@ namespace WorldGen
             //WFC.Prepare();
             //blockerGenerator.Prepare();
             //scatterer.Prepare();
-            Vector2Int[] targets;
+            Vector2Int[] starts;
             do
             {
-                JobDataInterface pickStarts = pathPlanner.PickStarts(out targets);
+                JobDataInterface pickStarts = pathPlanner.PickStarts(out starts);
                 yield return new WaitUntil(() => pickStarts.IsFinished);
-                JobDataInterface pickPaths = pathPlanner.PickPaths(targets, out int[] nodes);
+                JobDataInterface pickPaths = pathPlanner.PlanPaths(starts, out var flatPaths);
                 yield return new WaitUntil(() => pickPaths.IsFinished);
                 if (pickPaths.Failed)
                     continue;

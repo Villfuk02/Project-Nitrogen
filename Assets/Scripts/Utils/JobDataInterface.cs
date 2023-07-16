@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,40 +9,42 @@ namespace Utils
 {
     public class JobDataInterface
     {
-        readonly Allocator _allocator;
-        readonly Dictionary<Array, (bool output, NativeArrayWrapper native)> _arrayMap = new();
-        readonly Dictionary<IList, (bool output, NativeListWrapper native)> _listMap = new();
-        bool _finished;
-        readonly bool[] _failed;
-        public bool IsFinished { get => _finished; }
-        public bool Failed { get => _failed[0]; }
+        readonly Allocator allocator_;
+        readonly Dictionary<Array, (Mode mode, NativeArrayWrapper native)> arrayMap_ = new();
+        readonly Dictionary<IList, (Mode mode, NativeListWrapper native)> listMap_ = new();
+        readonly bool[] failed_;
+        public bool IsFinished { get; private set; }
+        public bool Failed { get => failed_[0]; }
+
+        [Flags] public enum Mode : byte { Input = 1, Output = 2, InOut = 3 }
+
 
         public JobDataInterface(in Allocator allocator)
         {
-            _allocator = allocator;
-            _failed = new bool[1];
+            allocator_ = allocator;
+            failed_ = new bool[1];
         }
 
-        public NativeArray<T> Register<T>(in T[] array, bool output) where T : struct
+        public NativeArray<T> Register<T>(in T[] array, Mode mode) where T : struct
         {
-            if (_arrayMap.ContainsKey(array))
-                throw new Exception("Array already registered.");
-            NativeArrayWrapper<T> native = new(array, _allocator);
-            _arrayMap.Add(array, (output, native));
+            if (arrayMap_.ContainsKey(array))
+                throw new ArgumentException("Array already registered.");
+            NativeArrayWrapper<T> native = new(array, allocator_);
+            arrayMap_.Add(array, (mode, native));
             return native.Native;
         }
-        public NativeList<T> Register<T>(in List<T> list, bool output) where T : unmanaged
+        public NativeList<T> Register<T>(in List<T> list, Mode mode) where T : unmanaged
         {
-            if (_listMap.ContainsKey(list))
-                throw new Exception("List already registered.");
-            NativeListWrapper<T> native = new(list, _allocator);
-            _listMap.Add(list, (output, native));
+            if (listMap_.ContainsKey(list))
+                throw new ArgumentException("List already registered.");
+            NativeListWrapper<T> native = new(list, allocator_);
+            listMap_.Add(list, (mode, native));
             return native.Native;
         }
 
         public NativeArray<bool> RegisterFailed()
         {
-            return Register(_failed, true);
+            return Register(failed_, Mode.Output);
         }
 
         public void RegisterHandle(MonoBehaviour owner, JobHandle handle)
@@ -54,25 +55,25 @@ namespace Utils
         {
             yield return new WaitUntil(() => handle.IsCompleted);
             handle.Complete();
-            foreach (var pair in _arrayMap)
+            foreach (var pair in arrayMap_)
             {
-                (Array array, (bool output, NativeArrayWrapper native)) = pair;
-                if (output)
+                (Array array, (Mode mode, NativeArrayWrapper native)) = pair;
+                if (mode.HasFlag(Mode.Output))
                 {
                     native.CopyTo(array);
                 }
                 native.Dispose();
             }
-            foreach (var pair in _listMap)
+            foreach (var pair in listMap_)
             {
-                (IList list, (bool output, NativeListWrapper native)) = pair;
-                if (output)
+                (IList list, (Mode mode, NativeListWrapper native)) = pair;
+                if (mode.HasFlag(Mode.Output))
                 {
                     native.CopyTo(list);
                 }
                 native.Dispose();
             }
-            _finished = true;
+            IsFinished = true;
         }
 
         public abstract class NativeArrayWrapper
@@ -84,11 +85,11 @@ namespace Utils
 
         public class NativeArrayWrapper<T> : NativeArrayWrapper where T : struct
         {
-            NativeArray<T> _native;
-            public NativeArray<T> Native { get => _native; }
+            NativeArray<T> native_;
+            public NativeArray<T> Native { get => native_; }
             public NativeArrayWrapper(T[] array, in Allocator allocator)
             {
-                _native = new NativeArray<T>(array, allocator);
+                native_ = new(array, allocator);
             }
             public override Type Type()
             {
@@ -97,12 +98,12 @@ namespace Utils
 
             public override void CopyTo(Array array)
             {
-                _native.CopyTo((T[])array);
+                native_.CopyTo((T[])array);
             }
 
             public override void Dispose()
             {
-                _native.Dispose();
+                native_.Dispose();
             }
         }
 
@@ -115,14 +116,14 @@ namespace Utils
 
         public class NativeListWrapper<T> : NativeListWrapper where T : unmanaged
         {
-            NativeList<T> _native;
-            public NativeList<T> Native { get => _native; }
-            public NativeListWrapper(List<T> list, in Allocator allocator)
+            NativeList<T> native_;
+            public NativeList<T> Native { get => native_; }
+            public NativeListWrapper(IReadOnlyCollection<T> list, in Allocator allocator)
             {
-                _native = new NativeList<T>(list.Count, allocator);
-                for (int i = 0; i < list.Count; i++)
+                native_ = new(list.Count, allocator);
+                foreach (var t in list)
                 {
-                    _native.AddNoResize(list[i]);
+                    native_.AddNoResize(t);
                 }
             }
             public override Type Type()
@@ -132,14 +133,14 @@ namespace Utils
 
             public override void CopyTo(IList list)
             {
-                List<T> realList = (List<T>)list;
+                var realList = (List<T>)list;
                 realList.Clear();
-                realList.AddRange(_native.ToArray());
+                realList.AddRange(native_.ToArray());
             }
 
             public override void Dispose()
             {
-                _native.Dispose();
+                native_.Dispose();
             }
         }
     }

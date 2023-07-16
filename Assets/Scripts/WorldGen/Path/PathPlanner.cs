@@ -12,12 +12,23 @@ namespace WorldGen.Path
 {
     public class PathPlanner : MonoBehaviour
     {
+        [Header("Picking Path Starts")]
+        [SerializeField] float startSpacingMultiplier;
+
+        [Header("Planning Paths")]
+        [SerializeField] int[] crowdingPenaltyByDistance;
+        [SerializeField] int startCrowdingPenalty;
+        [SerializeField] float startTemperature;
+        [SerializeField] float endTemperature;
+        [SerializeField] float stepsPerUnitLengthSquared;
+
+        [Header("Finalizing Paths")]
+        [SerializeField] int maxPathsPerStart;
+        [SerializeField] int minMergeDistance;
+
+        //Runtime variables
         int[] pathLengths_;
         Random.Random random_;
-        [SerializeField] float startSpacingMultiplier;
-        [SerializeField] int maxPathsPerStart;
-        [SerializeField] int stepsUntilFail;
-        [SerializeField] int minMergeDistance;
 
         public void Init(int[] pathLengths, ulong randomSeed)
         {
@@ -35,8 +46,8 @@ namespace WorldGen.Path
             JobDataInterface jobData = new(Allocator.Persistent);
             JobHandle handle = new PickStartsJob
             {
-                pathLengths = jobData.Register(pathLengths_, false),
-                picked = jobData.Register(starts, true),
+                pathLengths = jobData.Register(pathLengths_, JobDataInterface.Mode.Input),
+                picked = jobData.Register(starts, JobDataInterface.Mode.Output),
                 randomSeed = random_.NewSeed(),
                 startSpacingMultiplier = startSpacingMultiplier
             }.Schedule();
@@ -96,16 +107,17 @@ namespace WorldGen.Path
                         oddStarts.Add(v);
                 }
             }
-            Vector2Int ChooseStart(int length, float minDistSqr, RandomSet<Vector2Int> available, IReadOnlyCollection<Vector2Int> currentlyPicked)
+
+            static Vector2Int ChooseStart(int length, float minDistSqr, RandomSet<Vector2Int> available, IReadOnlyCollection<Vector2Int> currentlyPicked)
             {
                 Vector2Int result;
                 List<Vector2Int> tooFar = new();
                 do
                 {
                     result = available.PopRandom();
+                    // ReSharper disable once AccessToModifiedClosure
                     RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.yellow, WorldUtils.TileToWorldPos(result), 0.2f));
-                    Vector2Int relative = result - WorldUtils.ORIGIN;
-                    if (Mathf.Abs(relative.x) + Mathf.Abs(relative.y) > length)
+                    if (result.ManhattanDistance(WorldUtils.ORIGIN) > length)
                     {
                         tooFar.Add(result);
                         continue;
@@ -119,90 +131,286 @@ namespace WorldGen.Path
             }
         }
 
-        public JobDataInterface PickPaths(Vector2Int[] starts, out int[] flatNodes)
+        public JobDataInterface PlanPaths(Vector2Int[] starts, out Vector2Int[] flatPaths)
         {
-            flatNodes = new int[WorldUtils.WORLD_SIZE.x * WorldUtils.WORLD_SIZE.y];
+            int totalLength = pathLengths_.Sum();
+            flatPaths = new Vector2Int[totalLength + pathLengths_.Length];
             JobDataInterface jobData = new(Allocator.Persistent);
-            JobHandle handle = new PickPathsJob
+            int steps = (int)(stepsPerUnitLengthSquared * totalLength * totalLength);
+            JobHandle handle = new PlanPathsJob
             {
-                pathLengths = jobData.Register(pathLengths_, false),
-                starts = jobData.Register(starts, false),
-                retNodes = jobData.Register(flatNodes, true),
-                stepsUntilFail = stepsUntilFail,
-                failed = jobData.RegisterFailed(),
-                randomSeed = random_.NewSeed()
+                pathLengths = jobData.Register(pathLengths_, JobDataInterface.Mode.Input),
+                starts = jobData.Register(starts, JobDataInterface.Mode.Input),
+                returnPaths = jobData.Register(flatPaths, JobDataInterface.Mode.Output),
+                crowdingPenaltyByDistance = jobData.Register(crowdingPenaltyByDistance, JobDataInterface.Mode.Input),
+                startCrowdingPenalty = startCrowdingPenalty,
+                temperature = startTemperature,
+                cooling = (startTemperature - endTemperature) / (steps - 1),
+                steps = steps,
+                randomSeed = random_.NewSeed(),
+                failed = jobData.RegisterFailed()
             }.Schedule();
             jobData.RegisterHandle(this, handle);
             return jobData;
         }
 
-        struct PickPathsJob : IJob
+        struct PlanPathsJob : IJob
         {
             public NativeArray<int> pathLengths;
             public NativeArray<Vector2Int> starts;
-            public NativeArray<int> retNodes;
-            public NativeArray<bool> failed;
-            public int stepsUntilFail;
+            public NativeArray<Vector2Int> returnPaths;
+            public NativeArray<int> crowdingPenaltyByDistance;
+            public int startCrowdingPenalty;
+            public float temperature;
+            public float cooling;
+            public int steps;
             public ulong randomSeed;
+
+            public NativeArray<bool> failed;
             public void Execute()
             {
-                Debug.Log("Picking Paths");
+                Debug.Log($"Planning paths in {steps} steps");
+                RegisterGizmos(StepType.Phase, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(WorldUtils.ORIGIN), 0.4f));
+
+                Random.Random random = new(randomSeed);
 
                 int pathCount = pathLengths.Length;
-                int[,] nodes = new int[WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y];
+                ExtendedArray2D<int> distances = new(WorldUtils.WORLD_SIZE, int.MaxValue);
                 foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
-                    nodes[v.x, v.y] = int.MaxValue;
-                int startPos = pathCount <= 4 ? 1 : 2;
-                nodes[WorldUtils.ORIGIN.x, WorldUtils.ORIGIN.y] = 0;
-                if (startPos > 1)
+                    distances[v] = v.ManhattanDistance(WorldUtils.ORIGIN);
+
+                var paths = new LinkedList<Vector2Int>[pathCount];
+                ExtendedArray2D<int> crowding = new(WorldUtils.WORLD_SIZE, int.MaxValue);
+                for (int i = 0; i < pathCount; i++)
                 {
-                    for (int i = 0; i < 4; i++)
+                    WaitForStep(StepType.MicroStep);
+                    paths[i] = MakePathPrototype(starts[i], pathLengths[i], random, distances, crowding);
+                }
+
+                Debug.Log("Path prototypes picked");
+                WaitForStep(StepType.Step);
+
+                Vector2Int[] found = null;
+                var nodeCounts = pathLengths.Select(l => l + 1).ToArray();
+                while (steps > 0)
+                {
+                    if (!RelaxPaths(paths, crowding, random.NewSeed()))
+                        break;
+
+                    if (paths.Any(p => !p.AllDistinct()))
                     {
-                        Vector2Int p = WorldUtils.ORIGIN + WorldUtils.CARDINAL_DIRS[i];
-                        nodes[p.x, p.y] = 1;
+                        foreach (var path in paths)
+                            UntwistCrossing(path);
+                    }
+                    else if (!InvalidCrossings(paths))
+                    {
+                        found = paths.PackFlat(nodeCounts);
+                    }
+
+                    temperature -= cooling;
+                    steps--;
+                    WaitForStep(StepType.MicroStep);
+                }
+
+                if (found == null)
+                {
+                    Debug.Log("Planning paths failed");
+                    failed[0] = true;
+                    return;
+                }
+
+                Debug.Log("Found paths");
+                returnPaths.CopyFrom(found);
+
+                RegisterGizmos(StepType.Phase, () => found.UnpackFlat(nodeCounts).SelectMany(DrawPath));
+            }
+
+            LinkedList<Vector2Int> MakePathPrototype(Vector2Int start, int length, Random.Random random, IReadOnlyExtendedArray<int, Vector2Int> distance, ExtendedArray2D<int> crowding)
+            {
+                LinkedList<Vector2Int> path = new();
+                path.AddFirst(start);
+
+                foreach (var offset in WorldUtils.ADJACENT_AND_ZERO)
+                {
+                    crowding[start + offset] += crowdingPenaltyByDistance[offset.ManhattanMagnitude()];
+                }
+                crowding[start] += startCrowdingPenalty;
+
+                var current = start;
+                while (length > 0)
+                {
+                    WeightedRandomSet<Vector2Int> validNeighbors = new(random.NewSeed());
+                    foreach (var dir in WorldUtils.CARDINAL_DIRS)
+                    {
+                        Vector2Int neighbor = current + dir;
+                        if (distance[neighbor] <= length)
+                            validNeighbors.Add(neighbor, 1f / (crowding[neighbor] + 1));
+                    }
+
+                    Vector2Int next = validNeighbors.PopRandom();
+                    // ReSharper disable twice AccessToModifiedClosure
+                    RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.red, WorldUtils.TileToWorldPos(current), 0.3f));
+                    RegisterGizmos(StepType.Step, () => new GizmoManager.Line(Color.red, WorldUtils.TileToWorldPos(current), WorldUtils.TileToWorldPos(next)));
+                    WaitForStep(StepType.MicroStep);
+                    foreach (var offset in WorldUtils.ADJACENT_AND_ZERO)
+                    {
+                        crowding[next + offset] += crowdingPenaltyByDistance[offset.ManhattanMagnitude()];
+                    }
+
+                    path.AddLast(next);
+                    length--;
+                    current = next;
+                }
+                return path;
+            }
+
+            bool RelaxPaths(LinkedList<Vector2Int>[] paths, ExtendedArray2D<int> crowding, ulong seed)
+            {
+                var dirsToTry = WorldUtils.DIAGONAL_DIRS.Concat(WorldUtils.CARDINAL_DIRS.Select(d => 2 * d)).ToArray();
+
+                RegisterGizmos(StepType.MicroStep, () => paths.SelectMany(DrawPath));
+
+                WeightedRandomSet<(LinkedListNode<Vector2Int>, Vector2Int)> possibleChanges = new(seed);
+                foreach (var path in paths)
+                {
+                    var prev = path.First;
+                    var current = prev.Next;
+                    var next = current?.Next;
+                    while (next is not null)
+                    {
+                        var pos = current.Value;
+                        foreach (var offset in dirsToTry)
+                        {
+                            var newPos = pos + offset;
+                            if (newPos.ManhattanDistance(prev.Value) != 1 || newPos.ManhattanDistance(next.Value) != 1)
+                                continue;
+
+                            float improvement = crowding[pos] - crowding[newPos] + temperature;
+                            if (improvement > 0)
+                                possibleChanges.Add((current, newPos), improvement);
+                        }
+                        prev = current;
+                        current = next;
+                        next = next.Next;
                     }
                 }
 
-                Random.Random random = new(randomSeed);
-                WeightedRandomSet<PlannedPath> queue = new(random.NewSeed());
-                HashSet<((Vector2Int, int) prev, (Vector2Int, int) next, (Vector2Int, int) current)> blacklist = new();
-                var paths = new PlannedPath[pathCount];
-                for (int i = 0; i < pathLengths.Length; i++)
+                if (possibleChanges.Count == 0)
+                    return false;
+
+                var (node, newNodePos) = possibleChanges.PopRandom();
+                RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.red, WorldUtils.TileToWorldPos(node.Value), 0.4f));
+                RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.yellow, WorldUtils.TileToWorldPos(newNodePos), 0.4f));
+                WaitForStep(StepType.MicroStep);
+                foreach (var offset in WorldUtils.ADJACENT_AND_ZERO)
                 {
-                    PlannedPath path = new(pathLengths[i], startPos, starts[i], ref nodes, ref blacklist, random.NewSeed());
-                    paths[i] = path;
-                    queue.Add(path, 1);
+                    int change = crowdingPenaltyByDistance[offset.ManhattanMagnitude()];
+                    crowding[newNodePos + offset] += change;
+                    crowding[node.Value + offset] -= change;
                 }
-                foreach (var path in paths)
+                node.Value = newNodePos;
+
+                RegisterGizmos(StepType.MicroStep, () => paths.SelectMany(DrawPath));
+
+                return true;
+            }
+
+            static void UntwistCrossing(LinkedList<Vector2Int> path)
+            {
+                Dictionary<Vector2Int, LinkedListNode<Vector2Int>> straightX = new();
+                Dictionary<Vector2Int, LinkedListNode<Vector2Int>> straightY = new();
+                var prev = (LinkedListNode<Vector2Int>)null;
+                var current = path.First;
+                var next = current?.Next;
+                while (current is not null)
                 {
-                    WaitForStep(StepType.Step);
-                    float newWeight = path.Step()!.Value;
-                    queue.UpdateWeight(path, newWeight);
-                }
-                int steps = 0;
-                while (queue.Count > 0 && steps < stepsUntilFail)
-                {
-                    WaitForStep(StepType.Step);
-                    PlannedPath path = queue.PopRandom();
-                    float? newWeight = path.Step();
-                    if (newWeight.HasValue)
-                        queue.Add(path, newWeight.Value);
-                    steps++;
-                    RegisterGizmos(StepType.Step, () => DrawPaths(paths));
-                }
-                if (queue.Count == 0)
-                {
-                    foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
-                        retNodes[v.x + v.y * WorldUtils.WORLD_SIZE.x] = nodes[v.x, v.y];
-                    Debug.Log($"Picked Paths in {steps} steps");
-                    RegisterGizmos(StepType.Phase, () => DrawPaths(paths));
-                }
-                else
-                {
-                    failed[0] = true;
+                    var pos = current.Value;
+                    Vector2Int dir;
+                    if (prev == null)
+                    {
+                        dir = pos - next!.Value;
+                    }
+                    else if (next == null)
+                    {
+                        dir = pos - prev!.Value;
+                    }
+                    else
+                    {
+                        Vector2Int incoming = prev.Value - pos;
+                        Vector2Int outgoing = pos - next.Value;
+                        if (incoming != outgoing)
+                        {
+                            prev = current;
+                            current = next;
+                            next = next.Next;
+                            continue;
+                        }
+                        dir = incoming;
+                    }
+                    if (dir.x == 0)
+                    {
+                        straightY[pos] = current;
+                        if (straightX.TryGetValue(pos, out var twistStart))
+                        {
+                            Debug.Log("Crossing untwisted");
+                            path.Reverse(twistStart, current);
+                            return;
+                        }
+                    }
+                    else if (dir.y == 0)
+                    {
+                        straightX[pos] = current;
+                        if (straightY.TryGetValue(pos, out var twistStart))
+                        {
+                            Debug.Log("Crossing untwisted");
+                            path.Reverse(twistStart, current);
+                            return;
+                        }
+                    }
+
+                    // ReSharper disable twice AccessToModifiedClosure
+                    RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Line(Color.yellow, WorldUtils.TileToWorldPos(prev?.Value ?? pos), WorldUtils.TileToWorldPos(next?.Value ?? pos)));
+
+                    prev = current;
+                    current = next;
+                    next = next?.Next;
                 }
             }
 
+            static bool InvalidCrossings(IEnumerable<LinkedList<Vector2Int>> paths)
+            {
+                Dictionary<Vector2Int, int> distances = new();
+                foreach (var path in paths)
+                {
+                    int distance = 0;
+                    var current = path.Last;
+                    while (current != null)
+                    {
+                        if (distances.TryGetValue(current.Value, out int otherDistance) && otherDistance != distance)
+                            return true;
+                        distances[current.Value] = distance;
+                        distance++;
+                        current = current.Previous;
+                    }
+                }
+
+                return false;
+            }
+            static IEnumerable<GizmoManager.GizmoObject> DrawPath(IEnumerable<Vector2Int> path)
+            {
+                List<GizmoManager.GizmoObject> gizmos = new();
+                Vector2Int? last = null;
+                foreach (var pos in path)
+                {
+                    gizmos.Add(new GizmoManager.Cube(Color.green, WorldUtils.TileToWorldPos(pos), 0.1f));
+                    if (last is { } lastPos)
+                        gizmos.Add(new GizmoManager.Line(Color.green, WorldUtils.TileToWorldPos(pos), WorldUtils.TileToWorldPos(lastPos)));
+                    last = pos;
+                }
+                return gizmos;
+            }
+
+            /*
             static IEnumerable<GizmoManager.GizmoObject> DrawPaths(IEnumerable<PlannedPath> paths)
             {
                 List<GizmoManager.GizmoObject> gizmos = new();
@@ -225,6 +433,7 @@ namespace WorldGen.Path
                 }
                 return gizmos;
             }
+            */
         }
         /*
         public JobDataInterface FinalisePaths(Vector2Int[] starts)
