@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Utils
 {
@@ -31,6 +32,25 @@ namespace Utils
                 arrayIndex += lengths[i];
             }
             return result;
+        }
+
+        public static void AddMask(this Array2D<int> array, IReadOnlyArray2D<int> mask, Vector2Int position)
+        {
+            foreach ((Vector2Int offset, int value) in mask.IndexedEnumerable)
+            {
+                Vector2Int pos = position + offset;
+                if (array.IsInBounds(pos))
+                    array[pos] += value;
+            }
+        }
+        public static void SubtractMask(this Array2D<int> array, IReadOnlyArray2D<int> mask, Vector2Int position)
+        {
+            foreach ((Vector2Int offset, int value) in mask.IndexedEnumerable)
+            {
+                Vector2Int pos = position + offset;
+                if (array.IsInBounds(pos))
+                    array[pos] -= value;
+            }
         }
     }
 }

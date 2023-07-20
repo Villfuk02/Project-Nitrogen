@@ -1,5 +1,5 @@
 {
-    "name": "LevelGen.WorldSettings",
+    "name": "WorldGen.WorldSettings",
     "rootNamespace": "",
     "references": [],
     "includePlatforms": [],

@@ -7,6 +7,8 @@ namespace Utils
     {
         public static void Reverse<T>(this LinkedList<T> list)
         {
+            if (list.Count <= 1)
+                return;
             Reverse(list, list.First, list.Last);
         }
         public static void Reverse<T>(this LinkedList<T> list, LinkedListNode<T> from, LinkedListNode<T> to)

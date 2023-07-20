@@ -45,13 +45,7 @@ namespace Utils
             }
             return result;
         }
-        public static IEnumerable<T>? EmptyToNull<T>(this IEnumerable<T> list)
-        {
-            if (list.Any())
-                return list;
-            else
-                return null;
-        }
+        public static IEnumerable<T>? EmptyToNull<T>(this IEnumerable<T> list) => list.Any() ? list : null;
 
         public static bool AllDistinct<T>(this IEnumerable<T> list)
         {

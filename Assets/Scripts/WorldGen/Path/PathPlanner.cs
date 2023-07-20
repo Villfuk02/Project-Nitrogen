@@ -27,13 +27,19 @@ namespace WorldGen.Path
         [SerializeField] int minMergeDistance;
 
         //Runtime variables
-        int[] pathLengths_;
+        static int[] pathLengths_;
         Random.Random random_;
+        static Array2D<int> crowdingPenaltyMask_;
 
         public void Init(int[] pathLengths, ulong randomSeed)
         {
             pathLengths_ = pathLengths;
             random_ = new(randomSeed);
+            crowdingPenaltyMask_ = new(new(3, 3));
+            foreach (var offset in WorldUtils.ADJACENT_AND_ZERO)
+            {
+                crowdingPenaltyMask_[offset + Vector2Int.one] += crowdingPenaltyByDistance[offset.ManhattanMagnitude()];
+            }
         }
 
         static bool IsOnEdge(Vector2Int pos)
@@ -46,7 +52,6 @@ namespace WorldGen.Path
             JobDataInterface jobData = new(Allocator.Persistent);
             JobHandle handle = new PickStartsJob
             {
-                pathLengths = jobData.Register(pathLengths_, JobDataInterface.Mode.Input),
                 picked = jobData.Register(starts, JobDataInterface.Mode.Output),
                 randomSeed = random_.NewSeed(),
                 startSpacingMultiplier = startSpacingMultiplier
@@ -57,7 +62,6 @@ namespace WorldGen.Path
 
         struct PickStartsJob : IJob
         {
-            public NativeArray<int> pathLengths;
             public NativeArray<Vector2Int> picked;
             public ulong randomSeed;
             public float startSpacingMultiplier;
@@ -73,7 +77,7 @@ namespace WorldGen.Path
                 GetPossibleStarts(out var oddStarts, out var evenStarts);
 
 
-                int pathCount = pathLengths.Length;
+                int pathCount = pathLengths_.Length;
                 int perimeter = (WorldUtils.WORLD_SIZE.x + WorldUtils.WORLD_SIZE.y) * 2;
                 float minDistSqr = perimeter * startSpacingMultiplier / pathCount;
                 minDistSqr *= minDistSqr;
@@ -84,7 +88,7 @@ namespace WorldGen.Path
                         .Where(t => pickedList.All(u => (t - u).sqrMagnitude >= minDistSqr))
                         .Select(t => new GizmoManager.Cube(Color.green, WorldUtils.TileToWorldPos(t), 0.3f)));
                     WaitForStep(StepType.MicroStep);
-                    var tp = ChooseStart(pathLengths[i], minDistSqr, pathLengths[i] % 2 == 0 ? evenStarts : oddStarts, pickedList);
+                    var tp = ChooseStart(pathLengths_[i], minDistSqr, pathLengths_[i] % 2 == 0 ? evenStarts : oddStarts, pickedList);
                     picked[i] = tp;
                     pickedList.Add(tp);
                     RegisterGizmos(StepType.Phase, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(tp), 0.4f));
@@ -139,10 +143,8 @@ namespace WorldGen.Path
             int steps = (int)(stepsPerUnitLengthSquared * totalLength * totalLength);
             JobHandle handle = new PlanPathsJob
             {
-                pathLengths = jobData.Register(pathLengths_, JobDataInterface.Mode.Input),
                 starts = jobData.Register(starts, JobDataInterface.Mode.Input),
                 returnPaths = jobData.Register(flatPaths, JobDataInterface.Mode.Output),
-                crowdingPenaltyByDistance = jobData.Register(crowdingPenaltyByDistance, JobDataInterface.Mode.Input),
                 startCrowdingPenalty = startCrowdingPenalty,
                 temperature = startTemperature,
                 cooling = (startTemperature - endTemperature) / (steps - 1),
@@ -156,10 +158,8 @@ namespace WorldGen.Path
 
         struct PlanPathsJob : IJob
         {
-            public NativeArray<int> pathLengths;
             public NativeArray<Vector2Int> starts;
             public NativeArray<Vector2Int> returnPaths;
-            public NativeArray<int> crowdingPenaltyByDistance;
             public int startCrowdingPenalty;
             public float temperature;
             public float cooling;
@@ -174,24 +174,24 @@ namespace WorldGen.Path
 
                 Random.Random random = new(randomSeed);
 
-                int pathCount = pathLengths.Length;
-                ExtendedArray2D<int> distances = new(WorldUtils.WORLD_SIZE, int.MaxValue);
+                int pathCount = pathLengths_.Length;
+                Array2D<int> distances = new(WorldUtils.WORLD_SIZE);
                 foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
                     distances[v] = v.ManhattanDistance(WorldUtils.ORIGIN);
 
                 var paths = new LinkedList<Vector2Int>[pathCount];
-                ExtendedArray2D<int> crowding = new(WorldUtils.WORLD_SIZE, int.MaxValue);
+                Array2D<int> crowding = new(WorldUtils.WORLD_SIZE);
                 for (int i = 0; i < pathCount; i++)
                 {
                     WaitForStep(StepType.MicroStep);
-                    paths[i] = MakePathPrototype(starts[i], pathLengths[i], random, distances, crowding);
+                    paths[i] = MakePathPrototype(starts[i], pathLengths_[i], random, distances, crowding);
                 }
 
                 Debug.Log("Path prototypes picked");
                 WaitForStep(StepType.Step);
 
                 Vector2Int[] found = null;
-                var nodeCounts = pathLengths.Select(l => l + 1).ToArray();
+                var nodeCounts = pathLengths_.Select(l => l + 1).ToArray();
                 while (steps > 0)
                 {
                     if (!RelaxPaths(paths, crowding, random.NewSeed()))
@@ -225,15 +225,12 @@ namespace WorldGen.Path
                 RegisterGizmos(StepType.Phase, () => found.UnpackFlat(nodeCounts).SelectMany(DrawPath));
             }
 
-            LinkedList<Vector2Int> MakePathPrototype(Vector2Int start, int length, Random.Random random, IReadOnlyExtendedArray<int, Vector2Int> distance, ExtendedArray2D<int> crowding)
+            LinkedList<Vector2Int> MakePathPrototype(Vector2Int start, int length, Random.Random random, IReadOnlyArray2D<int> distance, Array2D<int> crowding)
             {
                 LinkedList<Vector2Int> path = new();
                 path.AddFirst(start);
 
-                foreach (var offset in WorldUtils.ADJACENT_AND_ZERO)
-                {
-                    crowding[start + offset] += crowdingPenaltyByDistance[offset.ManhattanMagnitude()];
-                }
+                crowding.AddMask(crowdingPenaltyMask_, start - Vector2Int.one);
                 crowding[start] += startCrowdingPenalty;
 
                 var current = start;
@@ -243,7 +240,7 @@ namespace WorldGen.Path
                     foreach (var dir in WorldUtils.CARDINAL_DIRS)
                     {
                         Vector2Int neighbor = current + dir;
-                        if (distance[neighbor] <= length)
+                        if (distance.TryGet(neighbor, out var d) && d <= length)
                             validNeighbors.Add(neighbor, 1f / (crowding[neighbor] + 1));
                     }
 
@@ -252,19 +249,16 @@ namespace WorldGen.Path
                     RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.red, WorldUtils.TileToWorldPos(current), 0.3f));
                     RegisterGizmos(StepType.Step, () => new GizmoManager.Line(Color.red, WorldUtils.TileToWorldPos(current), WorldUtils.TileToWorldPos(next)));
                     WaitForStep(StepType.MicroStep);
-                    foreach (var offset in WorldUtils.ADJACENT_AND_ZERO)
-                    {
-                        crowding[next + offset] += crowdingPenaltyByDistance[offset.ManhattanMagnitude()];
-                    }
 
                     path.AddLast(next);
+                    crowding.AddMask(crowdingPenaltyMask_, next - Vector2Int.one);
                     length--;
                     current = next;
                 }
                 return path;
             }
 
-            bool RelaxPaths(LinkedList<Vector2Int>[] paths, ExtendedArray2D<int> crowding, ulong seed)
+            bool RelaxPaths(LinkedList<Vector2Int>[] paths, Array2D<int> crowding, ulong seed)
             {
                 var dirsToTry = WorldUtils.DIAGONAL_DIRS.Concat(WorldUtils.CARDINAL_DIRS.Select(d => 2 * d)).ToArray();
 
@@ -285,7 +279,7 @@ namespace WorldGen.Path
                             if (newPos.ManhattanDistance(prev.Value) != 1 || newPos.ManhattanDistance(next.Value) != 1)
                                 continue;
 
-                            float improvement = crowding[pos] - crowding[newPos] + temperature;
+                            float improvement = crowding.GetOrDefault(pos, int.MaxValue) - crowding.GetOrDefault(newPos, int.MaxValue) + temperature;
                             if (improvement > 0)
                                 possibleChanges.Add((current, newPos), improvement);
                         }
@@ -302,12 +296,9 @@ namespace WorldGen.Path
                 RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.red, WorldUtils.TileToWorldPos(node.Value), 0.4f));
                 RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.yellow, WorldUtils.TileToWorldPos(newNodePos), 0.4f));
                 WaitForStep(StepType.MicroStep);
-                foreach (var offset in WorldUtils.ADJACENT_AND_ZERO)
-                {
-                    int change = crowdingPenaltyByDistance[offset.ManhattanMagnitude()];
-                    crowding[newNodePos + offset] += change;
-                    crowding[node.Value + offset] -= change;
-                }
+
+                crowding.AddMask(crowdingPenaltyMask_, newNodePos - Vector2Int.one);
+                crowding.SubtractMask(crowdingPenaltyMask_, node.Value - Vector2Int.one);
                 node.Value = newNodePos;
 
                 RegisterGizmos(StepType.MicroStep, () => paths.SelectMany(DrawPath));
@@ -409,31 +400,11 @@ namespace WorldGen.Path
                 }
                 return gizmos;
             }
+        }
 
-            /*
-            static IEnumerable<GizmoManager.GizmoObject> DrawPaths(IEnumerable<PlannedPath> paths)
-            {
-                List<GizmoManager.GizmoObject> gizmos = new();
-                foreach (var path in paths)
-                {
-                    Vector3? prevPos = null;
-                    foreach (var node in path.path)
-                    {
-                        Vector3 pos = WorldUtils.TileToWorldPos((Vector3Int)node.pos);
-                        bool isPrev = path.prev is not null && node.pos == path.prev.Value.pos;
-                        bool isCurrent = path.next is not null && node.pos == path.next.Value.pos;
-                        bool isShort = prevPos is not null && (prevPos.Value - pos).sqrMagnitude < 2;
-                        gizmos.Add(new GizmoManager.Cube(isPrev || isCurrent ? Color.cyan : Color.red, pos, 0.3f));
-                        if (prevPos is Vector3 pp)
-                        {
-                            gizmos.Add(new GizmoManager.Line(isShort ? Color.yellow : isCurrent ? Color.cyan : Color.red, pp, pos));
-                        }
-                        prevPos = pos;
-                    }
-                }
-                return gizmos;
-            }
-            */
+        public void UnpackPlannedPaths(in Vector2Int[] flatPaths, out Vector2Int[][] paths)
+        {
+            paths = flatPaths.UnpackFlat(pathLengths_.Select(l => l + 1).ToArray());
         }
         /*
         public JobDataInterface FinalisePaths(Vector2Int[] starts)
@@ -477,12 +448,12 @@ namespace WorldGen.Path
                 });
 
                 int targetCount = starts.Length;
-                bool[,] pathTiles = new bool[WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y];
+                bool[,] pathTiles = new bool[WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y]; !!! 2d array !!!
                 LevelGenTile[] paths = new LevelGenTile[targetCount];
                 for (int i = 0; i < targetCount; i++)
                 {
                     paths[i] = Tiles[starts[i]];
-                    pathTiles[paths[i].pos.x, paths[i].pos.y] = true;
+                    pathTiles[paths[i].pos.x, paths[i].pos.y] = true; !!! 2d array !!!
                 }
                 for (int i = 0; i < targetCount; i++)
                 {
