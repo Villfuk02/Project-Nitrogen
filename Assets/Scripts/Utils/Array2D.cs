@@ -17,10 +17,11 @@ namespace Utils
         Array2D<T> Clone();
         IEnumerable<(Vector2Int index, T value)> IndexedEnumerable { get; }
     }
+    [Serializable]
     public class Array2D<T> : IReadOnlyArray2D<T>
     {
         readonly T[] array_;
-        Vector2Int Size { get; }
+        public Vector2Int Size { get; }
 
         public Array2D(Vector2Int size)
         {
@@ -45,15 +46,9 @@ namespace Utils
                 }
             }
         }
-        public IEnumerator<T> GetEnumerator()
-        {
-            return ((IEnumerable<T>)array_).GetEnumerator();
-        }
+        public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)array_).GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public int Count => Size.x * Size.y;
         public bool IsInBounds(Vector2Int index) => index.x >= 0 && index.x < Size.x && index.y >= 0 && index.y < Size.y;
@@ -108,10 +103,7 @@ namespace Utils
                 }
             }
 
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
     }
 }

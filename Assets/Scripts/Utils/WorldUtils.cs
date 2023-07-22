@@ -1,7 +1,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using UnityEngine;
 
 namespace Utils
@@ -9,8 +8,6 @@ namespace Utils
     public static class WorldUtils
     {
         public static readonly Vector2Int WORLD_SIZE = new(15, 15);
-        public const int MAX_HEIGHT = 3;
-        public static readonly int[] ALL_HEIGHTS = Enumerable.Range(0, MAX_HEIGHT + 1).ToArray();
         public const float HEIGHT_STEP = 0.5f;
         public static readonly float SLANT_ANGLE = Mathf.Atan(HEIGHT_STEP) * Mathf.Rad2Deg;
         public static readonly Vector2Int ORIGIN = (WORLD_SIZE - Vector2Int.one) / 2;
@@ -129,7 +126,7 @@ namespace Utils
             W = w;
         }
 
-        public T this[int index] => ((index % 4 + 4) % 4) switch
+        public T this[int index] => MathUtils.Mod(index, 4) switch
         {
             0 => N,
             1 => E,
@@ -138,8 +135,8 @@ namespace Utils
             _ => throw new InvalidOperationException()
         };
 
-        public OrthogonalDirs<T> Rotated(int steps) => new(this[steps], this[steps + 1], this[steps + 2], this[steps + 3]);
-        public OrthogonalDirs<T> Rotated(int steps, Func<T, int, T> rotate) => new(rotate(this[steps], steps), rotate(this[steps + 1], steps), rotate(this[steps + 2], steps), rotate(this[steps + 3], steps));
+        public OrthogonalDirs<T> Rotated(int steps) => new(this[-steps], this[1 - steps], this[2 - steps], this[3 - steps]);
+        public OrthogonalDirs<T> Rotated(int steps, Func<T, int, T> rotate) => new(rotate(this[-steps], steps), rotate(this[1 - steps], steps), rotate(this[2 - steps], steps), rotate(this[3 - steps], steps));
         public OrthogonalDirs<T> Flipped() => new(N, W, S, E);
         public OrthogonalDirs<T> Flipped(Func<T, T> flip) => new(flip(N), flip(W), flip(S), flip(E));
     }
@@ -159,7 +156,7 @@ namespace Utils
             SW = sw;
         }
 
-        public T this[int index] => ((index % 4 + 4) % 4) switch
+        public T this[int index] => MathUtils.Mod(index, 4) switch
         {
             0 => NW,
             1 => NE,
@@ -168,8 +165,8 @@ namespace Utils
             _ => throw new InvalidOperationException()
         };
 
-        public DiagonalDirs<T> Rotated(int steps) => new(this[steps], this[steps + 1], this[steps + 2], this[steps + 3]);
-        public DiagonalDirs<T> Rotated(int steps, Func<T, int, T> rotate) => new(rotate(this[steps], steps), rotate(this[steps + 1], steps), rotate(this[steps + 2], steps), rotate(this[steps + 3], steps));
+        public DiagonalDirs<T> Rotated(int steps) => new(this[-steps], this[1 - steps], this[2 - steps], this[3 - steps]);
+        public DiagonalDirs<T> Rotated(int steps, Func<T, int, T> rotate) => new(rotate(this[-steps], steps), rotate(this[1 - steps], steps), rotate(this[2 - steps], steps), rotate(this[3 - steps], steps));
         public DiagonalDirs<T> Flipped() => new(NE, NW, SW, SE);
         public DiagonalDirs<T> Flipped(Func<T, T> flip) => new(flip(NE), flip(NW), flip(SW), flip(SE));
     }

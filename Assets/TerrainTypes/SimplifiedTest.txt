@@ -1,4 +1,4 @@
-display_name Test
+display_name SimplifiedTest
 # d - default
 surfaces d
 max_height 3
@@ -94,7 +94,7 @@ modules {
         shape {
             d0x o d0x
              o     o
-            d0x x d0v
+            d0x x d0x
         }
     }
 
@@ -104,7 +104,7 @@ modules {
         collision Terrain/CornerSlantUp
         height_offset 1
         shape {
-            d1x x d1v
+            d1x x d1x
              x     o
             d0x o d0x
         }
@@ -117,7 +117,7 @@ modules {
         shape {
             d0x o d0x
              o     o
-            d0v o d0v
+            d0x o d0x
         }
     }
 
@@ -127,7 +127,7 @@ modules {
         collision Terrain/FlatSlantUp
         height_offset 1
         shape {
-            d1v o d1v
+            d1x o d1x
              o     o
             d0x o d0x
         }
@@ -141,7 +141,7 @@ modules {
         shape {
             d1x x d0x
              o     o
-            d1v x d0x
+            d1x x d0x
         }
     }
 
@@ -153,7 +153,7 @@ modules {
         shape {
             d1x x d0x
              o     o
-            d1x x d1^
+            d1x x d1x
         }
     }
 
@@ -163,9 +163,9 @@ modules {
         collision Terrain/DoubleSlantUpCornerCliff
         height_offset 1
         shape {
-            d1x x d1v
+            d1x x d1x
              x     o
-            d1> o d0x
+            d1x o d0x
         }
     }
 }

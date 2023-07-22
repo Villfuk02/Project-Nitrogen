@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Random
 {
+    // TODO: optimize -> all operations O(log n)
     public class WeightedRandomSet<T>
     {
         readonly List<(T item, float weight)> list_;
@@ -25,6 +26,20 @@ namespace Random
             positions_ = new(original.positions_);
             random_ = new(original.random_.CurrentState());
             totalWeight_ = original.totalWeight_;
+        }
+        public WeightedRandomSet(WeightedRandomSet<T> original, ulong randomSeed)
+        {
+            list_ = new(original.list_);
+            positions_ = new(original.positions_);
+            random_ = new(randomSeed);
+            totalWeight_ = original.totalWeight_;
+        }
+        public WeightedRandomSet(IEnumerable<(T item, float weight)> items, ulong randomSeed) : this(randomSeed)
+        {
+            foreach ((T item, float weight) in items)
+            {
+                Add(item, weight);
+            }
         }
 
         public void Add(T item, float weight)

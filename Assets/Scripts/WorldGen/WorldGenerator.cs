@@ -1,3 +1,4 @@
+using Data.LevelGen;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ using System.Threading;
 using UnityEngine;
 using Utils;
 using WorldGen.Path;
+using WorldGen.WFC;
 using static Utils.TimingUtils;
 
 namespace WorldGen
@@ -20,12 +22,13 @@ namespace WorldGen
         [SerializeField] WorldSettings.WorldSettings worldSettings;
         [SerializeField] GizmoManager gizmos;
         [SerializeField] PathPlanner pathPlanner;
-        //[SerializeField] WFCGenerator WFC;
+        [SerializeField] WFCGenerator WFC;
         //[SerializeField] BlockerGenerator blockerGenerator;
         //[SerializeField] Scatterer.Scatterer scatterer;
         //[Header("Settings")]
         [Header("Runtime Values")]
         public Random.Random random;
+        public TerrainType terrainType;
         //LevelGenTiles tiles;
         //public static LevelGenTiles Tiles { get => inst.tiles; }
 
@@ -65,9 +68,12 @@ namespace WorldGen
         IEnumerator Generate()
         {
             worldData.Reset();
-            pathPlanner.Init(worldSettings.pathLengths, random.NewSeed());
 
-            //WFC.Prepare();
+            terrainType = TerrainTypes.GetTerrainType(worldSettings.terrainType);
+
+            pathPlanner.Init(worldSettings.pathLengths, random.NewSeed());
+            WFC.Init(terrainType, random.NewSeed());
+
             //blockerGenerator.Prepare();
             //scatterer.Prepare();
             Vector2Int[] starts;
@@ -75,19 +81,20 @@ namespace WorldGen
             {
                 JobDataInterface pickStarts = pathPlanner.PickStarts(out starts);
                 yield return new WaitUntil(() => pickStarts.IsFinished);
+
                 JobDataInterface pickPaths = pathPlanner.PlanPaths(starts, out var flatPaths);
                 yield return new WaitUntil(() => pickPaths.IsFinished);
                 if (pickPaths.Failed)
                     continue;
-                /*
-                
-                JobDataInterface WFCGenerate = WFC.Generate(nodes, out int[] modules, out int[] heights);
-                yield return new WaitUntil(() => WFCGenerate.IsFinished);
-                if (WFCGenerate.Failed)
-                {
-                    continue;
-                }
+                pathPlanner.UnpackPlannedPaths(flatPaths, out var paths);
 
+                JobDataInterface wfcGenerate = WFC.Generate(paths, out var modules, out var heights);
+                yield return new WaitUntil(() => wfcGenerate.IsFinished);
+                if (wfcGenerate.Failed)
+                    continue;
+
+                /*               
+                !!! 2d arrays !!!
                 bool[,] passable = new bool[(WORLD_SIZE.x + 1) * (WORLD_SIZE.y + 1), 4];
                 Slant[] slants = new Slant[(WORLD_SIZE.x + 1) * (WORLD_SIZE.y + 1)];
                 foreach (Vector2Int v in WORLD_SIZE)
@@ -101,7 +108,7 @@ namespace WorldGen
                         Vector2Int pp = i / 2 == 0 ? v + Vector2Int.one : v;
                         if (pos.x >= 0 && pos.y >= 0 && pos.x < WORLD_SIZE.x && pos.y < WORLD_SIZE.y
                             && WFCGenerator.ALL_MODULES[modules[pp.x + pp.y * (WORLD_SIZE.x + 1)]].passable[3 - i])
-                            passable[index, i] = true;
+                            passable[index, i] = true; 
                     }
                 }
                 tiles = new(passable, heights, slants, nodes);

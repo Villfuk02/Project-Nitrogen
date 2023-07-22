@@ -298,9 +298,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 134019241}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae7ffa78c409d444a811db7a82ec12a3, type: 3}
+  m_Script: {fileID: 11500000, guid: dc540d5f1b9c79546b71136ca82b94df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  backupDepth: 8
 --- !u!1 &421106806
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,7 +549,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainType: Test
   seed: 0
-  pathLengths: c8000000
+  pathLengths: 100000001300000016000000
   randomSeed: 1
 --- !u!4 &815966620
 Transform:
@@ -1134,6 +1135,7 @@ MonoBehaviour:
   worldSettings: {fileID: 815966619}
   gizmos: {fileID: 1838770610}
   pathPlanner: {fileID: 1087793668}
+  WFC: {fileID: 134019243}
 --- !u!114 &1838770610
 MonoBehaviour:
   m_ObjectHideFlags: 0
