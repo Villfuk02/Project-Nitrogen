@@ -78,7 +78,7 @@ namespace Utils
 
         public void CopyTo(T[] array) => Array.Copy(array_, 0, array, 0, Count);
 
-        public Array2D<T> Clone() => new(array_, Size);
+        public Array2D<T> Clone() => new((T[])array_.Clone(), Size);
         public IEnumerable<(Vector2Int index, T value)> IndexedEnumerable => new Indexed(this);
 
         class Indexed : IEnumerable<(Vector2Int index, T value)>

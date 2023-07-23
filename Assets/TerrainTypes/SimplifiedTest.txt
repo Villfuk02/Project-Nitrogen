@@ -1,7 +1,7 @@
 display_name SimplifiedTest
 # d - default
 surfaces d
-max_height 3
+max_height 0
 
 modules {
     * Flat {
@@ -19,9 +19,8 @@ modules {
         weight 16
         variants 4
         collision Terrain/StraightCliff
-        height_offset 1
         shape {
-            d1x o d1x
+            d0x o d0x
              x     x
             d0x o d0x
         }
@@ -31,9 +30,8 @@ modules {
         weight 16
         variants 4
         collision Terrain/CurvedCliff
-        height_offset 1
         shape {
-            d1x x d0x
+            d0x x d0x
              x     o
             d0x o d0x
         }
@@ -43,11 +41,10 @@ modules {
         weight 16
         variants 4
         collision Terrain/InnerCornerCliff
-        height_offset 1
         shape {
-            d1x o d1x
+            d0x o d0x
              o     x
-            d1x x d0x
+            d0x x d0x
         }
     }
 
@@ -55,9 +52,8 @@ modules {
         weight 8
         variants 4
         collision Terrain/Straight2HighCliff
-        height_offset 2
         shape {
-            d2x o d2x
+            d0x o d0x
              x     x
             d0x o d0x
         }
@@ -67,11 +63,10 @@ modules {
         weight 2
         variants f4
         collision Terrain/TCliffTriple
-        height_offset 2
         shape {
-            d2x o d2x
+            d0x o d0x
              x     x
-            d0x x d1x
+            d0x x d0x
         }
     }
 
@@ -79,11 +74,10 @@ modules {
         weight 2
         variants 4
         collision Terrain/CrossCliffTriple
-        height_offset 2
         shape {
-            d2x x d1x
+            d0x x d0x
              x     x
-            d1x x d0x
+            d0x x d0x
         }
     }
 
@@ -102,9 +96,8 @@ modules {
         weight 32
         variants f4
         collision Terrain/CornerSlantUp
-        height_offset 1
         shape {
-            d1x x d1x
+            d0x x d0x
              x     o
             d0x o d0x
         }
@@ -125,9 +118,8 @@ modules {
         weight 64
         variants 4
         collision Terrain/FlatSlantUp
-        height_offset 1
         shape {
-            d1x o d1x
+            d0x o d0x
              o     o
             d0x o d0x
         }
@@ -137,11 +129,10 @@ modules {
         weight 32
         variants f4
         collision Terrain/SlantDownStraightCliff
-        height_offset 1
         shape {
-            d1x x d0x
+            d0x x d0x
              o     o
-            d1x x d0x
+            d0x x d0x
         }
     }
 
@@ -149,11 +140,10 @@ modules {
         weight 32
         variants f4
         collision Terrain/SlantUpStraightCliff
-        height_offset 1
         shape {
-            d1x x d0x
+            d0x x d0x
              o     o
-            d1x x d1x
+            d0x x d0x
         }
     }
 
@@ -161,11 +151,10 @@ modules {
         weight 32
         variants 4
         collision Terrain/DoubleSlantUpCornerCliff
-        height_offset 1
         shape {
-            d1x x d1x
+            d0x x d0x
              x     o
-            d1x o d0x
+            d0x o d0x
         }
     }
 }

@@ -1,6 +1,8 @@
+using Data.LevelGen;
 using Random;
+using System;
 using System.Collections;
-using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 using Utils;
 
@@ -8,138 +10,125 @@ namespace WorldGen.WFC
 {
     public class WFCState
     {
-        static readonly Vector2Int[] slotToTileArrayOffsets = new Vector2Int[] { Vector2Int.up, Vector2Int.up + Vector2Int.right, Vector2Int.right, Vector2Int.zero };
+        static readonly DiagonalDirs<Vector2Int> SlotToTileArrayOffsets = new(Vector2Int.up, Vector2Int.one, Vector2Int.right, Vector2Int.zero);
+        static readonly CardinalDirs<Vector2Int> TileToSlotArrayOffsets = new(Vector2Int.one, Vector2Int.one, Vector2Int.zero, Vector2Int.zero);
+        static readonly CardinalDirs<int> SlotToPassageArrayOffsets = new(0, 2, -4 * (WorldUtils.WORLD_SIZE.x + 1), -2);
 
-        public int uncollapsed = 0;
-        readonly WFCSlot[,] slots;
+        public int uncollapsed;
+        public readonly Array2D<WFCSlot> slots;
+        readonly Array2D<WFCTile> tiles_;
+        readonly BitArray passages_;
         public readonly WeightedRandomSet<Vector2Int> entropyQueue;
-        readonly BitArray passages;
-        readonly WFCTile[,] tiles;
 
         public Vector2Int lastCollapsedSlot;
-        public (int module, int height) lastCollapsedTo;
-        int _id;
+        public (Module module, int height) lastCollapsedTo;
+        int id_;
         public WFCState()
         {
-            slots = new WFCSlot[WorldUtils.WORLD_SIZE.x + 1, WorldUtils.WORLD_SIZE.y + 1];
-            passages = new BitArray((WorldUtils.WORLD_SIZE.x + 1) * (WorldUtils.WORLD_SIZE.y + 1) * 4, true);
-            tiles = new WFCTile[WorldUtils.WORLD_SIZE.x + 2, WorldUtils.WORLD_SIZE.y + 2];
-            for (int x = 0; x < tiles.GetLength(0); x++)
-            {
-                for (int y = 0; y < tiles.GetLength(1); y++)
-                {
-                    tiles[x, y] = new(true);
-                }
-            }
-            _id = 0;
+            Vector2Int slotWorldSize = WorldUtils.WORLD_SIZE + Vector2Int.one;
+
+            slots = new(slotWorldSize);
+            tiles_ = new(slotWorldSize + Vector2Int.one);
+            foreach (var (index, _) in tiles_.IndexedEnumerable)
+                tiles_[index] = new(true);
+            passages_ = new(slotWorldSize.x * slotWorldSize.y * 4, true);
             entropyQueue = new(WFCGenerator.Random.NewSeed());
+            id_ = 0;
         }
         public WFCState(WFCState original)
         {
             uncollapsed = original.uncollapsed;
-            slots = (WFCSlot[,])original.slots.Clone();
+            slots = original.slots.Clone();
+            tiles_ = original.tiles_.Clone();
+            passages_ = new(original.passages_);
             entropyQueue = new(original.entropyQueue, WFCGenerator.Random.NewSeed());
-            passages = new(original.passages);
-            tiles = (WFCTile[,])original.tiles.Clone();
-            _id = original._id + 1000000;
+            id_ = original.id_ + 1000000;
         }
 
-        public void InitSlot(int x, int y, WFCSlot slot)
+        public void CollapseRandom(RandomSet<WFCSlot> dirty)
         {
-            slots[x, y] = slot;
-        }
-
-        public WFCSlot GetSlot(int x, int y)
-        {
-            if (!WorldUtils.IsInRange(x, y, slots.GetLength(0), slots.GetLength(1)))
-                return null;
-            return slots[x, y];
-        }
-
-        public void OverwriteSlot(WFCSlot n)
-        {
-            slots[n.pos.x, n.pos.y] = n;
-        }
-
-        public void CollapseRandom(ref RandomSet<WFCSlot> dirty)
-        {
-            _id++;
+            id_++;
             Vector2Int pos = entropyQueue.PopRandom();
-            WFCSlot s = slots[pos.x, pos.y];
-            lastCollapsedSlot = s.pos;
+            WFCSlot s = slots[pos];
+            lastCollapsedSlot = pos;
             s = s.Collapse(this);
-            HashSet<Vector2Int> updated = s.UpdateConstraints(this);
-            WFCGenerator.MarkNeighborsDirty(s.pos, updated, this, ref dirty);
+            var updated = s.UpdateConstraints(this);
+            WFCGenerator.MarkNeighborsDirty(pos, updated, this, dirty);
             lastCollapsedTo = (s.Collapsed, s.Height);
-            OverwriteSlot(s);
+            slots[pos] = s;
         }
-        public void RemoveSlotOption(Vector2Int pos, (int module, int height) module)
-        {
-            slots[pos.x, pos.y].MarkInvalid(module);
-        }
+
         //PASSAGES
-        public (bool passable, bool unpassable)[] GetValidPassagesAtSlot(int x, int y)
+        public CardinalDirs<(bool passable, bool unpassable)> GetValidPassagesAtSlot(Vector2Int pos)
         {
-            (bool passable, bool unpassable)[] ret = new (bool, bool)[4];
-            ret[0] = GetValidPassagesAt(x, y, true);
-            ret[1] = GetValidPassagesAt(x, y, false);
-            ret[2] = GetValidPassagesAt(x, y - 1, true);
-            ret[3] = GetValidPassagesAt(x - 1, y, false);
+            CardinalDirs<(bool passable, bool unpassable)> ret = new();
+            for (int i = 0; i < 4; i++)
+            {
+                ret[i] = GetValidPassageAtSlot(pos, i);
+            }
             return ret;
         }
-        public (bool passable, bool unpassable) GetValidPassagesAt(int x, int y, bool vertical)
+        (bool passable, bool unpassable) GetValidPassageAtSlot(Vector2Int pos, int direction)
         {
-            if (!WorldUtils.IsInRange(x, y, slots.GetLength(0), slots.GetLength(1)))
+            if (!slots.IsInBounds(pos + WorldUtils.CARDINAL_DIRS[direction]))
                 return (true, true);
-            int pos = x + y * (WorldUtils.WORLD_SIZE.x + 1) + (vertical ? 0 : (WorldUtils.WORLD_SIZE.x + 1) * (WorldUtils.WORLD_SIZE.y + 1));
-            return (passages[pos * 2], passages[pos * 2 + 1]);
+            int index = GetPassageArrayIndex(pos, direction, true);
+            return (passages_[index], passages_[index + 1]);
         }
-        public void SetValidPassagesAtSlot(int x, int y, (bool passable, bool unpassable)[] p)
+        public void SetValidPassagesAtSlot(Vector2Int pos, CardinalDirs<(bool passable, bool unpassable)> p)
         {
-            SetValidPassagesAt(x, y, true, p[0]);
-            SetValidPassagesAt(x, y, false, p[1]);
-            SetValidPassagesAt(x, y - 1, true, p[2]);
-            SetValidPassagesAt(x - 1, y, false, p[3]);
+            for (int i = 0; i < 4; i++)
+            {
+                SetValidPassageAtSlot(pos, i, p[i]);
+            }
         }
-        public void SetValidPassagesAt(int x, int y, bool vertical, (bool passable, bool unpassable) p)
+        void SetValidPassageAtSlot(Vector2Int pos, int direction, (bool passable, bool unpassable) p)
         {
-            if (!WorldUtils.IsInRange(x, y, slots.GetLength(0), slots.GetLength(1)))
+            if (!slots.IsInBounds(pos + WorldUtils.CARDINAL_DIRS[direction]))
                 return;
-            int pos = x + y * (WorldUtils.WORLD_SIZE.x + 1) + (vertical ? 0 : (WorldUtils.WORLD_SIZE.x + 1) * (WorldUtils.WORLD_SIZE.y + 1));
-            passages[pos * 2] = p.passable;
-            passages[pos * 2 + 1] = p.unpassable;
+            int index = GetPassageArrayIndex(pos, direction, true);
+            passages_[index] = p.passable;
+            passages_[index + 1] = p.unpassable;
+        }
+
+        public void SetValidPassageAtTile(Vector2Int pos, int direction, (bool passable, bool unpassable) p)
+        {
+            SetValidPassageAtSlot(pos + TileToSlotArrayOffsets[direction], 3 - direction, p);
+        }
+
+        static int GetPassageArrayIndex(Vector2Int slotPos, int direction, bool passable)
+        {
+            return (slotPos.x + slotPos.y * (WorldUtils.WORLD_SIZE.x + 1)) * 4 + SlotToPassageArrayOffsets[direction] + (passable ? 0 : 1);
         }
         //TILES
-        public WFCTile[] GetVaildTilesAtSlot(Vector2Int pos)
+        public DiagonalDirs<WFCTile> GetValidTilesAtSlot(Vector2Int pos)
         {
-            WFCTile[] ret = new WFCTile[4];
-            for (int i = 0; i < 4; i++)
-            {
-                Vector2Int tilePos = pos + slotToTileArrayOffsets[i];
-                ret[i] = GetTile(tilePos);
-            }
-            return ret;
+            return SlotToTileArrayOffsets.Map(o => tiles_[pos + o]);
         }
-        public void SetValidTilesAtSlot(Vector2Int pos, WFCTile[] newTiles)
+        public void SetValidTilesAtSlot(Vector2Int pos, DiagonalDirs<WFCTile> newTiles)
         {
             for (int i = 0; i < 4; i++)
             {
-                Vector2Int tilePos = pos + slotToTileArrayOffsets[i];
-                SetTile(tilePos, newTiles[i]);
+                Vector2Int tilePos = pos + SlotToTileArrayOffsets[i];
+                tiles_[tilePos] = newTiles[i];
             }
         }
-        public WFCTile GetTile(Vector2Int pos)
+        public WFCTile GetTileAt(Vector2Int pos) => tiles_[pos + Vector2Int.one];
+
+        public void SaveResults(NativeArray<int> flatModules, NativeArray<int> flatHeights)
         {
-            return tiles[pos.x, pos.y];
-        }
-        public void SetTile(Vector2Int pos, WFCTile tile)
-        {
-            tiles[pos.x, pos.y] = tile;
+            int i = 0;
+            foreach (var (_, slot) in slots.IndexedEnumerable)
+            {
+                flatModules[i] = Array.IndexOf(WFCGenerator.Terrain.Modules, slot.Collapsed);
+                flatHeights[i] = slot.Height;
+                i++;
+            }
         }
 
         public override string ToString()
         {
-            return $"({_id}) {base.ToString()}";
+            return $"({id_}) {base.ToString()}";
         }
     }
 }

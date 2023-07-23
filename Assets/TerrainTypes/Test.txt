@@ -168,6 +168,29 @@ modules {
             d1> o d0x
         }
     }
+
+    * MonolithFlat {
+        weight 0.5
+        variants 4
+        collision Terrain/MonolithFlat
+        shape {
+            d0x o d0x
+             o     o
+            d0x x d0x
+        }
+    }
+
+    * MonolithCliffSlant {
+        weight 0.5
+        variants f4
+        collision Terrain/MonolithCliffSlant
+        height_offset 1
+        shape {
+            d1x x d1v
+             x     o
+            d0x x d0x
+        }
+    }
 }
 
 blockers {

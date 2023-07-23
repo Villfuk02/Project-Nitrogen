@@ -1,4 +1,5 @@
 using Random;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections;
@@ -76,7 +77,6 @@ namespace WorldGen.Path
 
                 GetPossibleStarts(out var oddStarts, out var evenStarts);
 
-
                 int pathCount = pathLengths_.Length;
                 int perimeter = (WorldUtils.WORLD_SIZE.x + WorldUtils.WORLD_SIZE.y) * 2;
                 float minDistSqr = perimeter * startSpacingMultiplier / pathCount;
@@ -119,7 +119,6 @@ namespace WorldGen.Path
                 do
                 {
                     result = available.PopRandom();
-                    // ReSharper disable once AccessToModifiedClosure
                     RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.yellow, WorldUtils.TileToWorldPos(result), 0.2f));
                     if (result.ManhattanDistance(WorldUtils.ORIGIN) > length)
                     {
@@ -169,7 +168,7 @@ namespace WorldGen.Path
             public NativeArray<bool> failed;
             public void Execute()
             {
-                Debug.Log($"Planning paths in {steps} steps");
+                Debug.Log("Planning paths");
                 RegisterGizmos(StepType.Phase, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(WorldUtils.ORIGIN), 0.4f));
 
                 Random.Random random = new(randomSeed);
@@ -187,10 +186,10 @@ namespace WorldGen.Path
                     paths[i] = MakePathPrototype(starts[i], pathLengths_[i], random, distances, crowding);
                 }
 
-                Debug.Log("Path prototypes picked");
+                Debug.Log($"Path prototypes picked, relaxing in {steps} steps");
                 WaitForStep(StepType.Step);
 
-                Vector2Int[] found = null;
+                var found = pathCount == 0 ? Array.Empty<Vector2Int>() : null;
                 var nodeCounts = pathLengths_.Select(l => l + 1).ToArray();
                 while (steps > 0)
                 {
@@ -219,7 +218,7 @@ namespace WorldGen.Path
                     return;
                 }
 
-                Debug.Log("Found paths");
+                Debug.Log("Paths planned");
                 returnPaths.CopyFrom(found);
 
                 RegisterGizmos(StepType.Phase, () => found.UnpackFlat(nodeCounts).SelectMany(DrawPath));
@@ -245,7 +244,6 @@ namespace WorldGen.Path
                     }
 
                     Vector2Int next = validNeighbors.PopRandom();
-                    // ReSharper disable twice AccessToModifiedClosure
                     RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.red, WorldUtils.TileToWorldPos(current), 0.3f));
                     RegisterGizmos(StepType.Step, () => new GizmoManager.Line(Color.red, WorldUtils.TileToWorldPos(current), WorldUtils.TileToWorldPos(next)));
                     WaitForStep(StepType.MicroStep);
@@ -343,7 +341,6 @@ namespace WorldGen.Path
                         straightY[pos] = current;
                         if (straightX.TryGetValue(pos, out var twistStart))
                         {
-                            Debug.Log("Crossing untwisted");
                             path.Reverse(twistStart, current);
                             return;
                         }
@@ -353,13 +350,11 @@ namespace WorldGen.Path
                         straightX[pos] = current;
                         if (straightY.TryGetValue(pos, out var twistStart))
                         {
-                            Debug.Log("Crossing untwisted");
                             path.Reverse(twistStart, current);
                             return;
                         }
                     }
 
-                    // ReSharper disable twice AccessToModifiedClosure
                     RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Line(Color.yellow, WorldUtils.TileToWorldPos(prev?.Value ?? pos), WorldUtils.TileToWorldPos(next?.Value ?? pos)));
 
                     prev = current;

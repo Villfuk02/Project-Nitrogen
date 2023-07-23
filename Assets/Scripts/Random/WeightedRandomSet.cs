@@ -46,6 +46,8 @@ namespace Random
         {
             if (positions_.ContainsKey(item))
                 throw new ArgumentException($"Set already contains item {item}.");
+            if (weight < 0)
+                throw new ArgumentException("Weight cannot be negative.");
             positions_.Add(item, list_.Count);
             list_.Add((item, weight));
             totalWeight_ += weight;
@@ -66,7 +68,7 @@ namespace Random
         }
         public T PopRandom()
         {
-            if (totalWeight_ == 0)
+            if (totalWeight_ <= 0)
                 throw new InvalidOperationException("Cannot pop from an empty set.");
             float r = random_.FloatExclusive(0, totalWeight_);
             int pos = 0;

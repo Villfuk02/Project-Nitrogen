@@ -96,14 +96,14 @@ namespace Data.LevelGen
         }
     }
 
-    public record ModuleShape(DiagonalDirs<char> Surfaces, DiagonalDirs<int> Heights, DiagonalDirs<WorldUtils.Slant> Slants, OrthogonalDirs<bool> Passable)
+    public record ModuleShape(DiagonalDirs<char> Surfaces, DiagonalDirs<int> Heights, DiagonalDirs<WorldUtils.Slant> Slants, CardinalDirs<bool> Passable)
     {
         public static ModuleShape Parse(ParseStream stream)
         {
             DiagonalDirs<char> surfaces;
             DiagonalDirs<int> heights;
             DiagonalDirs<WorldUtils.Slant> slants;
-            OrthogonalDirs<bool> passable;
+            CardinalDirs<bool> passable;
 
             int ParseHeight(char c) => c is >= '0' and <= '9'
                 ? c - '0'

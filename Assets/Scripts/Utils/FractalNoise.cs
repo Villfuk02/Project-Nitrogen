@@ -14,7 +14,7 @@ namespace Utils
         public float baseFrequency;
         public float frequencyMult;
 
-        //TODO: FIX
+        //TODO: Make deterministic
         Vector2[] offsets_;
         public FractalNoise(int octaves, float bias, float baseAmplitude, float amplitudeMult, float baseFrequency, float frequencyMult)
         {

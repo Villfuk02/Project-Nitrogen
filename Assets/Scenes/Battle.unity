@@ -803,7 +803,7 @@ MonoBehaviour:
   startCrowdingPenalty: 20
   startTemperature: 4
   endTemperature: -5
-  stepsPerUnitLengthSquared: 0.15
+  stepsPerUnitLengthSquared: 0.3
   maxPathsPerStart: 3
   minMergeDistance: 4
 --- !u!4 &1087793669
@@ -1130,7 +1130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stepped: 0
-  stepType: 3
+  stepType: 0
   worldData: {fileID: 94511820}
   worldSettings: {fileID: 815966619}
   gizmos: {fileID: 1838770610}

@@ -4,18 +4,18 @@
         - [x] plan paths
         - [ ] WFC
             - [x] make it work again
-            - [ ] refactoring
-                - [ ] make WFCGenerator fields not static
-            - [ ] determinism
+            - [x] refactoring
+            - [x] determinism
             - [ ] parallelize
         - [ ] blockers
         - [ ] finalize paths
         - [ ] scatter decorations
+    - [ ] optimize WeightedRandomSet
     - [ ] reorganize assemblies
     - [ ] make data only store data, no behavior
     - [ ] split [[World Generation]] jobs into fns
     - [ ] encapsulation
-    - [ ] REFACTOR [[World Generation]]
+    - [ ] readonly methods
 - [ ] use unity events?
 - [ ] reorganize (and rename)
 
