@@ -1,7 +1,6 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using static Utils.TimingUtils;
 
 namespace Utils
 {
@@ -10,17 +9,13 @@ namespace Utils
         public bool draw;
         public bool onlySelected;
         readonly object lock_ = new();
-        readonly Dictionary<StepType, List<GizmoObject>> objects_ = new();
+        readonly Dictionary<object, List<GizmoObject>> objects_ = new();
 
         void Awake()
         {
             lock (lock_)
             {
                 objects_.Clear();
-                foreach (var stepType in STEP_TYPES)
-                {
-                    objects_.Add(stepType, new());
-                }
             }
         }
 
@@ -40,26 +35,31 @@ namespace Utils
             }
         }
 
-        public void Add(StepType duration, GizmoObject obj)
+        public void Add(object duration, GizmoObject obj)
         {
             lock (lock_)
             {
+                if (!objects_.ContainsKey(duration))
+                    objects_.Add(duration, new());
                 objects_[duration].Add(obj);
             }
         }
-        public void Add(StepType duration, IEnumerable<GizmoObject> obj)
+        public void Add(object duration, IEnumerable<GizmoObject> obj)
         {
             lock (lock_)
             {
+                if (!objects_.ContainsKey(duration))
+                    objects_.Add(duration, new());
                 objects_[duration].AddRange(obj);
             }
         }
 
-        public void Expire(StepType duration)
+        public void Expire(object duration)
         {
             lock (lock_)
             {
-                objects_[duration].Clear();
+                if (objects_.TryGetValue(duration, out var list))
+                    list.Clear();
             }
         }
 

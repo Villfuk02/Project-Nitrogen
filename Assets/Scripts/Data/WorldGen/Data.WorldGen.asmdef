@@ -1,5 +1,5 @@
 {
-    "name": "Data.LevelGen",
+    "name": "Data.WorldGen",
     "rootNamespace": "",
     "references": [
         "GUID:377e0d80d200c2b48a75c7121911aa1f",

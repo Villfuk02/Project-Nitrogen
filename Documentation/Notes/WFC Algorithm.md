@@ -10,7 +10,6 @@ randomised constraint solving programming
 - set-up modules in editor
     - generate rotations and flips at start
 
-
 ALGORITHM
 - prepare *modules* 
 - generate grid of *slots*, mark them as *uncollapsed*

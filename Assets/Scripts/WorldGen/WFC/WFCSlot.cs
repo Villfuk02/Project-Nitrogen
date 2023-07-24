@@ -24,16 +24,16 @@ namespace WorldGen.WFC
         public WFCSlot(int x, int y, ref WFCState state)
         {
             Dictionary<float, int> weights = new();
-            int moduleCount = WFCGenerator.Terrain.Modules.Length;
+            int moduleCount = WorldGenerator.TerrainType.Modules.Length;
             validModules_ = new(moduleCount);
             validHeights_ = new(moduleCount);
             for (int i = 0; i < moduleCount; i++)
             {
-                Module m = WFCGenerator.Terrain.Modules[i];
+                Module m = WorldGenerator.TerrainType.Modules[i];
                 validModules_.Add(m);
-                validHeights_[m] = Enumerable.Range(0, WFCGenerator.Terrain.MaxHeight + 1).ToHashSet();
+                validHeights_[m] = Enumerable.Range(0, WorldGenerator.TerrainType.MaxHeight + 1).ToHashSet();
                 float w = m.Weight;
-                weights[w] = (weights.TryGetValue(w, out int weight) ? weight : 0) + WFCGenerator.Terrain.MaxHeight + 1;
+                weights[w] = (weights.TryGetValue(w, out int weight) ? weight : 0) + WorldGenerator.TerrainType.MaxHeight + 1;
             }
             pos = new(x, y);
             TotalEntropy = WFCGenerator.CalculateEntropy(weights);
@@ -51,7 +51,7 @@ namespace WorldGen.WFC
         {
             WFCSlot n = new(pos);
 
-            WeightedRandomSet<(Module module, int height)> possibilities = new(WFCGenerator.Random.NewSeed());
+            WeightedRandomSet<(Module module, int height)> possibilities = new(WorldGenerator.Random.NewSeed());
 
             foreach (var m in validModules_)
             {

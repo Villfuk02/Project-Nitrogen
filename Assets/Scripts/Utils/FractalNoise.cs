@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Utils
 {
-    [System.Serializable]
+    [Serializable]
     public class FractalNoise
     {
         public int octaves;
@@ -14,7 +14,6 @@ namespace Utils
         public float baseFrequency;
         public float frequencyMult;
 
-        //TODO: Make deterministic
         Vector2[] offsets_;
         public FractalNoise(int octaves, float bias, float baseAmplitude, float amplitudeMult, float baseFrequency, float frequencyMult)
         {
@@ -26,7 +25,7 @@ namespace Utils
             this.frequencyMult = frequencyMult;
         }
 
-        void Init(ulong randomSeed)
+        public void Init(ulong randomSeed)
         {
             Random.Random random = new(randomSeed);
             offsets_ = new Vector2[octaves];

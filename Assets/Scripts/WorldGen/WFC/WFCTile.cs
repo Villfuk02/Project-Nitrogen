@@ -14,8 +14,8 @@ namespace WorldGen.WFC
         {
             if (prefill)
             {
-                heights = Enumerable.Range(0, WFCGenerator.Terrain.MaxHeight + 1).ToHashSet();
-                surfaces = new(WFCGenerator.Terrain.Surfaces);
+                heights = Enumerable.Range(0, WorldGenerator.TerrainType.MaxHeight + 1).ToHashSet();
+                surfaces = new(WorldGenerator.TerrainType.Surfaces);
                 slants = new(WorldUtils.ALL_SLANTS);
             }
             else

@@ -3,11 +3,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using Utils;
 using WorldGen.Path;
 using WorldGen.WFC;
-using static Utils.TimingUtils;
 
 namespace WorldGen
 {
@@ -17,29 +17,38 @@ namespace WorldGen
         [SerializeField] bool stepped;
         [SerializeField] StepType stepType;
         [Header("References")]
-        public static WorldGenerator inst;
+        static WorldGenerator inst_;
         [SerializeField] WorldData.WorldData worldData;
         [SerializeField] WorldSettings.WorldSettings worldSettings;
         [SerializeField] GizmoManager gizmos;
+        [SerializeField] PathStartPicker pathStartPicker;
         [SerializeField] PathPlanner pathPlanner;
         [SerializeField] WFCGenerator WFC;
         //[SerializeField] BlockerGenerator blockerGenerator;
         //[SerializeField] Scatterer.Scatterer scatterer;
-        //[Header("Settings")]
-        [Header("Runtime Values")]
-        public Random.Random random;
-        public TerrainType terrainType;
+        [Header("Settings")]
+        [SerializeField] int tries;
+
+        //Runtime Values
+        public static Random.Random Random { get; private set; }
+        public static TerrainType TerrainType { get; private set; }
+
+        readonly AutoResetEvent waitForStepEvent_ = new(false);
+        readonly object steppedLock_ = new();
         //LevelGenTiles tiles;
         //public static LevelGenTiles Tiles { get => inst.tiles; }
 
+        public enum StepType { None, Phase, Step, MicroStep }
+        public static readonly StepType[] STEP_TYPES = (StepType[])Enum.GetValues(typeof(StepType));
+
         void Awake()
         {
-            if (inst == null)
-                inst = this;
+            if (inst_ == null)
+                inst_ = this;
             else
                 Debug.LogError("There can be only one!");
             worldData.Reset();
-            random = new(worldSettings.seed);
+            Random = new(worldSettings.seed);
         }
         void Start()
         {
@@ -53,7 +62,7 @@ namespace WorldGen
                 return;
 
             if (Input.GetKeyDown(KeyCode.T) || Input.GetKey(KeyCode.H))
-                stepped = false;
+                Step();
 
             if (Input.GetKeyDown(KeyCode.N))
                 stepType = StepType.None;
@@ -67,30 +76,37 @@ namespace WorldGen
 
         IEnumerator Generate()
         {
+            Task generating = GenerateAsync();
+            yield return new WaitUntil(() => generating.IsCompleted);
+            Debug.Log("GENERATING FINISHED");
+        }
+
+        async Task GenerateAsync()
+        {
             worldData.Reset();
 
-            terrainType = TerrainTypes.GetTerrainType(worldSettings.terrainType);
+            TerrainType = TerrainTypes.GetTerrainType(worldSettings.terrainType);
 
-            pathPlanner.Init(worldSettings.pathLengths, random.NewSeed());
-            WFC.Init(terrainType, random.NewSeed());
+            await Task.Yield();
 
             //blockerGenerator.Prepare();
             //scatterer.Prepare();
+
             Vector2Int[] starts;
-            do
+            while (true)
             {
-                JobDataInterface pickStarts = pathPlanner.PickStarts(out starts);
-                yield return new WaitUntil(() => pickStarts.IsFinished);
+                if (tries <= 0)
+                    throw new("Failed to generate world");
+                tries--;
 
-                JobDataInterface pickPaths = pathPlanner.PlanPaths(starts, out var flatPaths);
-                yield return new WaitUntil(() => pickPaths.IsFinished);
-                if (pickPaths.Failed)
+                starts = await Task.Run(() => pathStartPicker.PickStarts(worldSettings.pathLengths));
+
+                var paths = await Task.Run(() => pathPlanner.PlanPaths(starts, worldSettings.pathLengths));
+                if (paths is null)
                     continue;
-                pathPlanner.UnpackPlannedPaths(flatPaths, out var paths);
 
-                JobDataInterface wfcGenerate = WFC.Generate(paths, out var modules, out var heights);
-                yield return new WaitUntil(() => wfcGenerate.IsFinished);
-                if (wfcGenerate.Failed)
+                var terrain = await Task.Run(() => WFC.Generate(paths));
+                if (terrain is null)
                     continue;
 
                 /*               
@@ -125,7 +141,7 @@ namespace WorldGen
                 WORLD_DATA.moduleHeights = heights2d;
                 */
                 break;
-            } while (true);
+            }
             /*
             JobDataInterface placeBlockers = blockerGenerator.PlaceBlockers(targets, pathPlanner.targetLengths);
             yield return new WaitUntil(() => placeBlockers.IsFinished);
@@ -151,53 +167,71 @@ namespace WorldGen
                 p += t;
             }
             */
-            Debug.Log("DONE");
-            yield break;
+            Debug.Log("GENERATING SUCCESS");
         }
 
-        public static void RegisterGizmos(StepType duration, Func<IEnumerable<GizmoManager.GizmoObject>> objectProvider)
+        void Step()
         {
-            if (duration <= inst.stepType)
+            if (!stepped)
+                return;
+            lock (steppedLock_)
             {
-                inst.gizmos.Add(duration, objectProvider());
+                waitForStepEvent_.Set();
+                stepped = false;
             }
         }
-        public static void RegisterGizmos(StepType duration, Func<GizmoManager.GizmoObject> objectProvider)
+        void Stepped(StepType type)
         {
-            if (duration <= inst.stepType)
+            for (StepType t = type; t <= STEP_TYPES[^1]; t++)
             {
-                inst.gizmos.Add(duration, objectProvider());
+                gizmos.Expire(t);
+            }
+            lock (steppedLock_)
+            {
+                stepped = true;
             }
         }
-        public static void RegisterGizmosIfExactly(StepType duration, Func<IEnumerable<GizmoManager.GizmoObject>> objectProvider)
-        {
-            if (duration == inst.stepType)
-            {
-                inst.gizmos.Add(duration, objectProvider());
-            }
-        }
-
-        public static bool CanStep(StepType type)
-        {
-            if (type <= inst.stepType)
-            {
-                if (inst.stepped)
-                    return false;
-                for (StepType t = type; t <= STEP_TYPES[^1]; t++)
-                {
-                    inst.gizmos.Expire(t);
-                }
-                inst.stepped = true;
-            }
-            return true;
-        }
-
         public static void WaitForStep(StepType type)
         {
-            while (!CanStep(type))
-            {
-                Thread.Sleep(15);
-            }
+            if (type > inst_.stepType)
+                return;
+            if (inst_.stepped)
+                inst_.waitForStepEvent_.WaitOne();
+            inst_.Stepped(type);
+        }
+
+        static IEnumerator ProcessTask<T>(Func<T> func)
+        {
+            var task = Task.Run(func);
+            yield return new WaitUntil(() => task.IsCompleted);
+            bool success = task.IsCompletedSuccessfully;
+            T result = task.Result;
+            success &= result is not null;
+            yield return success;
+            if (success)
+                yield return result;
+        }
+
+        public static void RegisterGizmos(StepType duration, Func<IEnumerable<GizmoManager.GizmoObject>> objectProvider, object gizmoDuration = null)
+        {
+            if (duration <= inst_.stepType)
+                inst_.gizmos.Add(gizmoDuration ?? duration, objectProvider());
+        }
+        public static void RegisterGizmos(StepType duration, Func<GizmoManager.GizmoObject> objectProvider, object gizmoDuration = null)
+        {
+            if (duration <= inst_.stepType)
+                inst_.gizmos.Add(gizmoDuration ?? duration, objectProvider());
+        }
+        public static void RegisterGizmosIfExactly(StepType duration, Func<IEnumerable<GizmoManager.GizmoObject>> objectProvider, object gizmoDuration = null)
+        {
+            if (duration == inst_.stepType)
+                inst_.gizmos.Add(gizmoDuration ?? duration, objectProvider());
+        }
+
+        public static void ExpireGizmos(object duration)
+        {
+            if (StepType.None < inst_.stepType)
+                inst_.gizmos.Expire(duration);
         }
     }
 }

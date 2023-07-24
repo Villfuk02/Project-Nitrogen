@@ -13,9 +13,9 @@
     - [ ] optimize WeightedRandomSet
     - [ ] reorganize assemblies
     - [ ] make data only store data, no behavior
-    - [ ] split [[World Generation]] jobs into fns
     - [ ] encapsulation
     - [ ] readonly methods
+    - [ ] make WFC slots cache which interface features are provided by which modules
 - [ ] use unity events?
 - [ ] reorganize (and rename)
 

@@ -550,7 +550,7 @@ MonoBehaviour:
   terrainType: Test
   seed: 0
   pathLengths: 100000001300000016000000
-  randomSeed: 1
+  randomSeed: 0
 --- !u!4 &815966620
 Transform:
   m_ObjectHideFlags: 0
@@ -778,6 +778,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1087793669}
+  - component: {fileID: 1087793670}
   - component: {fileID: 1087793668}
   m_Layer: 0
   m_Name: Path Planner
@@ -798,14 +799,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e603b74c4764d74bb3a7f28454dbc21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startSpacingMultiplier: 0.42
   crowdingPenaltyByDistance: 0a0000000200000001000000
   startCrowdingPenalty: 20
   startTemperature: 4
   endTemperature: -5
-  stepsPerUnitLengthSquared: 0.3
-  maxPathsPerStart: 3
-  minMergeDistance: 4
+  stepsPerUnitLengthSquared: 0.2
+  steps: 0
+  temperature: 0
 --- !u!4 &1087793669
 Transform:
   m_ObjectHideFlags: 0
@@ -821,6 +821,19 @@ Transform:
   m_Father: {fileID: 1838770608}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1087793670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1087793667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9542ff77aec0129408850a0af0a6aa32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startSpacingMultiplier: 0.42
 --- !u!1 &1151646511
 GameObject:
   m_ObjectHideFlags: 0
@@ -1129,13 +1142,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7605b4b4368b73d4d8a57364597e59a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stepped: 0
-  stepType: 0
+  stepped: 1
+  stepType: 2
   worldData: {fileID: 94511820}
   worldSettings: {fileID: 815966619}
   gizmos: {fileID: 1838770610}
+  pathStartPicker: {fileID: 1087793670}
   pathPlanner: {fileID: 1087793668}
   WFC: {fileID: 134019243}
+  tries: 3
 --- !u!114 &1838770610
 MonoBehaviour:
   m_ObjectHideFlags: 0

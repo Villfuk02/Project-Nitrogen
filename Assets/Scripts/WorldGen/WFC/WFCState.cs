@@ -1,8 +1,6 @@
 using Data.LevelGen;
 using Random;
-using System;
 using System.Collections;
-using Unity.Collections;
 using UnityEngine;
 using Utils;
 
@@ -32,7 +30,7 @@ namespace WorldGen.WFC
             foreach (var (index, _) in tiles_.IndexedEnumerable)
                 tiles_[index] = new(true);
             passages_ = new(slotWorldSize.x * slotWorldSize.y * 4, true);
-            entropyQueue = new(WFCGenerator.Random.NewSeed());
+            entropyQueue = new(WorldGenerator.Random.NewSeed());
             id_ = 0;
         }
         public WFCState(WFCState original)
@@ -41,7 +39,7 @@ namespace WorldGen.WFC
             slots = original.slots.Clone();
             tiles_ = original.tiles_.Clone();
             passages_ = new(original.passages_);
-            entropyQueue = new(original.entropyQueue, WFCGenerator.Random.NewSeed());
+            entropyQueue = new(original.entropyQueue, WorldGenerator.Random.NewSeed());
             id_ = original.id_ + 1000000;
         }
 
@@ -115,16 +113,6 @@ namespace WorldGen.WFC
         }
         public WFCTile GetTileAt(Vector2Int pos) => tiles_[pos + Vector2Int.one];
 
-        public void SaveResults(NativeArray<int> flatModules, NativeArray<int> flatHeights)
-        {
-            int i = 0;
-            foreach (var (_, slot) in slots.IndexedEnumerable)
-            {
-                flatModules[i] = Array.IndexOf(WFCGenerator.Terrain.Modules, slot.Collapsed);
-                flatHeights[i] = slot.Height;
-                i++;
-            }
-        }
 
         public override string ToString()
         {
