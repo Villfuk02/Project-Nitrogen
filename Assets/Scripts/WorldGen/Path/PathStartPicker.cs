@@ -24,7 +24,7 @@ namespace WorldGen.Path
             int perimeter = (WorldUtils.WORLD_SIZE.x + WorldUtils.WORLD_SIZE.y) * 2;
             float minDistSqr = perimeter * startSpacingMultiplier / pathCount;
             minDistSqr *= minDistSqr;
-            List<Vector2Int> picked = new();
+            var picked = new List<Vector2Int>();
             for (int i = 0; i < pathCount; i++)
             {
                 RegisterGizmos(StepType.MicroStep, () => oddStarts.AllEntries.Concat(evenStarts.AllEntries)
@@ -58,7 +58,7 @@ namespace WorldGen.Path
         static Vector2Int ChooseStart(int length, float minDistSqr, RandomSet<Vector2Int> available, IReadOnlyCollection<Vector2Int> currentlyPicked)
         {
             Vector2Int result;
-            List<Vector2Int> tooFar = new();
+            var tooFar = new List<Vector2Int>();
             while (true)
             {
                 result = available.PopRandom();

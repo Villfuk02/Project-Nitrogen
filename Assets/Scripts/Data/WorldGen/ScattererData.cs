@@ -48,7 +48,7 @@ namespace Data.LevelGen
                 }
             }
 
-            PropertyParserWithNamedExtra<Decoration> pp = new();
+            var pp = new PropertyParserWithNamedExtra<Decoration>();
             pp.RegisterExtraParser((n, s) => Decoration.Parse(n, s, ParseNode));
 
             pp.Parse(stream);

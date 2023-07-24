@@ -41,13 +41,13 @@ namespace Data.Parsers
 
         public Func<T> Register<T>(string name, Parse<T> parse)
         {
-            Property<T> p = new(parse);
+            var p = new Property<T>(parse);
             properties.Add(name, p);
             return () => GetProperty<T>(name);
         }
         public Func<T> Register<T>(string name, Parse<T> parse, T defaultValue)
         {
-            Property<T> p = new(parse, defaultValue);
+            var p = new Property<T>(parse, defaultValue);
             properties.Add(name, p);
             return () => GetProperty<T>(name);
         }

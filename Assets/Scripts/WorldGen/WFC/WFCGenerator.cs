@@ -23,7 +23,7 @@ namespace WorldGen.WFC
 
             int[] flatPathDistances = new int[WorldUtils.WORLD_SIZE.x * WorldUtils.WORLD_SIZE.y];
             Array.Fill(flatPathDistances, int.MaxValue);
-            Array2D<int> distances = new(flatPathDistances, WorldUtils.WORLD_SIZE);
+            var distances = new Array2D<int>(flatPathDistances, WorldUtils.WORLD_SIZE);
             foreach (var path in paths)
             {
                 for (int i = 0; i < path.Length; i++)
@@ -35,10 +35,10 @@ namespace WorldGen.WFC
             WaitForStep(StepType.Phase);
             Debug.Log("Starting WFC");
 
-            Array2D<int> pathDistances = new(flatPathDistances.ToArray(), WorldUtils.WORLD_SIZE);
+            var pathDistances = new Array2D<int>(flatPathDistances.ToArray(), WorldUtils.WORLD_SIZE);
             (var dirty, WFCState state) = InitWFC(pathDistances);
 
-            FixedCapacityStack<WFCState> stateStack = new(backupDepth);
+            var stateStack = new FixedCapacityStack<WFCState>(backupDepth);
             int steps = 0;
             while (state.uncollapsed > 0)
             {
@@ -70,7 +70,7 @@ namespace WorldGen.WFC
         static (RandomSet<WFCSlot> dirty, WFCState state) InitWFC(IReadOnlyArray2D<int> pathDistances)
         {
             WFCState state = new();
-            RandomSet<WFCSlot> dirty = new(WorldGenerator.Random.NewSeed());
+            var dirty = new RandomSet<WFCSlot>(WorldGenerator.Random.NewSeed());
             for (int x = 0; x < WorldUtils.WORLD_SIZE.x + 1; x++)
             {
                 for (int y = 0; y < WorldUtils.WORLD_SIZE.y + 1; y++)
@@ -168,7 +168,7 @@ namespace WorldGen.WFC
 
         static IEnumerable<GizmoManager.GizmoObject> DrawEntropy(WFCState state, RandomSet<WFCSlot> dirty)
         {
-            List<GizmoManager.GizmoObject> gizmos = new();
+            var gizmos = new List<GizmoManager.GizmoObject>();
             foreach ((Vector2Int pos, float weight) in state.entropyQueue.AllEntries)
             {
                 Color c = dirty.Contains(state.slots[pos]) ? Color.red : Color.black;

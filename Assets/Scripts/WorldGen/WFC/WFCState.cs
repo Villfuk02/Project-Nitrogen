@@ -59,7 +59,7 @@ namespace WorldGen.WFC
         //PASSAGES
         public CardinalDirs<(bool passable, bool unpassable)> GetValidPassagesAtSlot(Vector2Int pos)
         {
-            CardinalDirs<(bool passable, bool unpassable)> ret = new();
+            var ret = new CardinalDirs<(bool passable, bool unpassable)>();
             for (int i = 0; i < 4; i++)
             {
                 ret[i] = GetValidPassageAtSlot(pos, i);

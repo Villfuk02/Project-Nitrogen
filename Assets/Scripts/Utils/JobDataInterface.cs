@@ -29,7 +29,7 @@ namespace Utils
         {
             if (arrayMap_.ContainsKey(array))
                 throw new ArgumentException("Array already registered.");
-            NativeArrayWrapper<T> native = new(array, allocator_);
+            var native = new NativeArrayWrapper<T>(array, allocator_);
             arrayMap_.Add(array, (mode, native));
             return native.Native;
         }
@@ -37,7 +37,7 @@ namespace Utils
         {
             if (listMap_.ContainsKey(list))
                 throw new ArgumentException("List already registered.");
-            NativeListWrapper<T> native = new(list, allocator_);
+            var native = new NativeListWrapper<T>(list, allocator_);
             listMap_.Add(list, (mode, native));
             return native.Native;
         }

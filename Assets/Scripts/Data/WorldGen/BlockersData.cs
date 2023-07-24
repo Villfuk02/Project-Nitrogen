@@ -9,14 +9,14 @@ namespace Data.LevelGen
     {
         public static BlockersData Parse(ParseStream stream, IEnumerable<char> allSurfaces)
         {
-            PropertyParserWithNamedExtra<BlockerData> pp = new();
+            var pp = new PropertyParserWithNamedExtra<BlockerData>();
             var getLayers = pp.Register("layers", Chain(ParseBlock, ParseList, ParseLine, ParseList, ParseWord));
             var getFillers = pp.Register("fillers", Chain(ParseLine, ParseList, ParseWord));
             pp.RegisterExtraParser((n, s) => BlockerData.Parse(n, s, getLayers().Count, allSurfaces.ToArray()));
 
             pp.Parse(stream);
 
-            Dictionary<string, BlockerData> blockers = new();
+            var blockers = new Dictionary<string, BlockerData>();
             foreach (var blocker in pp.ParsedExtra)
             {
                 if (blockers.ContainsKey(blocker.Name))

@@ -47,7 +47,7 @@ namespace WorldGen.Path
             crowding_ = new(WorldUtils.WORLD_SIZE);
 
             int pathCount = pathLengths.Length;
-            Array2D<int> distances = new(WorldUtils.WORLD_SIZE);
+            var distances = new Array2D<int>(WorldUtils.WORLD_SIZE);
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
                 distances[v] = v.ManhattanDistance(WorldUtils.ORIGIN);
 
@@ -107,7 +107,7 @@ namespace WorldGen.Path
 
         LinkedList<Vector2Int> MakePathPrototype(Vector2Int start, int length, IReadOnlyArray2D<int> distance)
         {
-            LinkedList<Vector2Int> path = new();
+            var path = new LinkedList<Vector2Int>();
             path.AddFirst(start);
 
             crowding_.AddMask(crowdingPenaltyMask_, start + crowdingPenaltyMaskOffset_);
@@ -116,7 +116,7 @@ namespace WorldGen.Path
             var current = start;
             while (length > 0)
             {
-                WeightedRandomSet<Vector2Int> validNeighbors = new(WorldGenerator.Random.NewSeed());
+                var validNeighbors = new WeightedRandomSet<Vector2Int>(WorldGenerator.Random.NewSeed());
                 foreach (var dir in WorldUtils.CARDINAL_DIRS)
                 {
                     Vector2Int neighbor = current + dir;
@@ -141,7 +141,7 @@ namespace WorldGen.Path
         {
             var dirsToTry = WorldUtils.DIAGONAL_DIRS.Concat(WorldUtils.CARDINAL_DIRS.Select(d => 2 * d)).ToArray();
 
-            WeightedRandomSet<(LinkedListNode<Vector2Int>, Vector2Int)> possibleChanges = new(WorldGenerator.Random.NewSeed());
+            var possibleChanges = new WeightedRandomSet<(LinkedListNode<Vector2Int>, Vector2Int)>(WorldGenerator.Random.NewSeed());
             foreach (var path in paths)
             {
                 var prev = path.First;
@@ -183,8 +183,8 @@ namespace WorldGen.Path
 
         static void UntwistCrossing(LinkedList<Vector2Int> path)
         {
-            Dictionary<Vector2Int, LinkedListNode<Vector2Int>> straightX = new();
-            Dictionary<Vector2Int, LinkedListNode<Vector2Int>> straightY = new();
+            var straightX = new Dictionary<Vector2Int, LinkedListNode<Vector2Int>>();
+            var straightY = new Dictionary<Vector2Int, LinkedListNode<Vector2Int>>();
             var prev = (LinkedListNode<Vector2Int>)null;
             var current = path.First;
             var next = current?.Next;
@@ -242,7 +242,7 @@ namespace WorldGen.Path
 
         static bool InvalidCrossings(IEnumerable<LinkedList<Vector2Int>> paths)
         {
-            Dictionary<Vector2Int, int> distances = new();
+            var distances = new Dictionary<Vector2Int, int>();
             foreach (var path in paths)
             {
                 int distance = 0;
@@ -262,7 +262,7 @@ namespace WorldGen.Path
 
         static IEnumerable<GizmoManager.GizmoObject> DrawPath(IEnumerable<Vector2Int> path, Color color)
         {
-            List<GizmoManager.GizmoObject> gizmos = new();
+            var gizmos = new List<GizmoManager.GizmoObject>();
             Vector2Int? last = null;
             foreach (var pos in path)
             {

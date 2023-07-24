@@ -30,7 +30,7 @@ namespace Data.LevelGen
 
         static Module[] ParseModules(ParseStream bs)
         {
-            PropertyParserWithNamedExtra<Module[]> parser = new();
+            var parser = new PropertyParserWithNamedExtra<Module[]>();
             parser.RegisterExtraParser(Module.Parse);
             parser.Parse(bs);
             return parser.ParsedExtra.SelectMany(a => a).ToArray();

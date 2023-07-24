@@ -51,7 +51,7 @@ namespace Data.Parsers
         public static List<T> ParseList<T>(ParseStream stream, Parse<T> parse)
         {
             SkipWhitespace(stream);
-            List<T> res = new();
+            var res = new List<T>();
             while (stream.TryRead(out char _))
             {
                 stream.ReturnLast();

@@ -23,7 +23,7 @@ namespace WorldGen.WFC
 
         public WFCSlot(int x, int y, ref WFCState state)
         {
-            Dictionary<float, int> weights = new();
+            var weights = new Dictionary<float, int>();
             int moduleCount = WorldGenerator.TerrainType.Modules.Length;
             validModules_ = new(moduleCount);
             validHeights_ = new(moduleCount);
@@ -51,7 +51,7 @@ namespace WorldGen.WFC
         {
             WFCSlot n = new(pos);
 
-            WeightedRandomSet<(Module module, int height)> possibilities = new(WorldGenerator.Random.NewSeed());
+            var possibilities = new WeightedRandomSet<(Module module, int height)>(WorldGenerator.Random.NewSeed());
 
             foreach (var m in validModules_)
             {
@@ -82,7 +82,7 @@ namespace WorldGen.WFC
 
             bool changed = false;
             WFCSlot n = new(pos);
-            Dictionary<float, int> weights = new();
+            var weights = new Dictionary<float, int>();
 
             for (int i = validModules_.Count - 1; i >= 0; i--)
             {
@@ -103,7 +103,7 @@ namespace WorldGen.WFC
                     continue;
 
                 var heights = validHeights_[validModules_[i]];
-                HashSet<int> newHeights = new();
+                var newHeights = new HashSet<int>();
                 foreach (int h in heights)
                 {
                     bool heightsValid = true;
@@ -139,8 +139,8 @@ namespace WorldGen.WFC
         public HashSet<Vector2Int> UpdateConstraints(WFCState state)
         {
             //Init Available
-            CardinalDirs<(bool passable, bool unpassable)> aPassages = new();
-            DiagonalDirs<WFCTile> aTiles = new();
+            var aPassages = new CardinalDirs<(bool passable, bool unpassable)>();
+            var aTiles = new DiagonalDirs<WFCTile>();
             for (int i = 0; i < 4; i++)
             {
                 aTiles[i] = new(false);
@@ -171,7 +171,7 @@ namespace WorldGen.WFC
             var pPassages = state.GetValidPassagesAtSlot(pos);
             var pTiles = state.GetValidTilesAtSlot(pos);
             //New
-            HashSet<Vector2Int> toUpdate = new();
+            var toUpdate = new HashSet<Vector2Int>();
             for (int i = 0; i < 4; i++)
             {
                 if (pPassages[i].passable == aPassages[i].passable && pPassages[i].unpassable == aPassages[i].unpassable)
