@@ -1,24 +1,20 @@
 - [ ] zápočťák
-    - [ ] redo levelgen with determinism
+    - [ ] redo [[World Generation]] with determinism
         - [x] pick path starts
         - [x] plan paths
-        - [ ] WFC
-            - [x] make it work again
-            - [x] refactoring
-            - [x] determinism
-            - [ ] parallelize
-        - [ ] blockers
+        - [x] WFC
+        - [x] blockers
         - [ ] finalize paths
         - [ ] scatter decorations
-    - [ ] optimize WeightedRandomSet
+        - [ ] WORLD DATA
     - [ ] reorganize assemblies
     - [ ] make data only store data, no behavior
     - [ ] encapsulation
-    - [ ] readonly methods
-    - [ ] make WFC slots cache which interface features are provided by which modules
-- [ ] use unity events?
-- [ ] reorganize (and rename)
-
+    - [ ] use unity events for communication?
 
 - [ ] make [[Targetting]] target priority configurable
 
+## optimisations
+- [ ] parallelize WFC (recalculating constraints)
+- [ ] optimize WeightedRandomSet to log(n) time
+- [ ] make WFC slots cache which interface features are provided by which modules

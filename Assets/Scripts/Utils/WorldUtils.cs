@@ -12,16 +12,13 @@ namespace Utils
         public const float HEIGHT_STEP = 0.5f;
         public static readonly float SLANT_ANGLE = Mathf.Atan(HEIGHT_STEP) * Mathf.Rad2Deg;
         public static readonly Vector2Int ORIGIN = (WORLD_SIZE - Vector2Int.one) / 2;
-        public static readonly CardinalDirs<Vector2Int> CARDINAL_DIRS =
-            new(Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left);
+        public static readonly CardinalDirs<Vector2Int> CARDINAL_DIRS = new(Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left);
         public static readonly Vector2Int[] ADJACENT_DIRS = { Vector2Int.up, Vector2Int.one, Vector2Int.right,
             new(1, -1), Vector2Int.down, new(-1, -1), Vector2Int.left, new(-1, 1) };
-        public static readonly DiagonalDirs<Vector2Int> DIAGONAL_DIRS =
-            new(Vector2Int.one, new(1, -1), new(-1, -1), new(-1, 1));
+        public static readonly DiagonalDirs<Vector2Int> DIAGONAL_DIRS = new(Vector2Int.one, new(1, -1), new(-1, -1), new(-1, 1));
         public static readonly Vector2Int[] ADJACENT_AND_ZERO = { Vector2Int.zero, Vector2Int.up, Vector2Int.one, Vector2Int.right,
             new(1, -1), Vector2Int.down, new(-1, -1), Vector2Int.left, new(-1, 1) };
-        public static readonly CardinalDirs<Vector3> WORLD_CARDINAL_DIRS =
-            new(Vector3.forward, Vector3.right, Vector3.back, Vector3.left);
+        public static readonly CardinalDirs<Vector3> WORLD_CARDINAL_DIRS = new(Vector3.forward, Vector3.right, Vector3.back, Vector3.left);
         public enum Slant { None, North, East, South, West };
         public static readonly Slant[] ALL_SLANTS = (Slant[])Enum.GetValues(typeof(Slant));
 

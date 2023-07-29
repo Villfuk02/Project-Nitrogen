@@ -3,7 +3,7 @@ using Data.Parsers;
 using System.IO;
 using UnityEngine;
 
-namespace Data.LevelGen
+namespace Data.WorldGen
 {
     public class TerrainTypeLoader : ILoader
     {

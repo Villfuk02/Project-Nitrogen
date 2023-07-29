@@ -1,4 +1,4 @@
-using Data.LevelGen;
+using Data.WorldGen;
 using Random;
 using System.Collections.Generic;
 using System.Linq;

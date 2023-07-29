@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using static Data.Parsers.Parsers;
 
-namespace Data.LevelGen
+namespace Data.WorldGen
 {
     public record BlockersData(BlockerData[][] Layers, BlockerData[] Fillers, Dictionary<string, BlockerData> Blockers)
     {

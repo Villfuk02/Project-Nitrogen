@@ -23,6 +23,13 @@ namespace Random
             positions_ = new(original.positions_);
             random_ = new(original.random_.CurrentState());
         }
+        public RandomSet(IEnumerable<T> items, ulong randomSeed) : this(randomSeed)
+        {
+            foreach (var item in items)
+            {
+                Add(item);
+            }
+        }
 
         public void TryAdd(T item)
         {

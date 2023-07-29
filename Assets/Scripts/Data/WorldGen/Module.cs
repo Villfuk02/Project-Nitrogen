@@ -5,7 +5,7 @@ using UnityEngine;
 using Utils;
 using static Data.Parsers.Parsers;
 
-namespace Data.LevelGen
+namespace Data.WorldGen
 {
     // TODO: Finish Models
     public record Module(string Name, float Weight, bool Flipped, int Rotated, int HeightOffset, Mesh Collision, ModuleShape Shape, string[] Models)

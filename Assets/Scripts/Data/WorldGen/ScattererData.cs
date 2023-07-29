@@ -6,7 +6,7 @@ using UnityEngine;
 using Utils;
 using static Data.Parsers.Parsers;
 
-namespace Data.LevelGen
+namespace Data.WorldGen
 {
     public class ScattererData
     {

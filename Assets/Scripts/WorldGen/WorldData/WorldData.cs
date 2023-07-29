@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace WorldGen.WorldData
 {
+    [Serializable]
     public class WorldData : MonoBehaviour
     {
         //public LevelGenTiles tiles;
@@ -12,10 +14,7 @@ namespace WorldGen.WorldData
         //public Vector2Int[] firstPathNodes;
         //public Vector2Int[] pathStarts;
 
-        public void Reset()
-        {
-
-        }
+        public void Clear() { }
     }
 }
 

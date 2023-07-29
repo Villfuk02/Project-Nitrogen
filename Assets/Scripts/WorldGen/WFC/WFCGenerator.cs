@@ -1,4 +1,4 @@
-using Data.LevelGen;
+using Data.WorldGen;
 using Random;
 using System;
 using System.Collections.Generic;
@@ -12,76 +12,78 @@ namespace WorldGen.WFC
     public class WFCGenerator : MonoBehaviour
     {
         [SerializeField] int backupDepth;
-        public static float MaxEntropy { get; private set; }
 
-        public Array2D<(Module module, int height)> Generate(Vector2Int[][] paths)
+        // Runtime variables
+        public static float MaxEntropy { get; private set; }
+        RandomSet<WFCSlot> dirty_;
+        WFCState state_;
+        FixedCapacityStack<WFCState> stateStack_;
+
+        public WFCState Generate(Vector2Int[][] paths)
         {
-            Vector2Int slotWorldSize = WorldUtils.WORLD_SIZE + Vector2Int.one;
+            WaitForStep(StepType.Phase);
+            Debug.Log("Starting WFC");
 
             int heightCount = WorldGenerator.TerrainType.MaxHeight + 1;
             MaxEntropy = CalculateEntropy(WorldGenerator.TerrainType.Modules.GroupBy(m => m.Weight).ToDictionary(g => g.Key, g => g.Count() * heightCount));
 
             int[] flatPathDistances = new int[WorldUtils.WORLD_SIZE.x * WorldUtils.WORLD_SIZE.y];
             Array.Fill(flatPathDistances, int.MaxValue);
-            var distances = new Array2D<int>(flatPathDistances, WorldUtils.WORLD_SIZE);
+            var pathDistances = new Array2D<int>(flatPathDistances, WorldUtils.WORLD_SIZE);
             foreach (var path in paths)
             {
                 for (int i = 0; i < path.Length; i++)
                 {
-                    distances[path[i]] = path.Length - i;
+                    pathDistances[path[i]] = path.Length - i;
                 }
             }
 
-            WaitForStep(StepType.Phase);
-            Debug.Log("Starting WFC");
+            InitWFC(pathDistances);
 
-            var pathDistances = new Array2D<int>(flatPathDistances.ToArray(), WorldUtils.WORLD_SIZE);
-            (var dirty, WFCState state) = InitWFC(pathDistances);
-
-            var stateStack = new FixedCapacityStack<WFCState>(backupDepth);
+            stateStack_ = new(backupDepth);
             int steps = 0;
-            while (state.uncollapsed > 0)
+            while (state_.uncollapsed > 0)
             {
-                while (dirty.Count > 0)
+                while (dirty_.Count > 0)
                 {
                     WaitForStep(StepType.MicroStep);
-                    UpdateNext(ref state, dirty, stateStack);
-                    if (state is null)
+                    UpdateNext();
+                    if (state_ is null)
                     {
                         Debug.Log("WFC failed");
                         return null;
                     }
-                    RegisterGizmos(StepType.MicroStep, () => DrawEntropy(state, dirty));
+                    RegisterGizmos(StepType.MicroStep, DrawEntropy);
                 }
                 if (steps == 0)
                     Debug.Log("Initial position solved");
                 WaitForStep(StepType.Step);
-                stateStack.Push(new(state));
-                state.CollapseRandom(dirty);
+                stateStack_.Push(new(state_));
+                state_.CollapseRandom(this);
                 steps++;
-                RegisterGizmosIfExactly(StepType.Step, () => DrawEntropy(state, dirty));
-                RegisterGizmos(StepType.Step, () => DrawMesh(state));
+                RegisterGizmosIfExactly(StepType.Step, DrawEntropy);
+                RegisterGizmos(StepType.Step, DrawMesh);
             }
 
-            RegisterGizmos(StepType.Phase, () => DrawMesh(state));
+            RegisterGizmos(StepType.Phase, DrawMesh);
             Debug.Log($"WFC Done in {steps} steps");
-            return new(state.slots.Select(s => (s.Collapsed, s.Height)).ToArray(), slotWorldSize);
+            return state_;
         }
-        static (RandomSet<WFCSlot> dirty, WFCState state) InitWFC(IReadOnlyArray2D<int> pathDistances)
+        void InitWFC(IReadOnlyArray2D<int> pathDistances)
         {
-            WFCState state = new();
-            var dirty = new RandomSet<WFCSlot>(WorldGenerator.Random.NewSeed());
+            state_ = new();
+            dirty_ = new(WorldGenerator.Random.NewSeed());
             for (int x = 0; x < WorldUtils.WORLD_SIZE.x + 1; x++)
             {
                 for (int y = 0; y < WorldUtils.WORLD_SIZE.y + 1; y++)
                 {
-                    WFCSlot s = new(x, y, ref state);
-                    state.slots[x, y] = s;
-                    dirty.Add(s);
+                    WFCSlot s = new(x, y, ref state_);
+                    state_.slots[x, y] = s;
+                    dirty_.Add(s);
                 }
             }
 
-            WFCTile centerTile = state.GetTileAt(WorldUtils.ORIGIN);
+            WFCTile centerTile = state_.GetTileAt(WorldUtils.ORIGIN);
             centerTile.slants.Clear();
             centerTile.slants.Add(WorldUtils.Slant.None);
 
@@ -96,61 +98,60 @@ namespace WorldGen.WFC
                     if (!pathDistances.TryGet(neighbor, out var neighborDistance) || neighborDistance - distance == 1 || neighborDistance - distance == -1)
                     {
                         RegisterGizmos(StepType.Step, () => DrawPassage(pos, i, (true, false)));
-                        state.SetValidPassageAtTile(pos, i, (true, false));
+                        state_.SetValidPassageAtTile(pos, i, (true, false));
                     }
                     else if (neighborDistance != int.MaxValue)
                     {
                         RegisterGizmos(StepType.Step, () => DrawPassage(pos, i, (false, true)));
-                        state.SetValidPassageAtTile(pos, i, (false, true));
+                        state_.SetValidPassageAtTile(pos, i, (false, true));
                     }
                 }
             }
-            return (dirty, state);
         }
 
-        static void UpdateNext(ref WFCState? state, RandomSet<WFCSlot> dirty, FixedCapacityStack<WFCState> stateStack)
+        void UpdateNext()
         {
-            WFCSlot s = dirty.PopRandom();
-            (WFCSlot n, bool backtrack) = s.UpdateValidModules(state);
+            WFCSlot s = dirty_.PopRandom();
+            (WFCSlot n, bool backtrack) = s.UpdateValidModules(state_);
             if (backtrack)
             {
-                Backtrack(ref state, dirty, stateStack);
+                Backtrack();
             }
             else if (n is not null)
             {
-                MarkNeighborsDirty(n.pos, n.UpdateConstraints(state), state, dirty);
-                state!.slots[n.pos] = n;
+                MarkNeighborsDirty(n.pos, n.UpdateConstraints(state_));
+                state_.slots[n.pos] = n;
             }
         }
-        static void Backtrack(ref WFCState? state, RandomSet<WFCSlot> dirty, FixedCapacityStack<WFCState> stateStack)
+        void Backtrack()
         {
             //Debug.Log("Backtracking");
-            dirty.Clear();
-            Vector2Int lastCollapsedSlot = state!.lastCollapsedSlot;
-            (Module module, int height) lastCollapsedTo = state.lastCollapsedTo;
-            if (stateStack.Count == 0)
+            dirty_.Clear();
+            Vector2Int lastCollapsedSlot = state_.lastCollapsedSlot;
+            (Module module, int height) lastCollapsedTo = state_.lastCollapsedTo;
+            if (stateStack_.Count == 0)
             {
-                state = null;
+                state_ = null;
             }
             else
             {
-                state = stateStack.Pop();
-                state.slots[lastCollapsedSlot].MarkInvalid(lastCollapsedTo);
-                MarkDirty(lastCollapsedSlot.x, lastCollapsedSlot.y, state, dirty);
+                state_ = stateStack_.Pop();
+                state_.slots[lastCollapsedSlot].MarkInvalid(lastCollapsedTo);
+                MarkDirty(lastCollapsedSlot);
             }
 
         }
 
-        public static void MarkNeighborsDirty(Vector2Int pos, IEnumerable<Vector2Int> offsets, in WFCState state, RandomSet<WFCSlot> dirty)
+        public void MarkNeighborsDirty(Vector2Int pos, IEnumerable<Vector2Int> offsets)
         {
             foreach (var offset in offsets)
-                MarkDirty(pos.x + offset.x, pos.y + offset.y, state, dirty);
+                MarkDirty(pos + offset);
         }
-        public static void MarkDirty(int x, int y, in WFCState state, RandomSet<WFCSlot> dirty)
+        public void MarkDirty(Vector2Int pos)
         {
-            if (!state.slots.TryGet(new(x, y), out var s) || s.Collapsed is not null)
+            if (!state_.slots.TryGet(pos, out var s) || s.Collapsed is not null)
                 return;
-            dirty.TryAdd(s);
+            dirty_.TryAdd(s);
         }
 
 
@@ -166,12 +167,12 @@ namespace WorldGen.WFC
             return totalEntropy;
         }
 
-        static IEnumerable<GizmoManager.GizmoObject> DrawEntropy(WFCState state, RandomSet<WFCSlot> dirty)
+        IEnumerable<GizmoManager.GizmoObject> DrawEntropy()
         {
             var gizmos = new List<GizmoManager.GizmoObject>();
-            foreach ((Vector2Int pos, float weight) in state.entropyQueue.AllEntries)
+            foreach ((Vector2Int pos, float weight) in state_.entropyQueue.AllEntries)
             {
-                Color c = dirty.Contains(state.slots[pos]) ? Color.red : Color.black;
+                Color c = dirty_.Contains(state_.slots[pos]) ? Color.red : Color.black;
                 float entropy = MaxEntropy - weight;
                 float size;
                 if (entropy <= MaxEntropy * 0.2f)
@@ -193,9 +194,9 @@ namespace WorldGen.WFC
             return gizmos;
         }
 
-        static IEnumerable<GizmoManager.GizmoObject> DrawMesh(WFCState state)
+        IEnumerable<GizmoManager.GizmoObject> DrawMesh()
         {
-            return state.slots.Where(s => s.Collapsed is not null)
+            return state_.slots.Where(s => s.Collapsed is not null)
                 .Select(s => new { s, m = s.Collapsed })
                 .Select(t => new GizmoManager.Mesh(Color.white, t.m.Collision,
                     WorldUtils.SlotToWorldPos(t.s.pos.x, t.s.pos.y, t.s.Height + t.m.HeightOffset),

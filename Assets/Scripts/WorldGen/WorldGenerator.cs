@@ -1,4 +1,4 @@
-using Data.LevelGen;
+using Data.WorldGen;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using Utils;
+using WorldGen.Blockers;
 using WorldGen.Path;
+using WorldGen.Utils;
 using WorldGen.WFC;
 
 namespace WorldGen
@@ -23,8 +25,8 @@ namespace WorldGen
         [SerializeField] GizmoManager gizmos;
         [SerializeField] PathStartPicker pathStartPicker;
         [SerializeField] PathPlanner pathPlanner;
-        [SerializeField] WFCGenerator WFC;
-        //[SerializeField] BlockerGenerator blockerGenerator;
+        [SerializeField] WFCGenerator wfc;
+        [SerializeField] BlockerGenerator blockerGenerator;
         //[SerializeField] Scatterer.Scatterer scatterer;
         [Header("Settings")]
         [SerializeField] int tries;
@@ -32,11 +34,10 @@ namespace WorldGen
         //Runtime Values
         public static Random.Random Random { get; private set; }
         public static TerrainType TerrainType { get; private set; }
+        public static WorldGenTiles Tiles { get; private set; }
 
         readonly AutoResetEvent waitForStepEvent_ = new(false);
         readonly object steppedLock_ = new();
-        //LevelGenTiles tiles;
-        //public static LevelGenTiles Tiles { get => inst.tiles; }
 
         public enum StepType { None, Phase, Step, MicroStep }
         public static readonly StepType[] STEP_TYPES = (StepType[])Enum.GetValues(typeof(StepType));
@@ -47,8 +48,9 @@ namespace WorldGen
                 inst_ = this;
             else
                 Debug.LogError("There can be only one!");
-            worldData.Reset();
+            worldData.Clear();
             Random = new(worldSettings.seed);
+            Tiles = null;
         }
         void Start()
         {
@@ -83,7 +85,7 @@ namespace WorldGen
 
         async Task GenerateAsync()
         {
-            worldData.Reset();
+            worldData.Clear();
 
             TerrainType = TerrainTypes.GetTerrainType(worldSettings.terrainType);
 
@@ -105,46 +107,16 @@ namespace WorldGen
                 if (paths is null)
                     continue;
 
-                var terrain = await Task.Run(() => WFC.Generate(paths));
+                var terrain = await Task.Run(() => wfc.Generate(paths));
                 if (terrain is null)
                     continue;
 
-                /*               
-                !!! 2d arrays !!!
-                bool[,] passable = new bool[(WORLD_SIZE.x + 1) * (WORLD_SIZE.y + 1), 4];
-                Slant[] slants = new Slant[(WORLD_SIZE.x + 1) * (WORLD_SIZE.y + 1)];
-                foreach (Vector2Int v in WORLD_SIZE)
-                {
-                    int index = (v.x + 1) + v.y * (WORLD_SIZE.x + 1);
-                    WFCModule m = WFCGenerator.ALL_MODULES[modules[index]];
-                    slants[index] = m.slants[0];
-                    for (int i = 0; i < 4; i++)
-                    {
-                        Vector2Int pos = v + CARDINAL_DIRS[i];
-                        Vector2Int pp = i / 2 == 0 ? v + Vector2Int.one : v;
-                        if (pos.x >= 0 && pos.y >= 0 && pos.x < WORLD_SIZE.x && pos.y < WORLD_SIZE.y
-                            && WFCGenerator.ALL_MODULES[modules[pp.x + pp.y * (WORLD_SIZE.x + 1)]].passable[3 - i])
-                            passable[index, i] = true; 
-                    }
-                }
-                tiles = new(passable, heights, slants, nodes);
-                WORLD_DATA.tiles = tiles;
-                int[,] modules2d = new int[WORLD_SIZE.x + 1, WORLD_SIZE.y + 1];
-                int[,] heights2d = new int[WORLD_SIZE.x + 1, WORLD_SIZE.y + 1];
-                foreach (Vector2Int v in WORLD_SIZE + Vector2Int.one)
-                {
-                    int index = v.x + v.y * (WORLD_SIZE.x + 1);
-                    modules2d[v.x, v.y] = modules[index];
-                    heights2d[v.x, v.y] = heights[index];
-                }
-                WORLD_DATA.modules = modules2d;
-                WORLD_DATA.moduleHeights = heights2d;
-                */
+                Tiles = new(terrain.GetCollapsedSlots(), terrain.GetPassageAtTile, paths);
                 break;
             }
+
+            await Task.Run(() => blockerGenerator.PlaceBlockers(starts, worldSettings.pathLengths));
             /*
-            JobDataInterface placeBlockers = blockerGenerator.PlaceBlockers(targets, pathPlanner.targetLengths);
-            yield return new WaitUntil(() => placeBlockers.IsFinished);
             JobDataInterface finalizePaths = pathPlanner.FinalisePaths(targets);
             yield return new WaitUntil(() => finalizePaths.IsFinished);
             WORLD_DATA.firstPathNodes = targets;
@@ -180,12 +152,16 @@ namespace WorldGen
                 stepped = false;
             }
         }
-        void Stepped(StepType type)
+
+        void GizmoStep(StepType type)
         {
             for (StepType t = type; t <= STEP_TYPES[^1]; t++)
             {
                 gizmos.Expire(t);
             }
+        }
+        void Stepped()
+        {
             lock (steppedLock_)
             {
                 stepped = true;
@@ -195,21 +171,11 @@ namespace WorldGen
         {
             if (type > inst_.stepType)
                 return;
+
             if (inst_.stepped)
                 inst_.waitForStepEvent_.WaitOne();
-            inst_.Stepped(type);
-        }
-
-        static IEnumerator ProcessTask<T>(Func<T> func)
-        {
-            var task = Task.Run(func);
-            yield return new WaitUntil(() => task.IsCompleted);
-            bool success = task.IsCompletedSuccessfully;
-            T result = task.Result;
-            success &= result is not null;
-            yield return success;
-            if (success)
-                yield return result;
+            inst_.GizmoStep(type);
+            inst_.Stepped();
         }
 
         public static void RegisterGizmos(StepType duration, Func<IEnumerable<GizmoManager.GizmoObject>> objectProvider, object gizmoDuration = null)

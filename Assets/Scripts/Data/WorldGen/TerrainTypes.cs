@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Data.LevelGen
+namespace Data.WorldGen
 {
     public record TerrainTypes(TerrainType[] AllTypes)
     {

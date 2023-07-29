@@ -751,7 +751,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 987874898}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afb9807e767ffe24d81d3c78caa1005c, type: 3}
+  m_Script: {fileID: 11500000, guid: cefb86dbd65cdda489df6ad824aa141a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &987874900
@@ -1149,7 +1149,8 @@ MonoBehaviour:
   gizmos: {fileID: 1838770610}
   pathStartPicker: {fileID: 1087793670}
   pathPlanner: {fileID: 1087793668}
-  WFC: {fileID: 134019243}
+  wfc: {fileID: 134019243}
+  blockerGenerator: {fileID: 987874899}
   tries: 3
 --- !u!114 &1838770610
 MonoBehaviour:

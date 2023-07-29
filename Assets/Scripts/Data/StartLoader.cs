@@ -1,5 +1,5 @@
-using Data.LevelGen;
 using Data.Loader;
+using Data.WorldGen;
 using System.Collections;
 using System.IO;
 using UnityEngine;
@@ -32,12 +32,12 @@ namespace Data
 
         void Update()
         {
-            if (finishedLoading_)
-            {
-                finishedLoading_ = false;
-                Debug.Log("Finished loading");
-                onLoaded.Invoke();
-            }
+            if (!finishedLoading_)
+                return;
+
+            finishedLoading_ = false;
+            Debug.Log("Finished loading");
+            onLoaded.Invoke();
         }
 
         public void ChangeScene(string sceneName)

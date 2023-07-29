@@ -2,7 +2,7 @@ using Data.Parsers;
 using System.Linq;
 using static Data.Parsers.Parsers;
 
-namespace Data.LevelGen
+namespace Data.WorldGen
 {
     public record TerrainType(string DisplayName, char[] Surfaces, int MaxHeight, Module[] Modules, BlockersData Blockers, ScattererData ScattererData)
     {

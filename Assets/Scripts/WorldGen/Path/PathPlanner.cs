@@ -31,8 +31,7 @@ namespace WorldGen.Path
             WaitForStep(StepType.Phase);
             Debug.Log("Planning paths");
 
-            RegisterGizmos(StepType.Phase, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(WorldUtils.ORIGIN), 0.4f));
-            RegisterGizmos(StepType.Phase, () => starts.Select(p => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(p), 0.4f)));
+            RegisterGizmos(StepType.Phase, () => new List<Vector2Int>(starts) { WorldUtils.ORIGIN }.Select(p => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(p), 0.4f)));
 
             int totalLength = pathLengths.Sum();
             steps = (int)(stepsPerUnitLengthSquared * totalLength * totalLength);

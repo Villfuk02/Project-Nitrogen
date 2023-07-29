@@ -1,6 +1,7 @@
-using Data.LevelGen;
+using Data.WorldGen;
 using Random;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using Utils;
 
@@ -43,7 +44,7 @@ namespace WorldGen.WFC
             id_ = original.id_ + 1000000;
         }
 
-        public void CollapseRandom(RandomSet<WFCSlot> dirty)
+        public void CollapseRandom(WFCGenerator wfc)
         {
             id_++;
             Vector2Int pos = entropyQueue.PopRandom();
@@ -51,9 +52,17 @@ namespace WorldGen.WFC
             lastCollapsedSlot = pos;
             s = s.Collapse(this);
             var updated = s.UpdateConstraints(this);
-            WFCGenerator.MarkNeighborsDirty(pos, updated, this, dirty);
+            wfc.MarkNeighborsDirty(pos, updated);
             lastCollapsedTo = (s.Collapsed, s.Height);
             slots[pos] = s;
+        }
+
+        //FINAL GETTERS
+        public Array2D<(Module module, int height)> GetCollapsedSlots() => new(slots.Select(s => (s.Collapsed, s.Height)).ToArray(), slots.Size);
+        public bool GetPassageAtTile(Vector2Int pos, int direction)
+        {
+            (bool passable, bool _) = GetValidPassageAtSlot(pos + TileToSlotArrayOffsets[direction], 3 - direction);
+            return passable;
         }
 
         //PASSAGES
@@ -73,6 +82,7 @@ namespace WorldGen.WFC
             int index = GetPassageArrayIndex(pos, direction, true);
             return (passages_[index], passages_[index + 1]);
         }
+
         public void SetValidPassagesAtSlot(Vector2Int pos, CardinalDirs<(bool passable, bool unpassable)> p)
         {
             for (int i = 0; i < 4; i++)
