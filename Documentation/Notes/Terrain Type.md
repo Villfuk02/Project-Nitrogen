@@ -8,6 +8,7 @@ use blocky models for collision and detailed(-ish) modles for [[Appearance]]
 ideas
 - [ ] rocky with canyons
 - [ ] flat, sandy with monoliths / spires
+- [ ] pyramids
 - [ ] hilly, grassy with rivers
 - [ ] rocky with lava rivers
 - [ ] fungal biosphere

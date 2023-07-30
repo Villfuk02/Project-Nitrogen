@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc540d5f1b9c79546b71136ca82b94df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backupDepth: 8
+  backupDepth: 6
 --- !u!1 &421106806
 GameObject:
   m_ObjectHideFlags: 0
@@ -549,7 +549,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainType: Test
   seed: 0
-  pathLengths: 100000001300000016000000
+  pathLengths: 0b0000000d0000000f000000110000001300000015000000
+  maxExtraPaths: 100
   randomSeed: 1
 --- !u!4 &815966620
 Transform:
@@ -802,9 +803,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   crowdingPenaltyByDistance: 0a0000000200000001000000
   startCrowdingPenalty: 20
+  alignmentBonus: 0.15
   startTemperature: 4
   endTemperature: -5
-  stepsPerUnitLengthSquared: 0.2
+  stepsPerUnitLengthSquared: 0.5
   steps: 0
   temperature: 0
 --- !u!4 &1087793669
@@ -847,8 +849,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71f2b67d38e9d25408e0244038047225, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPathsPerTarget: 3
-  minMergeDistance: 4
 --- !u!1 &1151646511
 GameObject:
   m_ObjectHideFlags: 0
@@ -1157,7 +1157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7605b4b4368b73d4d8a57364597e59a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stepped: 1
+  stepped: 0
   stepType: 1
   worldData: {fileID: 94511820}
   worldSettings: {fileID: 815966619}
@@ -1167,7 +1167,7 @@ MonoBehaviour:
   wfc: {fileID: 134019243}
   blockerGenerator: {fileID: 987874899}
   pathFinalizer: {fileID: 1087793671}
-  tries: 3
+  tries: 10
 --- !u!114 &1838770610
 MonoBehaviour:
   m_ObjectHideFlags: 0

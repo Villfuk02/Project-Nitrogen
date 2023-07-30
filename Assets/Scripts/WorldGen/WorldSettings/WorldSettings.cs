@@ -9,6 +9,7 @@ namespace WorldGen.WorldSettings
         public ulong seed;
         //always keep these in ascending order
         public int[] pathLengths;
+        public int maxExtraPaths;
 
         [Header("Testing settings")]
         [SerializeField]

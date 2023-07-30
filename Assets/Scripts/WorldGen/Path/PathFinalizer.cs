@@ -1,5 +1,6 @@
-using Random;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Utils;
 using WorldGen.Utils;
@@ -9,9 +10,11 @@ namespace WorldGen.Path
 {
     public class PathFinalizer : MonoBehaviour
     {
-        [SerializeField] int maxPathsPerTarget;
-        [SerializeField] int minMergeDistance;
-        public void FinalizePaths(Vector2Int[] starts)
+        int extraPaths_;
+        Array2D<float> repulsion_;
+        Array2D<bool> hasPath_;
+        Array2D<bool> outlined_;
+        public void FinalizePaths(Vector2Int[] starts, int maxExtraPaths)
         {
             WaitForStep(StepType.Phase);
             Debug.Log("Finalizing Paths");
@@ -23,59 +26,65 @@ namespace WorldGen.Path
                 {
                     Vector3 pos = WorldUtils.TileToWorldPos(tile.pos);
                     if (!tile.passable)
-                        gizmos.Add(new GizmoManager.Cube(Color.red, pos, new Vector3(0.4f, 0.1f, 0.4f)));
+                        gizmos.Add(new GizmoManager.Cube(Color.red, pos, new Vector3(0.6f, 0.1f, 0.6f)));
                     for (int i = 0; i < 4; i++)
                     {
                         if (tile.neighbors[i] is null)
-                            gizmos.Add(new GizmoManager.Cube(Color.red, (WorldUtils.TileToWorldPos(tile.pos + WorldUtils.CARDINAL_DIRS[i]) + pos) * 0.5f, new Vector3(0.25f, 0.1f, 0.25f)));
+                            gizmos.Add(new GizmoManager.Cube(Color.red, (WorldUtils.TileToWorldPos(tile.pos + WorldUtils.CARDINAL_DIRS[i]) + pos) * 0.5f, new Vector3(0.4f, 0.1f, 0.4f)));
                     }
                 }
 
                 return gizmos;
             });
 
+            extraPaths_ = maxExtraPaths;
             int targetCount = starts.Length;
-            Array2D<bool> pathTiles = new(WorldUtils.WORLD_SIZE);
             var paths = new WorldGenTile[targetCount];
             for (int i = 0; i < targetCount; i++)
             {
                 paths[i] = Tiles[starts[i]];
-                pathTiles[paths[i].pos.x, paths[i].pos.y] = true;
             }
+
+            repulsion_ = new(WorldUtils.WORLD_SIZE);
+            outlined_ = new(WorldUtils.WORLD_SIZE);
+            hasPath_ = new(WorldUtils.WORLD_SIZE) { [WorldUtils.ORIGIN] = true };
+            UpdateRepulsionField(WorldUtils.ORIGIN);
 
             for (int i = 0; i < targetCount; i++)
             {
-                WaitForStep(StepType.Step);
-                TracePathQueued(paths[i], maxPathsPerTarget);
+                extraPaths_++;
+                TracePathQueued(paths[i]);
             }
 
-            WaitForStep(StepType.Step);
             foreach (var tile in Tiles)
             {
-                if (tile.pathNext.Count == 0 && tile.pos != WorldUtils.ORIGIN)
+                if (!hasPath_[tile.pos])
                     tile.dist = int.MaxValue;
             }
         }
 
-        void TracePathQueued(WorldGenTile t, int pathsLeft)
+        void TracePathQueued(WorldGenTile start)
         {
-            RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(t.pos), 0.3f));
-            HashSet<Vector2Int> taken = new();
-            LinkedList<(WorldGenTile t, Vector2Int[] path, int distToMerge)> queue = new();
-            queue.AddFirst((t, new[] { t.pos }, 0));
+            RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(start.pos), 0.3f));
+            bool foundAny = false;
+            LinkedList<(WorldGenTile tile, Vector2Int[] path)> queue = new();
+            queue.AddFirst((start, new[] { start.pos }));
             bool lastFound = false;
-            while (pathsLeft > 0 && queue.Count > 0)
+            while (extraPaths_ > 0 && queue.Count > 0)
             {
                 WaitForStep(StepType.MicroStep);
-                (WorldGenTile u, var path, int distToMerge) = lastFound ? queue.First.Value : queue.Last.Value;
+                (WorldGenTile currentTile, var path) = lastFound ? queue.First.Value : queue.Last.Value;
                 if (lastFound)
                     queue.RemoveFirst();
                 else
                     queue.RemoveLast();
-                lastFound = TracePath(u, path, distToMerge);
+                lastFound = TracePath(currentTile, path);
+                if (lastFound)
+                    foundAny = true;
             }
+            WaitForStep(StepType.MicroStep);
 
-            bool TracePath(WorldGenTile tile, Vector2Int[] path, int distToMerge)
+            bool TracePath(WorldGenTile tile, Vector2Int[] path)
             {
                 RegisterGizmos(StepType.MicroStep, () =>
                 {
@@ -97,16 +106,20 @@ namespace WorldGen.Path
 
                     return gizmos;
                 });
-                if (tile.dist == 0 || (taken.Contains(tile.pos) && distToMerge <= 0))
-                {
-                    if (pathsLeft <= 0)
-                        return true;
 
-                    pathsLeft--;
+                if (hasPath_[tile.pos])
+                {
+                    if (foundAny && path.All(p => outlined_[p]))
+                        return false;
+
                     WorldGenTile prev = null;
                     foreach (var pos in path)
                     {
-                        taken.Add(pos);
+                        hasPath_[pos] = true;
+                        foreach (var dir in WorldUtils.ADJACENT_DIRS)
+                            outlined_.TrySet(pos + dir, true);
+                        UpdateRepulsionField(pos);
+
                         WorldGenTile current = Tiles[pos];
                         if (prev is not null)
                         {
@@ -117,46 +130,52 @@ namespace WorldGen.Path
 
                         prev = current;
                     }
+                    extraPaths_--;
+
+                    WaitForStep(StepType.Step);
+                    RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(start.pos), 0.3f));
+                    RegisterGizmos(StepType.Step, () => outlined_.IndexedEnumerable.Where(p => !p.value).Select(p => new GizmoManager.Cube(Color.green, WorldUtils.TileToWorldPos(p.index), 0.15f)));
                     return true;
                 }
 
-                distToMerge--;
-                int count = 0;
-                RandomSet<int> order = new(WorldGenerator.Random.NewSeed());
+                var validNeighbors = new List<WorldGenTile>();
                 for (int i = 0; i < 4; i++)
                 {
                     if (tile.neighbors[i] is not WorldGenTile neighbor || neighbor.dist != tile.dist - 1)
                         continue;
-
-                    if (distToMerge > 0 && taken.Contains(neighbor.pos))
-                        continue;
-
-                    count++;
-                    order.Add(i);
+                    validNeighbors.Add(neighbor);
                 }
-
-                if (count == 0)
+                if (validNeighbors.Count == 0)
                     return false;
 
-                if (count > 1)
-                    distToMerge = minMergeDistance;
-
-                while (order.Count > 0)
+                // order is reversed, because paths are added like to a stack
+                validNeighbors = validNeighbors.OrderByDescending(n => repulsion_[n.pos]).ToList();
+                if (path.Length > 1)
                 {
-                    int c = order.PopRandom();
-                    WorldGenTile u = tile.neighbors[c];
-                    var newPath = new Vector2Int[path.Length + 1];
-                    for (int i = 0; i < path.Length; i++)
+                    var straight = validNeighbors.Find(n => n.pos.x == path[^2].x || n.pos.y == path[^2].y);
+                    if (straight != null)
                     {
-                        newPath[i] = path[i];
+                        validNeighbors.Remove(straight);
+                        validNeighbors.Add(straight);
                     }
-
-                    newPath[^1] = u.pos;
-                    queue.AddLast((u, newPath, distToMerge));
                 }
 
+                foreach (var neighbor in validNeighbors)
+                {
+                    var newPath = new Vector2Int[path.Length + 1];
+                    Array.Copy(path, newPath, path.Length);
+                    newPath[^1] = neighbor.pos;
+                    queue.AddLast((neighbor, newPath));
+                }
                 return false;
+            }
+        }
 
+        void UpdateRepulsionField(Vector2Int path)
+        {
+            foreach (var pos in WorldUtils.WORLD_SIZE)
+            {
+                repulsion_[pos] += 1f / ((pos - path).sqrMagnitude + 1);
             }
         }
     }

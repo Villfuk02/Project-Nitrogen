@@ -15,6 +15,7 @@ namespace WorldGen.Path
         [Header("Settings")]
         [SerializeField] int[] crowdingPenaltyByDistance;
         [SerializeField] int startCrowdingPenalty;
+        [SerializeField] float alignmentBonus;
         [SerializeField] float startTemperature;
         [SerializeField] float endTemperature;
         [SerializeField] float stepsPerUnitLengthSquared;
@@ -109,6 +110,9 @@ namespace WorldGen.Path
             var path = new LinkedList<Vector2Int>();
             path.AddFirst(start);
 
+            var directionToCenter = ((Vector2)(WorldUtils.ORIGIN - start)).normalized;
+            var alignment = WorldUtils.CARDINAL_DIRS.Map(d => (1 + Vector2.Dot(d, directionToCenter)) / 2);
+
             crowding_.AddMask(crowdingPenaltyMask_, start + crowdingPenaltyMaskOffset_);
             crowding_[start] += startCrowdingPenalty;
 
@@ -116,11 +120,12 @@ namespace WorldGen.Path
             while (length > 0)
             {
                 var validNeighbors = new WeightedRandomSet<Vector2Int>(WorldGenerator.Random.NewSeed());
-                foreach (var dir in WorldUtils.CARDINAL_DIRS)
+                for (int d = 0; d < 4; d++)
                 {
+                    var dir = WorldUtils.CARDINAL_DIRS[d];
                     Vector2Int neighbor = current + dir;
-                    if (distance.TryGet(neighbor, out var d) && d <= length)
-                        validNeighbors.Add(neighbor, 1f / (crowding_[neighbor] + 1));
+                    if (distance.TryGet(neighbor, out int dist) && dist <= length)
+                        validNeighbors.Add(neighbor, 1f / (crowding_[neighbor] + 1) + alignmentBonus * alignment[d]);
                 }
 
                 Vector2Int next = validNeighbors.PopRandom();

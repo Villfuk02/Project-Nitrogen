@@ -8,6 +8,7 @@ models placed by [[Scatterer]]
 Different types defined for each [[Terrain Type]]
 
 some block projectiles and the line of sight of [[Tower]]
+most block [[Building]] placement and most of those can be removed
 
 Constraints
 - specific [[Tile]] type

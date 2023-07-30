@@ -72,6 +72,14 @@ namespace Utils
             return ret;
         }
 
+        public bool TrySet(Vector2Int index, T value)
+        {
+            if (!IsInBounds(index))
+                return false;
+            this[index] = value;
+            return true;
+        }
+
         public T GetWrapping(Vector2Int index) => this[MathUtils.Mod(index.x, Size.x), MathUtils.Mod(index.y, Size.y)];
 
         public T GetOrDefault(Vector2Int index, T defaultValue) => IsInBounds(index) ? this[index] : defaultValue;

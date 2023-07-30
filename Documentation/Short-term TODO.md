@@ -6,7 +6,9 @@
         - [x] blockers
         - [x] finalize paths
         - [ ] scatter decorations
+            - [ ] tie them to tiles
         - [ ] WORLD DATA
+        - [ ] back on track
     - [ ] reorganize assemblies
     - [ ] make data only store data, no behavior
     - [ ] encapsulation

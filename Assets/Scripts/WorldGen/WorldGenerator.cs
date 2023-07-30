@@ -60,12 +60,12 @@ namespace WorldGen
 
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.T) || Input.GetKey(KeyCode.H))
+                Step();
+
             // DON'T STOP ME NOOOOOW
             if (stepType == StepType.None)
                 return;
-
-            if (Input.GetKeyDown(KeyCode.T) || Input.GetKey(KeyCode.H))
-                Step();
 
             if (Input.GetKeyDown(KeyCode.N))
                 stepType = StepType.None;
@@ -117,7 +117,7 @@ namespace WorldGen
             }
 
             await Task.Run(() => blockerGenerator.PlaceBlockers(starts, worldSettings.pathLengths));
-            await Task.Run(() => pathFinalizer.FinalizePaths(starts));
+            await Task.Run(() => pathFinalizer.FinalizePaths(starts, worldSettings.maxExtraPaths));
             /*
             JobDataInterface finalizePaths = pathPlanner.FinalisePaths(targets);
             yield return new WaitUntil(() => finalizePaths.IsFinished);
