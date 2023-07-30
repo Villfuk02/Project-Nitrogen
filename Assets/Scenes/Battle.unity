@@ -550,7 +550,7 @@ MonoBehaviour:
   terrainType: Test
   seed: 0
   pathLengths: 100000001300000016000000
-  randomSeed: 0
+  randomSeed: 1
 --- !u!4 &815966620
 Transform:
   m_ObjectHideFlags: 0
@@ -780,6 +780,7 @@ GameObject:
   - component: {fileID: 1087793669}
   - component: {fileID: 1087793670}
   - component: {fileID: 1087793668}
+  - component: {fileID: 1087793671}
   m_Layer: 0
   m_Name: Path Planner
   m_TagString: Untagged
@@ -834,6 +835,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startSpacingMultiplier: 0.42
+--- !u!114 &1087793671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1087793667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71f2b67d38e9d25408e0244038047225, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxPathsPerTarget: 3
+  minMergeDistance: 4
 --- !u!1 &1151646511
 GameObject:
   m_ObjectHideFlags: 0
@@ -1143,7 +1158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stepped: 1
-  stepType: 2
+  stepType: 1
   worldData: {fileID: 94511820}
   worldSettings: {fileID: 815966619}
   gizmos: {fileID: 1838770610}
@@ -1151,6 +1166,7 @@ MonoBehaviour:
   pathPlanner: {fileID: 1087793668}
   wfc: {fileID: 134019243}
   blockerGenerator: {fileID: 987874899}
+  pathFinalizer: {fileID: 1087793671}
   tries: 3
 --- !u!114 &1838770610
 MonoBehaviour:

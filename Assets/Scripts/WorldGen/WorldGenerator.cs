@@ -27,6 +27,7 @@ namespace WorldGen
         [SerializeField] PathPlanner pathPlanner;
         [SerializeField] WFCGenerator wfc;
         [SerializeField] BlockerGenerator blockerGenerator;
+        [SerializeField] PathFinalizer pathFinalizer;
         //[SerializeField] Scatterer.Scatterer scatterer;
         [Header("Settings")]
         [SerializeField] int tries;
@@ -116,6 +117,7 @@ namespace WorldGen
             }
 
             await Task.Run(() => blockerGenerator.PlaceBlockers(starts, worldSettings.pathLengths));
+            await Task.Run(() => pathFinalizer.FinalizePaths(starts));
             /*
             JobDataInterface finalizePaths = pathPlanner.FinalisePaths(targets);
             yield return new WaitUntil(() => finalizePaths.IsFinished);

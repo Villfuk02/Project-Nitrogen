@@ -4,13 +4,14 @@
         - [x] plan paths
         - [x] WFC
         - [x] blockers
-        - [ ] finalize paths
+        - [x] finalize paths
         - [ ] scatter decorations
         - [ ] WORLD DATA
     - [ ] reorganize assemblies
     - [ ] make data only store data, no behavior
     - [ ] encapsulation
     - [ ] use unity events for communication?
+    - [ ] more refactoring
 
 - [ ] make [[Targetting]] target priority configurable
 
