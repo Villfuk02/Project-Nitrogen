@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
-namespace WorldGen.Utils
+namespace WorldGen.WorldData
 {
     public class WorldGenTiles
     {

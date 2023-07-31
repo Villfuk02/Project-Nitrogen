@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Utils;
 using WorldGen.Blockers;
+using WorldGen.Decorations;
 using WorldGen.Path;
-using WorldGen.Utils;
 using WorldGen.WFC;
+using WorldGen.WorldData;
 
 namespace WorldGen
 {
@@ -28,7 +29,7 @@ namespace WorldGen
         [SerializeField] WFCGenerator wfc;
         [SerializeField] BlockerGenerator blockerGenerator;
         [SerializeField] PathFinalizer pathFinalizer;
-        //[SerializeField] Scatterer.Scatterer scatterer;
+        [SerializeField] Scatterer scatterer;
         [Header("Settings")]
         [SerializeField] int tries;
 
@@ -118,28 +119,15 @@ namespace WorldGen
 
             await Task.Run(() => blockerGenerator.PlaceBlockers(starts, worldSettings.pathLengths));
             await Task.Run(() => pathFinalizer.FinalizePaths(starts, worldSettings.maxExtraPaths));
+            await Task.Run(() => scatterer.Scatter());
             /*
-            JobDataInterface finalizePaths = pathPlanner.FinalisePaths(targets);
-            yield return new WaitUntil(() => finalizePaths.IsFinished);
             WORLD_DATA.firstPathNodes = targets;
             Vector2Int[] pathStarts = new Vector2Int[targets.Length];
             for (int i = 0; i < targets.Length; i++)
             {
                 pathStarts[i] = targets[i] + GetMainDir(ORIGIN, targets[i]);
             }
-            WORLD_DATA.pathStarts = pathStarts;
-            JobDataInterface scatter = scatterer.Scatter(out List<int> typeCounts, out List<Vector2> positions, out List<float> scales);
-            yield return new WaitUntil(() => scatter.IsFinished);
-            WORLD_DATA.decorationPositions = new List<Vector2>[typeCounts.Count];
-            WORLD_DATA.decorationScales = new List<float>[typeCounts.Count];
-            int p = 0;
-            for (int i = 0; i < typeCounts.Count; i++)
-            {
-                int t = typeCounts[i];
-                WORLD_DATA.decorationPositions[i] = positions.GetRange(p, t);
-                WORLD_DATA.decorationScales[i] = scales.GetRange(p, t);
-                p += t;
-            }
+            WORLD_DATA.pathStarts = pathStarts;            
             */
             Debug.Log("GENERATING SUCCESS");
         }

@@ -549,8 +549,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainType: Test
   seed: 0
-  pathLengths: 0b0000000d0000000f000000110000001300000015000000
-  maxExtraPaths: 100
+  pathLengths: 100000001300000016000000
+  maxExtraPaths: 4
   randomSeed: 1
 --- !u!4 &815966620
 Transform:
@@ -1167,7 +1167,8 @@ MonoBehaviour:
   wfc: {fileID: 134019243}
   blockerGenerator: {fileID: 987874899}
   pathFinalizer: {fileID: 1087793671}
-  tries: 10
+  scatterer: {fileID: 449949343}
+  tries: 20
 --- !u!114 &1838770610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1311,6 +1312,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 111d852ece9459b419b614edc940dc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sr: {fileID: 2038851960}
+  pixelsPerUnit: 4
+  gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 0, b: 1, a: 1}
+    key1: {r: 1, g: 0, b: 0, a: 1}
+    key2: {r: 1, g: 0.6277604, b: 0, a: 0}
+    key3: {r: 1, g: 1, b: 1, a: 0}
+    key4: {r: 0, g: 0.55, b: 1, a: 0}
+    key5: {r: 0, g: 1, b: 1, a: 0}
+    key6: {r: 0, g: 1, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 7799
+    ctime2: 17629
+    ctime3: 32768
+    ctime4: 47906
+    ctime5: 57749
+    ctime6: 65535
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 7
+    m_NumAlphaKeys: 2
+  module: -1
 --- !u!1 &2040693192
 GameObject:
   m_ObjectHideFlags: 0

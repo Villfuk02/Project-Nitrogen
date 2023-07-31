@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
-namespace WorldGen.Utils
+namespace WorldGen.WorldData
 {
     public class WorldGenTile
     {
@@ -15,6 +15,7 @@ namespace WorldGen.Utils
         public BlockerData blocker;
         public int dist;
         public List<WorldGenTile> pathNext = new();
+        public List<DecorationInstance> decorations = new();
 
         public float GetHeight(Vector2 relativePos)
         {
@@ -28,5 +29,11 @@ namespace WorldGen.Utils
             };
             return height + offset;
         }
+    }
+    public struct DecorationInstance
+    {
+        public Decoration decoration;
+        public Vector2 position;
+        public float size;
     }
 }

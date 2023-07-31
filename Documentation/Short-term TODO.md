@@ -6,7 +6,7 @@
         - [x] blockers
         - [x] finalize paths
         - [ ] scatter decorations
-            - [ ] tie them to tiles
+            - [x] tie them to tiles
         - [ ] WORLD DATA
         - [ ] back on track
     - [ ] reorganize assemblies

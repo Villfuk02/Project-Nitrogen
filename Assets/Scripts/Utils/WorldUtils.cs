@@ -90,10 +90,7 @@ namespace Utils
             }
         }
 
-        public static bool IsInRange(int x, int y, int sizeX, int sizeY)
-        {
-            return x >= 0 && y >= 0 && x < sizeX && y < sizeY;
-        }
+        public static bool IsInRange(Vector2Int v, Vector2Int size) => v is { x: >= 0, y: >= 0 } && v.x < size.x && v.y < size.y;
 
         public static Slant FlipSlant(Slant s)
         {

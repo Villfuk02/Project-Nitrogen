@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Utils;
-using WorldGen.Utils;
+using WorldGen.WorldData;
 using static WorldGen.WorldGenerator;
 
 namespace WorldGen.Path

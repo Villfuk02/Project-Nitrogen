@@ -34,13 +34,13 @@ namespace Data.WorldGen
                     case "clamp":
                         return ClampNode.Parse(parseStream, ParseNode);
                     case "path":
-                        return SDFNode.Parse(parseStream, sd.isPath);
+                        return SDFNode.Parse(parseStream, pos => sd.isPath(pos));
                     case "blocker":
                         string blocker = ParseWord(parseStream);
                         SkipWhitespace(parseStream);
                         if (!sd.isBlocker.ContainsKey(blocker))
                             throw new ParseException(parseStream, $"Blocker \"{blocker}\" was not defined.");
-                        return SDFNode.Parse(parseStream, sd.isBlocker[blocker]);
+                        return SDFNode.Parse(parseStream, pos => sd.isBlocker[blocker](pos));
                     case "fractal_noise":
                         return FractalNoiseNode.Parse(parseStream);
                     default:
@@ -79,6 +79,22 @@ namespace Data.WorldGen
 
             return new(name, prefab(), triesPerTile(), placementRadius(), persistentRadius(), sizeGain(), radiusGain(), angleSpread(), valueThreshold(), value());
         }
+
+        public float EvaluateAt(Vector2 pos) => Value.Evaluate(pos);
+
+        static float GetScaled(float baseRadius, float strength, float evaluated)
+        {
+            if (baseRadius == 0)
+                return 0;
+            float s = strength * evaluated;
+            if (s < 0)
+                return baseRadius / (1 - s);
+            return baseRadius * (1 + s);
+        }
+
+        public float GetScale(float evaluated) => GetScaled(1, SizeGain, evaluated);
+        public float GetPlacementSize(float evaluated) => GetScaled(PlacementRadius, RadiusGain, evaluated);
+        public float GetColliderSize(float evaluated) => GetScaled(PersistentRadius, RadiusGain, evaluated);
     }
 
     public abstract class Node
@@ -114,7 +130,7 @@ namespace Data.WorldGen
             max_ = max;
         }
 
-        public override float Evaluate(Vector2 pos) => Mathf.Clamp(min_, max_, base.Evaluate(pos));
+        public override float Evaluate(Vector2 pos) => Mathf.Clamp(base.Evaluate(pos), min_, max_);
 
         public new static ClampNode Parse(ParseStream stream, Parse<Node> nodeFactory)
         {
@@ -251,11 +267,13 @@ namespace Data.WorldGen
 
     public class FractalNoiseNode : Node
     {
+        public static readonly List<FractalNoiseNode> ALL_NODES = new();
         public readonly FractalNoise noise;
 
         public FractalNoiseNode(FractalNoise noise)
         {
             this.noise = noise;
+            ALL_NODES.Add(this);
         }
         public override float Evaluate(Vector2 pos)
         {

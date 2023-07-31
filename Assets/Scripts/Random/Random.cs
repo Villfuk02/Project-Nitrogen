@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Random
@@ -77,6 +78,17 @@ namespace Random
                 z = Float(-1, 1);
             } while (x * x + y * y + z * z > 1);
             return new(x, y, z);
+        }
+        //shuffle a list
+        public void Shuffle<T>(IList<T> list)
+        {
+            int length = list.Count;
+            for (int i = 1; i < length; i++)
+            {
+                int j = i - 1;
+                int k = Int(i, length);
+                (list[j], list[k]) = (list[k], list[j]);
+            }
         }
     }
 }
