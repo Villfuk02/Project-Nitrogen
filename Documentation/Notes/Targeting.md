@@ -29,7 +29,7 @@ different targeting types
 
 Visualisation
 - Draw the range on the terrain mesh
-- Draw on which parts of paths will [[Attacker]]s be targetted
+- Draw on which parts of paths will [[Attacker]]s be targeted
     - green - all sizes
     - yellow - only large 
 - right now it is done with line renderers

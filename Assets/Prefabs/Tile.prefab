@@ -275,8 +275,40 @@ Transform:
   - {fileID: 2390359756930126932}
   - {fileID: 1103409162906064873}
   - {fileID: 8834317148766416842}
+  - {fileID: 8023388359922339532}
   m_Father: {fileID: 6153100416974017944}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3093966603931928794
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8023388359922339532}
+  m_Layer: 0
+  m_Name: Decorations
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8023388359922339532
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3093966603931928794}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7821336522203869552}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4614210074223665215
 GameObject:
@@ -326,6 +358,7 @@ MonoBehaviour:
   slantedParts: {fileID: 7821336522203869552}
   selectionAnimator: {fileID: 3203102275641171740}
   blockerCollider: {fileID: 1603722898704636053}
+  decorationHolder: {fileID: 8023388359922339532}
   pos: {x: 0, y: 0}
   obstacle: 0
   slant: 0

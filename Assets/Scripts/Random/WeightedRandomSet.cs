@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace Random
 {
-    // TODO: optimize -> all operations O(log n)
     public class WeightedRandomSet<T>
     {
         readonly List<(T item, float weight)> list_;

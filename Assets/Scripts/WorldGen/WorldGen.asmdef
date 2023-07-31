@@ -8,7 +8,8 @@
         "GUID:694a94cf6e63cfc4ea6a6ae4a80c8b69",
         "GUID:f665923edbd321d4eb35ca3865f4412a",
         "GUID:6392b16a500a30e46b82d15897275a24",
-        "GUID:0ccd8248c5b6b3e4dbd17f424f01f3d6"
+        "GUID:0ccd8248c5b6b3e4dbd17f424f01f3d6",
+        "WorldGen.WorldData"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

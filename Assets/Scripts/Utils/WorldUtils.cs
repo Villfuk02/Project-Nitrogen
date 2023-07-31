@@ -73,21 +73,16 @@ namespace Utils
                 );
         }
 
-        public static Vector2Int GetMainDir(Vector2Int origin, Vector2Int tilePos, Random.Random random)
+        public static Vector2Int GetMainDir(Vector2Int from, Vector2Int to, Random.Random random)
         {
-            Vector2Int o = tilePos - origin;
+            Vector2Int o = to - from;
             if (Mathf.Abs(o.x) == Mathf.Abs(o.y))
-            {
                 o += random.Float() < 0.5f ? Vector2Int.right : Vector2Int.left;
-            }
+
             if (Mathf.Abs(o.x) > Mathf.Abs(o.y))
-            {
                 return new((int)Mathf.Sign(o.x), 0);
-            }
-            else
-            {
-                return new(0, (int)Mathf.Sign(o.y));
-            }
+
+            return new(0, (int)Mathf.Sign(o.y));
         }
 
         public static bool IsInRange(Vector2Int v, Vector2Int size) => v is { x: >= 0, y: >= 0 } && v.x < size.x && v.y < size.y;

@@ -2,15 +2,17 @@ using Data.WorldGen;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 using Utils;
+using World.WorldData;
 using WorldGen.Blockers;
 using WorldGen.Decorations;
 using WorldGen.Path;
 using WorldGen.WFC;
-using WorldGen.WorldData;
 
 namespace WorldGen
 {
@@ -21,7 +23,7 @@ namespace WorldGen
         [SerializeField] StepType stepType;
         [Header("References")]
         static WorldGenerator inst_;
-        [SerializeField] WorldData.WorldData worldData;
+        [SerializeField] WorldData worldData;
         [SerializeField] WorldSettings.WorldSettings worldSettings;
         [SerializeField] GizmoManager gizmos;
         [SerializeField] PathStartPicker pathStartPicker;
@@ -33,10 +35,15 @@ namespace WorldGen
         [Header("Settings")]
         [SerializeField] int tries;
 
+        [Header("Events")]
+        [SerializeField] UnityEvent onGeneratedTerrain;
+        [SerializeField] UnityEvent onFinalizedPaths;
+        [SerializeField] UnityEvent onScatteredDecorations;
+
         //Runtime Values
         public static Random.Random Random { get; private set; }
         public static TerrainType TerrainType { get; private set; }
-        public static WorldGenTiles Tiles { get; private set; }
+        public static TilesData Tiles { get; private set; }
 
         readonly AutoResetEvent waitForStepEvent_ = new(false);
         readonly object steppedLock_ = new();
@@ -82,7 +89,6 @@ namespace WorldGen
         {
             Task generating = GenerateAsync();
             yield return new WaitUntil(() => generating.IsCompleted);
-            Debug.Log("GENERATING FINISHED");
         }
 
         async Task GenerateAsync()
@@ -93,10 +99,8 @@ namespace WorldGen
 
             await Task.Yield();
 
-            //blockerGenerator.Prepare();
-            //scatterer.Prepare();
-
             Vector2Int[] starts;
+            WFCState terrain;
             while (true)
             {
                 if (tries <= 0)
@@ -109,26 +113,29 @@ namespace WorldGen
                 if (paths is null)
                     continue;
 
-                var terrain = await Task.Run(() => wfc.Generate(paths));
+                terrain = await Task.Run(() => wfc.Generate(paths));
                 if (terrain is null)
                     continue;
 
                 Tiles = new(terrain.GetCollapsedSlots(), terrain.GetPassageAtTile, paths);
                 break;
             }
+            worldData.firstPathNodes = starts;
+            worldData.pathStarts = starts.Select(s => s + WorldUtils.GetMainDir(WorldUtils.ORIGIN, s, Random)).ToArray();
+            worldData.terrain = terrain.GetCollapsedSlots();
+            worldData.tiles = Tiles;
+
+            onGeneratedTerrain.Invoke();
 
             await Task.Run(() => blockerGenerator.PlaceBlockers(starts, worldSettings.pathLengths));
             await Task.Run(() => pathFinalizer.FinalizePaths(starts, worldSettings.maxExtraPaths));
+
+            onFinalizedPaths.Invoke();
+
             await Task.Run(() => scatterer.Scatter());
-            /*
-            WORLD_DATA.firstPathNodes = targets;
-            Vector2Int[] pathStarts = new Vector2Int[targets.Length];
-            for (int i = 0; i < targets.Length; i++)
-            {
-                pathStarts[i] = targets[i] + GetMainDir(ORIGIN, targets[i]);
-            }
-            WORLD_DATA.pathStarts = pathStarts;            
-            */
+
+            onScatteredDecorations.Invoke();
+
             Debug.Log("GENERATING SUCCESS");
         }
 

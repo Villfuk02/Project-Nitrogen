@@ -1,0 +1,17 @@
+{
+    "name": "World",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c16294785e7a44148be2e5f8661f54ad",
+        "GUID:f665923edbd321d4eb35ca3865f4412a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

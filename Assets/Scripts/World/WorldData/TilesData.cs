@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
-namespace WorldGen.WorldData
+namespace World.WorldData
 {
-    public class WorldGenTiles
+    public class TilesData
     {
-        readonly Array2D<WorldGenTile> tiles_;
+        readonly Array2D<TileData> tiles_;
 
-        public WorldGenTiles(IReadOnlyArray2D<(Module module, int height)> slots, Func<Vector2Int, int, bool> isPassable, IEnumerable<Vector2Int[]> paths)
+        public TilesData(IReadOnlyArray2D<(Module module, int height)> slots, Func<Vector2Int, int, bool> isPassable, IEnumerable<Vector2Int[]> paths)
         {
             tiles_ = new(WorldUtils.WORLD_SIZE);
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
@@ -18,7 +18,7 @@ namespace WorldGen.WorldData
 
             foreach (Vector2Int pos in WorldUtils.WORLD_SIZE)
             {
-                CardinalDirs<WorldGenTile> connections = new();
+                CardinalDirs<TileData> connections = new();
                 for (int d = 0; d < 4; d++)
                 {
                     Vector2Int p = pos + WorldUtils.CARDINAL_DIRS[d];
@@ -28,7 +28,7 @@ namespace WorldGen.WorldData
                         connections[d] = null;
                 }
 
-                WorldGenTile t = tiles_[pos];
+                TileData t = tiles_[pos];
                 t.pos = pos;
                 t.height = slots[pos].height + slots[pos].module.Shape.Heights.NE;
                 t.slant = slots[pos].module.Shape.Slants.NE;
@@ -46,8 +46,8 @@ namespace WorldGen.WorldData
             }
         }
 
-        public WorldGenTile this[Vector2Int pos] => tiles_[pos];
-        public IEnumerator<WorldGenTile> GetEnumerator() => tiles_.GetEnumerator();
+        public TileData this[Vector2Int pos] => tiles_[pos];
+        public IEnumerator<TileData> GetEnumerator() => tiles_.GetEnumerator();
 
         public void RecalculatePaths()
         {

@@ -1,0 +1,20 @@
+{
+    "name": "BuildingVis.Towers",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ed9587a2f3731ef4b9c193dbc987b655",
+        "GUID:c16294785e7a44148be2e5f8661f54ad",
+        "GUID:39396e230ea13e14b83488741c5aa89a",
+        "GUID:f665923edbd321d4eb35ca3865f4412a",
+        "GUID:bd628b085f372fe4c8eee8c761bc99ea"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

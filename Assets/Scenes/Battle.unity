@@ -153,7 +153,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1281044095}
-  - {fileID: 1746230470}
   m_Father: {fileID: 599020456}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -169,6 +168,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c32fd935d0b5142a15b99ff42b5c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  worldData: {fileID: 94511820}
+  world: {fileID: 599020455}
+  tileHolder: {fileID: 961600660}
+  terrain: {fileID: 1281044095}
+  pathRenderer: {fileID: 1455657881}
+  enableWhenReady:
+  - {fileID: 125072569}
+  slotPrefab: {fileID: 3874263679433659877, guid: a3d794d9db79033458fe5418f7001169, type: 3}
+  tilePrefab: {fileID: 4614210074223665215, guid: 3dcdbc617cd4d5140b472b21427843f2, type: 3}
+  done: 0
 --- !u!1 &94511819
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,6 +207,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f65d22e71ebb63c4fa9f813bccfd8a8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pathStarts: []
+  firstPathNodes: []
 --- !u!4 &94511821
 Transform:
   m_ObjectHideFlags: 0
@@ -257,6 +268,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5594bc3e5279574b8a374e61835548b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  worldData: {fileID: 94511820}
+  attackerPrefab: {fileID: 5845349189104484810, guid: 5c1c30ee895bdc7489707bc1a75935bd, type: 3}
+  spawnInterval: 1.5
+  spawnTimer: 0
+  currentIndex: 0
 --- !u!1 &134019241
 GameObject:
   m_ObjectHideFlags: 0
@@ -313,7 +329,7 @@ GameObject:
   - component: {fileID: 421106807}
   - component: {fileID: 421106808}
   m_Layer: 9
-  m_Name: Targetting
+  m_Name: Targeting
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -348,6 +364,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b82bc695585507488e05371a5d613d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  checkLineOfSight: 1
+  target: {fileID: 0}
+  radiusTrigger: {fileID: 2040693195}
+  heightTrigger: {fileID: 1155016045}
+  range: 3.5
+  canTargetDownwards: 1
+  canTargetUpwards: 0
 --- !u!1 &449949342
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,6 +444,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 532eca3e3b900a34d9bc33d30d10c67c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ready: 0
 --- !u!4 &599020456
 Transform:
   m_ObjectHideFlags: 0
@@ -518,6 +542,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b01f2738c4459f48bcd1288f22f9ae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  worldData: {fileID: 94511820}
+  world: {fileID: 599020455}
+  lineRendererPrefab: {fileID: 3248928435168027131, guid: b951a4b305a251b44b0217fde611acac, type: 3}
+  pathSteps: 11
+  maxOutlineStepSize: 0.11
+  cliffThreshold: 0.2
+  outlineColor: {r: 0, g: 1, b: 0.75, a: 0.4}
+  invalidColor: {r: 1, g: 0, b: 0.48, a: 0.6}
+  targetableColor: {r: 0.1, g: 1, b: 0, a: 0.5019608}
+  targetableTallColor: {r: 1, g: 0.8, b: 0, a: 0.5019608}
+  blockedColor: {r: 1, g: 0, b: 0, a: 0.5019608}
+  targeting: {fileID: 421106808}
+  lineRenderers: []
+  valid: 1
+  lines: 0
 --- !u!1 &815966618
 GameObject:
   m_ObjectHideFlags: 0
@@ -611,6 +650,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99604402dfd310c47b7777e5d712a42d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 963194227}
+  hoveredTile: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1076,37 +1117,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a18d53f3decbb654c8ee9638702fed8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1746230469
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1746230470}
-  m_Layer: 0
-  m_Name: Decorations
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1746230470
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1746230469}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 10349200}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  worldData: {fileID: 94511820}
+  linePrefab: {fileID: 315257208492628400, guid: 6918aa5953bda704e8d611a0d7a7f1a6, type: 3}
+  height: 0.15
+  scrollSpeed: -1
+  offset: 0
+  width: 0.4
+  mat: {fileID: 2100000, guid: fc1ea633985178c4781bf2efc98cba6d, type: 2}
 --- !u!1 &1838770606
 GameObject:
   m_ObjectHideFlags: 0
@@ -1158,7 +1175,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stepped: 0
-  stepType: 1
+  stepType: 0
   worldData: {fileID: 94511820}
   worldSettings: {fileID: 815966619}
   gizmos: {fileID: 1838770610}
@@ -1169,6 +1186,63 @@ MonoBehaviour:
   pathFinalizer: {fileID: 1087793671}
   scatterer: {fileID: 449949343}
   tries: 20
+  onGeneratedTerrain:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 10349201}
+        m_TargetAssemblyTypeName: World.WorldBuilder.WorldBuilder, WorldBuilder
+        m_MethodName: BuildTerrainTrigger
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFinalizedPaths:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 10349201}
+        m_TargetAssemblyTypeName: World.WorldBuilder.WorldBuilder, WorldBuilder
+        m_MethodName: PlaceTilesTrigger
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 10349201}
+        m_TargetAssemblyTypeName: World.WorldBuilder.WorldBuilder, WorldBuilder
+        m_MethodName: RenderPathTrigger
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onScatteredDecorations:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 10349201}
+        m_TargetAssemblyTypeName: World.WorldBuilder.WorldBuilder, WorldBuilder
+        m_MethodName: PlaceDecorationsTrigger
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1838770610
 MonoBehaviour:
   m_ObjectHideFlags: 0

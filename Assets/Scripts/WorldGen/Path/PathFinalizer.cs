@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Utils;
-using WorldGen.WorldData;
+using World.WorldData;
 using static WorldGen.WorldGenerator;
 
 namespace WorldGen.Path
@@ -39,7 +39,7 @@ namespace WorldGen.Path
 
             extraPaths_ = maxExtraPaths;
             int targetCount = starts.Length;
-            var paths = new WorldGenTile[targetCount];
+            var paths = new TileData[targetCount];
             for (int i = 0; i < targetCount; i++)
             {
                 paths[i] = Tiles[starts[i]];
@@ -63,17 +63,17 @@ namespace WorldGen.Path
             }
         }
 
-        void TracePathQueued(WorldGenTile start)
+        void TracePathQueued(TileData start)
         {
             RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(start.pos), 0.3f));
             bool foundAny = false;
-            LinkedList<(WorldGenTile tile, Vector2Int[] path)> queue = new();
+            LinkedList<(TileData tile, Vector2Int[] path)> queue = new();
             queue.AddFirst((start, new[] { start.pos }));
             bool lastFound = false;
             while (extraPaths_ > 0 && queue.Count > 0)
             {
                 WaitForStep(StepType.MicroStep);
-                (WorldGenTile currentTile, var path) = lastFound ? queue.First.Value : queue.Last.Value;
+                (TileData currentTile, var path) = lastFound ? queue.First.Value : queue.Last.Value;
                 if (lastFound)
                     queue.RemoveFirst();
                 else
@@ -84,7 +84,7 @@ namespace WorldGen.Path
             }
             WaitForStep(StepType.MicroStep);
 
-            bool TracePath(WorldGenTile tile, Vector2Int[] path)
+            bool TracePath(TileData tile, Vector2Int[] path)
             {
                 RegisterGizmos(StepType.MicroStep, () =>
                 {
@@ -92,10 +92,10 @@ namespace WorldGen.Path
                     {
                             new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(tile.pos), 0.2f)
                     };
-                    WorldGenTile prev = null;
+                    TileData prev = null;
                     foreach (var pos in path)
                     {
-                        WorldGenTile current = Tiles[pos];
+                        TileData current = Tiles[pos];
                         if (prev is not null)
                         {
                             gizmos.Add(new GizmoManager.Line(Color.magenta, WorldUtils.TileToWorldPos(pos), WorldUtils.TileToWorldPos(prev.pos)));
@@ -112,7 +112,7 @@ namespace WorldGen.Path
                     if (foundAny && path.All(p => outlined_[p]))
                         return false;
 
-                    WorldGenTile prev = null;
+                    TileData prev = null;
                     foreach (var pos in path)
                     {
                         hasPath_[pos] = true;
@@ -120,7 +120,7 @@ namespace WorldGen.Path
                             outlined_.TrySet(pos + dir, true);
                         UpdateRepulsionField(pos);
 
-                        WorldGenTile current = Tiles[pos];
+                        TileData current = Tiles[pos];
                         if (prev is not null)
                         {
                             if (!prev.pathNext.Contains(current))
@@ -138,10 +138,10 @@ namespace WorldGen.Path
                     return true;
                 }
 
-                var validNeighbors = new List<WorldGenTile>();
+                var validNeighbors = new List<TileData>();
                 for (int i = 0; i < 4; i++)
                 {
-                    if (tile.neighbors[i] is not WorldGenTile neighbor || neighbor.dist != tile.dist - 1)
+                    if (tile.neighbors[i] is not TileData neighbor || neighbor.dist != tile.dist - 1)
                         continue;
                     validNeighbors.Add(neighbor);
                 }

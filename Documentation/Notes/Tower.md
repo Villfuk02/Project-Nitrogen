@@ -5,7 +5,7 @@ subset of [[Building]]
 
 proactive defense
 
-each has a specific way of [[Targetting]] [[Attacker]]s
+each has a specific way of [[Targeting]] [[Attacker]]s
 
 powerful towers should have impact on terrain and camera
 

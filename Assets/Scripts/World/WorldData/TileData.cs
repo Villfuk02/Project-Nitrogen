@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
-namespace WorldGen.WorldData
+namespace World.WorldData
 {
-    public class WorldGenTile
+    public class TileData
     {
         public Vector2Int pos;
         public int height;
         public WorldUtils.Slant slant;
-        public CardinalDirs<WorldGenTile> neighbors;
+        public CardinalDirs<TileData> neighbors;
         public bool passable;
         public BlockerData blocker;
         public int dist;
-        public List<WorldGenTile> pathNext = new();
+        public List<TileData> pathNext = new();
         public List<DecorationInstance> decorations = new();
 
         public float GetHeight(Vector2 relativePos)
