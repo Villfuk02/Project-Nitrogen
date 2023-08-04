@@ -29,7 +29,7 @@ namespace WorldGen.Decorations
             {
                 int i = v.x + v.y * texSize.x;
                 Vector2 tilePos = (Vector2.one * 0.5f + v) / pixelsPerUnit - Vector2.one * 0.5f;
-                float e = decoration.EvaluateAt(tilePos);
+                float e = new DecorationEvaluator(tilePos).Evaluate(decoration);
                 Color32 c = gradient.Evaluate(1 / (1 + Mathf.Exp(-e)));
                 if (c.r != cols_[i].r || c.g != cols_[i].g || c.b != cols_[i].b)
                     different = true;

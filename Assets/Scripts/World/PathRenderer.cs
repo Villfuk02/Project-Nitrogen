@@ -47,9 +47,9 @@ namespace World
                     DrawPath(t.pos, nt);
                 }
             }
-            for (int i = 0; i < worldData.firstPathNodes.Length; i++)
+            for (int i = 0; i < worldData.firstPathTiles.Length; i++)
             {
-                DrawPath(worldData.pathStarts[i], worldData.tiles[worldData.firstPathNodes[i]]);
+                DrawPath(worldData.pathStarts[i], worldData.tiles[worldData.firstPathTiles[i]]);
             }
         }
 
@@ -61,9 +61,9 @@ namespace World
             float endHeight = worldData.tiles.GetHeightAt(end).GetValueOrDefault(0);
             float startHeight = worldData.tiles.GetHeightAt(start).GetValueOrDefault(worldData.tiles.GetHeightAt(0.6f * (Vector2)end + 0.4f * (Vector2)start).GetValueOrDefault(endHeight));
             lr.SetPositions(new[] {
-            WorldUtils.TileToWorldPos(start - off) + Vector3.up * (height + startHeight * WorldUtils.HEIGHT_STEP),
-            WorldUtils.TileToWorldPos(start + off) + Vector3.up * (height + startHeight * WorldUtils.HEIGHT_STEP),
-            WorldUtils.TileToWorldPos(end   - off) + Vector3.up * (height + endHeight * WorldUtils.HEIGHT_STEP)
+            WorldUtils.TilePosToWorldPos(start - off) + Vector3.up * (height + startHeight * WorldUtils.HEIGHT_STEP),
+            WorldUtils.TilePosToWorldPos(start + off) + Vector3.up * (height + startHeight * WorldUtils.HEIGHT_STEP),
+            WorldUtils.TilePosToWorldPos(end   - off) + Vector3.up * (height + endHeight * WorldUtils.HEIGHT_STEP)
         });
         }
     }

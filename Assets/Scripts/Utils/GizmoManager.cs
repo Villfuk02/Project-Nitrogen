@@ -4,11 +4,15 @@ using UnityEngine;
 
 namespace Utils
 {
+    /// <summary>
+    /// Provides a simple, thread safe way to register gizmos to be drawn for some period of time.
+    /// </summary>
     public class GizmoManager : MonoBehaviour
     {
-        public bool draw;
-        public bool onlySelected;
+        [SerializeField] bool draw;
+        [SerializeField] bool onlyDrawWhenSelected;
         readonly object lock_ = new();
+        //holds all the gizmos to keep drawing
         readonly Dictionary<object, List<GizmoObject>> objects_ = new();
 
         void Awake()
@@ -34,7 +38,9 @@ namespace Utils
                 }
             }
         }
-
+        /// <summary>
+        /// Adds a gizmo to be drawn, until <see cref="Expire"/> with the same duration is called.
+        /// </summary>
         public void Add(object duration, GizmoObject obj)
         {
             lock (lock_)
@@ -44,6 +50,9 @@ namespace Utils
                 objects_[duration].Add(obj);
             }
         }
+        /// <summary>
+        /// Adds a multiple gizmos to be drawn, until <see cref="Expire"/> with the same duration is called.
+        /// </summary>
         public void Add(object duration, IEnumerable<GizmoObject> obj)
         {
             lock (lock_)
@@ -53,7 +62,9 @@ namespace Utils
                 objects_[duration].AddRange(obj);
             }
         }
-
+        /// <summary>
+        /// Stops drawing all gizmos with the given duration.
+        /// </summary>
         public void Expire(object duration)
         {
             lock (lock_)
@@ -65,7 +76,7 @@ namespace Utils
 
         void OnDrawGizmos()
         {
-            if (draw && !onlySelected)
+            if (draw && !onlyDrawWhenSelected)
             {
                 Draw();
             }
@@ -73,7 +84,7 @@ namespace Utils
 
         void OnDrawGizmosSelected()
         {
-            if (draw && onlySelected)
+            if (draw && onlyDrawWhenSelected)
             {
                 Draw();
             }
@@ -94,6 +105,9 @@ namespace Utils
         {
             readonly Vector3 from_;
             readonly Vector3 to_;
+            /// <summary>
+            /// A line from 'from' to 'to'.
+            /// </summary>
             public Line(Color color, Vector3 from, Vector3 to) : base(color)
             {
                 from_ = from;
@@ -109,11 +123,17 @@ namespace Utils
         {
             readonly Vector3 pos_;
             readonly Vector3 size_;
+            /// <summary>
+            /// A wireframe cube centered at 'pos' with width, height and depth equal to the x, y and z components of 'size'.
+            /// </summary>
             public Cube(Color color, Vector3 pos, Vector3 size) : base(color)
             {
                 pos_ = pos;
                 size_ = size;
             }
+            /// <summary>
+            /// A wireframe cube centered at 'pos' with width, height and depth all equal to 'size'.
+            /// </summary>
             public Cube(Color color, Vector3 pos, float size) : base(color)
             {
                 pos_ = pos;
@@ -128,6 +148,9 @@ namespace Utils
         {
             readonly Vector3 pos_;
             readonly float radius_;
+            /// <summary>
+            /// A wireframe sphere centered at 'pos' with radius 'radius'.
+            /// </summary>
             public Sphere(Color color, Vector3 pos, float radius) : base(color)
             {
                 pos_ = pos;
@@ -144,7 +167,9 @@ namespace Utils
             readonly Vector3 pos_;
             readonly Vector3 scale_;
             readonly Quaternion rotation_;
-
+            /// <summary>
+            /// A wireframe mesh with origin at 'pos'.
+            /// </summary>
             public Mesh(Color color, UnityEngine.Mesh mesh, Vector3 pos) : base(color)
             {
                 mesh_ = mesh;
@@ -152,6 +177,9 @@ namespace Utils
                 scale_ = Vector3.one;
                 rotation_ = Quaternion.identity;
             }
+            /// <summary>
+            /// A wireframe mesh with origin at 'pos', with given scale and rotation.
+            /// </summary>
             public Mesh(Color color, UnityEngine.Mesh mesh, Vector3 pos, Vector3 scale, Quaternion rotation) : base(color)
             {
                 mesh_ = mesh;

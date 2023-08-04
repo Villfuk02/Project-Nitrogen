@@ -4,6 +4,9 @@ using Utils;
 
 namespace WorldGen.WFC
 {
+    /// <summary>
+    /// Holds information about what values are allowed at the given tile.
+    /// </summary>
     public class WFCTile
     {
         public readonly HashSet<int> heights;
@@ -24,13 +27,6 @@ namespace WorldGen.WFC
                 surfaces = new();
                 slants = new();
             }
-        }
-
-        public WFCTile(WFCTile original)
-        {
-            heights = new(original.heights);
-            surfaces = new(original.surfaces);
-            slants = new(original.slants);
         }
     }
 }

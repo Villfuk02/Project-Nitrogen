@@ -6,59 +6,82 @@ namespace Random
 {
     public class Random
     {
-        //const int MODULO = 2^64;
-        //MULTIPLIER taken from https://citeseerx.ist.psu.edu/doc/10.1.1.34.1024
+        //Linear congruential generator, MODULO 2^64
+        //MULTIPLIER taken from:
+        //TABLES OF LINEAR CONGRUENTIAL GENERATORS OF DIFFERENT SIZES AND GOOD LATTICE STRUCTURE by PIERRE L'ECUYER, Table 4
+        //https://citeseerx.ist.psu.edu/doc/10.1.1.34.1024
         const ulong MULTIPLIER = 3935559000370003845ul;
         //INCREMENT can be any odd number
         const ulong INCREMENT = 0x_FACED;
+        //see NewSeed()
         const ulong SEED_MASK = 0x1D15ED_ACE71C_AC1D;
-        ulong state_;
+        /// <summary>
+        /// Get the current state.
+        /// </summary>
+        public ulong CurrentState { get; private set; }
 
-        public Random(ulong seed) => state_ = seed;
+        public Random(ulong seed) => CurrentState = seed;
 
-        void Step() => state_ = MULTIPLIER * state_ + INCREMENT;
+        //Advance to the next state.
+        void Step() => CurrentState = MULTIPLIER * CurrentState + INCREMENT;
 
-        //get a random double (multiple of 1/2^53) between [0..1)
+        /// <summary>
+        /// Get a random double (multiple of 1/2^48) between [0..1).
+        /// </summary>
         public double ExclusiveFraction()
         {
             Step();
-            const double fraction = 1.0 / (1ul << 53);
-            return (state_ >> 11) * fraction;
+            const double fraction = 1.0 / (1ul << 48);
+            return (CurrentState >> 16) * fraction;
         }
-        //get a random double (multiple of 1/(2^64-1)) between [0..1]
+        /// <summary>
+        /// Get a random double (multiple of 1/(2^48-1)) between [0..1].
+        /// </summary>
         public double InclusiveFraction()
         {
             Step();
-            const double fraction = 1.0 / ulong.MaxValue;
-            return state_ * fraction;
+            const double divisor = (1ul << 48) - 1;
+            return (CurrentState >> 16) / divisor;
         }
-        //get a random float between [0..1]
+        /// <summary>
+        /// Get a random float between [0..1].
+        /// </summary>
         public float Float() => (float)InclusiveFraction();
-        //get a random float between [min..max]
+        /// <summary>
+        /// Get a random float between [min..max].
+        /// </summary>
         public float Float(float minInclusive, float maxInclusive) => (float)(minInclusive + (maxInclusive - minInclusive) * InclusiveFraction());
-        //get a random float between [min..max)
-        public float FloatExclusive(float minInclusive, float maxExclusive) => (float)(minInclusive + (maxExclusive - minInclusive) * ExclusiveFraction());
-        //get a random int between [0..max)
+        /// <summary>
+        /// Get a random int between [0..max-1].
+        /// </summary>
         public int Int(int maxExclusive) => (int)Math.Floor(maxExclusive * ExclusiveFraction());
-        //get a random int between [min..max)
+        /// <summary>
+        /// Get a random int between [min..max-1].
+        /// </summary>
         public int Int(int minInclusive, int maxExclusive) => (int)Math.Floor(minInclusive + (maxExclusive - minInclusive) * ExclusiveFraction());
-        //get a random seed for a new Random
+        /// <summary>
+        /// Get a random seed for a new Random instance.
+        /// </summary>
         public ulong NewSeed()
         {
             Step();
-            return state_ ^ SEED_MASK;
+            // XORing with a constant so the new generator produces seemingly unrelated values
+            return CurrentState ^ SEED_MASK;
         }
-        //get current state
-        public ulong CurrentState() => state_;
-        //get a random point on a unit circle
+        /// <summary>
+        /// Get a random point on a unit circle, uniformly distributed.
+        /// </summary>
         public Vector2 OnUnitCircle()
         {
             double angle = Math.PI * 2 * ExclusiveFraction();
             return new((float)Math.Cos(angle), (float)Math.Sin(angle));
         }
-        //get a random point in a unit circle (or disk)
+        /// <summary>
+        /// Get a random point inside a unit circle (or disk), uniformly distributed.
+        /// </summary>
         public Vector2 InsideUnitCircle()
         {
+            // rejection sampling
             float x, y;
             do
             {
@@ -67,9 +90,12 @@ namespace Random
             } while (x * x + y * y > 1);
             return new(x, y);
         }
-        //get a random point in a unit sphere (or ball)
+        /// <summary>
+        /// Get a random point inside a unit sphere (or ball), uniformly distributed.
+        /// </summary>
         public Vector3 InsideUnitSphere()
         {
+            // rejection sampling
             float x, y, z;
             do
             {
@@ -79,7 +105,9 @@ namespace Random
             } while (x * x + y * y + z * z > 1);
             return new(x, y, z);
         }
-        //shuffle a list
+        /// <summary>
+        /// Shuffle an IList.
+        /// </summary>
         public void Shuffle<T>(IList<T> list)
         {
             int length = list.Count;

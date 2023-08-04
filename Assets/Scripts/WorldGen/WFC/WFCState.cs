@@ -50,15 +50,15 @@ namespace WorldGen.WFC
             Vector2Int pos = entropyQueue.PopRandom();
             WFCSlot s = slots[pos];
             lastCollapsedSlot = pos;
-            s = s.Collapse(this);
+            s = s.CollapseRandom(this);
             var updated = s.UpdateConstraints(this);
             wfc.MarkNeighborsDirty(pos, updated);
-            lastCollapsedTo = (s.Collapsed, s.Height);
+            lastCollapsedTo = s.Collapsed;
             slots[pos] = s;
         }
 
         //FINAL GETTERS
-        public Array2D<(Module module, int height)> GetCollapsedSlots() => new(slots.Select(s => (s.Collapsed, s.Height)).ToArray(), slots.Size);
+        public Array2D<(Module module, int height)> GetCollapsedSlots() => new(slots.Select(s => s.Collapsed).ToArray(), slots.Size);
         public bool GetPassageAtTile(Vector2Int pos, int direction)
         {
             (bool passable, bool _) = GetValidPassageAtSlot(pos + TileToSlotArrayOffsets[direction], 3 - direction);

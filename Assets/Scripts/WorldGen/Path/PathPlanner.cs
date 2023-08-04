@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils;
 using static WorldGen.WorldGenerator;
 
@@ -20,37 +21,44 @@ namespace WorldGen.Path
         [SerializeField] float endTemperature;
         [SerializeField] float stepsPerUnitLengthSquared;
 
+        [FormerlySerializedAs("steps")]
         [Header("Runtime variables")]
-        [SerializeField] int steps;
+        [SerializeField] int stepsLeft;
         [SerializeField] float temperature;
-        Array2D<int> crowdingPenaltyMask_;
+        Array2D<int> crowdingPenaltyTemplate_;
         Vector2Int crowdingPenaltyMaskOffset_;
         Array2D<int> crowding_;
 
+        /// <summary>
+        /// Plan the paths, only as a guide for next generation steps.
+        /// </summary>
         public Vector2Int[][] PlanPaths(Vector2Int[] starts, int[] pathLengths)
         {
             WaitForStep(StepType.Phase);
             Debug.Log("Planning paths");
 
-            RegisterGizmos(StepType.Phase, () => new List<Vector2Int>(starts) { WorldUtils.ORIGIN }.Select(p => new GizmoManager.Cube(Color.magenta, WorldUtils.TileToWorldPos(p), 0.4f)));
+            RegisterGizmos(StepType.Phase, () => new List<Vector2Int>(starts) { WorldUtils.WORLD_CENTER }.Select(p => new GizmoManager.Cube(Color.magenta, WorldUtils.TilePosToWorldPos(p), 0.4f)));
 
+            if (pathLengths.Length == 0)
+                return Array.Empty<Vector2Int[]>();
+
+            //prepare variables
             int totalLength = pathLengths.Sum();
-            steps = (int)(stepsPerUnitLengthSquared * totalLength * totalLength);
+            stepsLeft = (int)(stepsPerUnitLengthSquared * totalLength * totalLength);
             temperature = startTemperature;
-            float cooling = (startTemperature - endTemperature) / (steps - 1);
-            crowdingPenaltyMask_ = new(new(3, 3));
+            float cooling = (startTemperature - endTemperature) / (stepsLeft - 1);
+            crowdingPenaltyTemplate_ = new(new(3, 3));
             foreach (var offset in WorldUtils.ADJACENT_AND_ZERO)
-            {
-                crowdingPenaltyMask_[offset + Vector2Int.one] += crowdingPenaltyByDistance[offset.ManhattanMagnitude()];
-            }
+                crowdingPenaltyTemplate_[offset + Vector2Int.one] += crowdingPenaltyByDistance[offset.ManhattanMagnitude()];
             crowdingPenaltyMaskOffset_ = -Vector2Int.one;
             crowding_ = new(WorldUtils.WORLD_SIZE);
 
             int pathCount = pathLengths.Length;
             var distances = new Array2D<int>(WorldUtils.WORLD_SIZE);
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
-                distances[v] = v.ManhattanDistance(WorldUtils.ORIGIN);
+                distances[v] = v.ManhattanDistance(WorldUtils.WORLD_CENTER);
 
+            //make a prototype for each path
             var paths = new LinkedList<Vector2Int>[pathCount];
             for (int i = 0; i < pathCount; i++)
             {
@@ -58,25 +66,27 @@ namespace WorldGen.Path
                 paths[i] = MakePathPrototype(starts[i], pathLengths[i], distances);
             }
 
-            Debug.Log($"Path prototypes picked, relaxing in {steps} steps");
+            Debug.Log($"Path prototypes picked, relaxing in {stepsLeft} steps");
             WaitForStep(StepType.Step);
             RegisterGizmos(StepType.MicroStep, () => paths.SelectMany(p => DrawPath(p, Color.red)));
 
-            if (pathCount == 0)
-                return Array.Empty<Vector2Int[]>();
-
+            //relax paths, trying to get it converge to valid paths with nice shapes
             Vector2Int[][] found = null;
-            while (steps > 0)
+            while (stepsLeft > 0)
             {
+                //if unable to relax any more, return early (should only happen when the temperature is way too low)
                 if (!RelaxPaths(paths))
                     break;
 
+                //if any path intersects with itself, check for any crossings and try to untwist them
+                //RelaxPaths is unlikely to fix a path crossing itself
                 if (paths.Any(p => !p.AllDistinct()))
                 {
-                    RegisterGizmos(StepType.MicroStep, () => paths.SelectMany(p => DrawPath(p, Color.yellow)), RelaxPathGizmosDuration);
+                    RegisterGizmos(StepType.MicroStep, () => paths.SelectMany(p => DrawPath(p, Color.red)), RelaxPathGizmosDuration);
                     foreach (var path in paths)
                         UntwistCrossing(path);
                 }
+                //if there are no invalid crossings, save the paths
                 else if (!InvalidCrossings(paths))
                 {
                     RegisterGizmos(StepType.MicroStep, () => paths.SelectMany(p => DrawPath(p, Color.green)), RelaxPathGizmosDuration);
@@ -84,11 +94,11 @@ namespace WorldGen.Path
                 }
                 else
                 {
-                    RegisterGizmos(StepType.MicroStep, () => paths.SelectMany(p => DrawPath(p, Color.red)), RelaxPathGizmosDuration);
+                    RegisterGizmos(StepType.MicroStep, () => paths.SelectMany(p => DrawPath(p, Color.yellow)), RelaxPathGizmosDuration);
                 }
 
                 temperature -= cooling;
-                steps--;
+                stepsLeft--;
                 WaitForStep(StepType.MicroStep);
             }
 
@@ -104,16 +114,22 @@ namespace WorldGen.Path
 
             return found;
         }
-
+        /// <summary>
+        /// Make a random path of the correct length form start to center, allowing for all kinds of intersections.
+        /// </summary>
+        /// <param name="start">Start of the path.</param>
+        /// <param name="length">Length of the path.</param>
+        /// <param name="distance">Manhattan distance of each tile to the center.</param>
         LinkedList<Vector2Int> MakePathPrototype(Vector2Int start, int length, IReadOnlyArray2D<int> distance)
         {
             var path = new LinkedList<Vector2Int>();
             path.AddFirst(start);
 
-            var directionToCenter = ((Vector2)(WorldUtils.ORIGIN - start)).normalized;
+            //for each direction calculate how much it's aligned with the direction from start to center, in the range [0..1]
+            var directionToCenter = ((Vector2)(WorldUtils.WORLD_CENTER - start)).normalized;
             var alignment = WorldUtils.CARDINAL_DIRS.Map(d => (1 + Vector2.Dot(d, directionToCenter)) / 2);
 
-            crowding_.AddMask(crowdingPenaltyMask_, start + crowdingPenaltyMaskOffset_);
+            crowding_.Add(crowdingPenaltyTemplate_, start + crowdingPenaltyMaskOffset_);
             crowding_[start] += startCrowdingPenalty;
 
             var current = start;
@@ -124,28 +140,33 @@ namespace WorldGen.Path
                 {
                     var dir = WorldUtils.CARDINAL_DIRS[d];
                     Vector2Int neighbor = current + dir;
+                    //skip the tiles that would be too far from the center to get there in time
                     if (distance.TryGet(neighbor, out int dist) && dist <= length)
                         validNeighbors.Add(neighbor, 1f / (crowding_[neighbor] + 1) + alignmentBonus * alignment[d]);
                 }
 
                 Vector2Int next = validNeighbors.PopRandom();
-                RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.red, WorldUtils.TileToWorldPos(current), 0.3f));
-                RegisterGizmos(StepType.Step, () => new GizmoManager.Line(Color.red, WorldUtils.TileToWorldPos(current), WorldUtils.TileToWorldPos(next)));
+                RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.red, WorldUtils.TilePosToWorldPos(current), 0.3f));
+                RegisterGizmos(StepType.Step, () => new GizmoManager.Line(Color.red, WorldUtils.TilePosToWorldPos(current), WorldUtils.TilePosToWorldPos(next)));
                 WaitForStep(StepType.MicroStep);
 
                 path.AddLast(next);
-                crowding_.AddMask(crowdingPenaltyMask_, next + crowdingPenaltyMaskOffset_);
+                crowding_.Add(crowdingPenaltyTemplate_, next + crowdingPenaltyMaskOffset_);
                 length--;
                 current = next;
             }
             return path;
         }
-
+        /// <summary>
+        /// Relax paths, trying to get it converge to valid paths with nice shapes.
+        /// </summary>
         bool RelaxPaths(IEnumerable<LinkedList<Vector2Int>> paths)
         {
+            //all the offsets with manhattan length of two
             var dirsToTry = WorldUtils.DIAGONAL_DIRS.Concat(WorldUtils.CARDINAL_DIRS.Select(d => 2 * d)).ToArray();
 
             var possibleChanges = new WeightedRandomSet<(LinkedListNode<Vector2Int>, Vector2Int)>(WorldGenerator.Random.NewSeed());
+            //find all path nodes that can be switched to another position (and the switch has positive weight)
             foreach (var path in paths)
             {
                 var prev = path.First;
@@ -157,9 +178,13 @@ namespace WorldGen.Path
                     foreach (var offset in dirsToTry)
                     {
                         var newPos = pos + offset;
+                        //all nodes still have to be 1 tile apart, so only consider switching when this holds
                         if (newPos.ManhattanDistance(prev.Value) != 1 || newPos.ManhattanDistance(next.Value) != 1)
                             continue;
 
+                        //only consider switching when it the new position is less crowded, the better the improvement the better the weight
+                        //but temperature is added, so with high temperature, even very bad switches are likely - this allows for more exploration
+                        //when the temperature eventually gets low, only the highest quality switches happen and the path doesn't change much
                         float improvement = crowding_.GetOrDefault(pos, int.MaxValue) - crowding_.GetOrDefault(newPos, int.MaxValue) + temperature;
                         if (improvement > 0)
                             possibleChanges.Add((current, newPos), improvement);
@@ -174,17 +199,20 @@ namespace WorldGen.Path
                 return false;
 
             var (node, newNodePos) = possibleChanges.PopRandom();
-            RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.red, WorldUtils.TileToWorldPos(node.Value), 0.4f));
-            RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.yellow, WorldUtils.TileToWorldPos(newNodePos), 0.4f));
+            RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.red, WorldUtils.TilePosToWorldPos(node.Value), 0.4f));
+            RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.yellow, WorldUtils.TilePosToWorldPos(newNodePos), 0.4f));
             WaitForStep(StepType.MicroStep);
             ExpireGizmos(RelaxPathGizmosDuration);
-
-            crowding_.AddMask(crowdingPenaltyMask_, newNodePos - Vector2Int.one);
-            crowding_.SubtractMask(crowdingPenaltyMask_, node.Value - Vector2Int.one);
+            //make the chosen switch
+            crowding_.Add(crowdingPenaltyTemplate_, newNodePos - Vector2Int.one);
+            crowding_.Subtract(crowdingPenaltyTemplate_, node.Value - Vector2Int.one);
             node.Value = newNodePos;
             return true;
         }
-
+        /// <summary>
+        /// Tries to find a crossing (two orthogonal straight passages through the same tile) in the path.
+        /// If there is one, reverses a portion of the path to produce two curved passes instead.
+        /// </summary>
         static void UntwistCrossing(LinkedList<Vector2Int> path)
         {
             var straightX = new Dictionary<Vector2Int, LinkedListNode<Vector2Int>>();
@@ -222,7 +250,7 @@ namespace WorldGen.Path
                     straightY[pos] = current;
                     if (straightX.TryGetValue(pos, out var twistStart))
                     {
-                        RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.cyan, WorldUtils.TileToWorldPos(pos), 0.4f));
+                        RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.cyan, WorldUtils.TilePosToWorldPos(pos), 0.4f));
                         path.Reverse(twistStart, current);
                         return;
                     }
@@ -232,7 +260,7 @@ namespace WorldGen.Path
                     straightX[pos] = current;
                     if (straightY.TryGetValue(pos, out var twistStart))
                     {
-                        RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.cyan, WorldUtils.TileToWorldPos(pos), 0.4f));
+                        RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.cyan, WorldUtils.TilePosToWorldPos(pos), 0.4f));
                         path.Reverse(twistStart, current);
                         return;
                     }
@@ -244,6 +272,10 @@ namespace WorldGen.Path
             }
         }
 
+        /// <summary>
+        /// Are there any invalid crossings?
+        /// An invalid crossing means there are two path nodes on the same tile, each with a different distance to the center.
+        /// </summary>
         static bool InvalidCrossings(IEnumerable<LinkedList<Vector2Int>> paths)
         {
             var distances = new Dictionary<Vector2Int, int>();
@@ -270,9 +302,9 @@ namespace WorldGen.Path
             Vector2Int? last = null;
             foreach (var pos in path)
             {
-                gizmos.Add(new GizmoManager.Cube(color, WorldUtils.TileToWorldPos(pos), 0.1f));
+                gizmos.Add(new GizmoManager.Cube(color, WorldUtils.TilePosToWorldPos(pos), 0.1f));
                 if (last is { } lastPos)
-                    gizmos.Add(new GizmoManager.Line(color, WorldUtils.TileToWorldPos(pos), WorldUtils.TileToWorldPos(lastPos)));
+                    gizmos.Add(new GizmoManager.Line(color, WorldUtils.TilePosToWorldPos(pos), WorldUtils.TilePosToWorldPos(lastPos)));
                 last = pos;
             }
             return gizmos;

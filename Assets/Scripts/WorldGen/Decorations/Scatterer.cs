@@ -30,7 +30,7 @@ namespace WorldGen.Decorations
             }
             foreach (var fractalNoiseNode in FractalNoiseNode.ALL_NODES)
             {
-                fractalNoiseNode.noise.Init(WorldGenerator.Random.NewSeed());
+                fractalNoiseNode.Noise.Init(WorldGenerator.Random.NewSeed());
             }
 
             allTiles_ = new();
@@ -45,11 +45,11 @@ namespace WorldGen.Decorations
             foreach (var d in decorations_)
             {
                 WaitForStep(StepType.Step);
-                RegisterGizmos(StepType.Step, () => colliders_.SelectMany(list => list, (_, v) => new GizmoManager.Sphere(Color.green, WorldUtils.TileToWorldPos(new Vector3(v.x, v.y)), v.z)));
+                RegisterGizmos(StepType.Step, () => colliders_.SelectMany(list => list, (_, v) => new GizmoManager.Sphere(Color.green, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
                 ScatterStep(d);
             }
             Debug.Log("Scattered");
-            RegisterGizmos(StepType.Phase, () => colliders_.SelectMany(list => list, (_, v) => new GizmoManager.Sphere(Color.yellow, WorldUtils.TileToWorldPos(new Vector3(v.x, v.y)), v.z)));
+            RegisterGizmos(StepType.Phase, () => colliders_.SelectMany(list => list, (_, v) => new GizmoManager.Sphere(Color.yellow, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
         }
 
 
@@ -83,7 +83,7 @@ namespace WorldGen.Decorations
         void ScatterTile(Decoration decoration, Vector2Int tile, Array2D<List<Vector3>> currentColliders, Array2D<List<Vector3>> futureColliders, IReadOnlyArray2D<object> locks, ulong randomSeed)
         {
             WaitForStep(StepType.MicroStep);
-            RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.yellow, WorldUtils.TileToWorldPos(tile), new Vector3(0.7f, 0.1f, 0.7f)), locks[tile]);
+            RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.yellow, WorldUtils.TilePosToWorldPos(tile), new Vector3(0.7f, 0.1f, 0.7f)), locks[tile]);
 
             foreach (var offset in new Vector2Int(3, 3))
             {
@@ -94,7 +94,7 @@ namespace WorldGen.Decorations
             try
             {
                 ExpireGizmos(locks[tile]);
-                RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.red, WorldUtils.TileToWorldPos(tile), new Vector3(2, 0.1f, 2)), locks[tile]);
+                RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.red, WorldUtils.TilePosToWorldPos(tile), new Vector3(2, 0.1f, 2)), locks[tile]);
 
                 Dictionary<Vector2, Vector3> merging = new();
                 foreach (Vector2Int d in WorldUtils.ADJACENT_AND_ZERO)
@@ -131,7 +131,7 @@ namespace WorldGen.Decorations
 
                 void TryPosition(Vector2 pos)
                 {
-                    float v = decoration.EvaluateAt(pos);
+                    float v = new DecorationEvaluator(pos).Evaluate(decoration);
                     if (v <= decoration.ValueThreshold)
                         return;
 
@@ -154,8 +154,8 @@ namespace WorldGen.Decorations
                 RegisterGizmos(StepType.Step, () =>
                 {
                     List<GizmoManager.GizmoObject> gizmos = new();
-                    gizmos.AddRange(generatedFuture.Select(v => new GizmoManager.Sphere(Color.green, WorldUtils.TileToWorldPos(new Vector3(v.x, v.y)), v.z)));
-                    gizmos.AddRange(generatedCurrent.Select(v => new GizmoManager.Sphere(Color.cyan, WorldUtils.TileToWorldPos(new Vector3(v.x, v.y)), v.z)));
+                    gizmos.AddRange(generatedFuture.Select(v => new GizmoManager.Sphere(Color.green, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
+                    gizmos.AddRange(generatedCurrent.Select(v => new GizmoManager.Sphere(Color.cyan, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
                     return gizmos;
                 });
 

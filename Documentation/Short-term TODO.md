@@ -1,8 +1,3 @@
-- [ ] zápočťák
-    - [x] redo [[World Generation]] with determinism
-    - [x] go through all new files
-    - [ ] DOCUMENTATION
-
 - [ ] make [[Targeting]] target priority configurable
 
 ## optimisations

@@ -101,7 +101,7 @@ namespace World.WorldBuilder
         {
             (var module, int height) = worldData.terrain[pos];
             Transform t = Instantiate(slotPrefab, terrain).transform;
-            t.position = WorldUtils.SlotToWorldPos(pos.x, pos.y, height + module.HeightOffset);
+            t.position = WorldUtils.SlotPosToWorldPos(pos.x, pos.y, height + module.HeightOffset);
             t.localScale = new Vector3(module.Flipped ? -1 : 1, 1, 1) * 1.01f;
             t.localRotation = Quaternion.Euler(0, 90 * module.Rotated, 0);
             t.GetComponent<MeshFilter>().mesh = module.Collision; //TODO: Choose a real model
@@ -110,7 +110,7 @@ namespace World.WorldBuilder
         void PlaceDecoration(DecorationInstance decoration, Transform parent)
         {
             Transform t = Instantiate(decoration.decoration.Prefab, parent).transform;
-            t.position = WorldUtils.TileToWorldPos(decoration.position.x, decoration.position.y, worldData.tiles.GetHeightAt(decoration.position)!.Value);
+            t.position = WorldUtils.TilePosToWorldPos(decoration.position.x, decoration.position.y, worldData.tiles.GetHeightAt(decoration.position)!.Value);
             t.localScale = Vector3.one * decoration.size;
             Vector2 r = Random.insideUnitCircle * decoration.decoration.AngleSpread;
             t.localRotation = Quaternion.Euler(r.x, Random.Range(0, 360f), r.y);
@@ -127,7 +127,7 @@ namespace World.WorldBuilder
                 t.obstacle = Tile.Obstacle.None;
             else
                 t.obstacle = (Tile.Obstacle)((int)tileData.blocker.BlockerType + 2);
-            t.transform.localPosition = WorldUtils.TileToWorldPos(pos.x, pos.y, worldData.tiles.GetHeightAt(pos)!.Value);
+            t.transform.localPosition = WorldUtils.TilePosToWorldPos(pos.x, pos.y, worldData.tiles.GetHeightAt(pos)!.Value);
             tiles_[pos] = t;
         }
     }

@@ -31,13 +31,13 @@ namespace Battle
         void Spawn()
         {
             uint index = ++currentIndex;
-            uint paths = (uint)worldData.firstPathNodes.Length;
+            uint paths = (uint)worldData.firstPathTiles.Length;
             uint selectedPath = index % paths;
             index /= paths;
             Attacker a = Instantiate(attackerPrefab, transform).GetComponent<Attacker>();
             a.worldData = worldData;
             Vector2Int startingPoint = worldData.pathStarts[selectedPath];
-            Vector2Int firstTile = worldData.firstPathNodes[selectedPath];
+            Vector2Int firstTile = worldData.firstPathTiles[selectedPath];
             a.InitPath(startingPoint, firstTile, index);
         }
     }

@@ -24,7 +24,9 @@ namespace Utils
             this.baseFrequency = baseFrequency;
             this.frequencyMult = frequencyMult;
         }
-
+        /// <summary>
+        /// Initialize the layer offsets to random values, based on the provided seed.
+        /// </summary>
         public void Init(ulong randomSeed)
         {
             Random.Random random = new(randomSeed);
@@ -34,7 +36,10 @@ namespace Utils
                 offsets_[i] = random.InsideUnitCircle() * 10000;
             }
         }
-
+        /// <summary>
+        /// Get the value of the noise at a given point. Throws if the offsets have not been initialized.
+        /// </summary>
+        /// <exception cref="InvalidOperationException"></exception>
         public float EvaluateAt(Vector2 pos)
         {
             if (offsets_ is null || offsets_.Length != octaves)
@@ -51,7 +56,7 @@ namespace Utils
             }
             return ret;
         }
-
+        //Modifies the Perlin noise values to be in the range [-1..1] instead of [0..1]
         static float GetNormalizedNoiseAt(Vector2 pos)
         {
             return Mathf.PerlinNoise(pos.x, pos.y) * 2 - 1;

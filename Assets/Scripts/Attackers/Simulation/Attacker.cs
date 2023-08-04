@@ -48,7 +48,7 @@ namespace Attackers.Simulation
         {
             Vector2 pos = Vector2.Lerp(lastTarget, pathSegmentTarget, pathSegmentProgress);
             float height = worldData.tiles.GetHeightAt(pos) ?? worldData.tiles.GetHeightAt(pathSegmentTarget)!.Value;
-            transform.localPosition = WorldUtils.TileToWorldPos(pos.x, pos.y, height);
+            transform.localPosition = WorldUtils.TilePosToWorldPos(pos.x, pos.y, height);
         }
 
         public void InitPath(Vector2Int start, Vector2Int firstNode, uint index)
@@ -71,7 +71,7 @@ namespace Attackers.Simulation
             if (worldData == null)
                 return;
             float height = worldData.tiles.GetHeightAt(pathSegmentTarget) ?? 0;
-            Vector3 segTarget = WorldUtils.TileToWorldPos(pathSegmentTarget.x, pathSegmentTarget.y, height);
+            Vector3 segTarget = WorldUtils.TilePosToWorldPos(pathSegmentTarget.x, pathSegmentTarget.y, height);
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireCube(segTarget, Vector3.one * 0.15f);
             Gizmos.DrawLine(transform.position, segTarget);

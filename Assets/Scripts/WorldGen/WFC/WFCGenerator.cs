@@ -11,7 +11,7 @@ namespace WorldGen.WFC
 {
     public class WFCGenerator : MonoBehaviour
     {
-        [SerializeField] int backupDepth;
+        [SerializeField] int backtrackingDepth;
 
         // Runtime variables
         public static float MaxEntropy { get; private set; }
@@ -19,6 +19,9 @@ namespace WorldGen.WFC
         WFCState state_;
         FixedCapacityStack<WFCState> stateStack_;
 
+        /// <summary>
+        /// Generate the terrain using the Wave function collapse algorithm.
+        /// </summary>
         public WFCState Generate(Vector2Int[][] paths)
         {
             WaitForStep(StepType.Phase);
@@ -40,7 +43,7 @@ namespace WorldGen.WFC
 
             InitWFC(pathDistances);
 
-            stateStack_ = new(backupDepth);
+            stateStack_ = new(backtrackingDepth);
             int steps = 0;
             while (state_.uncollapsed > 0)
             {
@@ -48,6 +51,7 @@ namespace WorldGen.WFC
                 {
                     WaitForStep(StepType.MicroStep);
                     UpdateNext();
+                    //we've backtracked too many times
                     if (state_ is null)
                     {
                         Debug.Log("WFC failed");
@@ -73,17 +77,14 @@ namespace WorldGen.WFC
         {
             state_ = new();
             dirty_ = new(WorldGenerator.Random.NewSeed());
-            for (int x = 0; x < WorldUtils.WORLD_SIZE.x + 1; x++)
+            foreach (var pos in WorldUtils.WORLD_SIZE + Vector2Int.one)
             {
-                for (int y = 0; y < WorldUtils.WORLD_SIZE.y + 1; y++)
-                {
-                    WFCSlot s = new(x, y, ref state_);
-                    state_.slots[x, y] = s;
-                    dirty_.Add(s);
-                }
+                WFCSlot s = new(pos, ref state_);
+                state_.slots[pos] = s;
+                dirty_.Add(s);
             }
 
-            WFCTile centerTile = state_.GetTileAt(WorldUtils.ORIGIN);
+            WFCTile centerTile = state_.GetTileAt(WorldUtils.WORLD_CENTER);
             centerTile.slants.Clear();
             centerTile.slants.Add(WorldUtils.Slant.None);
 
@@ -92,18 +93,21 @@ namespace WorldGen.WFC
                 if (distance == int.MaxValue)
                     continue;
 
-                for (int i = 0; i < 4; i++)
+                for (int direction = 0; direction < 4; direction++)
                 {
-                    Vector2Int neighbor = pos + WorldUtils.CARDINAL_DIRS[i];
-                    if (!pathDistances.TryGet(neighbor, out var neighborDistance) || neighborDistance - distance == 1 || neighborDistance - distance == -1)
+                    Vector2Int neighbor = pos + WorldUtils.CARDINAL_DIRS[direction];
+                    //if there is no neighbor, there's the edge of the word in this direction, there must be a passage, because a path could start from there
+                    //if the neighbor's distance differs exactly by one, the path probably goes through here, so there must be a passage
+                    if (!pathDistances.TryGet(neighbor, out int neighborDistance) || neighborDistance - distance == 1 || neighborDistance - distance == -1)
                     {
-                        RegisterGizmos(StepType.Step, () => DrawPassage(pos, i, (true, false)));
-                        state_.SetValidPassageAtTile(pos, i, (true, false));
+                        RegisterGizmos(StepType.Step, () => DrawPassage(pos, direction, (true, false)));
+                        state_.SetValidPassageAtTile(pos, direction, (true, false));
                     }
+                    //if the neighbor's distance differs more, but a path still goes through it, it's a different path and they must be separated
                     else if (neighborDistance != int.MaxValue)
                     {
-                        RegisterGizmos(StepType.Step, () => DrawPassage(pos, i, (false, true)));
-                        state_.SetValidPassageAtTile(pos, i, (false, true));
+                        RegisterGizmos(StepType.Step, () => DrawPassage(pos, direction, (false, true)));
+                        state_.SetValidPassageAtTile(pos, direction, (false, true));
                     }
                 }
             }
@@ -125,10 +129,10 @@ namespace WorldGen.WFC
         }
         void Backtrack()
         {
-            //Debug.Log("Backtracking");
             dirty_.Clear();
             Vector2Int lastCollapsedSlot = state_.lastCollapsedSlot;
             (Module module, int height) lastCollapsedTo = state_.lastCollapsedTo;
+            //if it can't backtrack anymore or it has backtracked so many times the stateStack is empty, set state to null to signify backtracking is not possible anymore
             if (stateStack_.Count == 0)
             {
                 state_ = null;
@@ -149,12 +153,16 @@ namespace WorldGen.WFC
         }
         public void MarkDirty(Vector2Int pos)
         {
-            if (!state_.slots.TryGet(pos, out var s) || s.Collapsed is not null)
+            if (!state_.slots.TryGet(pos, out var s) || s.Collapsed.module is not null)
                 return;
-            dirty_.TryAdd(s);
+            dirty_.Add(s);
         }
 
-
+        /// <summary>
+        /// Calculates the entropy of the given weighted random set.
+        /// </summary>
+        /// <param name="weights">Weights with their respective number of occurrences.</param>
+        /// <returns></returns>
         public static float CalculateEntropy(Dictionary<float, int> weights)
         {
             float totalWeight = weights.Sum(w => w.Value * w.Key);
@@ -170,7 +178,7 @@ namespace WorldGen.WFC
         IEnumerable<GizmoManager.GizmoObject> DrawEntropy()
         {
             var gizmos = new List<GizmoManager.GizmoObject>();
-            foreach ((Vector2Int pos, float weight) in state_.entropyQueue.AllEntries)
+            foreach ((Vector2Int pos, float weight) in state_.entropyQueue)
             {
                 Color c = dirty_.Contains(state_.slots[pos]) ? Color.red : Color.black;
                 float entropy = MaxEntropy - weight;
@@ -187,7 +195,7 @@ namespace WorldGen.WFC
                 }
                 gizmos.Add(new GizmoManager.Cube(
                     c,
-                    WorldUtils.SlotToWorldPos(pos.x, pos.y),
+                    WorldUtils.SlotPosToWorldPos(pos.x, pos.y),
                     size * 0.6f
                     ));
             }
@@ -196,11 +204,11 @@ namespace WorldGen.WFC
 
         IEnumerable<GizmoManager.GizmoObject> DrawMesh()
         {
-            return state_.slots.Where(s => s.Collapsed is not null)
+            return state_.slots.Where(s => s.Collapsed.module is not null)
                 .Select(s => new { s, m = s.Collapsed })
-                .Select(t => new GizmoManager.Mesh(Color.white, t.m.Collision,
-                    WorldUtils.SlotToWorldPos(t.s.pos.x, t.s.pos.y, t.s.Height + t.m.HeightOffset),
-                    new(t.m.Flipped ? -1 : 1, 1, 1), Quaternion.Euler(0, 90 * t.m.Rotated, 0))).ToList();
+                .Select(t => new GizmoManager.Mesh(Color.white, t.m.module.Collision,
+                    WorldUtils.SlotPosToWorldPos(t.s.pos.x, t.s.pos.y, t.m.height + t.m.module.HeightOffset),
+                    new(t.m.module.Flipped ? -1 : 1, 1, 1), Quaternion.Euler(0, 90 * t.m.module.Rotated, 0))).ToList();
         }
 
         static GizmoManager.Cube DrawPassage(Vector2Int tilePos, int direction, (bool passable, bool unpassable) p)
@@ -212,7 +220,7 @@ namespace WorldGen.WFC
                 (false, true) => Color.red,
                 (true, true) => Color.yellow
             };
-            return new(c, WorldUtils.TileToWorldPos(tilePos + 0.5f * (Vector2)WorldUtils.CARDINAL_DIRS[direction]), 0.25f);
+            return new(c, WorldUtils.TilePosToWorldPos(tilePos + 0.5f * (Vector2)WorldUtils.CARDINAL_DIRS[direction]), 0.25f);
         }
     }
 }

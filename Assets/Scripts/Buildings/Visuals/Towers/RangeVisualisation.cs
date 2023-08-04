@@ -64,13 +64,13 @@ namespace Buildings.Visuals.Towers
                     for (int i = 1; i <= subdivisions; i++)
                     {
                         Vector2 sourcePos = Vector2.LerpUnclamped(lastSourcePos.Value, current, i / (float)subdivisions);
-                        Vector2 offset = WorldUtils.WorldToTilePos(targeting.transform.position);
+                        Vector2 offset = WorldUtils.WorldPosToTilePos(targeting.transform.position);
                         float? height = worldData.tiles.GetHeightAt(sourcePos + offset);
                         if (height.HasValue)
                         {
                             if (lastHeight.HasValue && Mathf.Abs(lastHeight.Value - height.Value) > cliffThreshold)
                                 EndLine();
-                            Vector3 pos = WorldUtils.TileToWorldPos(sourcePos + offset, height.Value) + Vector3.up * Attacker.SMALL_TARGET_HEIGHT;
+                            Vector3 pos = WorldUtils.TilePosToWorldPos(sourcePos + offset, height.Value) + Vector3.up * Attacker.SMALL_TARGET_HEIGHT;
                             Color c = valid && targeting.IsInBounds(pos) ? outlineColor : invalidColor;
                             AddPoint(pos, c);
                         }
@@ -97,7 +97,7 @@ namespace Buildings.Visuals.Towers
             }
             for (int i = 0; i < worldData.pathStarts.Length; i++)
             {
-                DrawPathSegment(worldData.pathStarts[i], worldData.firstPathNodes[i]);
+                DrawPathSegment(worldData.pathStarts[i], worldData.firstPathTiles[i]);
             }
         }
 
@@ -108,7 +108,7 @@ namespace Buildings.Visuals.Towers
                 float f = i / (float)(pathSteps - 1);
                 Vector2 interpolated = Vector2.Lerp(from, to, f);
                 float height = worldData.tiles.GetHeightAt(interpolated) ?? worldData.tiles.GetHeightAt(to)!.Value;
-                Vector3 pos = WorldUtils.TileToWorldPos(interpolated.x, interpolated.y, height);
+                Vector3 pos = WorldUtils.TilePosToWorldPos(interpolated.x, interpolated.y, height);
                 if (targeting.IsInBounds(pos))
                 {
                     Vector3 smallPos = pos + Vector3.up * Attacker.SMALL_TARGET_HEIGHT;

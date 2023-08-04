@@ -1,7 +1,6 @@
 using Data.Parsers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Utils;
 using static Data.Parsers.Parsers;
@@ -80,8 +79,6 @@ namespace Data.WorldGen
             return new(name, prefab(), triesPerTile(), placementRadius(), persistentRadius(), sizeGain(), radiusGain(), angleSpread(), valueThreshold(), value());
         }
 
-        public float EvaluateAt(Vector2 pos) => Value.Evaluate(pos);
-
         static float GetScaled(float baseRadius, float strength, float evaluated)
         {
             if (baseRadius == 0)
@@ -97,20 +94,21 @@ namespace Data.WorldGen
         public float GetColliderSize(float evaluated) => GetScaled(PersistentRadius, RadiusGain, evaluated);
     }
 
-    public abstract class Node
+    public interface IDecorationNodeVisitor<out T>
     {
-        public abstract float Evaluate(Vector2 pos);
+        public T VisitCompositeNode(CompositeNode node);
+        public T VisitClampNode(ClampNode node);
+        public T VisitSDFNode(SDFNode node);
+        public T VisitFractalNoiseNode(FractalNoiseNode node);
     }
 
-    public class CompositeNode : Node
+    public abstract record Node
     {
-        readonly List<Node> children_;
-        public CompositeNode(List<Node> children)
-        {
-            children_ = children;
-        }
+        public abstract T Accept<T>(IDecorationNodeVisitor<T> visitor);
+    }
 
-        public override float Evaluate(Vector2 pos) => children_.Select(c => c.Evaluate(pos)).Sum();
+    public record CompositeNode(List<Node> Children) : Node()
+    {
         public static CompositeNode Parse(ParseStream stream, Parse<Node> nodeFactory) => new(ParseChildren(stream, nodeFactory));
         public static List<Node> ParseChildren(ParseStream stream, Parse<Node> nodeFactory)
         {
@@ -118,20 +116,12 @@ namespace Data.WorldGen
             var children = ParseList(blockStream, nodeFactory);
             return children;
         }
+
+        public override T Accept<T>(IDecorationNodeVisitor<T> visitor) => visitor.VisitCompositeNode(this);
     }
 
-    public class ClampNode : CompositeNode
+    public record ClampNode(float Min, float Max, List<Node> Children) : CompositeNode(Children)
     {
-        readonly float min_;
-        readonly float max_;
-        public ClampNode(float min, float max, List<Node> children) : base(children)
-        {
-            min_ = min;
-            max_ = max;
-        }
-
-        public override float Evaluate(Vector2 pos) => Mathf.Clamp(base.Evaluate(pos), min_, max_);
-
         public new static ClampNode Parse(ParseStream stream, Parse<Node> nodeFactory)
         {
             float min = ParseFloat(stream);
@@ -141,121 +131,11 @@ namespace Data.WorldGen
             var children = ParseChildren(stream, nodeFactory);
             return new(min, max, children);
         }
+        public override T Accept<T>(IDecorationNodeVisitor<T> visitor) => visitor.VisitClampNode(this);
     }
 
-    public class SDFNode : Node
+    public record SDFNode(float InnerMultiplier, float OuterMultiplier, Predicate<Vector2Int> IsPosInside) : Node
     {
-        readonly float innerMultiplier_;
-        readonly float outerMultiplier_;
-        readonly Predicate<Vector2Int> isPosIn_;
-        public SDFNode(float innerMultiplier, float outerMultiplier, Predicate<Vector2Int> isPosIn)
-        {
-            innerMultiplier_ = innerMultiplier;
-            outerMultiplier_ = outerMultiplier;
-            isPosIn_ = isPosIn;
-        }
-
-        public override float Evaluate(Vector2 tilePos)
-        {
-            float sdf = EvaluateSDF(tilePos);
-            if (sdf > 0)
-                return outerMultiplier_ * sdf;
-            return -innerMultiplier_ * sdf;
-        }
-
-        float EvaluateSDF(Vector2 tilePos)
-        {
-            Vector2Int rounded = new(Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y));
-            bool inside = isPosIn_(rounded);
-            float prevMinDist = float.PositiveInfinity;
-            for (int r = 0; r < Mathf.Max(WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y) + 1; r++)
-            {
-                float minDist = float.PositiveInfinity;
-                Vector2Int boundsMin = new(Mathf.Max(rounded.x - r, 0), Mathf.Max(rounded.y - r, 0));
-                Vector2Int boundsMax = new(Mathf.Min(rounded.x + r, WorldUtils.WORLD_SIZE.x - 1), Mathf.Min(rounded.y + r, WorldUtils.WORLD_SIZE.y - 1));
-                if (boundsMin.x == rounded.x - r)
-                {
-                    for (int y = boundsMin.y; y <= boundsMax.y; y++)
-                    {
-                        if (isPosIn_(new(boundsMin.x, y)) == inside)
-                            continue;
-
-                        float dist = GetSignedDistance(tilePos, new(boundsMin.x, y));
-                        if (dist < minDist)
-                            minDist = dist;
-                    }
-                }
-                if (boundsMax.x == rounded.x + r)
-                {
-                    for (int y = boundsMin.y; y <= boundsMax.y; y++)
-                    {
-                        if (isPosIn_(new(boundsMax.x, y)) == inside)
-                            continue;
-
-                        float dist = GetSignedDistance(tilePos, new(boundsMax.x, y));
-                        if (dist < minDist)
-                            minDist = dist;
-                    }
-                }
-                if (boundsMin.y == rounded.y - r)
-                {
-                    for (int x = boundsMin.x; x <= boundsMax.x; x++)
-                    {
-                        if (isPosIn_(new(x, boundsMin.y)) == inside)
-                            continue;
-
-                        float dist = GetSignedDistance(tilePos, new(x, boundsMin.y));
-                        if (dist < minDist)
-                            minDist = dist;
-                    }
-                }
-                if (boundsMax.y == rounded.y + r)
-                {
-                    for (int x = boundsMin.x; x <= boundsMax.x; x++)
-                    {
-                        if (isPosIn_(new(x, boundsMax.y)) == inside)
-                            continue;
-
-                        float dist = GetSignedDistance(tilePos, new(x, boundsMax.y));
-                        if (dist < minDist)
-                            minDist = dist;
-                    }
-                }
-                if (!float.IsPositiveInfinity(minDist))
-                {
-                    if (!float.IsPositiveInfinity(prevMinDist))
-                    {
-                        if (prevMinDist < minDist)
-                            minDist = prevMinDist;
-                        return inside ? -minDist : minDist;
-                    }
-                    prevMinDist = minDist;
-                }
-                else if (!float.IsPositiveInfinity(prevMinDist))
-                {
-                    return inside ? -prevMinDist : prevMinDist;
-                }
-            }
-
-            throw new();
-            //return inside ? -1_000_000 : 1_000_000;
-        }
-
-        static float GetSignedDistance(Vector2 pos, Vector2Int tile)
-        {
-            static float CoordDiff(float pos, float target)
-            {
-                float diff = pos - target;
-                return diff switch
-                {
-                    < -0.5f => diff + 0.5f,
-                    > 0.5f => diff - 0.5f,
-                    _ => 0
-                };
-            }
-            return new Vector2(CoordDiff(pos.x, tile.x), CoordDiff(pos.y, tile.y)).magnitude;
-        }
-
         public static SDFNode Parse(ParseStream stream, Predicate<Vector2Int> isPosIn)
         {
             float inner = ParseFloat(stream);
@@ -263,21 +143,18 @@ namespace Data.WorldGen
             float outer = ParseFloat(stream);
             return new(inner, outer, isPosIn);
         }
+        public override T Accept<T>(IDecorationNodeVisitor<T> visitor) => visitor.VisitSDFNode(this);
     }
 
-    public class FractalNoiseNode : Node
+    public record FractalNoiseNode : Node
     {
         public static readonly List<FractalNoiseNode> ALL_NODES = new();
-        public readonly FractalNoise noise;
+        public FractalNoise Noise { get; init; }
 
         public FractalNoiseNode(FractalNoise noise)
         {
-            this.noise = noise;
+            Noise = noise;
             ALL_NODES.Add(this);
-        }
-        public override float Evaluate(Vector2 pos)
-        {
-            return noise.EvaluateAt(pos);
         }
         public static FractalNoiseNode Parse(ParseStream stream)
         {
@@ -291,7 +168,8 @@ namespace Data.WorldGen
             var frequencyMult = pp.Register("frequency_mult", ParseFloat);
 
             pp.Parse(blockStream);
-            return new(new(octaves(), bias(), baseAmplitude(), amplitudeMult(), baseFrequency(), frequencyMult()));
+            return new(new FractalNoise(octaves(), bias(), baseAmplitude(), amplitudeMult(), baseFrequency(), frequencyMult()));
         }
+        public override T Accept<T>(IDecorationNodeVisitor<T> visitor) => visitor.VisitFractalNoiseNode(this);
     }
 }

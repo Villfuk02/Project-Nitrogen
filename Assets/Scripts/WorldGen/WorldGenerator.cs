@@ -22,7 +22,7 @@ namespace WorldGen
         [SerializeField] bool stepped;
         [SerializeField] StepType stepType;
         [Header("References")]
-        static WorldGenerator inst_;
+        static WorldGenerator instance_;
         [SerializeField] WorldData worldData;
         [SerializeField] WorldSettings.WorldSettings worldSettings;
         [SerializeField] GizmoManager gizmos;
@@ -53,11 +53,10 @@ namespace WorldGen
 
         void Awake()
         {
-            if (inst_ == null)
-                inst_ = this;
+            if (instance_ == null)
+                instance_ = this;
             else
-                Debug.LogError("There can be only one!");
-            worldData.Clear();
+                throw new("There can be only one!");
             Random = new(worldSettings.seed);
             Tiles = null;
         }
@@ -89,6 +88,8 @@ namespace WorldGen
         {
             Task generating = GenerateAsync();
             yield return new WaitUntil(() => generating.IsCompleted);
+            // make sure we don't miss any exceptions
+            generating.Wait();
         }
 
         async Task GenerateAsync()
@@ -104,7 +105,7 @@ namespace WorldGen
             while (true)
             {
                 if (tries <= 0)
-                    throw new("Failed to generate world");
+                    throw new("Failed to generate a world.");
                 tries--;
 
                 starts = await Task.Run(() => pathStartPicker.PickStarts(worldSettings.pathLengths));
@@ -120,8 +121,8 @@ namespace WorldGen
                 Tiles = new(terrain.GetCollapsedSlots(), terrain.GetPassageAtTile, paths);
                 break;
             }
-            worldData.firstPathNodes = starts;
-            worldData.pathStarts = starts.Select(s => s + WorldUtils.GetMainDir(WorldUtils.ORIGIN, s, Random)).ToArray();
+            worldData.firstPathTiles = starts;
+            worldData.pathStarts = starts.Select(s => s + WorldUtils.GetMainDir(WorldUtils.WORLD_CENTER, s, Random)).ToArray();
             worldData.terrain = terrain.GetCollapsedSlots();
             worldData.tiles = Tiles;
 
@@ -164,37 +165,57 @@ namespace WorldGen
                 stepped = true;
             }
         }
+        /// <summary>
+        /// If we're going by steps of type 'type' or smaller, blocks the thread until next step is allowed.
+        /// </summary>
         public static void WaitForStep(StepType type)
         {
-            if (type > inst_.stepType)
+            if (type > instance_.stepType)
                 return;
 
-            if (inst_.stepped)
-                inst_.waitForStepEvent_.WaitOne();
-            inst_.GizmoStep(type);
-            inst_.Stepped();
+            if (instance_.stepped)
+                instance_.waitForStepEvent_.WaitOne();
+            instance_.GizmoStep(type);
+            instance_.Stepped();
         }
 
-        public static void RegisterGizmos(StepType duration, Func<IEnumerable<GizmoManager.GizmoObject>> objectProvider, object gizmoDuration = null)
+        /// <summary>
+        /// If we're going by steps of type 'stepType' or smaller, calls 'objectProvider' to generate gizmos to draw until <see cref="ExpireGizmos"/> with 'duration' is called.
+        /// If 'duration' is null, uses 'stepType' as duration.
+        /// Gizmos with duration of type <see cref="StepType"/> expire automatically whenever the corresponding step is taken.
+        /// </summary>
+        public static void RegisterGizmos(StepType stepType, Func<IEnumerable<GizmoManager.GizmoObject>> objectProvider, object duration = null)
         {
-            if (duration <= inst_.stepType)
-                inst_.gizmos.Add(gizmoDuration ?? duration, objectProvider());
+            if (stepType <= instance_.stepType)
+                instance_.gizmos.Add(duration ?? stepType, objectProvider());
         }
-        public static void RegisterGizmos(StepType duration, Func<GizmoManager.GizmoObject> objectProvider, object gizmoDuration = null)
+        /// <summary>
+        /// If we're going by steps of type 'stepType' or smaller, calls 'objectProvider' to generate a gizmo to draw until <see cref="ExpireGizmos"/> with 'duration' is called.
+        /// If 'duration' is null, uses 'stepType' as duration.
+        /// Gizmos with duration of type <see cref="StepType"/> expire automatically whenever the corresponding step is taken.
+        /// </summary>
+        public static void RegisterGizmos(StepType stepType, Func<GizmoManager.GizmoObject> objectProvider, object duration = null)
         {
-            if (duration <= inst_.stepType)
-                inst_.gizmos.Add(gizmoDuration ?? duration, objectProvider());
+            if (stepType <= instance_.stepType)
+                instance_.gizmos.Add(duration ?? stepType, objectProvider());
         }
-        public static void RegisterGizmosIfExactly(StepType duration, Func<IEnumerable<GizmoManager.GizmoObject>> objectProvider, object gizmoDuration = null)
+        /// <summary>
+        /// If we're going by steps of type 'stepType', calls 'objectProvider' to generate gizmos to draw until <see cref="ExpireGizmos"/> with 'duration' is called.
+        /// If 'duration' is null, uses 'stepType' as duration.
+        /// Gizmos with duration of type <see cref="StepType"/> expire automatically whenever the corresponding step is taken.
+        /// </summary>
+        public static void RegisterGizmosIfExactly(StepType stepType, Func<IEnumerable<GizmoManager.GizmoObject>> objectProvider, object duration = null)
         {
-            if (duration == inst_.stepType)
-                inst_.gizmos.Add(gizmoDuration ?? duration, objectProvider());
+            if (stepType == instance_.stepType)
+                instance_.gizmos.Add(duration ?? stepType, objectProvider());
         }
-
+        /// <summary>
+        /// Stops gizmos registered with duration 'duration' from drawing from now on.
+        /// </summary>
         public static void ExpireGizmos(object duration)
         {
-            if (StepType.None < inst_.stepType)
-                inst_.gizmos.Expire(duration);
+            if (StepType.None < instance_.stepType)
+                instance_.gizmos.Expire(duration);
         }
     }
 }

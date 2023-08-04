@@ -17,6 +17,9 @@ namespace World.WorldData
         public List<TileData> pathNext = new();
         public List<DecorationInstance> decorations = new();
 
+        /// <summary>
+        /// Returns the tile-space height of the terrain at a position relative to the center of this tile.
+        /// </summary>
         public float GetHeight(Vector2 relativePos)
         {
             float offset = slant switch
@@ -30,6 +33,7 @@ namespace World.WorldData
             return height + offset;
         }
     }
+
     public struct DecorationInstance
     {
         public Decoration decoration;

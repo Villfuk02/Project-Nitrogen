@@ -7,7 +7,9 @@ using Utils;
 
 namespace WorldGen.WFC
 {
-    [System.Serializable]
+    /// <summary>
+    /// Holds information about what modules at what heights are allowed at this spot. Each slot is in between four tiles.
+    /// </summary>
     public class WFCSlot
     {
         public readonly Vector2Int pos;
@@ -17,11 +19,10 @@ namespace WorldGen.WFC
 
         (Module module, int height) invalidModule_ = (null, -1);
 
-        public Module Collapsed { get; private set; }
-        public int Height { get; private set; } = -1;
+        public (Module module, int height) Collapsed { get; private set; } = (null, -1);
         public float TotalEntropy { get; private set; }
 
-        public WFCSlot(int x, int y, ref WFCState state)
+        public WFCSlot(Vector2Int pos, ref WFCState state)
         {
             var weights = new Dictionary<float, int>();
             int moduleCount = WorldGenerator.TerrainType.Modules.Length;
@@ -35,7 +36,7 @@ namespace WorldGen.WFC
                 float w = m.Weight;
                 weights[w] = (weights.TryGetValue(w, out int weight) ? weight : 0) + WorldGenerator.TerrainType.MaxHeight + 1;
             }
-            pos = new(x, y);
+            this.pos = pos;
             TotalEntropy = WFCGenerator.CalculateEntropy(weights);
             state.uncollapsed++;
             state.entropyQueue.Add(pos, 0.001f);
@@ -47,7 +48,7 @@ namespace WorldGen.WFC
             validHeights_ = new();
         }
 
-        public WFCSlot Collapse(WFCState state)
+        public WFCSlot CollapseRandom(WFCState state)
         {
             WFCSlot n = new(pos);
 
@@ -63,8 +64,7 @@ namespace WorldGen.WFC
             }
 
             (var module, int height) = possibilities.PopRandom();
-            n.Collapsed = module;
-            n.Height = height;
+            n.Collapsed = (module, height);
             n.validModules_.Add(module);
             n.validHeights_[module] = new() { height };
             state.uncollapsed--;
@@ -75,6 +75,11 @@ namespace WorldGen.WFC
         {
             invalidModule_ = invalid;
         }
+        /// <summary>
+        /// Recalculates which modules and heights are allowed at this slot, based on their boundaries and the adjacent tiles and slots - makes this slot's domain consistent with its neighbors.
+        /// When there are no valid modules left, signal the generator to backtrack.
+        /// </summary>
+        /// <returns>newSlot - null if it didn't change or backtracking is needed, otherwise the  updated slot. backtrack - true, if the generator needs to backtrack.</returns>
         public (WFCSlot newSlot, bool backtrack) UpdateValidModules(in WFCState state)
         {
             var vPassages = state.GetValidPassagesAtSlot(pos);
@@ -136,6 +141,10 @@ namespace WorldGen.WFC
             state.entropyQueue.UpdateWeight(pos, WFCGenerator.MaxEntropy + 0.001f - n.TotalEntropy);
             return n.validModules_.Count == 0 ? (null, true) : (n, false);
         }
+        /// <summary>
+        /// Recalculates this slot's boundary conditions based on the modules and heights allowed here.
+        /// </summary>
+        /// <returns>Slots at which offsets should be updated (<see cref="UpdateValidModules"/>).</returns>
         public HashSet<Vector2Int> UpdateConstraints(WFCState state)
         {
             //Init Available
