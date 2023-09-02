@@ -10,14 +10,17 @@ namespace Buildings.Simulation.Towers.Targeting
     public abstract class Targeting : MonoBehaviour, ITargetingParent
     {
         [Header("References")]
+        public Tower tower;
         protected ITargetingChild targetingComponent;
         // Constants
         protected static LayerMask visibilityMask;
         static bool layerMaskInit_;
         [Header("Settings")]
         [SerializeField] protected bool checkLineOfSight;
+        protected abstract TargetingPriority[] Priorities { get; }
         [Header("Runtime values")]
-        [SerializeField] protected Attacker target;
+        [SerializeField] int selectedPriority;
+        public Attacker target;
         protected HashSet<Attacker> inRange = new();
 
         void Awake()
@@ -67,9 +70,13 @@ namespace Buildings.Simulation.Towers.Targeting
             return !checkLineOfSight || HasLineOfSight(pos);
         }
 
-        void Retarget()
+        public void Retarget()
         {
-            target = inRange.Where(a => a != null && IsValidTarget(a)).EmptyToNull()?.ArgMin(a => a.GetDistanceToCenter());
+            var validTargets = inRange.Where(a => a != null && IsValidTarget(a)).EmptyToNull();
+            if (Priorities.Length == 0)
+                target = validTargets?.First();
+            else
+                target = validTargets?.ArgMax(a => Priorities[selectedPriority].GetPriority(a, tower));
         }
 
         bool HasLineOfSight(Vector3 pos)
@@ -82,6 +89,7 @@ namespace Buildings.Simulation.Towers.Targeting
         public abstract List<IEnumerator<Vector2>> GetRangeOutline();
 
         public bool IsInBounds(Vector3 pos) => targetingComponent != null && targetingComponent.IsInBounds(pos);
+        public abstract void SetRange(float range);
 
         void OnDrawGizmosSelected()
         {
@@ -93,6 +101,7 @@ namespace Buildings.Simulation.Towers.Targeting
                 Gizmos.DrawLine(transform.position, attacker.target.position);
             }
         }
+
     }
 }
 

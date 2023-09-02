@@ -1,10 +1,8 @@
 {
-    "name": "World",
+    "name": "Blueprints",
     "rootNamespace": "",
     "references": [
-        "GUID:c16294785e7a44148be2e5f8661f54ad",
-        "GUID:f665923edbd321d4eb35ca3865f4412a",
-        "GUID:a5dd279d13774674a9e164736a791efc"
+        "GUID:0900e4d871f3dbb4eaddf25d1909436f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

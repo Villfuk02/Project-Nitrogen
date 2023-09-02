@@ -10,9 +10,11 @@ namespace Buildings.Simulation.Towers.Targeting
         [SerializeField] CapsuleCollider radiusTrigger;
         [SerializeField] BoxCollider heightTrigger;
         [Header("Stats")]
-        public float range;
+        public float currentRange;
         public bool canTargetDownwards;
         public bool canTargetUpwards;
+
+        protected override TargetingPriority[] Priorities => new[] { TargetingPriority.FIRST, TargetingPriority.LAST, TargetingPriority.CLOSEST, TargetingPriority.FARTHEST };
 
         protected override void InitComponents()
         {
@@ -20,6 +22,11 @@ namespace Buildings.Simulation.Towers.Targeting
                 radiusTrigger.GetComponent<TargetingCollider>(),
                 heightTrigger.GetComponent<TargetingCollider>()
                 );
+        }
+
+        public override void SetRange(float range)
+        {
+            currentRange = range;
 
             radiusTrigger.radius = range;
             radiusTrigger.height = 10 + range * 2;
@@ -40,7 +47,7 @@ namespace Buildings.Simulation.Towers.Targeting
                     yield return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
                 }
             }
-            return new() { CircleEnumerator(range, 180) };
+            return new() { CircleEnumerator(currentRange, 180) };
         }
     }
 }

@@ -1,4 +1,13 @@
-- [ ] make [[Targeting]] target priority configurable
+- [ ] make [[Wave Controller]] deterministic
+- [ ] killing [[Attacker]]s
+- [ ] building [[Tower]]s
+- [ ] spending [[Material]]s
+- [ ] [[Economic building]]
+- [ ] [[Blueprint]] and [[Microeconomy]] [[Battle UI]]
+- [ ] damage types
+
+- [ ] redo range visuals
+- [ ] make blockers' coarse terrain collision deterministic
 
 ## optimisations
 - [ ] ? parallelize WFC (constraint satisfaction)

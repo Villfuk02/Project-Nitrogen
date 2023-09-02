@@ -176,8 +176,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 143c40f52cf81cf448ca778d5fbf8905, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 719971657807235023}
+  rb: {fileID: 4374977906458368141}
   speed: 0.5
+  worldData: {fileID: 0}
+  target: {fileID: 719971657807235023}
   pathSegmentProgress: 0
   pathSegmentTarget: {x: 0, y: 0}
   lastTarget: {x: 0, y: 0}
@@ -254,10 +256,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5845349190859894943}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bea2c8ea2a7f5674cb22f7c880943e58, type: 3}
+  m_Script: {fileID: 11500000, guid: fb127f49312458547912047fe2aa1faa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sim: {fileID: 5845349189104484812}
+  sim: {fileID: 5845349189104484811}
   lastTargetPos: {x: 0, y: 0, z: 0}
   sinceTargetChange: 0
   lastVelocity: {x: 0, y: 0, z: 0}

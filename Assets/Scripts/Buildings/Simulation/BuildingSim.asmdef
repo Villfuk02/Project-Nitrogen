@@ -1,3 +1,16 @@
 {
-	"name": "BuildingSim"
+    "name": "BuildingSim",
+    "rootNamespace": "",
+    "references": [
+        "GUID:279478c5a2e665c48b55501419fa634a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

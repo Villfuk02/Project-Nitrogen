@@ -35,7 +35,7 @@ namespace Buildings.Visuals.Towers
         {
             if (targeting == null)
                 return;
-            if (!world.ready)
+            if (!world.Ready)
                 return;
 
             lines = 0;

@@ -1,18 +1,17 @@
 using UnityEngine;
 using Utils;
-using World.WorldData;
 
 namespace Attackers.Simulation
 {
     public class Attacker : MonoBehaviour
     {
+        [SerializeField] Rigidbody rb;
         [Header("Constants")]
         public const float SMALL_TARGET_HEIGHT = 0.3f;
         public const float LARGE_TARGET_HEIGHT = 0.6f;
         [Header("Stats")]
         public float speed;
         [Header("Runtime References")]
-        public WorldData worldData;
         public Transform target;
         [Header("Runtime values")]
         [SerializeField] float pathSegmentProgress;
@@ -30,7 +29,7 @@ namespace Attackers.Simulation
                 pathSegmentProgress--;
                 segmentsToCenter--;
                 lastTarget = pathSegmentTarget;
-                uint paths = (uint)worldData.tiles[pathSegmentTarget].pathNext.Count;
+                uint paths = (uint)World.World.data.tiles[pathSegmentTarget].pathNext.Count;
                 if (paths == 0)
                 {
                     Destroy(gameObject);
@@ -38,7 +37,7 @@ namespace Attackers.Simulation
                 }
                 uint chosen = pathSplitIndex % paths;
                 pathSplitIndex /= paths;
-                pathSegmentTarget = worldData.tiles[pathSegmentTarget].pathNext[(int)chosen].pos;
+                pathSegmentTarget = World.World.data.tiles[pathSegmentTarget].pathNext[(int)chosen].pos;
             }
 
             UpdateWorldPosition();
@@ -47,8 +46,10 @@ namespace Attackers.Simulation
         void UpdateWorldPosition()
         {
             Vector2 pos = Vector2.Lerp(lastTarget, pathSegmentTarget, pathSegmentProgress);
-            float height = worldData.tiles.GetHeightAt(pos) ?? worldData.tiles.GetHeightAt(pathSegmentTarget)!.Value;
-            transform.localPosition = WorldUtils.TilePosToWorldPos(pos.x, pos.y, height);
+            float height = World.World.data.tiles.GetHeightAt(pos) ?? World.World.data.tiles.GetHeightAt(pathSegmentTarget)!.Value;
+            Vector3 worldPos = WorldUtils.TilePosToWorldPos(pos.x, pos.y, height);
+            rb.MovePosition(worldPos);
+            transform.position = worldPos;
         }
 
         public void InitPath(Vector2Int start, Vector2Int firstNode, uint index)
@@ -57,7 +58,8 @@ namespace Attackers.Simulation
             pathSegmentTarget = firstNode;
             pathSegmentProgress = 0;
             pathSplitIndex = index;
-            segmentsToCenter = worldData.tiles[firstNode].dist + 1;
+            segmentsToCenter = World.World.data.tiles[firstNode].dist + 1;
+            transform.localPosition = Vector3.up * 200;
             UpdateWorldPosition();
         }
 
@@ -68,9 +70,9 @@ namespace Attackers.Simulation
 
         void OnDrawGizmosSelected()
         {
-            if (worldData == null)
+            if (!World.World.instance.Ready)
                 return;
-            float height = worldData.tiles.GetHeightAt(pathSegmentTarget) ?? 0;
+            float height = World.World.data.tiles.GetHeightAt(pathSegmentTarget) ?? 0;
             Vector3 segTarget = WorldUtils.TilePosToWorldPos(pathSegmentTarget.x, pathSegmentTarget.y, height);
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireCube(segTarget, Vector3.one * 0.15f);

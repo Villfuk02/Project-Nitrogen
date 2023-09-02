@@ -1,11 +1,10 @@
-using Attackers.Simulation;
 using UnityEngine;
 
 namespace Attackers.Visuals
 {
-    public class AttackerVisPosition : MonoBehaviour
+    public class PositionInterpolation : MonoBehaviour
     {
-        [SerializeField] Attacker sim;
+        [SerializeField] Transform sim;
         [SerializeField] Vector3 lastTargetPos;
         [SerializeField] float sinceTargetChange;
         [SerializeField] Vector3 lastVelocity;
@@ -17,21 +16,20 @@ namespace Attackers.Visuals
         }
         void Update()
         {
-            if (sim.transform.position != lastTargetPos)
+            if (sim.position != lastTargetPos)
             {
-                lastTargetPos = sim.transform.position;
+                lastTargetPos = sim.position;
                 sinceTargetChange = 0;
             }
             Vector3 velocityNew;
             if (sinceTargetChange == Time.fixedDeltaTime)
                 velocityNew = lastVelocity;
             else
-                velocityNew = (sim.transform.position - realPos) / (Time.fixedDeltaTime - sinceTargetChange);
+                velocityNew = (sim.position - realPos) / (Time.fixedDeltaTime - sinceTargetChange);
             realPos += velocityNew * Time.deltaTime;
-            transform.position = realPos;
 
+            transform.position = realPos;
             lastVelocity = velocityNew;
         }
     }
 }
-

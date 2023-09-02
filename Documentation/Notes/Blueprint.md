@@ -21,6 +21,6 @@ Important stats:
 
 Each can be modified with ~ 1 to 2 [[Augment]]s
 
-Blueprint holds stats for itself and the [[Building]]/[[Ability]]/... it provides - for example damage, firerate
+Blueprint holds **stats** for itself and the [[Building]]/[[Ability]]/... it provides - for example damage, firerate
 [[Building]]s / [[Ability]]s provide behavior along with the necessary values needed fo executing the behavior
 

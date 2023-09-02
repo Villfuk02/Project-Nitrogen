@@ -30,7 +30,7 @@ namespace World.WorldBuilder
                 return;
 
             // TODO: Events?
-            world.ready = true;
+            world.SetReady();
             foreach (var o in enableWhenReady)
             {
                 o.SetActive(true);

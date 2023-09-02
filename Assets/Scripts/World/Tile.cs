@@ -1,3 +1,4 @@
+using Buildings.Simulation;
 using UnityEngine;
 using Utils;
 
@@ -18,7 +19,7 @@ namespace World
         public Obstacle obstacle;
         public WorldUtils.Slant slant;
         [Header("Runtime variables")]
-        public bool occupied; //TODO: change to building ref
+        public Building? building;
         [SerializeField] bool hovered;
 
         void Start()

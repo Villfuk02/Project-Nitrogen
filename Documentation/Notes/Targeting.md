@@ -21,7 +21,7 @@ different targeting types
         - ballistic
         - ...
     - or don't
-- preferred target
+- preferred target (configurable)
     - closest to [[Hub]]
     - closest to tower
     - with highest HP
