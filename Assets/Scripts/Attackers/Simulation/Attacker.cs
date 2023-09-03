@@ -1,16 +1,21 @@
 using UnityEngine;
+using UnityEngine.Events;
 using Utils;
 
 namespace Attackers.Simulation
 {
     public class Attacker : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] Rigidbody rb;
+        [SerializeField] UnityEvent<Damage> onDamage;
+        [SerializeField] UnityEvent onDeath;
         [Header("Constants")]
         public const float SMALL_TARGET_HEIGHT = 0.3f;
         public const float LARGE_TARGET_HEIGHT = 0.6f;
         [Header("Stats")]
         public float speed;
+        public int maxHealth;
         [Header("Runtime References")]
         public Transform target;
         [Header("Runtime values")]
@@ -19,9 +24,24 @@ namespace Attackers.Simulation
         [SerializeField] Vector2Int lastTarget;
         [SerializeField] uint pathSplitIndex;
         [SerializeField] int segmentsToCenter;
+        public int health;
+        public int dead;
+
+        void Awake()
+        {
+            health = maxHealth;
+        }
 
         void FixedUpdate()
         {
+            if (dead > 0)
+            {
+                dead++;
+                if (dead > 200)
+                    Destroy(gameObject);
+                return;
+            }
+
             pathSegmentProgress += Time.fixedDeltaTime * speed;
 
             while (pathSegmentProgress >= 1)
@@ -68,9 +88,28 @@ namespace Attackers.Simulation
             return segmentsToCenter - pathSegmentProgress;
         }
 
+        public void TakeDamage(Damage damage)
+        {
+            onDamage.Invoke(damage);
+            if (damage.amount <= 0)
+                return;
+
+            health -= damage.amount;
+            if (health <= 0)
+                Die();
+        }
+
+        public void Die()
+        {
+            dead = 1;
+            rb.detectCollisions = false;
+
+            onDeath.Invoke();
+        }
+
         void OnDrawGizmosSelected()
         {
-            if (!World.World.instance.Ready)
+            if (World.World.instance is null || !World.World.instance.Ready)
                 return;
             float height = World.World.data.tiles.GetHeightAt(pathSegmentTarget) ?? 0;
             Vector3 segTarget = WorldUtils.TilePosToWorldPos(pathSegmentTarget.x, pathSegmentTarget.y, height);

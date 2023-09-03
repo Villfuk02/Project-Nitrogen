@@ -207,6 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f65d22e71ebb63c4fa9f813bccfd8a8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seed: 0
   pathStarts: []
   firstPathTiles: []
 --- !u!4 &94511821
@@ -269,7 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackerPrefab: {fileID: 5845349189104484810, guid: 5c1c30ee895bdc7489707bc1a75935bd, type: 3}
-  spawnInterval: 1.5
+  spawnInterval: 30
   spawnTimer: 0
   currentIndex: 0
 --- !u!1 &134019241
@@ -621,7 +622,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 706373639}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b01f2738c4459f48bcd1288f22f9ae3, type: 3}
   m_Name: 

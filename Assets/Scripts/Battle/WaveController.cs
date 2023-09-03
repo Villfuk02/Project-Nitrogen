@@ -6,19 +6,19 @@ namespace Battle
     public class WaveController : MonoBehaviour
     {
         [SerializeField] GameObject attackerPrefab;
-        [SerializeField] float spawnInterval;
-        [SerializeField] float spawnTimer;
+        [SerializeField] int spawnInterval;
+        [SerializeField] int spawnTimer;
         [SerializeField] uint currentIndex;
 
         void Awake()
         {
-            // only use half the range to not overflow
-            currentIndex = (uint)Random.Range(0, int.MaxValue);
+            // only use half the range to prevent overflow
+            currentIndex = (uint)(World.World.data.seed & 0x7FFFFFFF);
         }
 
         void FixedUpdate()
         {
-            spawnTimer += Time.fixedDeltaTime;
+            spawnTimer++;
             while (spawnTimer >= spawnInterval)
             {
                 spawnTimer -= spawnInterval;

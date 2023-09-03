@@ -1,5 +1,4 @@
-- [ ] make [[Wave Controller]] deterministic
-- [ ] killing [[Attacker]]s
+- [ ] damage source
 - [ ] building [[Tower]]s
 - [ ] spending [[Material]]s
 - [ ] [[Economic building]]

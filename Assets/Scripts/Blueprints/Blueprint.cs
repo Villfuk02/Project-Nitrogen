@@ -5,7 +5,7 @@ namespace Blueprints
 {
     public record Blueprint(string Name, BlueprintRarity Rarity, Dictionary<Stat, int> Stats)
     {
-        public enum Stat { Cooldown, Cost, Range, Damage, ShotInterval }
+        public enum Stat { Cooldown, Cost, Range, Damage, DamageType, ShotInterval }
         public enum BlueprintRarity { Starter, Common, Rare, Legendary }
     }
 }

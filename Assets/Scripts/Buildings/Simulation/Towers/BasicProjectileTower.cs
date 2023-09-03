@@ -37,7 +37,7 @@ namespace Buildings.Simulation.Towers
 
         public override void OnHit(Projectile projectile, Attacker attacker)
         {
-            //Debug.Log($"HIT {projectile} {attacker}");
+            attacker.TakeDamage(new(Blueprint.Stats[Blueprint.Stat.Damage], (Damage.Type)Blueprint.Stats[Blueprint.Stat.DamageType]));
         }
     }
 }

@@ -95,6 +95,7 @@ namespace WorldGen
         async Task GenerateAsync()
         {
             worldData.Clear();
+            worldData.seed = worldSettings.seed;
 
             TerrainType = TerrainTypes.GetTerrainType(worldSettings.terrainType);
 
