@@ -1,8 +1,8 @@
-using Random;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Utils;
+using Utils.Random;
 using static WorldGen.WorldGenerator;
 
 namespace WorldGen.Path

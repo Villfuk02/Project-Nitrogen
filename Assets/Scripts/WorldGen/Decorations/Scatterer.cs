@@ -121,7 +121,7 @@ namespace WorldGen.Decorations
                 List<Vector3> generatedCurrent = new();
                 List<Vector3> generatedFuture = new();
 
-                Random.Random rand = new(randomSeed);
+                Utils.Random.Random rand = new(randomSeed);
 
                 for (int i = 0; i < decoration.TriesPerTile; i++)
                 {

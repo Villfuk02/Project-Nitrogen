@@ -1,9 +1,9 @@
+using BattleSimulation.World.WorldData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Utils;
-using World.WorldData;
 using static WorldGen.WorldGenerator;
 
 namespace WorldGen.Path

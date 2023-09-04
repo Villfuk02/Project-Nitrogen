@@ -1,0 +1,16 @@
+{
+    "name": "BattleVis.Attackers",
+    "rootNamespace": "",
+    "references": [
+        "GUID:16d16ce120eecc34f80989abced71e9f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

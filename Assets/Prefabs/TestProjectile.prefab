@@ -43,16 +43,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 2180857672546275147}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbfb13bb58081b04aa10a7db3d600f11, type: 3}
+  m_Script: {fileID: 11500000, guid: 0118bdf337c4ff74c94e6731e1af4602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  source: {fileID: 0}
-  rb: {fileID: 0}
   speed: 30
   maxRange: 20
   target: {fileID: 0}
   lastDir: {x: 0, y: 0, z: 0}
   hit: 0
+  underground: 0
 --- !u!135 &8397199185045344311
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -332,10 +331,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8049492111629813891}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c2f942540b36464a87afaaa02aece71, type: 3}
+  m_Script: {fileID: 11500000, guid: 0898863079fa57941a3119171c52b79a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   sim: {fileID: 4262303229317810700}
   realPos: {x: 0, y: 0, z: 0}
   lastDir: {x: 0, y: 0, z: 0}
-  stoppedLifetime: 0.01
+  stoppedLifetime: 0

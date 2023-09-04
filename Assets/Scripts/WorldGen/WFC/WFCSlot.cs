@@ -1,9 +1,9 @@
 using Data.WorldGen;
-using Random;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Utils;
+using Utils.Random;
 
 namespace WorldGen.WFC
 {

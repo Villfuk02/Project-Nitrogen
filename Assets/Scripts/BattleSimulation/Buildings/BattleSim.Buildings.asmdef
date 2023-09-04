@@ -1,0 +1,16 @@
+{
+    "name": "BattleSim.Buildings",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6073d15ac0306a8499fd0cd1111f876f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

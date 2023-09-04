@@ -1,0 +1,17 @@
+{
+    "name": "BattleVis.Projectiles",
+    "rootNamespace": "",
+    "references": [
+        "GUID:24251ca383206aa44b76fe65890eac28",
+        "GUID:16d16ce120eecc34f80989abced71e9f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

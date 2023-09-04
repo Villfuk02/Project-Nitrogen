@@ -1,0 +1,20 @@
+{
+    "name": "BattleSim.World.WorldBuilder",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ebeb99c39dce7b942ac76a02512518c0",
+        "GUID:bb1fd1fb4a8dedb448cad8204f010e6e",
+        "GUID:c16294785e7a44148be2e5f8661f54ad",
+        "GUID:5c1af228323c8c64eb05c83993f04e9b",
+        "GUID:5842b2db08a04c54d89124d9fe0c43f8"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,19 @@
+{
+    "name": "BattleVis.Placement",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ebeb99c39dce7b942ac76a02512518c0",
+        "GUID:7332ee89fce4e914ea13411c06f77954",
+        "GUID:c16294785e7a44148be2e5f8661f54ad",
+        "GUID:16d16ce120eecc34f80989abced71e9f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

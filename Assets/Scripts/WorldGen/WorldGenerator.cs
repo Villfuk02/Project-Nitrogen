@@ -1,3 +1,4 @@
+using BattleSimulation.World.WorldData;
 using Data.WorldGen;
 using System;
 using System.Collections;
@@ -8,11 +9,11 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
-using World.WorldData;
 using WorldGen.Blockers;
 using WorldGen.Decorations;
 using WorldGen.Path;
 using WorldGen.WFC;
+using Random = Utils.Random.Random;
 
 namespace WorldGen
 {
@@ -41,7 +42,7 @@ namespace WorldGen
         [SerializeField] UnityEvent onScatteredDecorations;
 
         //Runtime Values
-        public static Random.Random Random { get; private set; }
+        public static Random Random { get; private set; }
         public static TerrainType TerrainType { get; private set; }
         public static TilesData Tiles { get; private set; }
 

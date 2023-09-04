@@ -266,7 +266,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 125072569}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5594bc3e5279574b8a374e61835548b, type: 3}
+  m_Script: {fileID: 11500000, guid: c92d670e717c4144aa6681bd2eeb9880, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   attackerPrefab: {fileID: 5845349189104484810, guid: 5c1c30ee895bdc7489707bc1a75935bd, type: 3}
@@ -361,16 +361,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 421106806}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b82bc695585507488e05371a5d613d7, type: 3}
+  m_Script: {fileID: 11500000, guid: 72e56f5b747c66646b75209995b3e4df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tower: {fileID: 2030789049}
   checkLineOfSight: 1
   selectedPriority: 0
   target: {fileID: 0}
   radiusTrigger: {fileID: 2040693195}
   heightTrigger: {fileID: 1155016045}
-  currentRange: 3.5
+  currentRange: 0
   canTargetDownwards: 1
   canTargetUpwards: 0
 --- !u!1 &449949342
@@ -624,7 +623,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 706373639}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b01f2738c4459f48bcd1288f22f9ae3, type: 3}
+  m_Script: {fileID: 11500000, guid: d90c3b710f5730043be0b49541496276, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   worldData: {fileID: 94511820}
@@ -1111,7 +1110,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1155016042}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ebe4db93761d944ea70977e99da606e, type: 3}
+  m_Script: {fileID: 11500000, guid: c3c76ca3831181e45b014e20d7093db6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!65 &1155016045
@@ -1417,7 +1416,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2030789047}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ae0622c236540a479799b1ecca90471, type: 3}
+  m_Script: {fileID: 11500000, guid: 722d63706a2aba447ac7b3e678624ac9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targeting: {fileID: 421106808}
@@ -1563,7 +1562,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2040693193}
   - component: {fileID: 2040693195}
-  - component: {fileID: 2040693194}
+  - component: {fileID: 2040693196}
   m_Layer: 9
   m_Name: Radius
   m_TagString: Untagged
@@ -1586,18 +1585,6 @@ Transform:
   m_Father: {fileID: 421106807}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2040693194
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2040693192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ebe4db93761d944ea70977e99da606e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!136 &2040693195
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1612,3 +1599,15 @@ CapsuleCollider:
   m_Height: 14
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2040693196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2040693192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3c76ca3831181e45b014e20d7093db6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

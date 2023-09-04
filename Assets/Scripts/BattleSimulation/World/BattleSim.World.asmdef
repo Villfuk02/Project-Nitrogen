@@ -1,0 +1,17 @@
+{
+    "name": "BattleSim.World",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c16294785e7a44148be2e5f8661f54ad",
+        "GUID:bfbdbdd4061137041b161434e4da10de"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

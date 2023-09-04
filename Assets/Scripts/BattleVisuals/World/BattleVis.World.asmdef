@@ -1,0 +1,17 @@
+{
+    "name": "BattleVis.World",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c16294785e7a44148be2e5f8661f54ad",
+        "GUID:ebeb99c39dce7b942ac76a02512518c0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
