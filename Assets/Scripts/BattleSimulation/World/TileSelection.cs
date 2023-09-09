@@ -7,9 +7,9 @@ namespace BattleSimulation.World
     {
         LayerMask tileSelectionMask_;
         [Header("References")]
-        [SerializeField] Camera mainCamera;
+        public Camera mainCamera;
         [Header("Runtime values")]
-        [SerializeField] Tile hoveredTile;
+        public Tile hoveredTile;
 
         void Awake()
         {

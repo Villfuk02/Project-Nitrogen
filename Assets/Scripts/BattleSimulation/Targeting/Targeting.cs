@@ -70,7 +70,7 @@ namespace BattleSimulation.Targeting
 
         public void Retarget()
         {
-            var validTargets = inRange.Where(a => a != null && IsValidTarget(a)).EmptyToNull();
+            var validTargets = GetValidTargets().EmptyToNull();
             if (Priorities.Length == 0)
                 target = validTargets?.First();
             else
@@ -88,6 +88,11 @@ namespace BattleSimulation.Targeting
 
         public bool IsInBounds(Vector3 pos) => targetingComponent != null && targetingComponent.IsInBounds(pos);
         public abstract void SetRange(float range);
+
+        public IEnumerable<Attacker> GetValidTargets()
+        {
+            return inRange.Where(a => a != null && IsValidTarget(a));
+        }
 
         void OnDrawGizmosSelected()
         {

@@ -11,6 +11,9 @@ namespace BattleSimulation.Towers
 
         void FixedUpdate()
         {
+            if (!placed)
+                return;
+
             if (shotTimer > 0)
             {
                 shotTimer--;
@@ -26,7 +29,7 @@ namespace BattleSimulation.Towers
 
         void Shoot(Attacker target)
         {
-            shotTimer = Blueprint.shotInterval!.Value;
+            shotTimer = Blueprint.shotInterval;
             var p = Instantiate(projectilePrefab, World.WorldData.World.instance.transform).GetComponent<LockOnProjectile>();
             p.transform.position = projectileOrigin.position;
             p.source = this;
@@ -35,7 +38,7 @@ namespace BattleSimulation.Towers
 
         public override void OnHit(Projectile projectile, Attacker attacker)
         {
-            attacker.TakeDamage(new(Blueprint.damage!.Value, Blueprint.damageType!.Value, this));
+            attacker.TakeDamage(new(Blueprint.damage, Blueprint.damageType, this));
         }
     }
 }

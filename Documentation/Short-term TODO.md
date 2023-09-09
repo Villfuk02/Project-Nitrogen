@@ -1,9 +1,13 @@
-- [x] damage source
 - [ ] building [[Tower]]s
     - [x] restructuring
-    - [ ] blueprint catalogue
-    - [ ] inventory
-    - [ ] placement
+    - [x] blueprint instances
+    - [x] blueprint menu
+    - [x] placement
+    - [ ] placement display
+        - [ ] tiles
+        - [ ] attackers
+        - [ ] path
+        - [ ] terrain
 - [ ] spending [[Material]]s
 - [ ] [[Economic building]]
 - [ ] [[Blueprint]] and [[Microeconomy]] [[Battle UI]]

@@ -1,19 +1,21 @@
+using BattleSimulation.Attackers;
+using BattleSimulation.World;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace BattleSimulation.Placement
 {
-    public class Placement : MonoBehaviour
+    public abstract class Placement : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        public UnityEvent onPlaced;
+        public PlacementState state;
+        public abstract void Setup(PlacementState state);
+        public abstract bool IsValid();
+        public abstract IEnumerable<Attacker> GetAffectedAttackers();
+        public abstract IEnumerable<Tile> GetAffectedTiles();
+        public abstract Predicate<Vector3> GetAffectedRegion();
+        public abstract void Place();
     }
 }

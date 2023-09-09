@@ -13,7 +13,10 @@ namespace BattleSimulation.Targeting
         public bool canTargetDownwards;
         public bool canTargetUpwards;
 
-        protected override TargetingPriority[] Priorities => new[] { TargetingPriority.FIRST, TargetingPriority.LAST, TargetingPriority.CLOSEST, TargetingPriority.FARTHEST };
+        protected override TargetingPriority[] Priorities => new[]
+        {
+            TargetingPriority.FIRST, TargetingPriority.LAST, TargetingPriority.CLOSEST, TargetingPriority.FARTHEST, TargetingPriority.STRONGEST, TargetingPriority.WEAKEST
+        };
 
         protected override void InitComponents()
         {

@@ -13,7 +13,7 @@ namespace BattleSimulation.Towers
 
         protected override void OnInitBlueprint()
         {
-            targeting.SetRange(Blueprint.range!.Value * 0.1f);
+            targeting.SetRange(Blueprint.range);
         }
 
         public abstract void OnHit(Projectile projectile, Attacker attacker);
