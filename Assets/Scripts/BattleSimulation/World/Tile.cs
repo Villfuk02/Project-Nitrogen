@@ -13,6 +13,7 @@ namespace BattleSimulation.World
         [SerializeField] Animator selectionAnimator;
         [SerializeField] GameObject blockerCollider;
         public Transform decorationHolder;
+        [SerializeField] SpriteRenderer[] highlights;
         [Header("Properties")]
         public Vector2Int pos;
         public enum Obstacle { None, Path, Small, Large, Fuel, Minerals }
@@ -38,6 +39,14 @@ namespace BattleSimulation.World
         {
             hovered = false;
             selectionAnimator.SetTrigger(UnhoverTrigger);
+        }
+
+        public void SetHighlightColor(Color color)
+        {
+            foreach (var sr in highlights)
+            {
+                sr.color = color;
+            }
         }
     }
 }

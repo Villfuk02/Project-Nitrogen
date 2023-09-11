@@ -28,5 +28,6 @@ namespace Utils
         public static float ManhattanDistance(this Vector2 a, Vector2 b) => ManhattanMagnitude(a - b);
         public static int ManhattanDistance(this Vector3Int a, Vector3Int b) => ManhattanMagnitude(a - b);
         public static float ManhattanDistance(this Vector3 a, Vector3 b) => ManhattanMagnitude(a - b);
+        public static Vector2 XZ(this Vector3 v) => new(v.x, v.z);
     }
 }

@@ -550,6 +550,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileSelection: {fileID: 961600661}
+  terrainMaterial: {fileID: 2100000, guid: fccfa01402859324cbc5ac9a1761ff4a, type: 2}
+  relationColors:
+  - {r: 0, g: 0.5647059, b: 1, a: 1}
+  - {r: 1, g: 0, b: 0.33902216, a: 1}
+  - {r: 1, g: 0.77291393, b: 0, a: 1}
+  - {r: 0.06668806, g: 1, b: 0, a: 1}
+  rangeVisualsScale: 4
+  minRangeVisualsScale: 0.02
+  rangeVisualsStepsPerFrame: 128
+  sqrMovementThreshold: 0.0000001
+  halfMaxQuadCount: 10000
   placementState:
     hoveredTile: {fileID: 0}
     tilePos: {x: 0, y: 0, z: 0}

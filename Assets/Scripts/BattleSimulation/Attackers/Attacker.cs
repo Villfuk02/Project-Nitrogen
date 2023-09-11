@@ -1,6 +1,7 @@
 using Game.Damage;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using Utils;
 
 namespace BattleSimulation.Attackers
@@ -11,6 +12,7 @@ namespace BattleSimulation.Attackers
         [SerializeField] Rigidbody rb;
         [SerializeField] UnityEvent<Damage> onDamage;
         [SerializeField] UnityEvent<IDamageSource> onDeath;
+        [SerializeField] Image highlight;
         [Header("Constants")]
         public const float SMALL_TARGET_HEIGHT = 0.3f;
         public const float LARGE_TARGET_HEIGHT = 0.6f;
@@ -106,6 +108,11 @@ namespace BattleSimulation.Attackers
             rb.detectCollisions = false;
 
             onDeath.Invoke(source);
+        }
+
+        public void SetHighlightColor(Color color)
+        {
+            highlight.color = color;
         }
 
         void OnDrawGizmosSelected()

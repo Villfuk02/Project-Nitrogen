@@ -16,7 +16,7 @@ MonoBehaviour:
   rarity: 0
   cost: 20
   cooldown: 40
-  range: 6
+  range: 9
   damage: 1
   damageType: 2
-  shotInterval: 8
+  shotInterval: 16
