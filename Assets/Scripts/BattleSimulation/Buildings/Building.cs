@@ -8,6 +8,7 @@ namespace BattleSimulation.Buildings
         public Blueprint Blueprint { get; private set; }
         public bool placed;
         [SerializeField] GameObject visuals;
+
         public void InitBlueprint(Blueprint blueprint)
         {
             visuals.SetActive(false);

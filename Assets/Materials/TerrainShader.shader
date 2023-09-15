@@ -23,7 +23,7 @@ Shader "Custom/TerrainShader"
         CGPROGRAM
 
         // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Standard fullforwardshadows
+        #pragma surface surf Standard addshadow fullforwardshadows
 
         #pragma target 5.0
 

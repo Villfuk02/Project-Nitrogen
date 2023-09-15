@@ -175,6 +175,7 @@ MonoBehaviour:
   pathRenderer: {fileID: 1455657881}
   enableWhenReady:
   - {fileID: 125072569}
+  - {fileID: 793714036}
   slotPrefab: {fileID: 3874263679433659877, guid: a3d794d9db79033458fe5418f7001169, type: 3}
   tilePrefab: {fileID: 4614210074223665215, guid: 3dcdbc617cd4d5140b472b21427843f2, type: 3}
   done: 0
@@ -409,8 +410,7 @@ Transform:
   - {fileID: 1455657880}
   - {fileID: 125072570}
   - {fileID: 638454943}
-  - {fileID: 706373640}
-  - {fileID: 729992963}
+  - {fileID: 793714037}
   - {fileID: 1234769086}
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -446,7 +446,7 @@ Transform:
   m_Father: {fileID: 599020456}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &706373639
+--- !u!1 &793714036
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -454,22 +454,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 706373640}
-  - component: {fileID: 706373641}
+  - component: {fileID: 793714037}
+  - component: {fileID: 793714038}
+  - component: {fileID: 793714039}
   m_Layer: 0
-  m_Name: Range Visualisation
+  m_Name: Selection Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &706373640
+  m_IsActive: 0
+--- !u!4 &793714037
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 706373639}
+  m_GameObject: {fileID: 793714036}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -478,94 +479,53 @@ Transform:
   m_Father: {fileID: 599020456}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &706373641
+--- !u!114 &793714038
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 706373639}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d90c3b710f5730043be0b49541496276, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  worldData: {fileID: 94511820}
-  world: {fileID: 599020455}
-  lineRendererPrefab: {fileID: 3248928435168027131, guid: b951a4b305a251b44b0217fde611acac, type: 3}
-  pathSteps: 11
-  maxOutlineStepSize: 0.11
-  cliffThreshold: 0.2
-  outlineColor: {r: 0, g: 1, b: 0.75, a: 0.4}
-  invalidColor: {r: 1, g: 0, b: 0.48, a: 0.6}
-  targetableColor: {r: 0.1, g: 1, b: 0, a: 0.5019608}
-  targetableTallColor: {r: 1, g: 0.8, b: 0, a: 0.5019608}
-  blockedColor: {r: 1, g: 0, b: 0, a: 0.5019608}
-  targeting: {fileID: 0}
-  lineRenderers: []
-  valid: 1
-  lines: 0
---- !u!1 &729992962
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 729992963}
-  - component: {fileID: 729992964}
-  m_Layer: 0
-  m_Name: Placement Controller
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &729992963
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 729992962}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 599020456}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &729992964
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 729992962}
+  m_GameObject: {fileID: 793714036}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c14b0c7c5dc42b7478e4ccc5500decdc, type: 3}
+  m_Script: {fileID: 11500000, guid: fbb354286c9cb4b4dab4988aa6381753, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileSelection: {fileID: 961600661}
-  terrainMaterial: {fileID: 2100000, guid: fccfa01402859324cbc5ac9a1761ff4a, type: 2}
-  relationColors:
-  - {r: 0, g: 0.5647059, b: 1, a: 1}
-  - {r: 1, g: 0, b: 0.33902216, a: 1}
-  - {r: 1, g: 0.77291393, b: 0, a: 1}
-  - {r: 0.06668806, g: 1, b: 0, a: 1}
-  rangeVisualsScale: 4
-  minRangeVisualsScale: 0.02
-  rangeVisualsStepsPerFrame: 128
-  sqrMovementThreshold: 0.0000001
-  halfMaxQuadCount: 10000
-  placementState:
-    hoveredTile: {fileID: 0}
-    tilePos: {x: 0, y: 0, z: 0}
-    rotation: 0
+  mainCamera: {fileID: 963194227}
+  blueprintMenu: {fileID: 1234769087}
+  selected: {fileID: 0}
+  hovered: {fileID: 0}
   placing: {fileID: 0}
+  rotation: 0
+  hoverTilePosition: {x: 0, y: 0, z: 0}
+  resetVisuals: 0
+--- !u!114 &793714039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793714036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f853daa4e79a8b24990d9697c3ef70f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selection: {fileID: 793714038}
+  terrainMaterial: {fileID: 2100000, guid: fccfa01402859324cbc5ac9a1761ff4a, type: 2}
+  highlightColors:
+  - {r: 0, g: 0.5647059, b: 1, a: 1}
+  - {r: 1, g: 0, b: 0.39316654, a: 1}
+  - {r: 1, g: 0.77254903, b: 0, a: 1}
+  - {r: 0.06666667, g: 1, b: 0, a: 1}
+  - {r: 0, g: 0.82529235, b: 1, a: 1}
+  rangeVisualsScale: 4
+  rangeVisualsMinScale: 0.02
+  areaSamplesPerFrameMultiplier: 1
+  halfMaxQuadCount: 10000
+  lastHighlightProvider: {fileID: 0}
+  doFixedReset: 0
+  doReset: 0
 --- !u!1 &815966618
 GameObject:
   m_ObjectHideFlags: 0
@@ -624,7 +584,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 961600660}
-  - component: {fileID: 961600661}
   m_Layer: 0
   m_Name: Tiles
   m_TagString: Untagged
@@ -647,20 +606,6 @@ Transform:
   m_Father: {fileID: 599020456}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &961600661
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 961600659}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99604402dfd310c47b7777e5d712a42d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainCamera: {fileID: 963194227}
-  hoveredTile: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1023,7 +968,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 599020456}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1234769087
 MonoBehaviour:
@@ -1037,7 +982,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03f5adbf5cba42542b6eb611e5a16b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pc: {fileID: 729992964}
   blueprints:
   - {fileID: 11400000, guid: 376c6eb40ad25ad438f202cf9fd84f42, type: 2}
   selected: -1

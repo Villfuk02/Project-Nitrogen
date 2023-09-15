@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 475032647605434326}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.6, z: 0}
+  m_LocalPosition: {x: 0, y: 0.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -238,6 +238,7 @@ GameObject:
   - component: {fileID: 475032649215164952}
   - component: {fileID: 475032649215164953}
   - component: {fileID: 6429560897734910944}
+  - component: {fileID: 2692797349279770925}
   m_Layer: 0
   m_Name: Test Tower
   m_TagString: Untagged
@@ -297,6 +298,20 @@ MonoBehaviour:
       m_Calls: []
   t: {fileID: 475032649215164953}
   onSlants: 0
+  selectedTile: {fileID: 0}
+--- !u!114 &2692797349279770925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475032649215164951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a36552c724365428f4c762225635b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  t: {fileID: 475032649215164953}
 --- !u!1 &475032649220956776
 GameObject:
   m_ObjectHideFlags: 0

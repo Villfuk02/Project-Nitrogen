@@ -1,3 +1,4 @@
+using BattleVisuals.Selection.Highlightable;
 using Game.Damage;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,13 +7,14 @@ using Utils;
 
 namespace BattleSimulation.Attackers
 {
-    public class Attacker : MonoBehaviour
+    public class Attacker : MonoBehaviour, IHighlightable
     {
         [Header("References")]
         [SerializeField] Rigidbody rb;
         [SerializeField] UnityEvent<Damage> onDamage;
         [SerializeField] UnityEvent<IDamageSource> onDeath;
         [SerializeField] Image highlight;
+        [SerializeField] Animator highlightAnim;
         [Header("Constants")]
         public const float SMALL_TARGET_HEIGHT = 0.3f;
         public const float LARGE_TARGET_HEIGHT = 0.6f;
@@ -124,6 +126,17 @@ namespace BattleSimulation.Attackers
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireCube(segTarget, Vector3.one * 0.15f);
             Gizmos.DrawLine(transform.position, segTarget);
+        }
+
+        public void Highlight(Color color)
+        {
+            highlight.color = color;
+            highlightAnim.SetTrigger(IHighlightable.HIGHLIGHT_TRIGGER);
+        }
+
+        public void Unhighlight()
+        {
+            highlightAnim.SetTrigger(IHighlightable.UNHIGHLIGHT_TRIGGER);
         }
     }
 }

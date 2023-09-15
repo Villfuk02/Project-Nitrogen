@@ -14,7 +14,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: 2000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -58,6 +58,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _BaseAlphaMultiplier: 0.5
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -65,9 +66,11 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
+    - _MaxHeight: 1.5
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
+    - _OutlineRadius: 0.0624
     - _Parallax: 0.02
     - _Scale: 4
     - _SmoothnessTextureChannel: 0
@@ -79,10 +82,12 @@ Material:
     - _AffectedColor: {r: 1, g: 0.77254903, b: 0, a: 1}
     - _Color: {r: 0.3490566, g: 0.2410176, b: 0.18934675, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _HighColor: {r: 0.5566038, g: 0.34379828, b: 0.27042544, a: 1}
     - _LargeColor: {r: 1, g: 0.77254903, b: 0, a: 0.29803923}
+    - _LowColor: {r: 0.2735849, g: 0.079617955, b: 0.024519395, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _SelectedColor: {r: 0, g: 0.5647059, b: 1, a: 1}
-    - _ShadowColor: {r: 0, g: 0.5647059, b: 1, a: 0.29803923}
+    - _ShadowColor: {r: 1, g: 0.061771594, b: 0, a: 0.29803923}
     - _SmallColor: {r: 0.06666667, g: 1, b: 0, a: 0.29803923}
     - _SpecialColor: {r: 0.06666667, g: 1, b: 0, a: 1}
   m_BuildTextureStacks: []

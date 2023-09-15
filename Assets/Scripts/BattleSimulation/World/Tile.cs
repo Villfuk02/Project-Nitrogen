@@ -1,17 +1,15 @@
 using BattleSimulation.Buildings;
+using BattleVisuals.Selection.Highlightable;
 using UnityEngine;
 using Utils;
 
 namespace BattleSimulation.World
 {
-    public class Tile : MonoBehaviour
+    public class Tile : MonoBehaviour, IHighlightable
     {
-        static readonly int HoverTrigger = Animator.StringToHash("Hover");
-        static readonly int UnhoverTrigger = Animator.StringToHash("Unhover");
         [Header("References")]
         [SerializeField] Transform slantedParts;
-        [SerializeField] Animator selectionAnimator;
-        [SerializeField] GameObject blockerCollider;
+        [SerializeField] Animator highlightAnim;
         public Transform decorationHolder;
         [SerializeField] SpriteRenderer[] highlights;
         [Header("Properties")]
@@ -21,32 +19,25 @@ namespace BattleSimulation.World
         public WorldUtils.Slant slant;
         [Header("Runtime variables")]
         public Building? building;
-        [SerializeField] bool hovered;
-        [SerializeField] bool selected;
 
         void Start()
         {
             if (slant != WorldUtils.Slant.None)
                 slantedParts.Rotate(WorldUtils.WORLD_CARDINAL_DIRS[(int)slant % 4] * WorldUtils.SLANT_ANGLE);
-            blockerCollider.SetActive(obstacle == Obstacle.Large);
-        }
-        public void Hover()
-        {
-            hovered = true;
-            selectionAnimator.SetTrigger(HoverTrigger);
-        }
-        public void Unhover()
-        {
-            hovered = false;
-            selectionAnimator.SetTrigger(UnhoverTrigger);
         }
 
-        public void SetHighlightColor(Color color)
+        public void Highlight(Color color)
         {
             foreach (var sr in highlights)
             {
                 sr.color = color;
             }
+            highlightAnim.SetTrigger(IHighlightable.HIGHLIGHT_TRIGGER);
+        }
+
+        public void Unhighlight()
+        {
+            highlightAnim.SetTrigger(IHighlightable.UNHIGHLIGHT_TRIGGER);
         }
     }
 }

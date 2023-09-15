@@ -84,8 +84,6 @@ namespace BattleSimulation.Targeting
             return !Physics.Raycast(position, dir, out RaycastHit _, dir.magnitude, visibilityMask);
         }
 
-        public abstract List<IEnumerator<Vector2>> GetRangeOutline();
-
         public bool IsInBounds(Vector3 pos) => targetingComponent != null && targetingComponent.IsInBounds(pos);
         public abstract void SetRange(float range);
 

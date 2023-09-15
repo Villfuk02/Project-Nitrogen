@@ -9,7 +9,7 @@ namespace Utils
         public const string WATER = "Water";
         public const string UI = "UI";
         public const string COARSE_TERRAIN = "CoarseTerrain";
-        public const string TILE_SELECTION = "TileSelection";
+        public const string SELECTION = "Selection";
         public const string ATTACKER = "Attacker";
         public const string TARGETING = "Targeting";
         public const string ATTACKER_TARGET = "AttackerTarget";

@@ -1,10 +1,16 @@
 {
-    "name": "BattleSim.World",
+    "name": "BattleVis.Selection",
     "rootNamespace": "",
     "references": [
+        "GUID:b55ad62d9779b864fafba17c87e0eed9",
+        "GUID:16d16ce120eecc34f80989abced71e9f",
+        "GUID:5c1af228323c8c64eb05c83993f04e9b",
         "GUID:c16294785e7a44148be2e5f8661f54ad",
+        "GUID:954dc79f23084ad43879a821edd924bf",
         "GUID:bfbdbdd4061137041b161434e4da10de",
-        "GUID:07ca96bc178f42b4e95c9abea00358ce"
+        "GUID:7332ee89fce4e914ea13411c06f77954",
+        "GUID:07ca96bc178f42b4e95c9abea00358ce",
+        "GUID:ebeb99c39dce7b942ac76a02512518c0"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

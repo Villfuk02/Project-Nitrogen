@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace BattleSimulation.Targeting
@@ -37,19 +36,6 @@ namespace BattleSimulation.Targeting
             float endHeight = canTargetUpwards ? 5 : 0.4f;
             heightTrigger.size = new(2 * range, endHeight - startHeight, 2 * range);
             heightTrigger.center = (startHeight + endHeight) * 0.5f * Vector3.up;
-        }
-
-        public override List<IEnumerator<Vector2>> GetRangeOutline()
-        {
-            static IEnumerator<Vector2> CircleEnumerator(float radius, int steps)
-            {
-                for (int i = 0; i <= steps; i++)
-                {
-                    float angle = i * 2 * Mathf.PI / steps;
-                    yield return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
-                }
-            }
-            return new() { CircleEnumerator(currentRange, 180) };
         }
     }
 }

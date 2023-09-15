@@ -14,7 +14,7 @@ TagManager:
   - Water
   - UI
   - CoarseTerrain
-  - TileSelection
+  - Selection
   - Attacker
   - Targeting
   - AttackerTarget
