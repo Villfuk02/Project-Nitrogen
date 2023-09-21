@@ -1,0 +1,20 @@
+{
+    "name": "BattleVis.Towers",
+    "rootNamespace": "",
+    "references": [
+        "GUID:954dc79f23084ad43879a821edd924bf",
+        "GUID:16d16ce120eecc34f80989abced71e9f",
+        "GUID:7332ee89fce4e914ea13411c06f77954",
+        "GUID:bfbdbdd4061137041b161434e4da10de",
+        "GUID:6f007b3993a9a6e44a161706f8f69c7c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

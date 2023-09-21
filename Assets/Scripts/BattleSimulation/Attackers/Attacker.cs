@@ -16,8 +16,8 @@ namespace BattleSimulation.Attackers
         [SerializeField] Image highlight;
         [SerializeField] Animator highlightAnim;
         [Header("Constants")]
-        public const float SMALL_TARGET_HEIGHT = 0.3f;
-        public const float LARGE_TARGET_HEIGHT = 0.6f;
+        public const float SMALL_TARGET_HEIGHT = 0.15f;
+        public const float LARGE_TARGET_HEIGHT = 0.3f;
         [Header("Stats")]
         public float speed;
         public int maxHealth;

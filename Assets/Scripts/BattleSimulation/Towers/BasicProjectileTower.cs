@@ -1,6 +1,7 @@
 using BattleSimulation.Attackers;
 using BattleSimulation.Projectiles;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace BattleSimulation.Towers
 {
@@ -8,6 +9,7 @@ namespace BattleSimulation.Towers
     {
         [SerializeField] Transform projectileOrigin;
         [SerializeField] int shotTimer;
+        [SerializeField] UnityEvent onShoot;
 
         void FixedUpdate()
         {
@@ -34,6 +36,7 @@ namespace BattleSimulation.Towers
             p.transform.position = projectileOrigin.position;
             p.source = this;
             p.target = target;
+            onShoot.Invoke();
         }
 
         public override void OnHit(Projectile projectile, Attacker attacker)
