@@ -37,7 +37,7 @@ namespace BattleSimulation.Selection
                 hoverTilePosition = WorldUtils.WorldPosToTilePos(terrainHit.point);
 
             // num keys
-            for (int i = 0; i < blueprintMenu.blueprints.Length; i++)
+            for (int i = 0; i < 9; i++)
             {
                 KeyCode key = KeyCode.Alpha1 + i;
                 if (!Input.GetKeyDown(key))
@@ -72,6 +72,7 @@ namespace BattleSimulation.Selection
                     {
                         placing.Place();
                         placing = null;
+                        blueprintMenu.OnPlace();
                         DeselectFromMenu();
                         DeselectInWorld();
                         resetVisuals = true;
@@ -108,7 +109,10 @@ namespace BattleSimulation.Selection
         public void SelectFromMenu(int index)
         {
             DeselectInWorld();
-            var blueprint = blueprintMenu.Select(index);
+
+            if (!blueprintMenu.TrySelect(index, out var blueprint))
+                return;
+
             placing = Instantiate(blueprint.prefab, transform).GetComponent<Placement>();
             placing.GetComponent<IBlueprinted>().InitBlueprint(blueprint);
             placing.Setup(hovered, rotation, hoverTilePosition, transform);

@@ -15,6 +15,7 @@ namespace BattleSimulation.Attackers
         [SerializeField] UnityEvent<IDamageSource> onDeath;
         [SerializeField] Image highlight;
         [SerializeField] Animator highlightAnim;
+        public UnityEvent onRemoved;
         [Header("Constants")]
         public const float SMALL_TARGET_HEIGHT = 0.15f;
         public const float LARGE_TARGET_HEIGHT = 0.3f;
@@ -57,6 +58,7 @@ namespace BattleSimulation.Attackers
                 uint paths = (uint)World.WorldData.World.data.tiles[pathSegmentTarget].pathNext.Count;
                 if (paths == 0)
                 {
+                    onRemoved.Invoke();
                     Destroy(gameObject);
                     return;
                 }
@@ -106,10 +108,14 @@ namespace BattleSimulation.Attackers
 
         public void Die(IDamageSource source)
         {
+            if (deadTime > 0)
+                return;
+
             deadTime = 1;
             rb.detectCollisions = false;
 
             onDeath.Invoke(source);
+            onRemoved.Invoke();
         }
 
         public void SetHighlightColor(Color color)

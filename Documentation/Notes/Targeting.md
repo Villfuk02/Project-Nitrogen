@@ -35,3 +35,6 @@ Visualisation
 - right now it is done with line renderers
     - sample terrain height along the line to draw it right above the terrain
     - later maybe use a shader on the terrain itself
+
+Make sure towers that test line of sight don't have misleading range visualisation. When a path is on a border, the more forgiving option should be true. For example the following path is on a border, but must act like green: 
+![[Pasted image 20230921191841.png]]

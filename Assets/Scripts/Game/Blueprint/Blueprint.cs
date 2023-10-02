@@ -17,6 +17,7 @@ namespace Game.Blueprint
         public int damage = -1;
         public Damage.Damage.Type damageType = 0;
         public int shotInterval = -1;
+        public int startingCooldown = 0;
 
         public bool HasRange => range >= 0;
         public bool HasDamage => damage >= 0;
