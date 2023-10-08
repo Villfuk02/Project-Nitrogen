@@ -2,7 +2,9 @@
     "name": "BattleSim.Buildings",
     "rootNamespace": "",
     "references": [
-        "GUID:6073d15ac0306a8499fd0cd1111f876f"
+        "GUID:6073d15ac0306a8499fd0cd1111f876f",
+        "GUID:279dbe40f6076c6479f63b383bb7b96c",
+        "GUID:c16294785e7a44148be2e5f8661f54ad"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

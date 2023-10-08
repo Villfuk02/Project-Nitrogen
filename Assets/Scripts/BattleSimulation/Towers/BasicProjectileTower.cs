@@ -1,5 +1,6 @@
 using BattleSimulation.Attackers;
 using BattleSimulation.Projectiles;
+using Game.Damage;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -39,9 +40,14 @@ namespace BattleSimulation.Towers
             onShoot.Invoke();
         }
 
-        public override void OnHit(Projectile projectile, Attacker attacker)
+        public override bool Hit(Projectile projectile, Attacker attacker)
         {
-            attacker.TakeDamage(new(Blueprint.damage, Blueprint.damageType, this));
+            (Attacker a, Damage dmg) param = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
+            if (!Attacker.hit.Invoke(ref param))
+                return false;
+            if (param.dmg.amount > 0)
+                Attacker.damage.Invoke(ref param);
+            return true;
         }
     }
 }

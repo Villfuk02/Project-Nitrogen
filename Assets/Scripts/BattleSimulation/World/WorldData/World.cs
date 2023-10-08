@@ -18,7 +18,7 @@ namespace BattleSimulation.World.WorldData
         void FixedUpdate()
         {
             if (Time.fixedDeltaTime != 0.05f)
-                Debug.LogWarning(Time.fixedDeltaTime);
+                Debug.LogWarning($"Fixed tick took {Time.fixedDeltaTime}s instead of 0.05s!");
         }
 
         public void SetReady()

@@ -14,7 +14,7 @@ powerful towers should have impact on terrain and camera
 - lights on fire everything in a radius (including projectiles)
 - speeds up when shooting
 - closer attacker = faster fire rate
-- piercing
+- piercing in a straight line
 - farther attacker = more damage
 
 ### List

@@ -53,8 +53,10 @@ namespace BattleSimulation.Projectiles
             if (hit)
                 return;
 
+            if (!source.Hit(this, attacker))
+                return;
+
             hit = true;
-            source.OnHit(this, attacker);
             target = attacker;
         }
 

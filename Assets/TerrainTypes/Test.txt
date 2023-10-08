@@ -213,7 +213,7 @@ blockers {
     }
 
     * Minerals {
-        type s
+        type m
         min 4
         max 6
         base_probability 0.3

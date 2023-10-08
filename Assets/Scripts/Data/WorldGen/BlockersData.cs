@@ -56,7 +56,7 @@ namespace Data.WorldGen
 
     public record BlockerData(string Name, BlockerData.Type BlockerType, int Min, int Max, float BaseProbability, char[] ValidSurfaces, bool OnSlants, float[] Forces)
     {
-        public enum Type { Small, Large, Fuel }
+        public enum Type { Small, Large, Fuel, Minerals }
         public static BlockerData Parse(string name, ParseStream stream, int layerCount, char[] allSurfaces)
         {
             using BlockParseStream blockStream = new(stream);
@@ -84,6 +84,7 @@ namespace Data.WorldGen
                 "s" or "small" => Type.Small,
                 "l" or "large" => Type.Large,
                 "f" or "fuel" => Type.Fuel,
+                "m" or "minerals" => Type.Minerals,
                 { } w => throw new ParseException(stream, $"Invalid blocker type \"{w}\".")
             };
         }

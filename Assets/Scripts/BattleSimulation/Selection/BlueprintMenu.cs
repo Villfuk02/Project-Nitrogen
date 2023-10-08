@@ -14,6 +14,17 @@ namespace BattleSimulation.Selection
         void Start()
         {
             cooldowns = new int[blueprints.Length];
+            for (int i = 0; i < blueprints.Length; i++)
+            {
+                cooldowns[i] = blueprints[i].startingCooldown;
+                blueprints[i] = blueprints[i].Clone();
+            }
+            WaveController.onWaveFinished.Register(10, ReduceCooldowns);
+        }
+
+        void OnDestroy()
+        {
+            WaveController.onWaveFinished.Unregister(ReduceCooldowns);
         }
 
         public void Deselect()
@@ -32,17 +43,20 @@ namespace BattleSimulation.Selection
             if (cooldowns[index] > 0)
                 return false;
 
-            if (blueprint.cost > bc.material)
+            int cost = blueprint.cost;
+            if (!BattleController.canSpendMaterial.Invoke(ref cost))
                 return false;
 
             selected = index;
             return true;
         }
 
-        public void OnPlace()
+        public bool OnPlace()
         {
-            bc.material -= blueprints[selected].cost;
+            if (!BattleController.AdjustAndTrySpendMaterial(blueprints[selected].cost))
+                return false;
             cooldowns[selected] = blueprints[selected].cooldown;
+            return true;
         }
 
         public void ReduceCooldowns()

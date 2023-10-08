@@ -1,5 +1,6 @@
 using BattleVisuals.Selection.Highlightable;
 using Game.Damage;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -9,13 +10,21 @@ namespace BattleSimulation.Attackers
 {
     public class Attacker : MonoBehaviour, IHighlightable
     {
+        public static GameEvent<(Attacker target, Damage damage)> hit = new();
+        public static GameEvent<(Attacker target, Damage damage)> damage = new();
+        public static GameEvent<(Attacker target, Damage cause)> die = new();
+        static Attacker()
+        {
+            damage.Register(0, DamageHandler);
+            die.Register(0, DeathHandler);
+        }
         [Header("References")]
         [SerializeField] Rigidbody rb;
         [SerializeField] UnityEvent<Damage> onDamage;
-        [SerializeField] UnityEvent<IDamageSource> onDeath;
+        [SerializeField] UnityEvent<Damage> onDeath;
+        public UnityEvent onRemoved;
         [SerializeField] Image highlight;
         [SerializeField] Animator highlightAnim;
-        public UnityEvent onRemoved;
         [Header("Constants")]
         public const float SMALL_TARGET_HEIGHT = 0.15f;
         public const float LARGE_TARGET_HEIGHT = 0.3f;
@@ -95,32 +104,35 @@ namespace BattleSimulation.Attackers
             return segmentsToCenter - pathSegmentProgress;
         }
 
-        public void TakeDamage(Damage damage)
-        {
-            onDamage.Invoke(damage);
-            if (damage.amount <= 0)
-                return;
+        static void DamageHandler(ref (Attacker target, Damage damage) param) => param.target.TakeDamage(param.damage);
+        static void DeathHandler(ref (Attacker target, Damage cause) param) => param.target.Die(param.cause);
 
-            health -= damage.amount;
-            if (health <= 0)
-                Die(damage.source);
-        }
-
-        public void Die(IDamageSource source)
+        void TakeDamage(Damage dmg)
         {
             if (deadTime > 0)
-                return;
+                throw new InvalidOperationException("dead attackers cannot be damaged!");
+            if (dmg.amount <= 0)
+                throw new ArgumentException("damage must be positive!");
+            onDamage.Invoke(dmg);
+
+            health -= dmg.amount;
+            if (health <= 0)
+            {
+                (Attacker, Damage) param = (this, dmg);
+                die.Invoke(ref param);
+            }
+        }
+
+        void Die(Damage cause)
+        {
+            if (deadTime > 0)
+                throw new InvalidOperationException("dead attackers cannot die!");
 
             deadTime = 1;
             rb.detectCollisions = false;
 
-            onDeath.Invoke(source);
+            onDeath.Invoke(cause);
             onRemoved.Invoke();
-        }
-
-        public void SetHighlightColor(Color color)
-        {
-            highlight.color = color;
         }
 
         void OnDrawGizmosSelected()

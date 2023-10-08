@@ -239,7 +239,7 @@ GameObject:
   - component: {fileID: 125072572}
   m_Layer: 0
   m_Name: WaveController
-  m_TagString: Untagged
+  m_TagString: WaveController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -279,27 +279,6 @@ MonoBehaviour:
   toSpawn: 0
   attackersLeft: 0
   startNextWave: 0
-  onWaveStart:
-    m_PersistentCalls:
-      m_Calls: []
-  onWaveSpawned:
-    m_PersistentCalls:
-      m_Calls: []
-  onWaveFinished:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1234769087}
-        m_TargetAssemblyTypeName: BattleSimulation.Selection.BlueprintMenu, BattleSim.Selection
-        m_MethodName: ReduceCooldowns
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &125072572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -484,7 +463,7 @@ GameObject:
   - component: {fileID: 568931857}
   m_Layer: 0
   m_Name: Battle Controller
-  m_TagString: Untagged
+  m_TagString: BattleController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -501,9 +480,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f036ecce0ce643948a1783b605fd8ac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: 200
-  energy: 0
-  maxEnergy: 30
 --- !u!4 &568931856
 Transform:
   m_ObjectHideFlags: 0
@@ -681,42 +657,10 @@ Transform:
   - {fileID: 961600660}
   - {fileID: 1455657880}
   - {fileID: 125072570}
-  - {fileID: 638454943}
   - {fileID: 793714037}
   - {fileID: 1234769086}
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &638454942
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 638454943}
-  m_Layer: 0
-  m_Name: Buildings
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &638454943
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 638454942}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 599020456}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &793714036
 GameObject:
@@ -749,7 +693,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 599020456}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &793714038
 MonoBehaviour:
@@ -1375,7 +1319,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 599020456}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1234769087
 MonoBehaviour:
@@ -1392,6 +1336,8 @@ MonoBehaviour:
   bc: {fileID: 568931855}
   blueprints:
   - {fileID: 11400000, guid: 376c6eb40ad25ad438f202cf9fd84f42, type: 2}
+  - {fileID: 11400000, guid: 05459f1e64a666c4991299d3ab4ba443, type: 2}
+  - {fileID: 11400000, guid: 3425f27343a18a24c88b3ec33a6ead8c, type: 2}
   cooldowns: 
   selected: -1
 --- !u!1 &1281044094

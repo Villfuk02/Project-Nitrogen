@@ -68,11 +68,10 @@ namespace BattleSimulation.Selection
             {
                 if (placing != null)
                 {
-                    if (placing.IsValid())
+                    if (placing.IsValid() && blueprintMenu.OnPlace())
                     {
                         placing.Place();
                         placing = null;
-                        blueprintMenu.OnPlace();
                         DeselectFromMenu();
                         DeselectInWorld();
                         resetVisuals = true;
@@ -109,6 +108,7 @@ namespace BattleSimulation.Selection
         public void SelectFromMenu(int index)
         {
             DeselectInWorld();
+            DeselectFromMenu();
 
             if (!blueprintMenu.TrySelect(index, out var blueprint))
                 return;

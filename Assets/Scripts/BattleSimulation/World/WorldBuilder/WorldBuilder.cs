@@ -4,6 +4,7 @@ using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace BattleSimulation.World.WorldBuilder
 {
@@ -21,16 +22,23 @@ namespace BattleSimulation.World.WorldBuilder
         [SerializeField] GameObject tilePrefab;
         [Header("Runtime")]
         [SerializeField] int done;
-        readonly Array2D<Tile> tiles_ = new(WorldUtils.WORLD_SIZE);
         readonly Stopwatch frameTimer_ = new();
         const int MILLIS_PER_FRAME = 12; //TODO: Make framerate-based
+
+        void Awake()
+        {
+            foreach (var (index, _) in Tiles.TILES.IndexedEnumerable)
+            {
+                Tiles.TILES[index] = null;
+            }
+        }
+
         void Update()
         {
             frameTimer_.Restart();
             if (done < 4)
                 return;
 
-            // TODO: Events?
             world.SetReady();
             foreach (var o in enableWhenReady)
             {
@@ -76,11 +84,11 @@ namespace BattleSimulation.World.WorldBuilder
             int p = 0;
             foreach (var tile in worldData.tiles)
             {
-                if (tiles_[tile.pos] == null)
-                    yield return new WaitUntil(() => tiles_[tile.pos] != null);
+                if (Tiles.TILES[tile.pos] == null)
+                    yield return new WaitUntil(() => Tiles.TILES[tile.pos] != null);
                 foreach (var decoration in tile.decorations)
                 {
-                    PlaceDecoration(decoration, tiles_[tile.pos].decorationHolder);
+                    PlaceDecoration(decoration, Tiles.TILES[tile.pos].decorationHolder);
                     p++;
                     if (p % batchSize == 0 && frameTimer_.ElapsedMilliseconds >= MILLIS_PER_FRAME)
                     {
@@ -118,7 +126,7 @@ namespace BattleSimulation.World.WorldBuilder
         }
         void PlaceTile(Vector2Int pos)
         {
-            Tile t = Instantiate(tilePrefab, tileHolder).GetComponent<Tile>();
+            Tile t = Instantiate(tilePrefab, tileHolder.transform).GetComponent<Tile>();
             t.pos = pos;
             TileData tileData = worldData.tiles[pos];
             t.slant = tileData.slant;
@@ -129,7 +137,7 @@ namespace BattleSimulation.World.WorldBuilder
             else
                 t.obstacle = (Tile.Obstacle)((int)tileData.blocker.BlockerType + 2);
             t.transform.localPosition = WorldUtils.TilePosToWorldPos(pos.x, pos.y, worldData.tiles.GetHeightAt(pos)!.Value);
-            tiles_[pos] = t;
+            Tiles.TILES[pos] = t;
         }
     }
 }

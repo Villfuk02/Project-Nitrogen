@@ -16,6 +16,6 @@ namespace BattleSimulation.Towers
             targeting.SetRange(Blueprint.range);
         }
 
-        public abstract void OnHit(Projectile projectile, Attacker attacker);
+        public abstract bool Hit(Projectile projectile, Attacker attacker);
     }
 }

@@ -5,39 +5,16 @@ using Utils;
 
 namespace BattleSimulation.Selection
 {
-    public class TowerPlacement : Placement
+    public class TowerPlacement : TilePlacement
     {
         [SerializeField] Tower t;
         [SerializeField] bool onSlants;
-        [SerializeField] Tile selectedTile;
 
-        public override bool Setup(Selectable selected, int rotation, Vector3 pos, Transform defaultParent)
+        public override bool IsTileValid(Tile tile)
         {
-            var newSelectedTile = selected == null ? null : selected.tile;
-
-            if (newSelectedTile == selectedTile)
+            if (tile == null || tile.building != null || tile.obstacle != Tile.Obstacle.None)
                 return false;
-
-            if (newSelectedTile != null)
-            {
-                Transform myTransform = transform;
-                myTransform.SetParent(newSelectedTile.transform);
-                myTransform.localPosition = Vector3.zero;
-            }
-            else
-            {
-                transform.SetParent(defaultParent);
-            }
-
-            selectedTile = newSelectedTile;
-            return true;
-        }
-
-        public override bool IsValid()
-        {
-            if (selectedTile == null || selectedTile.building != null || selectedTile.obstacle != Tile.Obstacle.None)
-                return false;
-            if (!onSlants && selectedTile.slant != WorldUtils.Slant.None)
+            if (!onSlants && tile.slant != WorldUtils.Slant.None)
                 return false;
             return true;
         }

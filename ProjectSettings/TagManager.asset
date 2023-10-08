@@ -6,6 +6,8 @@ TagManager:
   tags:
   - WorldSettings
   - WorldData
+  - WaveController
+  - BattleController
   layers:
   - Default
   - TransparentFX

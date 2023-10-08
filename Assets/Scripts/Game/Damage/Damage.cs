@@ -16,5 +16,7 @@ namespace Game.Damage
             this.type = type;
             this.source = source;
         }
+
+        public override string ToString() => $"{amount} damage (type={type}, source={source})";
     }
 }

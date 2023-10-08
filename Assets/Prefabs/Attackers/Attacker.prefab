@@ -5413,6 +5413,9 @@ MonoBehaviour:
         m_CallState: 2
   highlight: {fileID: 5150071765153014635}
   highlightAnim: {fileID: 1861407652524293487}
+  onRemoved:
+    m_PersistentCalls:
+      m_Calls: []
   speed: 0.5
   maxHealth: 5
   target: {fileID: 719971657807235023}
@@ -5434,8 +5437,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.2
-  m_Center: {x: 0, y: 0.2, z: 0}
+  m_Radius: 0.125
+  m_Center: {x: 0, y: 0.125, z: 0}
 --- !u!54 &4374977906458368141
 Rigidbody:
   m_ObjectHideFlags: 0

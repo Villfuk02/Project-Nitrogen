@@ -11,7 +11,7 @@ namespace BattleVisuals.UI
 
         void Update()
         {
-            text.text = $"{bc.material} ({bc.energy}/{bc.maxEnergy})";
+            text.text = $"{bc.Material} ({bc.Energy}/{bc.MaxEnergy})";
         }
     }
 }

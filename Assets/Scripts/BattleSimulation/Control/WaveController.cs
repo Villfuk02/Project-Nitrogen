@@ -1,6 +1,6 @@
 using BattleSimulation.Attackers;
 using UnityEngine;
-using UnityEngine.Events;
+using Utils;
 
 namespace BattleSimulation.Control
 {
@@ -15,14 +15,21 @@ namespace BattleSimulation.Control
         public int attackersLeft;
         [SerializeField] bool startNextWave;
 
-        [SerializeField] UnityEvent onWaveStart;
-        [SerializeField] UnityEvent onWaveSpawned;
-        [SerializeField] UnityEvent onWaveFinished;
+        public static GameEvent startWave = new();
+        public static GameEvent onWaveSpawned = new();
+        public static GameEvent onWaveFinished = new();
 
         void Awake()
         {
             // only use half the range to prevent overflow
             currentIndex = (uint)(World.WorldData.World.data.seed & 0x7FFFFFFF);
+
+            startWave.Register(0, StartNextWave);
+        }
+
+        void OnDestroy()
+        {
+            startWave.Unregister(StartNextWave);
         }
 
         void Update()
@@ -38,7 +45,7 @@ namespace BattleSimulation.Control
             if (startNextWave)
             {
                 startNextWave = false;
-                StartNextWave();
+                startWave.Invoke();
             }
 
             spawnTimer++;
@@ -72,8 +79,6 @@ namespace BattleSimulation.Control
             wave++;
             spawnTimer = 0;
             toSpawn = wave * (wave + 1) / 2;
-
-            onWaveStart.Invoke();
         }
 
         public void AttackerRemoved()
