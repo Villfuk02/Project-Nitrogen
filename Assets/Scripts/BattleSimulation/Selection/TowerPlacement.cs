@@ -1,13 +1,11 @@
-using BattleSimulation.Towers;
 using BattleSimulation.World;
 using UnityEngine;
 using Utils;
 
 namespace BattleSimulation.Selection
 {
-    public class TowerPlacement : TilePlacement
+    public class TowerPlacement : BuildingPlacement
     {
-        [SerializeField] Tower t;
         [SerializeField] bool onSlants;
 
         public override bool IsTileValid(Tile tile)
@@ -17,13 +15,6 @@ namespace BattleSimulation.Selection
             if (!onSlants && tile.slant != WorldUtils.Slant.None)
                 return false;
             return true;
-        }
-
-        public override void Place()
-        {
-            selectedTile.building = t;
-            t.Placed();
-            base.Place();
         }
     }
 }

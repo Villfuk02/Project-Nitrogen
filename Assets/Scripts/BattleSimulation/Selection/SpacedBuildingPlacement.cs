@@ -1,4 +1,3 @@
-using BattleSimulation.Buildings;
 using BattleSimulation.World;
 using System;
 using System.Linq;
@@ -7,9 +6,8 @@ using Utils;
 
 namespace BattleSimulation.Selection
 {
-    public class SpacedBuildingPlacement : TilePlacement
+    public class SpacedBuildingPlacement : BuildingPlacement
     {
-        [SerializeField] Building b;
         [SerializeField] bool onSlants;
 
         public override bool IsTileValid(Tile tile)
@@ -31,13 +29,6 @@ namespace BattleSimulation.Selection
             if (t.building == null)
                 return false;
             return ReferenceEquals(t.building.GetType(), type);
-        }
-
-        public override void Place()
-        {
-            selectedTile.building = b;
-            b.Placed();
-            base.Place();
         }
     }
 }

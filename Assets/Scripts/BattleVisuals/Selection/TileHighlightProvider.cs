@@ -35,7 +35,7 @@ namespace BattleVisuals.Selection
         {
             if (HasBuildingHighlightProvider())
                 return buildingHighlightProvider.GetAffectedArea(baseWorldPos);
-            return (IHighlightable.HighlightType.Negative, float.PositiveInfinity);
+            return (IHighlightable.HighlightType.Selected, float.PositiveInfinity);
         }
     }
 }

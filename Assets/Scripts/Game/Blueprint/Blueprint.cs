@@ -19,12 +19,16 @@ namespace Game.Blueprint
         public Damage.Damage.Type damageType = 0;
         public int shotInterval = -1;
         public int materialGeneration = -1;
+        public int energyGeneration = -1;
+        public int fuelGeneration = -1;
 
         public bool HasRange => range >= 0;
         public bool HasDamage => damage >= 0;
         public bool HasDamageType => damageType > 0;
         public bool HasShotInterval => shotInterval >= 0;
         public bool HasMaterialGeneration => materialGeneration >= 0;
+        public bool HasEnergyGeneration => energyGeneration >= 0;
+        public bool HasFuelGeneration => fuelGeneration >= 0;
 
         public Blueprint Clone()
         {
@@ -40,6 +44,8 @@ namespace Game.Blueprint
             copy.damageType = damageType;
             copy.shotInterval = shotInterval;
             copy.materialGeneration = materialGeneration;
+            copy.energyGeneration = energyGeneration;
+            copy.fuelGeneration = fuelGeneration;
 
             return copy;
         }

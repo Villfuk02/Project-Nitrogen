@@ -178,7 +178,9 @@ MonoBehaviour:
   - {fileID: 793714036}
   slotPrefab: {fileID: 3874263679433659877, guid: a3d794d9db79033458fe5418f7001169, type: 3}
   tilePrefab: {fileID: 4614210074223665215, guid: 3dcdbc617cd4d5140b472b21427843f2, type: 3}
+  hubBlueprint: {fileID: 11400000, guid: d8c120b9b6f017843aa635bbbb54b549, type: 2}
   done: 0
+  centerTile: {fileID: 0}
 --- !u!1 &94511819
 GameObject:
   m_ObjectHideFlags: 0
@@ -1532,6 +1534,19 @@ MonoBehaviour:
       - m_Target: {fileID: 10349201}
         m_TargetAssemblyTypeName: World.WorldBuilder.WorldBuilder, WorldBuilder
         m_MethodName: PlaceDecorationsTrigger
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 10349201}
+        m_TargetAssemblyTypeName: BattleSimulation.World.WorldBuilder.WorldBuilder,
+          BattleSim.World.WorldBuilder
+        m_MethodName: PlaceHubTrigger
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

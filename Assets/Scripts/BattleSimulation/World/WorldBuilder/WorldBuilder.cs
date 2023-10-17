@@ -1,5 +1,7 @@
+using BattleSimulation.Buildings;
 using BattleSimulation.World.WorldData;
 using BattleVisuals.World;
+using Game.Blueprint;
 using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
@@ -20,8 +22,10 @@ namespace BattleSimulation.World.WorldBuilder
         [Header("Setup")]
         [SerializeField] GameObject slotPrefab;
         [SerializeField] GameObject tilePrefab;
+        [SerializeField] Blueprint hubBlueprint;
         [Header("Runtime")]
         [SerializeField] int done;
+        [SerializeField] Tile centerTile;
         readonly Stopwatch frameTimer_ = new();
         const int MILLIS_PER_FRAME = 12; //TODO: Make framerate-based
 
@@ -36,7 +40,7 @@ namespace BattleSimulation.World.WorldBuilder
         void Update()
         {
             frameTimer_.Restart();
-            if (done < 4)
+            if (done < 5)
                 return;
 
             world.SetReady();
@@ -50,6 +54,7 @@ namespace BattleSimulation.World.WorldBuilder
         public void BuildTerrainTrigger() => StartCoroutine(BuildTerrain(10));
         public void PlaceDecorationsTrigger() => StartCoroutine(PlaceDecorations(10));
         public void RenderPathTrigger() => StartCoroutine(RenderPath());
+        public void PlaceHubTrigger() => StartCoroutine(PlaceHub());
 
         IEnumerator PlaceTiles(int batchSize)
         {
@@ -63,6 +68,7 @@ namespace BattleSimulation.World.WorldBuilder
                     yield return null;
                 }
             }
+            centerTile = Tiles.TILES[WorldUtils.WORLD_CENTER];
             done++;
         }
         IEnumerator BuildTerrain(int batchSize)
@@ -138,6 +144,20 @@ namespace BattleSimulation.World.WorldBuilder
                 t.obstacle = (Tile.Obstacle)((int)tileData.blocker.BlockerType + 2);
             t.transform.localPosition = WorldUtils.TilePosToWorldPos(pos.x, pos.y, worldData.tiles.GetHeightAt(pos)!.Value);
             Tiles.TILES[pos] = t;
+        }
+
+        IEnumerator PlaceHub()
+        {
+            while (centerTile == null)
+                yield return null;
+            var hub = Instantiate(hubBlueprint.prefab, transform).GetComponent<Building>();
+            hub.InitBlueprint(hubBlueprint);
+            Transform myTransform = hub.transform;
+            myTransform.SetParent(centerTile.transform);
+            myTransform.localPosition = Vector3.zero;
+            centerTile.building = hub;
+            hub.Placed();
+            done++;
         }
     }
 }

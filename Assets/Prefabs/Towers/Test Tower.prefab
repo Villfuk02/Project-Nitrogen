@@ -329,9 +329,9 @@ MonoBehaviour:
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
-  t: {fileID: 475032649215164953}
-  onSlants: 0
   selectedTile: {fileID: 0}
+  b: {fileID: 475032649215164953}
+  onSlants: 0
 --- !u!114 &2692797349279770925
 MonoBehaviour:
   m_ObjectHideFlags: 0

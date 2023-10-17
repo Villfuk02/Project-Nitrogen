@@ -104,7 +104,14 @@ namespace BattleSimulation.Attackers
             return segmentsToCenter - pathSegmentProgress;
         }
 
-        static void DamageHandler(ref (Attacker target, Damage damage) param) => param.target.TakeDamage(param.damage);
+        static bool DamageHandler(ref (Attacker target, Damage damage) param)
+        {
+            if (param.target.deadTime > 0)
+                return false;
+            param.target.TakeDamage(param.damage);
+            return true;
+        }
+
         static void DeathHandler(ref (Attacker target, Damage cause) param) => param.target.Die(param.cause);
 
         void TakeDamage(Damage dmg)

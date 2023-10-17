@@ -29,13 +29,13 @@ namespace BattleVisuals.Selection
         public override (IHighlightable.HighlightType highlight, float radius) GetAffectedArea(Vector3 baseWorldPos)
         {
             if (!transform.parent.TryGetComponent<Tile>(out _))
-                return (IHighlightable.HighlightType.Negative, float.PositiveInfinity);
+                return (IHighlightable.HighlightType.Selected, float.PositiveInfinity);
             Vector3 smallPos = baseWorldPos + Vector3.up * Attacker.SMALL_TARGET_HEIGHT;
             Vector3 largePos = baseWorldPos + Vector3.up * Attacker.LARGE_TARGET_HEIGHT;
             if (!t.targeting.IsInBounds(largePos))
-                return (IHighlightable.HighlightType.Negative, 0);
-            if (!t.targeting.IsValidTargetPosition(largePos))
                 return (IHighlightable.HighlightType.Selected, 0);
+            if (!t.targeting.IsValidTargetPosition(largePos))
+                return (IHighlightable.HighlightType.Negative, 0);
             if (!t.targeting.IsValidTargetPosition(smallPos))
                 return (IHighlightable.HighlightType.Affected, 0);
             return (IHighlightable.HighlightType.Special, 0);

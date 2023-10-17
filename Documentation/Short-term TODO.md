@@ -1,12 +1,13 @@
-- [ ] switch neagative and selected color
-- [ ] refactor placements
-- [ ] [[Hub]]
-    - [ ] fuel
 - [ ] fuel gathering thing
+- [ ] redesign GUI
+- [ ] text icons
+- [ ] production effects (+ damage effects?)
 - [ ] [[Blueprint]] and [[Microeconomy]] [[Battle UI]]
-- [ ] update design
+- [ ] update game design
 - [ ] placing on slants
 - [ ] buildings cannot be placed mid-wave
+- [ ] info panel
+- [ ] tooltips
 
 ## issues to fix later
 - [ ] make blockers' coarse terrain collision deterministic
@@ -34,6 +35,7 @@
 - [ ] +polish
 - [ ] +polish
 - [ ] +more towers and attackers
+- [ ] +time controls
 ## optimisations
 - [ ] ? parallelize WFC (constraint consistency)
 - [ ] ? make WFC slots cache which interface features are provided by which modules

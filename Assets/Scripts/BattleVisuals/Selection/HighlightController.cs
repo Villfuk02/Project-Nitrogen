@@ -220,7 +220,7 @@ namespace BattleVisuals.Selection
             {
                 CompactQuadTreeNode n = new()
                 {
-                    first = CompactQuadTreeNode.GetValue(IHighlightable.HighlightType.Negative)
+                    first = CompactQuadTreeNode.GetValue(IHighlightable.HighlightType.Selected)
                 };
                 dataArray_[0] = n;
             }

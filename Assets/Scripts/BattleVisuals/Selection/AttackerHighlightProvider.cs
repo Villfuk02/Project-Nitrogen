@@ -12,7 +12,7 @@ namespace BattleVisuals.Selection
 
         public override (IHighlightable.HighlightType highlight, float radius) GetAffectedArea(Vector3 baseWorldPos)
         {
-            return (IHighlightable.HighlightType.Negative, float.PositiveInfinity);
+            return (IHighlightable.HighlightType.Selected, float.PositiveInfinity);
         }
 
         public override IEnumerable<(IHighlightable.HighlightType, IHighlightable)> GetHighlights()

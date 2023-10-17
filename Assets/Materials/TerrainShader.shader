@@ -7,7 +7,7 @@ Shader "Custom/TerrainShader"
         _LowColor ("Lowest Base Color", Color) = (1, 1, 1, 1)
         _HighColor ("Highest Base Color", Color) = (1, 1, 1, 1)
         _MaxHeight ("Maximum Height", float) = 2
-        _ShadowColor ("Shadow Color", Color) = (1, 1, 1, 1)
+        _NegativeColor ("Negative Color", Color) = (1, 1, 1, 1)
         _LargeColor ("Large Color", Color) = (1, 1, 1, 1)
         _SmallColor ("Small Color", Color) = (1, 1, 1, 1)
         _Offset ("World Position Offset (z and w are ignored)", Vector) = (0, 0, 0, 0)
@@ -48,7 +48,7 @@ Shader "Custom/TerrainShader"
         half _Metallic;
         fixed4 _LowColor;
         fixed4 _HighColor;
-        fixed4 _ShadowColor;
+        fixed4 _NegativeColor;
         fixed4 _LargeColor;
         fixed4 _SmallColor;
         float2 _Offset;
@@ -120,7 +120,7 @@ Shader "Custom/TerrainShader"
             bool notOutline = consistent(pos, _OutlineRadius, data);  
             float h = IN.worldPos.y / _MaxHeight;
             fixed3 b = _LowColor.rgb * (1 - h) + _HighColor.rgb * h;
-            fixed4 m = (data >> 1) ? ((data & 1) ? _SmallColor : _LargeColor) : ((data & 1) ? fixed4(0, 0, 0, 0) : _ShadowColor);
+            fixed4 m = (data >> 1) ? ((data & 1) ? _SmallColor : _LargeColor) : ((data & 1) ? _NegativeColor : fixed4(0, 0, 0, 0));
             m.a *= notOutline ? _BaseAlphaMultiplier : 1;
             o.Albedo = b * (1 - m.a) + m.rgb * m.a;  
             

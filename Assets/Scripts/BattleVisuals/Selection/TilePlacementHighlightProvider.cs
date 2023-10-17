@@ -24,7 +24,7 @@ namespace BattleVisuals.Selection
         public override (IHighlightable.HighlightType highlight, float radius) GetAffectedArea(Vector3 baseWorldPos)
         {
             if (b != null && b.placed)
-                return (IHighlightable.HighlightType.Negative, float.PositiveInfinity);
+                return (IHighlightable.HighlightType.Selected, float.PositiveInfinity);
             Vector3 tilePos = WorldUtils.WorldPosToTilePos(baseWorldPos);
             Vector3Int tile = tilePos.Round();
             Vector3 offset = tilePos - tile;
@@ -32,7 +32,7 @@ namespace BattleVisuals.Selection
             bool valid = Tiles.TILES.TryGet((Vector2Int)tile, out var selectedTile);
             if (valid)
                 valid = placement.IsTileValid(selectedTile);
-            return (valid ? IHighlightable.HighlightType.Negative : IHighlightable.HighlightType.Selected, dist / 2);
+            return (valid ? IHighlightable.HighlightType.Selected : IHighlightable.HighlightType.Negative, dist / 2);
         }
     }
 }

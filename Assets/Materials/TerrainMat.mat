@@ -85,6 +85,7 @@ Material:
     - _HighColor: {r: 0.5566038, g: 0.34379828, b: 0.27042544, a: 1}
     - _LargeColor: {r: 1, g: 0.77254903, b: 0, a: 0.29803923}
     - _LowColor: {r: 0.2735849, g: 0.079617955, b: 0.024519395, a: 1}
+    - _NegativeColor: {r: 1, g: 0.1, b: 0, a: 0.29803923}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _SelectedColor: {r: 0, g: 0.5647059, b: 1, a: 1}
     - _ShadowColor: {r: 1, g: 0.061771594, b: 0, a: 0.29803923}
