@@ -1,5 +1,4 @@
 - [ ] fuel gathering thing
-- [ ] redesign GUI
 - [ ] text icons
 - [ ] production effects (+ damage effects?)
 - [ ] [[Blueprint]] and [[Microeconomy]] [[Battle UI]]
