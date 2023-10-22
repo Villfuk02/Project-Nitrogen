@@ -1,12 +1,14 @@
-- [ ] fuel gathering thing
-- [ ] text icons
 - [ ] production effects (+ damage effects?)
 - [ ] [[Blueprint]] and [[Microeconomy]] [[Battle UI]]
+    - [ ] fix blueprint sprites
 - [ ] update game design
 - [ ] placing on slants
 - [ ] buildings cannot be placed mid-wave
 - [ ] info panel
+    - [ ] select not readied
 - [ ] tooltips
+- [ ] redo decoration models
+- [ ] redo decoaration placement
 
 ## issues to fix later
 - [ ] make blockers' coarse terrain collision deterministic
@@ -30,7 +32,7 @@
 - [ ] issues to fix later
 - [ ] TODOs
 - [ ] polish
-- [ ] effects
+- [ ] juice it or lose it
 - [ ] +polish
 - [ ] +polish
 - [ ] +more towers and attackers

@@ -802,10 +802,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 20 (0/30)
+  m_text: 20<sprite=0>30/60<sprite=1>55<sprite=2>69
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: df35fe78d3886c24187457ac9aa45381, type: 2}
+  m_sharedMaterial: {fileID: -2664401045980798971, guid: df35fe78d3886c24187457ac9aa45381, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -821,7 +821,7 @@ MonoBehaviour:
     bottomLeft: {r: 1, g: 1, b: 1, a: 1}
     bottomRight: {r: 1, g: 1, b: 1, a: 1}
   m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
+  m_spriteAsset: {fileID: 11400000, guid: 7b64643395b26d649b1bdf15d5bf2bae, type: 2}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
   m_TextStyleHashCode: -1183493901
@@ -1340,6 +1340,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 376c6eb40ad25ad438f202cf9fd84f42, type: 2}
   - {fileID: 11400000, guid: 05459f1e64a666c4991299d3ab4ba443, type: 2}
   - {fileID: 11400000, guid: 3425f27343a18a24c88b3ec33a6ead8c, type: 2}
+  - {fileID: 11400000, guid: f7194962d8ed52a41887aebd5a9644d5, type: 2}
   cooldowns: 
   selected: -1
 --- !u!1 &1281044094
@@ -1630,8 +1631,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: ---
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: df35fe78d3886c24187457ac9aa45381, type: 2}
+  m_sharedMaterial: {fileID: -2664401045980798971, guid: df35fe78d3886c24187457ac9aa45381, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1647,7 +1648,7 @@ MonoBehaviour:
     bottomLeft: {r: 1, g: 1, b: 1, a: 1}
     bottomRight: {r: 1, g: 1, b: 1, a: 1}
   m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
+  m_spriteAsset: {fileID: 11400000, guid: 7b64643395b26d649b1bdf15d5bf2bae, type: 2}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
   m_TextStyleHashCode: -1183493901

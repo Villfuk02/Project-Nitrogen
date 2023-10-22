@@ -23,29 +23,19 @@ namespace Utils
             handlerQueue.Add((priority, boolHandler, voidHandler));
         }
 
-        public void Unregister(TBool handler)
+        public void Unregister(TBool handler) => Unregister(handler, null);
+        public void Unregister(TVoid handler) => Unregister(null, handler);
+        void Unregister(TBool boolHandler, TVoid voidHandler)
         {
             for (int i = 0; i < handlerQueue.Count; i++)
             {
-                if (handlerQueue[i].boolHandler != handler)
+                if (boolHandler is null ? handlerQueue[i].voidHandler != voidHandler : handlerQueue[i].boolHandler != boolHandler)
                     continue;
                 handlerQueue.RemoveAt(i);
                 return;
             }
 
-            Debug.LogWarning($"unregistering a handler that wasn't registered ({handler.Method.Name})");
-        }
-        public void Unregister(TVoid handler)
-        {
-            for (int i = 0; i < handlerQueue.Count; i++)
-            {
-                if (handlerQueue[i].voidHandler != handler)
-                    continue;
-                handlerQueue.RemoveAt(i);
-                return;
-            }
-
-            Debug.LogWarning($"unregistering a handler that wasn't registered ({handler.Method.Name})");
+            Debug.LogWarning($"Unregistering a handler that wasn't registered ({(boolHandler is null ? voidHandler.Method.Name : boolHandler.Method.Name)})");
         }
     }
     public class GameEvent : AbstractGameEvent<GameEvent.Handle, GameEvent.HandleVoid>
