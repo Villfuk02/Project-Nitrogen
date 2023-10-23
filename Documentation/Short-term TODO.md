@@ -1,4 +1,4 @@
-- [ ] production effects (+ damage effects?)
+- [ ] zadání
 - [ ] [[Blueprint]] and [[Microeconomy]] [[Battle UI]]
     - [ ] fix blueprint sprites
 - [ ] update game design
@@ -17,12 +17,13 @@
 
 ## bachelor's MVP
 - [x] world gen
-- [ ] 8 towers
+- [ ] 20 blueprints
 - [ ] 10 attackers
-- [ ] economy
+- [x] economy
 - [ ] base UI
 - [ ] selection
-- [ ] selling?
+- [ ] tooltips
+- [ ] selling
 - [ ] spells
 - [ ] losing
 - [ ] fuel

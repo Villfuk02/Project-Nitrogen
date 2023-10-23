@@ -16,5 +16,6 @@ powerful towers should have impact on terrain and camera
 - closer attacker = faster fire rate
 - piercing in a straight line
 - farther attacker = more damage
+- swarm missiles
 
 ### List

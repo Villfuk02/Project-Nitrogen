@@ -15,7 +15,7 @@ namespace BattleSimulation.Control
         public int attackersLeft;
         [SerializeField] bool startNextWave;
 
-        public static GameEvent startWave = new();
+        public static GameCommand startWave = new();
         public static GameEvent onWaveSpawned = new();
         public static GameEvent onWaveFinished = new();
 
@@ -24,7 +24,7 @@ namespace BattleSimulation.Control
             // only use half the range to prevent overflow
             currentIndex = (uint)(World.WorldData.World.data.seed & 0x7FFFFFFF);
 
-            startWave.Register(0, StartNextWave);
+            startWave.Register(StartNextWave, 0);
         }
 
         void OnDestroy()
@@ -55,7 +55,7 @@ namespace BattleSimulation.Control
                 toSpawn--;
                 Spawn();
                 if (toSpawn == 0)
-                    onWaveSpawned.Invoke();
+                    onWaveSpawned.Broadcast();
             }
         }
 
@@ -74,18 +74,19 @@ namespace BattleSimulation.Control
             attackersLeft++;
         }
 
-        void StartNextWave()
+        bool StartNextWave()
         {
             wave++;
             spawnTimer = 0;
             toSpawn = wave * (wave + 1) / 2;
+            return true;
         }
 
         public void AttackerRemoved()
         {
             attackersLeft--;
             if (attackersLeft == 0)
-                onWaveFinished.Invoke();
+                onWaveFinished.Broadcast();
         }
     }
 }

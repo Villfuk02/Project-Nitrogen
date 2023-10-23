@@ -43,10 +43,10 @@ namespace BattleSimulation.Towers
         public override bool Hit(Projectile projectile, Attacker attacker)
         {
             (Attacker a, Damage dmg) param = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
-            if (!Attacker.hit.Invoke(ref param))
+            if (!Attacker.hit.InvokeRef(ref param))
                 return false;
             if (param.dmg.amount > 0)
-                Attacker.damage.Invoke(ref param);
+                Attacker.damage.Invoke(param);
             return true;
         }
     }

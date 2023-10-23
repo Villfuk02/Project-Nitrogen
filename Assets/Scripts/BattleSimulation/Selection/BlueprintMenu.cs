@@ -6,7 +6,6 @@ namespace BattleSimulation.Selection
 {
     public class BlueprintMenu : MonoBehaviour
     {
-        [SerializeField] BattleController bc;
         public Blueprint[] blueprints;
         public int[] cooldowns;
         public int selected;
@@ -19,12 +18,18 @@ namespace BattleSimulation.Selection
                 cooldowns[i] = blueprints[i].startingCooldown;
                 blueprints[i] = blueprints[i].Clone();
             }
-            WaveController.onWaveFinished.Register(10, ReduceCooldowns);
+            WaveController.onWaveFinished.Register(ReduceCooldowns, 10);
         }
 
         void OnDestroy()
         {
             WaveController.onWaveFinished.Unregister(ReduceCooldowns);
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F))
+                FinishCooldowns();
         }
 
         public void Deselect()
@@ -43,8 +48,8 @@ namespace BattleSimulation.Selection
             if (cooldowns[index] > 0)
                 return false;
 
-            int cost = blueprint.cost;
-            if (!BattleController.canSpendMaterial.Invoke(ref cost))
+            float cost = blueprint.cost;
+            if (!BattleController.canSpendMaterial.Query(ref cost))
                 return false;
 
             selected = index;
@@ -65,6 +70,14 @@ namespace BattleSimulation.Selection
             {
                 if (cooldowns[i] > 0)
                     cooldowns[i]--;
+            }
+        }
+
+        void FinishCooldowns()
+        {
+            for (int i = 0; i < cooldowns.Length; i++)
+            {
+                cooldowns[i] = 0;
             }
         }
     }

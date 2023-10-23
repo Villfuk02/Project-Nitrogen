@@ -6,7 +6,7 @@ namespace BattleSimulation.Buildings
     {
         protected override void OnPlaced()
         {
-            WaveController.onWaveFinished.Register(100, Produce);
+            WaveController.onWaveFinished.Register(Produce, 100);
         }
 
         protected override void OnDestroy()
@@ -19,23 +19,14 @@ namespace BattleSimulation.Buildings
 
         void Produce()
         {
+            if (Blueprint.HasFuelGeneration)
+                BattleController.addFuel.Invoke((this, Blueprint.fuelGeneration));
+
             if (Blueprint.HasMaterialGeneration)
-            {
-                (object source, int amount) material = (this, Blueprint.materialGeneration);
-                BattleController.addMaterial.Invoke(ref material);
-            }
+                BattleController.addMaterial.Invoke((this, Blueprint.materialGeneration));
 
             if (Blueprint.HasEnergyGeneration)
-            {
-                (object source, int amount) energy = (this, Blueprint.energyGeneration);
-                BattleController.addEnergy.Invoke(ref energy);
-            }
-
-            if (Blueprint.HasFuelGeneration)
-            {
-                (object source, int amount) fuel = (this, Blueprint.fuelGeneration);
-                BattleController.addFuel.Invoke(ref fuel);
-            }
+                BattleController.addEnergy.Invoke((this, Blueprint.energyGeneration));
         }
     }
 }

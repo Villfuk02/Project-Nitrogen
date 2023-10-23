@@ -15,9 +15,12 @@ MonoBehaviour:
   prefab: {fileID: 475032649215164951, guid: c11d366ac472d994d899a9fc922884e5, type: 3}
   rarity: 0
   cost: 10
-  cooldown: 1
+  startingCooldown: 0
+  cooldown: 0
   range: 5
   damage: 1
   damageType: 2
   shotInterval: 16
-  startingCooldown: 0
+  materialGeneration: -1
+  energyGeneration: -1
+  fuelGeneration: -1

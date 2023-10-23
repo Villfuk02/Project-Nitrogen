@@ -10,13 +10,13 @@ namespace BattleSimulation.Attackers
 {
     public class Attacker : MonoBehaviour, IHighlightable
     {
-        public static GameEvent<(Attacker target, Damage damage)> hit = new();
-        public static GameEvent<(Attacker target, Damage damage)> damage = new();
-        public static GameEvent<(Attacker target, Damage cause)> die = new();
+        public static GameCommand<(Attacker target, Damage damage)> hit = new();
+        public static GameCommand<(Attacker target, Damage damage)> damage = new();
+        public static GameCommand<(Attacker target, Damage cause)> die = new();
         static Attacker()
         {
-            damage.Register(0, DamageHandler);
-            die.Register(0, DeathHandler);
+            damage.Register(DamageHandler, 0);
+            die.Register(DeathHandler, 0);
         }
         [Header("References")]
         [SerializeField] Rigidbody rb;
@@ -112,21 +112,30 @@ namespace BattleSimulation.Attackers
             return true;
         }
 
-        static void DeathHandler(ref (Attacker target, Damage cause) param) => param.target.Die(param.cause);
+        static bool DeathHandler(ref (Attacker target, Damage cause) param)
+        {
+            param.target.Die(param.cause);
+            return true;
+        }
 
         void TakeDamage(Damage dmg)
         {
             if (deadTime > 0)
                 throw new InvalidOperationException("dead attackers cannot be damaged!");
+            if (dmg.amount < 0)
+                throw new ArgumentException("damage cannot be negative!");
+
+            dmg.amount = Mathf.Floor(dmg.amount);
             if (dmg.amount <= 0)
-                throw new ArgumentException("damage must be positive!");
+                return;
+
             onDamage.Invoke(dmg);
 
-            health -= dmg.amount;
+            health -= (int)dmg.amount;
             if (health <= 0)
             {
                 (Attacker, Damage) param = (this, dmg);
-                die.Invoke(ref param);
+                die.Invoke(param);
             }
         }
 

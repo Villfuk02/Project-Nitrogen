@@ -5411,12 +5411,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  highlight: {fileID: 5150071765153014635}
-  highlightAnim: {fileID: 1861407652524293487}
   onRemoved:
     m_PersistentCalls:
       m_Calls: []
-  speed: 0.5
+  highlight: {fileID: 5150071765153014635}
+  highlightAnim: {fileID: 1861407652524293487}
+  speed: 2
   maxHealth: 5
   target: {fileID: 719971657807235023}
   pathSegmentProgress: 0

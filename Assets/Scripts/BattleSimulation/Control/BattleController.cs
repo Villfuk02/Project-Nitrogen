@@ -11,72 +11,102 @@ namespace BattleSimulation.Control
         public int MaxEnergy { get; private set; }
         public int Fuel { get; private set; }
 
-        public static GameEvent<(object source, int amount)> addMaterial = new();
-        public static GameEvent<(object source, int amount)> addEnergy = new();
-        public static GameEvent<(object source, int amount)> addFuel = new();
-        public static GameEvent<int> canSpendMaterial = new();
-        public static GameEvent<int> spendMaterial = new();
+        public static GameCommand<(object source, float amount)> addMaterial = new();
+        public static GameCommand<(object source, float amount)> addEnergy = new();
+        public static GameCommand<(object source, float amount)> addFuel = new();
+        public static GameQuery<float> canSpendMaterial = new();
+        public static GameCommand<float> spendMaterial = new();
 
         void Awake()
         {
-            addMaterial.Register(0, AddMaterial);
-            addEnergy.Register(0, AddEnergy);
-            addFuel.Register(0, AddFuel);
-            canSpendMaterial.Register(0, CanSpendMaterial);
-            spendMaterial.Register(0, SpendMaterial);
+            addMaterial.Register(AddMaterial, 0);
+            addEnergy.Register(AddEnergy, 0);
+            addFuel.Register(AddFuel, 0);
+            canSpendMaterial.RegisterAcceptor(CanSpendMaterial);
+            spendMaterial.Register(SpendMaterial, 0);
         }
 
         void OnDestroy()
         {
             addMaterial.Unregister(AddMaterial);
-            canSpendMaterial.Unregister(CanSpendMaterial);
+            addEnergy.Unregister(AddEnergy);
+            addFuel.Unregister(AddFuel);
+            canSpendMaterial.UnregisterAcceptor();
             spendMaterial.Unregister(SpendMaterial);
         }
 
         //TODO: hook up with initializing a level/battle
         void Start()
         {
-            Material = 200;
+            Material = 25;
             Energy = 0;
             MaxEnergy = 30;
+            Fuel = 0;
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                Material += 100;
+                Energy += 100;
+            }
         }
 
         public static bool AdjustAndTrySpendMaterial(int amount)
         {
-            if (!canSpendMaterial.Invoke(ref amount))
+            float amountCalculation = amount;
+            if (!canSpendMaterial.Query(ref amountCalculation))
                 return false;
-            spendMaterial.Invoke(ref amount);
+            spendMaterial.Invoke(amountCalculation);
             return true;
         }
 
-        void AddMaterial(ref (object source, int amount) param)
+        bool AddMaterial(ref (object source, float amount) param)
         {
             if (param.amount < 0)
                 throw new ArgumentException("amount cannot be negative!");
-            Material += param.amount;
+            int realAmount = Mathf.FloorToInt(param.amount);
+            param.amount = realAmount;
+            Material += realAmount;
+            return true;
         }
-        void AddEnergy(ref (object source, int amount) param)
+        bool AddEnergy(ref (object source, float amount) param)
         {
             if (param.amount < 0)
                 throw new ArgumentException("amount cannot be negative!");
-            Energy += param.amount;
+            int realAmount = Mathf.FloorToInt(param.amount);
+            param.amount = realAmount;
+            Energy += realAmount;
+            return true;
         }
-        void AddFuel(ref (object source, int amount) param)
+        bool AddFuel(ref (object source, float amount) param)
         {
             if (param.amount < 0)
                 throw new ArgumentException("amount cannot be negative!");
-            Fuel += param.amount;
+            int realAmount = Mathf.FloorToInt(param.amount);
+            param.amount = realAmount;
+            Fuel += realAmount;
+            return true;
         }
 
-        void SpendMaterial(ref int amount)
+        bool SpendMaterial(ref float amount)
         {
             if (amount < 0)
                 throw new ArgumentException("amount cannot be negative!");
-            if (amount > Material)
+            int realAmount = Mathf.FloorToInt(amount);
+            amount = realAmount;
+            if (realAmount > Material)
                 throw new("CANNOT AFFORD!");
-            Material -= amount;
+            Material -= realAmount;
+            return true;
         }
 
-        bool CanSpendMaterial(ref int amount) => amount <= Material;
+        bool CanSpendMaterial(ref float amount)
+        {
+            int realAmount = Mathf.FloorToInt(amount);
+            amount = realAmount;
+            return realAmount <= Material;
+        }
     }
 }

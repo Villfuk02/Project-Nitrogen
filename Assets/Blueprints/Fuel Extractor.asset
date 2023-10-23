@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 475032649215164951, guid: a6c44a4163e87f44986d774d22ee3073, type: 3}
   rarity: 0
-  cost: 30
-  startingCooldown: 0
+  cost: 20
+  startingCooldown: 1
   cooldown: 1
   range: -1
   damage: -1
