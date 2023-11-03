@@ -13,8 +13,11 @@ MonoBehaviour:
   m_Name: Dust Refinery
   m_EditorClassIdentifier: 
   prefab: {fileID: 475032649215164951, guid: c0ddd1a756f8ec54885e7b6e99ea3948, type: 3}
+  icon: {fileID: 21300000, guid: 4726febd0e22bfd4fab8d4e2154f7116, type: 3}
   rarity: 0
-  cost: 10
+  type: 1
+  energyCost: 5
+  materialCost: 5
   startingCooldown: 0
   cooldown: 0
   range: -1
@@ -22,3 +25,5 @@ MonoBehaviour:
   damageType: 0
   shotInterval: -1
   materialGeneration: 5
+  energyGeneration: -1
+  fuelGeneration: -1

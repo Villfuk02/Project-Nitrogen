@@ -2,7 +2,9 @@
     "name": "Game.Blueprint",
     "rootNamespace": "",
     "references": [
-        "GUID:7739045b21f63e44ba6c2b09eda9e35e"
+        "GUID:7739045b21f63e44ba6c2b09eda9e35e",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:c16294785e7a44148be2e5f8661f54ad"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

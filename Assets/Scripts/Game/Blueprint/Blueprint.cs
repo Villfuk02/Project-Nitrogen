@@ -7,12 +7,16 @@ namespace Game.Blueprint
     public class Blueprint : ScriptableObject
     {
         public enum Rarity { Starter, Common, Rare, Legendary }
+        public enum Type { DefensiveBuilding, EconomicBuilding, Ability, Upgrade }
 
         //public new string name;
         public GameObject prefab;
+        public Sprite icon;
         public Rarity rarity;
-        public int cost;
-        public int startingCooldown = 0;
+        public Type type;
+        public int energyCost;
+        public int materialCost;
+        public int startingCooldown;
         public int cooldown;
         public float range = -1;
         public int damage = -1;
@@ -35,8 +39,11 @@ namespace Game.Blueprint
             Blueprint copy = CreateInstance<Blueprint>();
 
             copy.prefab = prefab;
+            copy.icon = icon;
             copy.rarity = rarity;
-            copy.cost = cost;
+            copy.type = type;
+            copy.energyCost = energyCost;
+            copy.materialCost = materialCost;
             copy.startingCooldown = startingCooldown;
             copy.cooldown = cooldown;
             copy.range = range;

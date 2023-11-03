@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using Utils;
 using Random = UnityEngine.Random;
 
 namespace BattleVisuals.Effects
@@ -63,9 +64,9 @@ namespace BattleVisuals.Effects
             return true;
         }
 
-        bool SpawnMaterial(ref (object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}<sprite=0>", materialsColor);
-        bool SpawnEnergy(ref (object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}<sprite=2>", energyColor);
-        bool SpawnFuel(ref (object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}<sprite=1>", fuelColor);
+        bool SpawnMaterial(ref (object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Materials.Sprite()}", materialsColor);
+        bool SpawnEnergy(ref (object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Energy.Sprite()}", energyColor);
+        bool SpawnFuel(ref (object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Fuel.Sprite()}", fuelColor);
 
         bool SpawnProduction(object source, string text, Color color)
         {

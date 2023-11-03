@@ -14,16 +14,18 @@ namespace BattleSimulation.Control
         public static GameCommand<(object source, float amount)> addMaterial = new();
         public static GameCommand<(object source, float amount)> addEnergy = new();
         public static GameCommand<(object source, float amount)> addFuel = new();
-        public static GameQuery<float> canSpendMaterial = new();
-        public static GameCommand<float> spendMaterial = new();
+        public static GameQuery<(float priceEnergy, float priceMaterials, int toSpendEnergy, int toSpendMaterials)> canAfford = new();
+        public static GameCommand<(int energy, int materials)> spend = new();
+
+        public enum Affordable { Yes, UseMaterialsAsEnergy, No }
 
         void Awake()
         {
             addMaterial.Register(AddMaterial, 0);
             addEnergy.Register(AddEnergy, 0);
             addFuel.Register(AddFuel, 0);
-            canSpendMaterial.RegisterAcceptor(CanSpendMaterial);
-            spendMaterial.Register(SpendMaterial, 0);
+            canAfford.RegisterAcceptor(CanAfford);
+            spend.Register(Spend, 0);
         }
 
         void OnDestroy()
@@ -31,8 +33,8 @@ namespace BattleSimulation.Control
             addMaterial.Unregister(AddMaterial);
             addEnergy.Unregister(AddEnergy);
             addFuel.Unregister(AddFuel);
-            canSpendMaterial.UnregisterAcceptor();
-            spendMaterial.Unregister(SpendMaterial);
+            canAfford.UnregisterAcceptor();
+            spend.Unregister(Spend);
         }
 
         //TODO: hook up with initializing a level/battle
@@ -53,12 +55,20 @@ namespace BattleSimulation.Control
             }
         }
 
-        public static bool AdjustAndTrySpendMaterial(int amount)
+        public static Affordable CanAfford(int energy, int materials)
         {
-            float amountCalculation = amount;
-            if (!canSpendMaterial.Query(ref amountCalculation))
+            (float priceEnergy, float priceMaterials, int toSpendEnergy, int toSpendMaterials) queryParam = (energy, materials, 0, 0);
+            if (!canAfford.Query(ref queryParam))
+                return Affordable.No;
+            return queryParam.priceEnergy == queryParam.toSpendEnergy ? Affordable.Yes : Affordable.UseMaterialsAsEnergy;
+        }
+
+        public static bool AdjustAndTrySpend(int energy, int materials)
+        {
+            (float priceEnergy, float priceMaterials, int toSpendEnergy, int toSpendMaterials) queryParam = (energy, materials, 0, 0);
+            if (!canAfford.Query(ref queryParam))
                 return false;
-            spendMaterial.Invoke(amountCalculation);
+            spend.Invoke((queryParam.toSpendEnergy, queryParam.toSpendMaterials));
             return true;
         }
 
@@ -90,23 +100,30 @@ namespace BattleSimulation.Control
             return true;
         }
 
-        bool SpendMaterial(ref float amount)
+        bool Spend(ref (int energy, int materials) param)
         {
-            if (amount < 0)
+            if (param.energy < 0 || param.materials < 0)
                 throw new ArgumentException("amount cannot be negative!");
-            int realAmount = Mathf.FloorToInt(amount);
-            amount = realAmount;
-            if (realAmount > Material)
+            if (param.energy > Energy || param.materials > Material)
                 throw new("CANNOT AFFORD!");
-            Material -= realAmount;
+            Material -= param.materials;
+            Energy -= param.energy;
             return true;
         }
 
-        bool CanSpendMaterial(ref float amount)
+        bool CanAfford(ref (float priceEnergy, float priceMaterials, int toSpendEnergy, int toSpendMaterials) param)
         {
-            int realAmount = Mathf.FloorToInt(amount);
-            amount = realAmount;
-            return realAmount <= Material;
+            param.toSpendEnergy = Mathf.FloorToInt(param.priceEnergy);
+            param.priceEnergy = param.toSpendEnergy;
+            param.toSpendMaterials = Mathf.FloorToInt(param.priceMaterials);
+            param.priceMaterials = param.toSpendMaterials;
+
+            if (param.toSpendEnergy > Energy)
+            {
+                param.toSpendMaterials += param.toSpendEnergy - Energy;
+                param.toSpendEnergy = Energy;
+            }
+            return param.toSpendMaterials <= Material;
         }
     }
 }

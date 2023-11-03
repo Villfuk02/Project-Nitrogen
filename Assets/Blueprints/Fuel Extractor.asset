@@ -13,8 +13,11 @@ MonoBehaviour:
   m_Name: Fuel Extractor
   m_EditorClassIdentifier: 
   prefab: {fileID: 475032649215164951, guid: a6c44a4163e87f44986d774d22ee3073, type: 3}
+  icon: {fileID: 21300000, guid: 4726febd0e22bfd4fab8d4e2154f7116, type: 3}
   rarity: 0
-  cost: 20
+  type: 1
+  energyCost: 0
+  materialCost: 25
   startingCooldown: 1
   cooldown: 1
   range: -1

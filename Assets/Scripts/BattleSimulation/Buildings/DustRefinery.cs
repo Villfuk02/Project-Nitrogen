@@ -7,7 +7,7 @@ namespace BattleSimulation.Buildings
         [SerializeField] int priceIncrease;
         protected override void OnPlaced()
         {
-            OriginalBlueprint.cost += priceIncrease;
+            OriginalBlueprint.materialCost += priceIncrease;
             base.OnPlaced();
         }
     }

@@ -13,8 +13,11 @@ MonoBehaviour:
   m_Name: Test Tower
   m_EditorClassIdentifier: 
   prefab: {fileID: 475032649215164951, guid: c11d366ac472d994d899a9fc922884e5, type: 3}
+  icon: {fileID: 21300000, guid: 4726febd0e22bfd4fab8d4e2154f7116, type: 3}
   rarity: 0
-  cost: 10
+  type: 0
+  energyCost: 0
+  materialCost: 10
   startingCooldown: 0
   cooldown: 0
   range: 5

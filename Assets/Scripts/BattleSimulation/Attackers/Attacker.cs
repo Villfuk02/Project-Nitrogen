@@ -40,7 +40,8 @@ namespace BattleSimulation.Attackers
         [SerializeField] uint pathSplitIndex;
         [SerializeField] int segmentsToCenter;
         public int health;
-        public int deadTime;
+        [SerializeField] int deadTime;
+        public bool IsDead => deadTime > 0;
 
         void Awake()
         {
@@ -49,7 +50,7 @@ namespace BattleSimulation.Attackers
 
         void FixedUpdate()
         {
-            if (deadTime > 0)
+            if (IsDead)
             {
                 deadTime++;
                 if (deadTime > 200)
@@ -106,8 +107,6 @@ namespace BattleSimulation.Attackers
 
         static bool DamageHandler(ref (Attacker target, Damage damage) param)
         {
-            if (param.target.deadTime > 0)
-                return false;
             param.target.TakeDamage(param.damage);
             return true;
         }
@@ -120,7 +119,7 @@ namespace BattleSimulation.Attackers
 
         void TakeDamage(Damage dmg)
         {
-            if (deadTime > 0)
+            if (IsDead)
                 throw new InvalidOperationException("dead attackers cannot be damaged!");
             if (dmg.amount < 0)
                 throw new ArgumentException("damage cannot be negative!");
@@ -141,7 +140,7 @@ namespace BattleSimulation.Attackers
 
         void Die(Damage cause)
         {
-            if (deadTime > 0)
+            if (IsDead)
                 throw new InvalidOperationException("dead attackers cannot die!");
 
             deadTime = 1;

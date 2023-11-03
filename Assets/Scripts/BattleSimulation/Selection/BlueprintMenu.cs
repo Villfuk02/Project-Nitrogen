@@ -10,7 +10,7 @@ namespace BattleSimulation.Selection
         public int[] cooldowns;
         public int selected;
 
-        void Start()
+        void Awake()
         {
             cooldowns = new int[blueprints.Length];
             for (int i = 0; i < blueprints.Length; i++)
@@ -48,8 +48,7 @@ namespace BattleSimulation.Selection
             if (cooldowns[index] > 0)
                 return false;
 
-            float cost = blueprint.cost;
-            if (!BattleController.canSpendMaterial.Query(ref cost))
+            if (BattleController.CanAfford(blueprint.energyCost, blueprint.materialCost) == BattleController.Affordable.No)
                 return false;
 
             selected = index;
@@ -58,7 +57,7 @@ namespace BattleSimulation.Selection
 
         public bool OnPlace()
         {
-            if (!BattleController.AdjustAndTrySpendMaterial(blueprints[selected].cost))
+            if (!BattleController.AdjustAndTrySpend(blueprints[selected].energyCost, blueprints[selected].materialCost))
                 return false;
             cooldowns[selected] = blueprints[selected].cooldown;
             return true;

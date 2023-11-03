@@ -1,11 +1,21 @@
-- [ ] zadání
 - [ ] [[Blueprint]] and [[Microeconomy]] [[Battle UI]]
-    - [ ] fix blueprint sprites
+    - [x] fix blueprint sprites
+    - [x] blueprint script
+    - [x] blueprint menu item script
+    - [x] materials and energy indicator
+    - [ ] wave status
+    - [ ] fuel and health
+    - [ ] wave planning and display
+    - [ ] production per wave 
+- [ ] icons
+- [ ] add blueprints to selection
+    - [ ] UI elements block
+    - [ ] hover blueprint
+    - [ ] select not readied
 - [ ] update game design
 - [ ] placing on slants
 - [ ] buildings cannot be placed mid-wave
 - [ ] info panel
-    - [ ] select not readied
 - [ ] tooltips
 - [ ] redo decoration models
 - [ ] redo decoaration placement
