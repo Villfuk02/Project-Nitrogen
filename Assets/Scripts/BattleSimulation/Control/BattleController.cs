@@ -10,6 +10,7 @@ namespace BattleSimulation.Control
         public int Energy { get; private set; }
         public int MaxEnergy { get; private set; }
         public int Fuel { get; private set; }
+        public int FuelGoal { get; private set; }
 
         public static GameCommand<(object source, float amount)> addMaterial = new();
         public static GameCommand<(object source, float amount)> addEnergy = new();
@@ -44,6 +45,7 @@ namespace BattleSimulation.Control
             Energy = 0;
             MaxEnergy = 30;
             Fuel = 0;
+            FuelGoal = 120;
         }
 
         void Update()

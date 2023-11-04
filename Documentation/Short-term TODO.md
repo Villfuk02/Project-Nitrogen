@@ -3,9 +3,16 @@
     - [x] blueprint script
     - [x] blueprint menu item script
     - [x] materials and energy indicator
-    - [ ] wave status
-    - [ ] fuel and health
+    - [x] wave status
+    - [x] fuel and health
     - [ ] wave planning and display
+        - [ ] wave generator
+            - [ ] attacker spacings
+            - [ ] wave structure
+            - [ ] default deterministic waves
+        - [ ] display a wave
+        - [ ] remove spawned attackers
+        - [ ] smooth fade mask
     - [ ] production per wave 
 - [ ] icons
 - [ ] add blueprints to selection
