@@ -5,16 +5,12 @@
     - [x] materials and energy indicator
     - [x] wave status
     - [x] fuel and health
-    - [ ] wave planning and display
-        - [ ] wave generator
-            - [ ] attacker spacings
-            - [ ] wave structure
-            - [ ] default deterministic waves
-        - [ ] display a wave
-        - [ ] remove spawned attackers
-        - [ ] smooth fade mask
+    - [x] wave planning and display
     - [ ] production per wave 
-- [ ] icons
+- [ ] label paths
+- [ ] icon for each blueprint
+- [ ] cap energy
+- [ ] remove serialize by reference extension ?
 - [ ] add blueprints to selection
     - [ ] UI elements block
     - [ ] hover blueprint
