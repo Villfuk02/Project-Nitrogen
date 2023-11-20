@@ -11,6 +11,7 @@ namespace BattleVisuals.UI
     {
         [SerializeField] GameObject waveDisplayPrefab;
         [SerializeField] WaveController wc;
+        [SerializeField] BattleController bc;
         [SerializeField] TextMeshProUGUI waveNumber;
         [SerializeField] TextMeshProUGUI remainingText;
         [SerializeField] RectTransform wavesLayout;
@@ -20,15 +21,29 @@ namespace BattleVisuals.UI
         [SerializeField] int displayedUpTo;
         float lastWidth_;
         float offset_;
+        int fuelProduction_;
+        void Awake()
+        {
+            BattleController.updateFuelPerWave.Register(UpdateFuelIncome, 10);
+            BattleController.updateFuelPerWave.Invoke(0);
+        }
 
+        void OnDestroy()
+        {
+            BattleController.updateFuelPerWave.Unregister(UpdateFuelIncome);
+        }
         void Update()
         {
             ForceUpdate();
             waveNumber.text = wc.wave.ToString();
-            int remain = 10 - wc.wave;
+            int remain;
+            if (fuelProduction_ <= 0)
+                remain = -1;
+            else
+                remain = (bc.FuelGoal - bc.Fuel + fuelProduction_ - 1) / fuelProduction_;
             remainingText.text = remain switch
             {
-                <= 0 => "<size=36>last\nwave</size>",
+                <= 0 => "<size=36>departing</size>",
                 1 => "<size=26>last\n\nwave left</size>",
                 _ => $"{remain}\n<size=26>waves left</size>"
             };
@@ -74,6 +89,12 @@ namespace BattleVisuals.UI
                 offset_ += lastWidth_ - wavesLayout.rect.width;
             lastWidth_ = wavesLayout.rect.width;
             wavesLayout.anchoredPosition = Vector2.right * offset_;
+        }
+
+        bool UpdateFuelIncome(ref float income)
+        {
+            fuelProduction_ = (int)income;
+            return true;
         }
     }
 }

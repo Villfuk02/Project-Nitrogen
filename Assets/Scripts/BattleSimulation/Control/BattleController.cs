@@ -17,6 +17,9 @@ namespace BattleSimulation.Control
         public static GameCommand<(object source, float amount)> addFuel = new();
         public static GameQuery<(float priceEnergy, float priceMaterials, int toSpendEnergy, int toSpendMaterials)> canAfford = new();
         public static GameCommand<(int energy, int materials)> spend = new();
+        public static GameCommand<float> updateMaterialsPerWave = new();
+        public static GameCommand<float> updateEnergyPerWave = new();
+        public static GameCommand<float> updateFuelPerWave = new();
 
         public enum Affordable { Yes, UseMaterialsAsEnergy, No }
 
@@ -90,6 +93,8 @@ namespace BattleSimulation.Control
             int realAmount = Mathf.FloorToInt(param.amount);
             param.amount = realAmount;
             Energy += realAmount;
+            if (Energy > MaxEnergy)
+                Energy = MaxEnergy;
             return true;
         }
         bool AddFuel(ref (object source, float amount) param)
@@ -99,6 +104,8 @@ namespace BattleSimulation.Control
             int realAmount = Mathf.FloorToInt(param.amount);
             param.amount = realAmount;
             Fuel += realAmount;
+            if (Fuel > FuelGoal)
+                Fuel = FuelGoal;
             return true;
         }
 
