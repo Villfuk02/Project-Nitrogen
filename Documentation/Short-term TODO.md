@@ -1,9 +1,5 @@
-- [ ] label paths
-- [ ] icon for each blueprint
-- [ ] cap energy
-- [ ] remove serialize by reference extension ?
 - [ ] add blueprints to selection
-    - [ ] UI elements block
+    - [x] UI elements block
     - [ ] hover blueprint
     - [ ] select not readied
 - [ ] update game design

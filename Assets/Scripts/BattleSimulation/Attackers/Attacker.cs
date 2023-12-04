@@ -41,6 +41,7 @@ namespace BattleSimulation.Attackers
         [SerializeField] int segmentsToCenter;
         public int health;
         [SerializeField] int deadTime;
+        bool removed_;
         public bool IsDead => deadTime > 0;
 
         void Awake()
@@ -68,7 +69,15 @@ namespace BattleSimulation.Attackers
                 uint paths = (uint)World.WorldData.World.data.tiles[pathSegmentTarget].pathNext.Count;
                 if (paths == 0)
                 {
-                    onRemoved.Invoke();
+                    if (!removed_)
+                    {
+                        removed_ = true;
+                        onRemoved.Invoke();
+                    }
+                    if (!IsDead)
+                    {
+                        // damage hub
+                    }
                     Destroy(gameObject);
                     return;
                 }
@@ -147,7 +156,11 @@ namespace BattleSimulation.Attackers
             rb.detectCollisions = false;
 
             onDeath.Invoke(cause);
-            onRemoved.Invoke();
+            if (!removed_)
+            {
+                removed_ = true;
+                onRemoved.Invoke();
+            }
         }
 
         void OnDrawGizmosSelected()

@@ -1,4 +1,5 @@
 using BattleSimulation.Control;
+using BattleSimulation.World.WorldData;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,11 +11,14 @@ namespace BattleVisuals.UI
     public class WavesDisplay : MonoBehaviour
     {
         [SerializeField] GameObject waveDisplayPrefab;
+        [SerializeField] GameObject pathLabelPrefab;
         [SerializeField] WaveController wc;
         [SerializeField] BattleController bc;
         [SerializeField] TextMeshProUGUI waveNumber;
         [SerializeField] TextMeshProUGUI remainingText;
         [SerializeField] RectTransform wavesLayout;
+        [SerializeField] RectTransform pathLabelHolder;
+        [SerializeField] Vector2 labelOffset;
         readonly List<WaveDisplay> waves_ = new();
 
         [SerializeField] float minimumWidth;
@@ -32,6 +36,18 @@ namespace BattleVisuals.UI
         {
             BattleController.updateFuelPerWave.Unregister(UpdateFuelIncome);
         }
+
+        void Start()
+        {
+            int paths = World.data.firstPathTiles.Length;
+            for (int i = 0; i < paths; i++)
+            {
+                var lgo = Instantiate(pathLabelPrefab, pathLabelHolder);
+                lgo.GetComponent<TextMeshProUGUI>().text = ((char)('A' + i)).ToString();
+                lgo.GetComponent<RectTransform>().anchoredPosition = labelOffset * i;
+            }
+        }
+
         void Update()
         {
             ForceUpdate();

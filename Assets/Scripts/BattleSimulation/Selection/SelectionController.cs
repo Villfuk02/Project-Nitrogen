@@ -1,5 +1,6 @@
 using Game.Blueprint;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Utils;
 
 namespace BattleSimulation.Selection
@@ -26,6 +27,8 @@ namespace BattleSimulation.Selection
         }
         void Update()
         {
+            Debug.Log(EventSystem.current.IsPointerOverGameObject());
+
             // mouse movement
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit selectionHit, 100, selectionMask_))
