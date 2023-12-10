@@ -9,6 +9,7 @@ namespace BattleSimulation.Buildings
         public Blueprint OriginalBlueprint { get; private set; }
         public bool placed;
         [SerializeField] GameObject visuals;
+        public Transform[] rotateBack;
 
         public void InitBlueprint(Blueprint blueprint)
         {

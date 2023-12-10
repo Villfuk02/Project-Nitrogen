@@ -8,7 +8,7 @@ namespace BattleSimulation.Selection
         [SerializeField] protected Building b;
         public override void Place()
         {
-            selectedTile.building = b;
+            selectedTile.Building = b;
             b.Placed();
             base.Place();
         }

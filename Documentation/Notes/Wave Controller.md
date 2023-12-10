@@ -9,3 +9,5 @@ for each wave, calculate a budget based on wave number and battle difficulty
 select up [[Attacker]] types, counts and spacing to fill the budget as much as possible without going over
 for each [[Attacker]] type, there will be some additional values for calculating wave strength, dependent on count
 make sure there are some enemies for each path - sometimes the same, sometimes different
+manuallly prepare group sequences with a given scores for each enemy type
+try coarse estimated scoring first - might be good enough

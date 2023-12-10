@@ -17,8 +17,25 @@ namespace BattleSimulation.World
         public enum Obstacle { None, Path, Small, Large, Fuel, Minerals }
         public Obstacle obstacle;
         public WorldUtils.Slant slant;
+
         [Header("Runtime variables")]
-        public Building? building;
+        [SerializeField] Building building;
+        public Building? Building
+        {
+            get { return building; }
+            set
+            {
+                building = value;
+                if (building == null)
+                    return;
+
+                building.transform.localRotation = slantedParts.localRotation;
+                foreach (var t in building.rotateBack)
+                {
+                    t.rotation = Quaternion.identity;
+                }
+            }
+        }
 
         void Start()
         {

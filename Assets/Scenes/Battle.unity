@@ -1577,6 +1577,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blueprintMenuItemPrefab: {fileID: 1738174331456881018, guid: c08a1b603e095a9408da28b4938225d9, type: 3}
   menu: {fileID: 1234769087}
+  selectionController: {fileID: 793714038}
   hotbar: {fileID: 408895618}
   menuItems: []
 --- !u!1 &449949342

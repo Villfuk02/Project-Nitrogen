@@ -9,6 +9,7 @@ namespace BattleSimulation.Selection
         public Blueprint[] blueprints;
         public int[] cooldowns;
         public int selected;
+        public bool waveStarted;
 
         void Awake()
         {
@@ -18,12 +19,14 @@ namespace BattleSimulation.Selection
                 cooldowns[i] = blueprints[i].startingCooldown;
                 blueprints[i] = blueprints[i].Clone();
             }
-            WaveController.onWaveFinished.Register(ReduceCooldowns, 10);
+            WaveController.onWaveFinished.Register(WaveFinished, 10);
+            WaveController.startWave.Register(WaveStarted, 10);
         }
 
         void OnDestroy()
         {
-            WaveController.onWaveFinished.Unregister(ReduceCooldowns);
+            WaveController.onWaveFinished.Unregister(WaveFinished);
+            WaveController.startWave.Unregister(WaveStarted);
         }
 
         void Update()
@@ -44,23 +47,32 @@ namespace BattleSimulation.Selection
                 return false;
 
             blueprint = blueprints[index];
-
-            if (cooldowns[index] > 0)
-                return false;
-
-            if (BattleController.CanAfford(blueprint.energyCost, blueprint.materialCost) == BattleController.Affordable.No)
-                return false;
-
             selected = index;
             return true;
         }
 
         public bool OnPlace()
         {
+            if (blueprints[selected].type != Blueprint.Type.Ability && waveStarted)
+                return false;
+            if (cooldowns[selected] > 0)
+                return false;
             if (!BattleController.AdjustAndTrySpend(blueprints[selected].energyCost, blueprints[selected].materialCost))
                 return false;
             cooldowns[selected] = blueprints[selected].cooldown;
             return true;
+        }
+
+        public bool WaveStarted()
+        {
+            waveStarted = true;
+            return true;
+        }
+
+        public void WaveFinished()
+        {
+            waveStarted = false;
+            ReduceCooldowns();
         }
 
         public void ReduceCooldowns()

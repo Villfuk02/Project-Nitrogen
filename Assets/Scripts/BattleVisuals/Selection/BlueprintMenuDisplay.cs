@@ -7,6 +7,7 @@ namespace BattleVisuals.Selection
     {
         [SerializeField] GameObject blueprintMenuItemPrefab;
         [SerializeField] BlueprintMenu menu;
+        [SerializeField] SelectionController selectionController;
         [SerializeField] Transform hotbar;
         [SerializeField] BlueprintMenuItem[] menuItems;
 
@@ -17,6 +18,8 @@ namespace BattleVisuals.Selection
             {
                 menuItems[i] = Instantiate(blueprintMenuItemPrefab, hotbar).GetComponent<BlueprintMenuItem>();
                 menuItems[i].display.InitBlueprint(menu.blueprints[i]);
+                int index = i;
+                menuItems[i].display.onClick.AddListener(() => selectionController.SelectFromMenu(index));
             }
             UpdateItems();
         }
@@ -30,7 +33,7 @@ namespace BattleVisuals.Selection
         {
             for (int i = 0; i < menuItems.Length; i++)
             {
-                menuItems[i].UpdateItem(menu.cooldowns[i], menu.selected == i);
+                menuItems[i].UpdateItem(menu.cooldowns[i], menu.waveStarted, menu.selected == i);
             }
         }
     }

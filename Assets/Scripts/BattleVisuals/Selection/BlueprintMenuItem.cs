@@ -17,7 +17,7 @@ namespace BattleVisuals.Selection
         [SerializeField] Color useMaterialsTextColor;
         [SerializeField] Color onCooldownTextColor;
 
-        public void UpdateItem(int cooldown, bool selected)
+        public void UpdateItem(int cooldown, bool waveStarted, bool selected)
         {
             display.selected = selected;
 
@@ -34,7 +34,7 @@ namespace BattleVisuals.Selection
 
             display.UpdateText((int)param.priceEnergy, (int)param.priceMaterials, GetTextColor(cooldown > 0, affordable));
 
-            bool ready = cooldown == 0 && affordable != BattleController.Affordable.No;
+            bool ready = cooldown == 0 && affordable != BattleController.Affordable.No && (display.blueprint.type == Blueprint.Type.Ability || !waveStarted);
             display.highlight.color = GetHighlightColor(ready, selected);
         }
 

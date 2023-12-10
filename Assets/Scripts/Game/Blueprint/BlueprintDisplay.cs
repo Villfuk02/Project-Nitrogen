@@ -1,13 +1,14 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Utils;
 
 namespace Game.Blueprint
 {
-    public class BlueprintDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class BlueprintDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
         [Header("References")]
         [SerializeField] Image blueprintBackground;
@@ -34,6 +35,7 @@ namespace Game.Blueprint
         public bool selected;
         public float targetCooldownFill;
         float timer_;
+        public UnityEvent onClick;
 
         public void InitBlueprint(Blueprint b)
         {
@@ -63,6 +65,10 @@ namespace Game.Blueprint
         public void OnPointerExit(PointerEventData eventData)
         {
             hovered = false;
+        }
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            onClick.Invoke();
         }
 
         public void UpdateText(int energy, int materials, Color color)

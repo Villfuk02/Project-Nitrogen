@@ -12,7 +12,7 @@ namespace BattleSimulation.Selection
 
         public override bool IsTileValid(Tile tile)
         {
-            if (tile == null || tile.building != null || tile.obstacle != Tile.Obstacle.None)
+            if (tile == null || tile.Building != null || tile.obstacle != Tile.Obstacle.None)
                 return false;
             if (!onSlants && tile.slant != WorldUtils.Slant.None)
                 return false;
@@ -26,9 +26,9 @@ namespace BattleSimulation.Selection
         {
             if (!Tiles.TILES.TryGet(tilePos, out Tile t))
                 return false;
-            if (t.building == null)
+            if (t.Building == null)
                 return false;
-            return ReferenceEquals(t.building.GetType(), type);
+            return ReferenceEquals(t.Building.GetType(), type);
         }
     }
 }

@@ -14,9 +14,9 @@ namespace BattleVisuals.Selection
             if (buildingHighlightProvider != null)
                 return true;
 
-            if (t.building != null)
+            if (t.Building != null)
             {
-                buildingHighlightProvider = t.building.GetComponent<HighlightProvider>();
+                buildingHighlightProvider = t.Building.GetComponent<HighlightProvider>();
                 return true;
             }
             return false;

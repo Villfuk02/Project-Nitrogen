@@ -295,6 +295,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   placed: 0
   visuals: {fileID: 475032649205546438}
+  rotateBack:
+  - {fileID: 475032647605434327}
   targeting: {fileID: 475032647605434328}
   projectilePrefab: {fileID: 2180857672546275147, guid: 11ce8002ce61abc4e9c537826979384e, type: 3}
   projectileOrigin: {fileID: 475032647605434327}
@@ -331,7 +333,7 @@ MonoBehaviour:
       m_Calls: []
   selectedTile: {fileID: 0}
   b: {fileID: 475032649215164953}
-  onSlants: 0
+  onSlants: 1
 --- !u!114 &2692797349279770925
 MonoBehaviour:
   m_ObjectHideFlags: 0

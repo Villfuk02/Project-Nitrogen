@@ -27,11 +27,9 @@ namespace BattleSimulation.Selection
         }
         void Update()
         {
-            Debug.Log(EventSystem.current.IsPointerOverGameObject());
-
             // mouse movement
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit selectionHit, 100, selectionMask_))
+            if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out RaycastHit selectionHit, 100, selectionMask_))
                 hovered = selectionHit.transform.GetComponent<Selectable>();
             else
                 hovered = null;
