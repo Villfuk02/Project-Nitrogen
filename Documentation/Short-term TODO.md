@@ -1,5 +1,25 @@
 - [ ] info panel
-- [ ] tooltips
+    - [x] sprite
+    - [x] icon and name
+    - [ ] stats
+        - [x] numbers
+        - [x] enums
+        - [ ] icons
+    - [x] descriptions
+    - [ ] diff
+        - [ ] stats
+        - [ ] descriptions
+    - [ ] blueprint adjustment events
+    - [ ] attackers
+        - [ ] attacker blueprints
+        - [ ] name
+        - [ ] icon
+        - [ ] stats
+        - [ ] descriptions
+    - [ ] tiles
+        - [ ] slant?
+        - [ ] path?
+        - [ ] resources?
 - [ ] redo decoration models
 - [ ] redo decoaration placement
 
@@ -13,13 +33,14 @@
 - [ ] 20 blueprints
 - [ ] 10 attackers
 - [x] economy
-- [ ] base UI
-- [ ] selection
-- [ ] tooltips
+- [x] base UI
+- [x] selection
+- [ ] info panel
 - [ ] selling
-- [ ] spells
+- [ ] abilities
 - [ ] losing
-- [ ] fuel
+- [x] fuel
+- [ ] winning
 - [ ] next level
 - [ ] sound effects
 - [ ] refactoring
@@ -31,6 +52,7 @@
 - [ ] +polish
 - [ ] +more towers and attackers
 - [ ] +time controls
+- [ ] +optimisations
 ## optimisations
 - [ ] ? parallelize WFC (constraint consistency)
 - [ ] ? make WFC slots cache which interface features are provided by which modules

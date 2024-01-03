@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Game.Damage
 {
@@ -18,5 +19,23 @@ namespace Game.Damage
         }
 
         public override string ToString() => $"{amount} damage (type={type}, source={source})";
+    }
+
+    public static class DamageExtensions
+    {
+        static readonly string[] HumanReadableNames = { "Health Loss", "Physical", "Fire" };
+        public static string ToHumanReadable(this Damage.Type type)
+        {
+            List<string> types = new();
+            int i = 0;
+            while (type != 0)
+            {
+                if (((int)type & 1) != 0)
+                    types.Add(HumanReadableNames[i]);
+                type = (Damage.Type)((int)type >> 1);
+                i++;
+            }
+            return string.Join(' ', types);
+        }
     }
 }

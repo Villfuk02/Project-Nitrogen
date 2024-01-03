@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Blueprint
@@ -9,7 +10,7 @@ namespace Game.Blueprint
         public enum Rarity { Starter, Common, Rare, Legendary }
         public enum Type { DefensiveBuilding, EconomicBuilding, Ability, Upgrade }
 
-        //public new string name;
+        public new string name;
         public GameObject prefab;
         public Sprite icon;
         public Rarity rarity;
@@ -25,6 +26,8 @@ namespace Game.Blueprint
         public int materialGeneration = -1;
         public int energyGeneration = -1;
         public int fuelGeneration = -1;
+        public int magic1 = -1;
+        public List<string> descriptions;
 
         public bool HasRange => range >= 0;
         public bool HasDamage => damage >= 0;
@@ -38,6 +41,7 @@ namespace Game.Blueprint
         {
             Blueprint copy = CreateInstance<Blueprint>();
 
+            copy.name = name;
             copy.prefab = prefab;
             copy.icon = icon;
             copy.rarity = rarity;
@@ -53,6 +57,8 @@ namespace Game.Blueprint
             copy.materialGeneration = materialGeneration;
             copy.energyGeneration = energyGeneration;
             copy.fuelGeneration = fuelGeneration;
+            copy.magic1 = magic1;
+            copy.descriptions = descriptions;
 
             return copy;
         }

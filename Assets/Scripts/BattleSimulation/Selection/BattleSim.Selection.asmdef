@@ -10,7 +10,8 @@
         "GUID:bfbdbdd4061137041b161434e4da10de",
         "GUID:7332ee89fce4e914ea13411c06f77954",
         "GUID:ebeb99c39dce7b942ac76a02512518c0",
-        "GUID:279dbe40f6076c6479f63b383bb7b96c"
+        "GUID:279dbe40f6076c6479f63b383bb7b96c",
+        "Game.InfoPanel"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

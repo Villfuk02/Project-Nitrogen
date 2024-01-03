@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed9e4bc5a30718f41968ff1efaf3e48d, type: 3}
   m_Name: Hub
   m_EditorClassIdentifier: 
+  name: Hub
   prefab: {fileID: 475032649215164951, guid: ad3ddd3fb1fee064288dfc89c3d24938, type: 3}
   icon: {fileID: 21300000, guid: 1eb613c3aecd75a41a11b637c5fe3e1f, type: 3}
   rarity: 0
@@ -27,3 +28,7 @@ MonoBehaviour:
   materialGeneration: 10
   energyGeneration: 10
   fuelGeneration: 10
+  magic1: -1
+  descriptions:
+  - When an enemy reaches this building, you lose [LIV]Lives. Protect at all costs!
+  - Produces [GEN] every round.

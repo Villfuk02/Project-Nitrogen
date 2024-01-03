@@ -1,4 +1,6 @@
+using BattleSimulation.Buildings;
 using Game.Blueprint;
+using Game.InfoPanel;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Utils;
@@ -12,6 +14,7 @@ namespace BattleSimulation.Selection
         [Header("References")]
         [SerializeField] Camera mainCamera;
         [SerializeField] BlueprintMenu blueprintMenu;
+        [SerializeField] InfoPanel infoPanel;
         [Header("Runtime values")]
         public Selectable selected;
         public Selectable hovered;
@@ -98,12 +101,15 @@ namespace BattleSimulation.Selection
             DeselectFromMenu();
             selected = select;
             resetVisuals = true;
+            if (select.tile is { Building: Building b })
+                infoPanel.ShowBlueprint(b.Blueprint);
         }
 
         public void DeselectInWorld()
         {
             selected = null;
             resetVisuals = true;
+            infoPanel.Hide();
         }
 
         public void SelectFromMenu(int index)
@@ -118,6 +124,7 @@ namespace BattleSimulation.Selection
             placing.GetComponent<IBlueprinted>().InitBlueprint(blueprint);
             placing.Setup(hovered, rotation, hoverTilePosition, transform);
             resetVisuals = true;
+            infoPanel.ShowBlueprint(blueprint);
         }
 
         public void DeselectFromMenu()
@@ -127,6 +134,7 @@ namespace BattleSimulation.Selection
             placing = null;
             blueprintMenu.Deselect();
             resetVisuals = true;
+            infoPanel.Hide();
         }
     }
 }

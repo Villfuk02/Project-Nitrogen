@@ -1,13 +1,10 @@
-using UnityEngine;
-
 namespace BattleSimulation.Buildings
 {
     public class DustRefinery : ProductionBuilding
     {
-        [SerializeField] int priceIncrease;
         protected override void OnPlaced()
         {
-            OriginalBlueprint.materialCost += priceIncrease;
+            OriginalBlueprint.materialCost += OriginalBlueprint.magic1;
             base.OnPlaced();
         }
     }

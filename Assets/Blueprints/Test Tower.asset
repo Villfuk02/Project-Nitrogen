@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed9e4bc5a30718f41968ff1efaf3e48d, type: 3}
   m_Name: Test Tower
   m_EditorClassIdentifier: 
+  name: Test Tower
   prefab: {fileID: 475032649215164951, guid: c11d366ac472d994d899a9fc922884e5, type: 3}
   icon: {fileID: 21300000, guid: 4726febd0e22bfd4fab8d4e2154f7116, type: 3}
   rarity: 0
