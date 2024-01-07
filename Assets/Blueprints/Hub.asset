@@ -30,5 +30,5 @@ MonoBehaviour:
   fuelGeneration: 10
   magic1: -1
   descriptions:
-  - When an enemy reaches this building, you lose [LIV]Lives. Protect at all costs!
+  - When an enemy reaches this building, you lose [HUL]Hull. Protect at all costs!
   - Produces [GEN] every round.

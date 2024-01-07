@@ -2,6 +2,7 @@ using Game.Damage;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using Utils;
 
 namespace Game.InfoPanel
 {
@@ -14,16 +15,20 @@ namespace Game.InfoPanel
             // FORMATTING
             {"BRK", _=>"<line-height=150%>\n<line-height=100%>"},
             // ICONS
+            {"MAT", _ => TextUtils.Icon.Materials.Sprite()},
+            {"ENE", _ => TextUtils.Icon.Energy.Sprite()},
+            {"FUE", _ => TextUtils.Icon.Fuel.Sprite()},
+            {"HUL", _ => TextUtils.Icon.Hull.Sprite()},
 
             // BLUEPRINT STATS
             {"NAM", b => b.name},
-            {"RNG", b => FormatFloatStat(b.range)},
-            {"DMG", b => FormatIntStat(b.damage)},
+            {"RNG", b => FormatFloatStat(b.range, TextUtils.Icon.Range)},
+            {"DMG", b => FormatIntStat(b.damage, TextUtils.Icon.Damage)},
             {"DMT", b => FormatDamageType(b.damageType)},
-            {"SHI", b => FormatTicksStat(b.shotInterval)},
+            {"SHI", b => FormatTicksStat(b.shotInterval, TextUtils.Icon.ShotInterval)},
             {"GEN", FormatGeneration},
-            {"M1-", b => FormatIntStat(b.magic1)},
-            {"M1+", b => FormatIntStat(b.magic1)},
+            {"M1-", b => FormatIntStat(b.magic1, null)},
+            {"M1+", b => FormatIntStat(b.magic1, null)},
         };
 
         readonly Blueprint.Blueprint blueprint_;
@@ -46,20 +51,20 @@ namespace Game.InfoPanel
         }
 
         string FormatTag(string tag) => TagHandlers.TryGetValue(tag, out var handle) ? handle(blueprint_) : $"<UNKNOWN-TAG-{tag}>";
-        static string FormatIntStat(int value) => value.ToString();
-        static string FormatFloatStat(float value) => value.ToString("0.##");
-        static string FormatDamageType(Damage.Damage.Type type) => type.ToHumanReadable();
-        static string FormatTicksStat(int ticks) => $"{(ticks * 0.05f).ToString("0.##", CultureInfo.InvariantCulture)}s";
+        static string FormatIntStat(int value, TextUtils.Icon? icon) => $"{icon?.Sprite()}{value}";
+        static string FormatFloatStat(float value, TextUtils.Icon? icon) => $"{icon?.Sprite()}{value:0.##}";
+        static string FormatDamageType(Damage.Damage.Type type) => type.ToHumanReadable(true);
+        static string FormatTicksStat(int ticks, TextUtils.Icon? icon) => $"{icon?.Sprite()}{(ticks * 0.05f).ToString("0.##", CultureInfo.InvariantCulture)}s";
         static string FormatGeneration(Blueprint.Blueprint b)
         {
-            // TODO:Icons
             StringBuilder sb = new();
+            sb.Append(TextUtils.Icon.Generation.Sprite());
             if (b.HasMaterialGeneration)
-                sb.Append("[MAT]").Append(FormatIntStat(b.materialGeneration));
+                sb.Append(FormatIntStat(b.materialGeneration, TextUtils.Icon.Materials));
             if (b.HasEnergyGeneration)
-                sb.Append("[ENE]").Append(FormatIntStat(b.energyGeneration));
+                sb.Append(FormatIntStat(b.energyGeneration, TextUtils.Icon.Energy));
             if (b.HasFuelGeneration)
-                sb.Append("[FUE]").Append(FormatIntStat(b.fuelGeneration));
+                sb.Append(FormatIntStat(b.fuelGeneration, TextUtils.Icon.Fuel));
             return sb.ToString();
         }
     }

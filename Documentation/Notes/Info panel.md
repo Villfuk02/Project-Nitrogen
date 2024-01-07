@@ -17,3 +17,4 @@ Various coulours and text styles are used to signify what changed from some orig
 - added / removed stats
 - added / removed descriptions
 - changed descriptions
+icons in texts and such 128x128px, black shadow - 5 layers of gauss 4

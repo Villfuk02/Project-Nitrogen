@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Utils;
 
 namespace Game.Damage
 {
@@ -24,14 +25,19 @@ namespace Game.Damage
     public static class DamageExtensions
     {
         static readonly string[] HumanReadableNames = { "Health Loss", "Physical", "Fire" };
-        public static string ToHumanReadable(this Damage.Type type)
+        static readonly TextUtils.Icon[] Icons = { TextUtils.Icon.HpLoss, TextUtils.Icon.Physical, TextUtils.Icon.Fire };
+        public static string ToHumanReadable(this Damage.Type type, bool icons)
         {
             List<string> types = new();
             int i = 0;
             while (type != 0)
             {
                 if (((int)type & 1) != 0)
+                {
+                    if (icons)
+                        types.Add(Icons[i].Sprite());
                     types.Add(HumanReadableNames[i]);
+                }
                 type = (Damage.Type)((int)type >> 1);
                 i++;
             }

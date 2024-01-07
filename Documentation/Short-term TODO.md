@@ -1,10 +1,7 @@
 - [ ] info panel
     - [x] sprite
     - [x] icon and name
-    - [ ] stats
-        - [x] numbers
-        - [x] enums
-        - [ ] icons
+    - [x] stats
     - [x] descriptions
     - [ ] diff
         - [ ] stats
