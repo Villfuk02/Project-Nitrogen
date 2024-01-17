@@ -58,7 +58,7 @@ namespace Game.Blueprint
             copy.energyGeneration = energyGeneration;
             copy.fuelGeneration = fuelGeneration;
             copy.magic1 = magic1;
-            copy.descriptions = descriptions;
+            copy.descriptions = new(descriptions);
 
             return copy;
         }

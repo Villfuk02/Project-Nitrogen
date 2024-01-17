@@ -102,7 +102,9 @@ namespace BattleSimulation.Selection
             selected = select;
             resetVisuals = true;
             if (select.tile is { Building: Building b })
-                infoPanel.ShowBlueprint(b.Blueprint);
+                infoPanel.ShowBlueprint(b.Blueprint, b.OriginalBlueprint);
+            else if (select.attacker != null)
+                infoPanel.ShowAttacker(select.attacker);
         }
 
         public void DeselectInWorld()
@@ -117,14 +119,14 @@ namespace BattleSimulation.Selection
             DeselectInWorld();
             DeselectFromMenu();
 
-            if (!blueprintMenu.TrySelect(index, out var blueprint))
+            if (!blueprintMenu.TrySelect(index, out var blueprint, out var originalBlueprint))
                 return;
 
             placing = Instantiate(blueprint.prefab, transform).GetComponent<Placement>();
             placing.GetComponent<IBlueprinted>().InitBlueprint(blueprint);
             placing.Setup(hovered, rotation, hoverTilePosition, transform);
             resetVisuals = true;
-            infoPanel.ShowBlueprint(blueprint);
+            infoPanel.ShowBlueprint(blueprint, originalBlueprint);
         }
 
         public void DeselectFromMenu()

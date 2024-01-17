@@ -6,6 +6,7 @@ namespace BattleSimulation.Selection
 {
     public class BlueprintMenu : MonoBehaviour
     {
+        public Blueprint[] originalBlueprints;
         public Blueprint[] blueprints;
         public int[] cooldowns;
         public int selected;
@@ -13,11 +14,12 @@ namespace BattleSimulation.Selection
 
         void Awake()
         {
+            blueprints = new Blueprint[originalBlueprints.Length];
             cooldowns = new int[blueprints.Length];
             for (int i = 0; i < blueprints.Length; i++)
             {
+                blueprints[i] = originalBlueprints[i].Clone();
                 cooldowns[i] = blueprints[i].startingCooldown;
-                blueprints[i] = blueprints[i].Clone();
             }
             WaveController.onWaveFinished.Register(WaveFinished, 10);
             WaveController.startWave.Register(WaveStarted, 10);
@@ -40,13 +42,15 @@ namespace BattleSimulation.Selection
             selected = -1;
         }
 
-        public bool TrySelect(int index, out Blueprint blueprint)
+        public bool TrySelect(int index, out Blueprint blueprint, out Blueprint original)
         {
             blueprint = null;
+            original = null;
             if (index < 0 || index >= blueprints.Length)
                 return false;
 
             blueprint = blueprints[index];
+            original = originalBlueprints[index];
             selected = index;
             return true;
         }

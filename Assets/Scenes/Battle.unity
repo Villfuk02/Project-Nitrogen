@@ -4123,11 +4123,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03f5adbf5cba42542b6eb611e5a16b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blueprints:
+  originalBlueprints:
   - {fileID: 11400000, guid: 376c6eb40ad25ad438f202cf9fd84f42, type: 2}
   - {fileID: 11400000, guid: 05459f1e64a666c4991299d3ab4ba443, type: 2}
   - {fileID: 11400000, guid: 3425f27343a18a24c88b3ec33a6ead8c, type: 2}
   - {fileID: 11400000, guid: f7194962d8ed52a41887aebd5a9644d5, type: 2}
+  blueprints: []
   cooldowns: 
   selected: -1
   waveStarted: 0
@@ -7347,7 +7348,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 330
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.y
@@ -7355,15 +7356,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 165
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1560906903024010511, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
-      propertyPath: m_fontSize
-      value: 26
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010511, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_fontSizeBase
@@ -7371,7 +7368,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903060301604, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_Size
-      value: 0.15880577
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1560906903065170748, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
+      propertyPath: m_Size
+      value: 0.99999994
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903065170748, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_Value

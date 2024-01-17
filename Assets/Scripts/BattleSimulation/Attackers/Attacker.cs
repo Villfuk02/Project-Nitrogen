@@ -1,4 +1,5 @@
 using BattleVisuals.Selection.Highlightable;
+using Game.AttackerStats;
 using Game.Damage;
 using System;
 using UnityEngine;
@@ -28,12 +29,11 @@ namespace BattleSimulation.Attackers
         [Header("Constants")]
         public const float SMALL_TARGET_HEIGHT = 0.15f;
         public const float LARGE_TARGET_HEIGHT = 0.3f;
-        [Header("Stats")]
-        public float speed;
-        public int maxHealth;
+        public AttackerStats originalStats;
         [Header("Runtime References")]
         public Transform target;
         [Header("Runtime values")]
+        public AttackerStats stats;
         [SerializeField] float pathSegmentProgress;
         [SerializeField] Vector2Int pathSegmentTarget;
         [SerializeField] Vector2Int lastTarget;
@@ -46,7 +46,8 @@ namespace BattleSimulation.Attackers
 
         void Awake()
         {
-            health = maxHealth;
+            stats = originalStats.Clone();
+            health = stats.maxHealth;
         }
 
         void FixedUpdate()
@@ -59,7 +60,7 @@ namespace BattleSimulation.Attackers
                 return;
             }
 
-            pathSegmentProgress += Time.fixedDeltaTime * speed;
+            pathSegmentProgress += Time.fixedDeltaTime * stats.speed;
 
             while (pathSegmentProgress >= 1)
             {

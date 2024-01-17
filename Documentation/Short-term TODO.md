@@ -3,20 +3,16 @@
     - [x] icon and name
     - [x] stats
     - [x] descriptions
-    - [ ] diff
-        - [ ] stats
-        - [ ] descriptions
-    - [ ] blueprint adjustment events
-    - [ ] attackers
-        - [ ] attacker blueprints
-        - [ ] name
-        - [ ] icon
-        - [ ] stats
-        - [ ] descriptions
+    - [x] diff
+    - [x] dynamically update
+    - [x] attackers
     - [ ] tiles
         - [ ] slant?
         - [ ] path?
         - [ ] resources?
+- [ ] attacker desc icons (HP, Speed, Sizes)
+- [ ] hub icon
+- [ ] tile icon(s?)
 - [ ] redo decoration models
 - [ ] redo decoaration placement
 

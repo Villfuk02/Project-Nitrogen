@@ -33,11 +33,7 @@ namespace Game.Damage
             while (type != 0)
             {
                 if (((int)type & 1) != 0)
-                {
-                    if (icons)
-                        types.Add(Icons[i].Sprite());
-                    types.Add(HumanReadableNames[i]);
-                }
+                    types.Add($"{(icons ? Icons[i].Sprite() : "")}{HumanReadableNames[i]}");
                 type = (Damage.Type)((int)type >> 1);
                 i++;
             }

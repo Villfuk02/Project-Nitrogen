@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30d4d1898ecf507489487964fd9b2c39, type: 3}
+  m_Name: TestAttacker
+  m_EditorClassIdentifier: 
+  name: Test Attacker
+  prefab: {fileID: 5845349189104484810, guid: 5c1c30ee895bdc7489707bc1a75935bd, type: 3}
+  icon: {fileID: 21300000, guid: 1eb613c3aecd75a41a11b637c5fe3e1f, type: 3}
+  size: 0
+  speed: 0.5
+  maxHealth: 5
+  descriptions:
+  - I am a silly test description of a silly attacker with [HP/M] health.

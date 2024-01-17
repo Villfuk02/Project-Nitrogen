@@ -17,7 +17,7 @@ namespace BattleVisuals.Attackers
         [SerializeField] int division;
         void Start()
         {
-            max = attacker.maxHealth;
+            max = attacker.stats.maxHealth;
             division = 1;
             int divisionOrder = 0;
             while (division * 10 < max)

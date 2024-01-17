@@ -1,41 +1,123 @@
+using BattleSimulation.Attackers;
 using Game.Damage;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using UnityEngine;
 using Utils;
+using AttackerDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<(Game.AttackerStats.AttackerStats stats, Game.AttackerStats.AttackerStats original, BattleSimulation.Attackers.Attacker attacker)>;
+using BlueprintDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<(Game.Blueprint.Blueprint blueprint, Game.Blueprint.Blueprint original)>;
 
 namespace Game.InfoPanel
 {
-    public class DescriptionFormatter
+    public static class DescriptionFormat
     {
-        public delegate string HandleTag(Blueprint.Blueprint blueprint);
+        public static readonly string IMPROVED_COLOR = "#" + ColorUtility.ToHtmlStringRGBA(Color.green);
+        public static readonly string WORSENED_COLOR = "#" + ColorUtility.ToHtmlStringRGBA(0.5f * Color.red + 0.5f * Color.white);
+        public static readonly string CHANGED_COLOR = "#" + ColorUtility.ToHtmlStringRGBA(0.7f * Color.yellow + 0.3f * Color.white);
+        public static readonly string NEW_COLOR = "#" + ColorUtility.ToHtmlStringRGBA(0.7f * Color.yellow + 0.3f * Color.red);
+        public enum Improvement { More, Less, Undeclared }
 
-        static readonly Dictionary<string, HandleTag> TagHandlers = new()
+        public static readonly Dictionary<string, string> SHARED_TAGS = new()
         {
             // FORMATTING
-            {"BRK", _=>"<line-height=150%>\n<line-height=100%>"},
-            // ICONS
-            {"MAT", _ => TextUtils.Icon.Materials.Sprite()},
-            {"ENE", _ => TextUtils.Icon.Energy.Sprite()},
-            {"FUE", _ => TextUtils.Icon.Fuel.Sprite()},
-            {"HUL", _ => TextUtils.Icon.Hull.Sprite()},
+            { "BRK", "<line-height=150%>\n<line-height=100%>" },
 
-            // BLUEPRINT STATS
-            {"NAM", b => b.name},
-            {"RNG", b => FormatFloatStat(b.range, TextUtils.Icon.Range)},
-            {"DMG", b => FormatIntStat(b.damage, TextUtils.Icon.Damage)},
-            {"DMT", b => FormatDamageType(b.damageType)},
-            {"SHI", b => FormatTicksStat(b.shotInterval, TextUtils.Icon.ShotInterval)},
-            {"GEN", FormatGeneration},
-            {"M1-", b => FormatIntStat(b.magic1, null)},
-            {"M1+", b => FormatIntStat(b.magic1, null)},
+            // ICONS
+            { "MAT", TextUtils.Icon.Materials.Sprite() },
+            { "ENE", TextUtils.Icon.Energy.Sprite() },
+            { "FUE", TextUtils.Icon.Fuel.Sprite() },
+            { "HUL", TextUtils.Icon.Hull.Sprite() },
         };
 
-        readonly Blueprint.Blueprint blueprint_;
-        public DescriptionFormatter(Blueprint.Blueprint blueprint)
+        static readonly Dictionary<string, BlueprintDescriptionFormatter.HandleTag> BlueprintTags = new()
         {
-            blueprint_ = blueprint;
+            { "NAM", s => FormatStringStat(s.blueprint.name, s.original.name) },
+            { "RNG", s => FormatFloatStat( TextUtils.Icon.Range, s.blueprint.range, s.original.range, s.original.HasRange, Improvement.More) },
+            { "DMG", s => FormatIntStat( TextUtils.Icon.Damage, s.blueprint.damage, s.original.damage, s.original.HasDamage, Improvement.More) },
+            { "DMT", s => FormatDamageType(s.blueprint.damageType, s.original.damageType) },
+            { "SHI", s => FormatTicksStat(TextUtils.Icon.ShotInterval, s.blueprint.shotInterval, s.original.shotInterval, s.original.HasShotInterval, Improvement.Less) },
+            { "GEN", s => FormatGeneration(s.blueprint, s.original) },
+            { "M1-", s => FormatIntStat(null, s.blueprint.magic1, s.original.magic1, true, Improvement.Less) },
+            { "M1+", s => FormatIntStat(null, s.blueprint.magic1, s.original.magic1, true, Improvement.More) },
+        };
+
+        static readonly Dictionary<string, AttackerDescriptionFormatter.HandleTag> AttackerTags = new()
+        {
+            {"SIZ", s => AttackerStats.AttackerStats.HumanReadableSize(s.stats.size, true)},
+            {"SPD", s => FormatFloatStat(null, s.stats.speed, s.original.speed, true, Improvement.More)},
+            {"HP", s => FormatIntStat(null, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared)},
+            {"MHP", s => FormatIntStat(null, s.stats.maxHealth, s.original.maxHealth, true, Improvement.More)},
+            {"HP/M", s => $"{FormatIntStat(null, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared)}/{FormatIntStat(null,s.stats.maxHealth, s.original.maxHealth, true, Improvement.More)}"}
+        };
+
+        public static BlueprintDescriptionFormatter Blueprint(Blueprint.Blueprint blueprint, Blueprint.Blueprint original) => new((blueprint, original), BlueprintTags);
+        public static AttackerDescriptionFormatter Attacker(AttackerStats.AttackerStats stats, AttackerStats.AttackerStats original, Attacker attacker) => new((stats, original, attacker), AttackerTags);
+
+        static string FormatStringStat(string text, string? original)
+        {
+            if (text == original)
+                return text;
+            return text.Colored(string.IsNullOrEmpty(original) ? NEW_COLOR : CHANGED_COLOR);
         }
+        static string FormatIntStat(TextUtils.Icon? icon, int value, int original, bool originalExists, Improvement improvement)
+        {
+            return ColorImprovement($"{icon?.Sprite()}{value}", value, original, originalExists, improvement);
+        }
+        static string FormatFloatStat(TextUtils.Icon? icon, float value, float original, bool originalExists, Improvement improvement)
+        {
+            return ColorImprovement($"{icon?.Sprite()}{value.ToString("0.##", CultureInfo.InvariantCulture)}", value, original, originalExists, improvement);
+        }
+        static string FormatDamageType(Damage.Damage.Type type, Damage.Damage.Type original) => $"{(type & original).ToHumanReadable(true)} {(type & ~original).ToHumanReadable(true).Colored(NEW_COLOR)}";
+        static string FormatTicksStat(TextUtils.Icon? icon, int ticks, int original, bool originalExists, Improvement improvement)
+        {
+            return ColorImprovement($"{icon?.Sprite()}{(ticks * 0.05f).ToString("0.##", CultureInfo.InvariantCulture)}s", ticks, original, originalExists, improvement);
+        }
+
+        static string FormatGeneration(Blueprint.Blueprint b, Blueprint.Blueprint o)
+        {
+            StringBuilder sb = new();
+            sb.Append(TextUtils.Icon.Generation.Sprite());
+            if (b.HasMaterialGeneration)
+                sb.Append(FormatIntStat(TextUtils.Icon.Materials, b.materialGeneration, o.materialGeneration, o.HasMaterialGeneration, Improvement.More));
+            if (b.HasEnergyGeneration)
+                sb.Append(FormatIntStat(TextUtils.Icon.Energy, b.energyGeneration, o.energyGeneration, o.HasEnergyGeneration, Improvement.More));
+            if (b.HasFuelGeneration)
+                sb.Append(FormatIntStat(TextUtils.Icon.Fuel, b.fuelGeneration, o.fuelGeneration, o.HasFuelGeneration, Improvement.More));
+            return sb.ToString();
+        }
+
+        static string ColorImprovement<T>(string text, T stat, T original, bool existedBefore, Improvement improvement) where T : IComparable<T>
+        {
+            if (!existedBefore)
+                return text.Colored(NEW_COLOR);
+            int comparison = stat.CompareTo(original);
+            if (comparison == 0)
+                return text;
+            if (improvement == Improvement.Undeclared)
+                return text.Colored(CHANGED_COLOR);
+
+            if (improvement == Improvement.Less)
+                comparison *= -1;
+
+            return text.Colored(comparison > 0 ? IMPROVED_COLOR : WORSENED_COLOR);
+        }
+    }
+    public class DescriptionFormatter<T>
+    {
+        public delegate string HandleTag(T state);
+
+        readonly IReadOnlyDictionary<string, HandleTag> tagHandlers_;
+
+        readonly T state_;
+
+        public DescriptionFormatter(T state, IReadOnlyDictionary<string, HandleTag> tagHandlers)
+        {
+            state_ = state;
+            tagHandlers_ = tagHandlers;
+        }
+
         public string Format(string description)
         {
             // split string on tags, replace tags, join
@@ -50,22 +132,13 @@ namespace Game.InfoPanel
             return string.Join("", split);
         }
 
-        string FormatTag(string tag) => TagHandlers.TryGetValue(tag, out var handle) ? handle(blueprint_) : $"<UNKNOWN-TAG-{tag}>";
-        static string FormatIntStat(int value, TextUtils.Icon? icon) => $"{icon?.Sprite()}{value}";
-        static string FormatFloatStat(float value, TextUtils.Icon? icon) => $"{icon?.Sprite()}{value:0.##}";
-        static string FormatDamageType(Damage.Damage.Type type) => type.ToHumanReadable(true);
-        static string FormatTicksStat(int ticks, TextUtils.Icon? icon) => $"{icon?.Sprite()}{(ticks * 0.05f).ToString("0.##", CultureInfo.InvariantCulture)}s";
-        static string FormatGeneration(Blueprint.Blueprint b)
+        string FormatTag(string tag)
         {
-            StringBuilder sb = new();
-            sb.Append(TextUtils.Icon.Generation.Sprite());
-            if (b.HasMaterialGeneration)
-                sb.Append(FormatIntStat(b.materialGeneration, TextUtils.Icon.Materials));
-            if (b.HasEnergyGeneration)
-                sb.Append(FormatIntStat(b.energyGeneration, TextUtils.Icon.Energy));
-            if (b.HasFuelGeneration)
-                sb.Append(FormatIntStat(b.fuelGeneration, TextUtils.Icon.Fuel));
-            return sb.ToString();
+            if (DescriptionFormat.SHARED_TAGS.TryGetValue(tag, out var replacement))
+                return replacement;
+            if (tagHandlers_.TryGetValue(tag, out var handle))
+                return handle(state_);
+            return $"<UNKNOWN-TAG-{tag}>";
         }
     }
 }

@@ -11,12 +11,8 @@ namespace Utils
         public static IEnumerator<Vector2Int> GetEnumerator(this Vector2Int bounds)
         {
             for (int x = 0; x < bounds.x; x++)
-            {
                 for (int y = 0; y < bounds.y; y++)
-                {
                     yield return new(x, y);
-                }
-            }
         }
         public static Vector2Int Round(this Vector2 v) => new(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y));
         public static Vector3Int Round(this Vector3 v) => new(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y), Mathf.RoundToInt(v.z));

@@ -2,7 +2,8 @@
     "name": "BattleVis.Attackers",
     "rootNamespace": "",
     "references": [
-        "GUID:16d16ce120eecc34f80989abced71e9f"
+        "GUID:16d16ce120eecc34f80989abced71e9f",
+        "GUID:945199d47484cd4498ea562cf6114781"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,0 +1,51 @@
+using BattleSimulation.Attackers;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Game.InfoPanel
+{
+    public class AttackerDescriptionProvider : DescriptionProvider
+    {
+        readonly Attacker? attacker_;
+        readonly AttackerStats.AttackerStats stats_;
+        readonly AttackerStats.AttackerStats original_;
+        readonly DescriptionFormatter<(AttackerStats.AttackerStats, AttackerStats.AttackerStats, Attacker)> descriptionFormatter_;
+
+        public AttackerDescriptionProvider(Attacker attacker)
+        {
+            attacker_ = attacker;
+            stats_ = attacker.stats;
+            original_ = attacker.originalStats;
+            descriptionFormatter_ = DescriptionFormat.Attacker(stats_, original_, attacker);
+        }
+        public AttackerDescriptionProvider(AttackerStats.AttackerStats stats, AttackerStats.AttackerStats original)
+        {
+            stats_ = stats;
+            original_ = original;
+            descriptionFormatter_ = DescriptionFormat.Attacker(stats, original, null);
+        }
+
+        protected override string GenerateDescription() => descriptionFormatter_.Format(GenerateRawDescription());
+
+        string GenerateRawDescription()
+        {
+            List<string> stats = new()
+            {
+                "Size [SIZ]",
+                "Speed [SPD]",
+                attacker_ == null ? "Health [MHP]" : "Health [HP/M]"
+            };
+
+            StringBuilder sb = new();
+            sb.AppendJoin('\n', stats);
+            sb.Append("[BRK]");
+            foreach (string desc in stats_.descriptions)
+            {
+                sb.Append(desc);
+                sb.Append("[BRK]");
+            }
+
+            return sb.ToString();
+        }
+    }
+}
