@@ -1,4 +1,5 @@
 using BattleSimulation.Attackers;
+using BattleSimulation.World;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ namespace Game.InfoPanel
         [SerializeField] Image icon;
         [SerializeField] TextMeshProUGUI description;
         [SerializeField] bool visible;
+        [SerializeField] Sprite tileIcon;
         DescriptionProvider? descriptionProvider_;
 
         void Start()
@@ -73,6 +75,16 @@ namespace Game.InfoPanel
             title.text = stats.name;
             icon.sprite = stats.icon;
             descriptionProvider_ = new AttackerDescriptionProvider(stats, original);
+            descriptionProvider_.HasDescriptionChanged(out var desc);
+            UpdateDescription(desc);
+        }
+
+        public void ShowTile(Tile tile)
+        {
+            Show();
+            title.text = "Tile";
+            icon.sprite = tileIcon;
+            descriptionProvider_ = new TileDescriptionProvider(tile);
             descriptionProvider_.HasDescriptionChanged(out var desc);
             UpdateDescription(desc);
         }

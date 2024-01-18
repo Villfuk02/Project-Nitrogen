@@ -694,6 +694,7 @@ MonoBehaviour:
   icon: {fileID: 1560906902274128164}
   description: {fileID: 1560906903024010511}
   visible: 1
+  tileIcon: {fileID: 21300000, guid: 5f9d5463519ebde4d9a65f837672e7cc, type: 3}
 --- !u!1 &1560906903016021583
 GameObject:
   m_ObjectHideFlags: 0

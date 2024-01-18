@@ -9,7 +9,7 @@ namespace Game.AttackerStats
     public class AttackerStats : ScriptableObject
     {
         static readonly string[] HumanReadableSizeNames = { "Small", "Large", "Boss" };
-        static readonly TextUtils.Icon[] SizeIcons = { TextUtils.Icon.HpLoss, TextUtils.Icon.HpLoss, TextUtils.Icon.HpLoss };
+        static readonly TextUtils.Icon[] SizeIcons = { TextUtils.Icon.Small, TextUtils.Icon.Large, TextUtils.Icon.Boss };
         public enum Size { Small, Large, Boss }
 
         public new string name;

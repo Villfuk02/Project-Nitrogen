@@ -101,10 +101,18 @@ namespace BattleSimulation.Selection
             DeselectFromMenu();
             selected = select;
             resetVisuals = true;
-            if (select.tile is { Building: Building b })
-                infoPanel.ShowBlueprint(b.Blueprint, b.OriginalBlueprint);
+
+            if (select.tile != null)
+            {
+                if (select.tile.Building is Building b)
+                    infoPanel.ShowBlueprint(b.Blueprint, b.OriginalBlueprint);
+                else
+                    infoPanel.ShowTile(select.tile);
+            }
             else if (select.attacker != null)
+            {
                 infoPanel.ShowAttacker(select.attacker);
+            }
         }
 
         public void DeselectInWorld()

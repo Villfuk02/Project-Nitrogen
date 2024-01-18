@@ -28,3 +28,5 @@ MonoBehaviour:
   materialGeneration: -1
   energyGeneration: -1
   fuelGeneration: -1
+  magic1: -1
+  descriptions: []

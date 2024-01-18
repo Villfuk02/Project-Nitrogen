@@ -31,4 +31,4 @@ MonoBehaviour:
   magic1: -1
   descriptions:
   - Produces [GEN] every round.
-  - Must be built on [MAT]tiles.
+  - Must be built on tiles rich in [MAT]minerals.

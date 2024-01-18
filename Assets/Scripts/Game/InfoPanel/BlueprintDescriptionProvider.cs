@@ -30,6 +30,8 @@ namespace Game.InfoPanel
                 stats.Add("Damage Type [DMT]");
             if (blueprint_.HasShotInterval)
                 stats.Add("Shot Interval [SHI]");
+            if (blueprint_.HasDamage && blueprint_.HasShotInterval)
+                stats.Add("Base Damage/s [DPS]");
             if (blueprint_.HasEnergyGeneration || blueprint_.HasMaterialGeneration || blueprint_.HasFuelGeneration)
                 stats.Add("Generation [GEN]");
 

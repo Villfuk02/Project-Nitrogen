@@ -1,4 +1,5 @@
 using BattleSimulation.Attackers;
+using BattleSimulation.World;
 using Game.Damage;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using UnityEngine;
 using Utils;
 using AttackerDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<(Game.AttackerStats.AttackerStats stats, Game.AttackerStats.AttackerStats original, BattleSimulation.Attackers.Attacker attacker)>;
 using BlueprintDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<(Game.Blueprint.Blueprint blueprint, Game.Blueprint.Blueprint original)>;
+using TileDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<BattleSimulation.World.Tile>;
 
 namespace Game.InfoPanel
 {
@@ -38,6 +40,7 @@ namespace Game.InfoPanel
             { "DMG", s => FormatIntStat( TextUtils.Icon.Damage, s.blueprint.damage, s.original.damage, s.original.HasDamage, Improvement.More) },
             { "DMT", s => FormatDamageType(s.blueprint.damageType, s.original.damageType) },
             { "SHI", s => FormatTicksStat(TextUtils.Icon.ShotInterval, s.blueprint.shotInterval, s.original.shotInterval, s.original.HasShotInterval, Improvement.Less) },
+            { "DPS", s => FormatFloatStat(TextUtils.Icon.Dps, s.blueprint.BaseDps, s.original.BaseDps, s.original.HasDamage && s.original.HasShotInterval, Improvement.More)},
             { "GEN", s => FormatGeneration(s.blueprint, s.original) },
             { "M1-", s => FormatIntStat(null, s.blueprint.magic1, s.original.magic1, true, Improvement.Less) },
             { "M1+", s => FormatIntStat(null, s.blueprint.magic1, s.original.magic1, true, Improvement.More) },
@@ -46,14 +49,17 @@ namespace Game.InfoPanel
         static readonly Dictionary<string, AttackerDescriptionFormatter.HandleTag> AttackerTags = new()
         {
             {"SIZ", s => AttackerStats.AttackerStats.HumanReadableSize(s.stats.size, true)},
-            {"SPD", s => FormatFloatStat(null, s.stats.speed, s.original.speed, true, Improvement.More)},
-            {"HP", s => FormatIntStat(null, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared)},
-            {"MHP", s => FormatIntStat(null, s.stats.maxHealth, s.original.maxHealth, true, Improvement.More)},
-            {"HP/M", s => $"{FormatIntStat(null, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared)}/{FormatIntStat(null,s.stats.maxHealth, s.original.maxHealth, true, Improvement.More)}"}
+            {"SPD", s => FormatFloatStat(TextUtils.Icon.Speed, s.stats.speed, s.original.speed, true, Improvement.More)},
+            {"HP", s => FormatIntStat(TextUtils.Icon.Health, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared)},
+            {"MHP", s => FormatIntStat(TextUtils.Icon.Health, s.stats.maxHealth, s.original.maxHealth, true, Improvement.More)},
+            {"HP/M", s => $"{FormatIntStat(TextUtils.Icon.Health, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared)}/{FormatIntStat(null,s.stats.maxHealth, s.original.maxHealth, true, Improvement.More)}"}
         };
+
+        static readonly Dictionary<string, TileDescriptionFormatter.HandleTag> TileTags = new();
 
         public static BlueprintDescriptionFormatter Blueprint(Blueprint.Blueprint blueprint, Blueprint.Blueprint original) => new((blueprint, original), BlueprintTags);
         public static AttackerDescriptionFormatter Attacker(AttackerStats.AttackerStats stats, AttackerStats.AttackerStats original, Attacker attacker) => new((stats, original, attacker), AttackerTags);
+        public static TileDescriptionFormatter Tile(Tile tile) => new(tile, TileTags);
 
         static string FormatStringStat(string text, string? original)
         {

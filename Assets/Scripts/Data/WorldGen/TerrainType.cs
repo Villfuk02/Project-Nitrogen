@@ -1,20 +1,22 @@
 using Data.Parsers;
+using System.Collections.Generic;
 using System.Linq;
 using static Data.Parsers.Parsers;
 
 namespace Data.WorldGen
 {
-    public record TerrainType(string DisplayName, char[] Surfaces, int MaxHeight, Module[] Modules, BlockersData Blockers, ScattererData ScattererData)
+    public record TerrainType(string DisplayName, char[] Surfaces, int MaxHeight, Module[] Modules, BlockersData Blockers, ScattererData ScattererData, List<FractalNoiseNode> NoiseNodes)
     {
         public static TerrainType Parse(ParseStream stream)
         {
+            List<FractalNoiseNode> noiseNodes = new();
             PropertyParser pp = new();
             var displayName = pp.Register("display_name", ParseWord);
             var surfaces = pp.Register("surfaces", Chain(ParseLine, ParseList, ParseChar));
             var maxHeight = pp.Register("max_height", ParseInt);
             var modules = pp.Register("modules", Chain(ParseBlock, ParseModules));
             var blockers = pp.Register("blockers", Chain(ParseBlock, s => BlockersData.Parse(s, surfaces())));
-            var scatterer = pp.Register("scatterer", Chain(ParseBlock, s => ScattererData.Parse(s, blockers().Blockers.Keys)));
+            var scatterer = pp.Register("scatterer", Chain(ParseBlock, s => ScattererData.Parse(s, blockers().Blockers.Keys, noiseNodes)));
 
             pp.Parse(stream);
 
@@ -24,7 +26,8 @@ namespace Data.WorldGen
                 maxHeight(),
                 modules(),
                 blockers(),
-                scatterer()
+                scatterer(),
+                noiseNodes
             );
         }
 

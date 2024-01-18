@@ -13,7 +13,7 @@ namespace Data.WorldGen
         public Predicate<Vector2Int> isPath = null;
         public Dictionary<string, Predicate<Vector2Int>> isBlocker = new();
 
-        public static ScattererData Parse(ParseStream stream, IEnumerable<string> blockers)
+        public static ScattererData Parse(ParseStream stream, IEnumerable<string> blockers, List<FractalNoiseNode> noiseNodes)
         {
             ScattererData sd = new();
 
@@ -41,7 +41,9 @@ namespace Data.WorldGen
                             throw new ParseException(parseStream, $"Blocker \"{blocker}\" was not defined.");
                         return SDFNode.Parse(parseStream, pos => sd.isBlocker[blocker](pos));
                     case "fractal_noise":
-                        return FractalNoiseNode.Parse(parseStream);
+                        var n = FractalNoiseNode.Parse(parseStream);
+                        noiseNodes.Add(n);
+                        return n;
                     default:
                         throw new ParseException(parseStream, $"Invalid scatterer node \"{node}\".");
                 }
@@ -146,16 +148,8 @@ namespace Data.WorldGen
         public override T Accept<T>(IDecorationNodeVisitor<T> visitor) => visitor.VisitSDFNode(this);
     }
 
-    public record FractalNoiseNode : Node
+    public record FractalNoiseNode(FractalNoise Noise) : Node
     {
-        public static readonly List<FractalNoiseNode> ALL_NODES = new();
-        public FractalNoise Noise { get; init; }
-
-        public FractalNoiseNode(FractalNoise noise)
-        {
-            Noise = noise;
-            ALL_NODES.Add(this);
-        }
         public static FractalNoiseNode Parse(ParseStream stream)
         {
             using BlockParseStream blockStream = new(stream);

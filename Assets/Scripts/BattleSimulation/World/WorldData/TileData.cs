@@ -39,5 +39,6 @@ namespace BattleSimulation.World.WorldData
         public Decoration decoration;
         public Vector2 position;
         public float size;
+        public Vector3 eulerRotation;
     }
 }

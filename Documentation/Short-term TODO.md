@@ -1,25 +1,7 @@
-- [ ] info panel
-    - [x] sprite
-    - [x] icon and name
-    - [x] stats
-    - [x] descriptions
-    - [x] diff
-    - [x] dynamically update
-    - [x] attackers
-    - [ ] tiles
-        - [ ] slant?
-        - [ ] path?
-        - [ ] resources?
-- [ ] attacker desc icons (HP, Speed, Sizes)
-- [ ] hub icon
-- [ ] tile icon(s?)
-- [ ] redo decoration models
-- [ ] redo decoaration placement
 
 ## issues to fix later
-- [ ] make blockers' coarse terrain collision deterministic
 - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)
-- [ ] remove small big rocks
+- [ ] increase shadow resolution
 
 ## bachelor's MVP
 - [x] world gen
@@ -28,7 +10,7 @@
 - [x] economy
 - [x] base UI
 - [x] selection
-- [ ] info panel
+- [x] info panel
 - [ ] selling
 - [ ] abilities
 - [ ] losing
@@ -43,6 +25,7 @@
 - [ ] juice it or lose it
 - [ ] +polish
 - [ ] +polish
+- [ ] +more terrain types
 - [ ] +more towers and attackers
 - [ ] +time controls
 - [ ] +optimisations

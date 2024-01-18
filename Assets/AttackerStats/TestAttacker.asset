@@ -14,9 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Test Attacker
   prefab: {fileID: 5845349189104484810, guid: 5c1c30ee895bdc7489707bc1a75935bd, type: 3}
-  icon: {fileID: 21300000, guid: 1eb613c3aecd75a41a11b637c5fe3e1f, type: 3}
+  icon: {fileID: 21300000, guid: cf84b6b4da50518499da12b6c0a44e56, type: 3}
   size: 0
-  speed: 0.5
+  speed: 2
   maxHealth: 5
-  descriptions:
-  - I am a silly test description of a silly attacker with [HP/M] health.
+  descriptions: []

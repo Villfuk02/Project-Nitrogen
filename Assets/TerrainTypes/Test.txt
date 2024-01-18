@@ -237,7 +237,7 @@ blockers {
 
 scatterer {
     * Fuel {
-        prefab Terrain/Blockers/Crystals
+        prefab Terrain/Blockers/Fuel
         tries_per_tile 50
         placement_radius 0.05
         persistent_radius 0.25
@@ -246,7 +246,7 @@ scatterer {
         angle_spread 15
         value_threshold 0
         value {
-            clamp -3 1 {
+            clamp -3 1.5 {
                 blocker Fuel 1 -1
                 fractal_noise {
                     octaves 2
@@ -263,15 +263,15 @@ scatterer {
 
     * Minerals {
         prefab Terrain/Blockers/Minerals
-        tries_per_tile 30
-        placement_radius 0.15
+        tries_per_tile 50
+        placement_radius 0.05
         persistent_radius 0.15
-        size_gain 1
-        radius_gain -2
+        size_gain 2
+        radius_gain -0.5
         angle_spread 25
         value_threshold 0
         value {
-            clamp -3 0.8 {
+            clamp -3 1.5 {
                 blocker Minerals 1 -1
                 fractal_noise {
                     octaves 2
@@ -291,19 +291,19 @@ scatterer {
         tries_per_tile 10
         placement_radius 0.25
         persistent_radius 0.25
-        size_gain 1.5
-        radius_gain -1
+        size_gain 0.5
+        radius_gain -2
         angle_spread 15
-        value_threshold -2
+        value_threshold 0
         value {
             clamp -3 0.3 {
                 blocker BigRocks 1 -2
                 fractal_noise {
                     octaves 2
                     bias 0
-                    base_amplitude 0.8
+                    base_amplitude 0.4
                     amplitude_mult 0.689
-                    base_frequency 0.71
+                    base_frequency 1.71
                     frequency_mult 1.973
                 }
                 path -4 0
@@ -313,22 +313,24 @@ scatterer {
 
     * SmallRocks {
         prefab Terrain/Blockers/Rock
-        tries_per_tile 40
-        placement_radius 0.12
+        tries_per_tile 90
+        placement_radius 0.1
         persistent_radius 0.05
         size_gain 1.2
-        radius_gain -2
+        radius_gain 1
         angle_spread 40
         value_threshold -0.2
         value {
-            clamp -2 0.2 {
-                blocker SmallRocks 1 -1
+            clamp -10 0.5 {
+                clamp -10 0.2 {
+                    blocker SmallRocks 1 -3
+                }
                 fractal_noise {
                     octaves 2
-                    bias -0.3
-                    base_amplitude 1
+                    bias -0.15
+                    base_amplitude 0.8
                     amplitude_mult 0.673
-                    base_frequency 0.63
+                    base_frequency 1.13
                     frequency_mult 2.147
                 }
                 path -2 0

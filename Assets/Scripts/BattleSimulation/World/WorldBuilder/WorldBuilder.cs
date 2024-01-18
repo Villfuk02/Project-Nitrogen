@@ -6,7 +6,6 @@ using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
 using Utils;
-using Random = UnityEngine.Random;
 
 namespace BattleSimulation.World.WorldBuilder
 {
@@ -127,8 +126,7 @@ namespace BattleSimulation.World.WorldBuilder
             Transform t = Instantiate(decoration.decoration.Prefab, parent).transform;
             t.position = WorldUtils.TilePosToWorldPos(decoration.position.x, decoration.position.y, worldData.tiles.GetHeightAt(decoration.position)!.Value);
             t.localScale = Vector3.one * decoration.size;
-            Vector2 r = Random.insideUnitCircle * decoration.decoration.AngleSpread;
-            t.localRotation = Quaternion.Euler(r.x, Random.Range(0, 360f), r.y);
+            t.localRotation = Quaternion.Euler(decoration.eulerRotation);
         }
         void PlaceTile(Vector2Int pos)
         {

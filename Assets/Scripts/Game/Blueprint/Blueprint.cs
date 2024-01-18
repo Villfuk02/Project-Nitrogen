@@ -36,6 +36,7 @@ namespace Game.Blueprint
         public bool HasMaterialGeneration => materialGeneration >= 0;
         public bool HasEnergyGeneration => energyGeneration >= 0;
         public bool HasFuelGeneration => fuelGeneration >= 0;
+        public float BaseDps => damage * 2000 / shotInterval * 0.01f;
 
         public Blueprint Clone()
         {

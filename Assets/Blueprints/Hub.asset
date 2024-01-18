@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Hub
   prefab: {fileID: 475032649215164951, guid: ad3ddd3fb1fee064288dfc89c3d24938, type: 3}
-  icon: {fileID: 21300000, guid: 1eb613c3aecd75a41a11b637c5fe3e1f, type: 3}
+  icon: {fileID: 21300000, guid: 64eec666e0c9b0648b459a16fc529d32, type: 3}
   rarity: 0
   type: 1
   energyCost: 0
