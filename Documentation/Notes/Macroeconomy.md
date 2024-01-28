@@ -3,7 +3,7 @@
 
 These resources are shared across [[Battle]]s
 
-- [[Core Stability]]
+- [[Hull]]
 - [[Generic monetary unit]]s
 - [[Blueprint]]s
 - [[Augment]]s

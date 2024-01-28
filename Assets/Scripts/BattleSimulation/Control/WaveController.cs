@@ -119,6 +119,7 @@ namespace BattleSimulation.Control
             Vector2Int firstTile = World.WorldData.World.data.firstPathTiles[path];
             a.InitPath(startingPoint, firstTile, index);
             a.onRemoved.AddListener(AttackerRemoved);
+            a.onReachedHub.AddListener(BattleController.AttackerReachedHub);
 
             attackersLeft++;
         }

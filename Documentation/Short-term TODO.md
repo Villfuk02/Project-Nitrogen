@@ -1,7 +1,16 @@
-
-## issues to fix later
+- [ ] next level
+- [ ] selling
+- [ ] run
+- [ ] losing
+- [ ] wave generating
+## polish
 - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)
 - [ ] increase shadow resolution
+- [ ] redo building look to make them more visible
+- [ ] low hull effects
+- [ ] damage taken effects
+- [ ] level start
+- [ ] level end
 
 ## bachelor's MVP
 - [x] world gen
@@ -15,11 +24,10 @@
 - [ ] abilities
 - [ ] losing
 - [x] fuel
-- [ ] winning
+- [x] winning
 - [ ] next level
 - [ ] sound effects
 - [ ] refactoring
-- [ ] issues to fix later
 - [ ] TODOs
 - [ ] polish
 - [ ] juice it or lose it

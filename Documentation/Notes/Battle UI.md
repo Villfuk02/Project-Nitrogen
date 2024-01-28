@@ -13,7 +13,7 @@ Top right corner:
 - along the top
     - player name, current [[Game Structure]] progress - the number of the current stop, [[Generic monetary unit]]s, and probably more
     - [[Fuel]] meter - fill to win the current [[Battle]]
-    - [[Core Stability]] meter
+    - [[Hull]] meter
 
 On the bottom:
 - [[Energy]] and [[Material]] displays

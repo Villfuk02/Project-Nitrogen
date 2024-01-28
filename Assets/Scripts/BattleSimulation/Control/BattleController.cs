@@ -1,3 +1,5 @@
+using BattleSimulation.Attackers;
+using Game.Run;
 using System;
 using UnityEngine;
 using Utils;
@@ -20,6 +22,10 @@ namespace BattleSimulation.Control
         public static GameCommand<float> updateMaterialsPerWave = new();
         public static GameCommand<float> updateEnergyPerWave = new();
         public static GameCommand<float> updateFuelPerWave = new();
+        public static GameCommand winLevel = new();
+        public static RunPersistence runPersistence;
+        public int HullDmgTaken { get; private set; }
+        public bool Won { get; private set; }
 
         public enum Affordable { Yes, UseMaterialsAsEnergy, No }
 
@@ -30,6 +36,12 @@ namespace BattleSimulation.Control
             addFuel.Register(AddFuel, 0);
             canAfford.RegisterAcceptor(CanAfford);
             spend.Register(Spend, 0);
+            winLevel.Register(Win, 0);
+            runPersistence = GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunPersistence>();
+            runPersistence.damageHull.Register(OnHullDmgTaken, 1000);
+            runPersistence.repairHull.Register(OnHullRepaired, 1000);
+            WaveController.startWave.Register(OnWaveStarted, 1);
+            WaveController.startWave.Register(CanStartWave, -1000);
         }
 
         void OnDestroy()
@@ -39,6 +51,11 @@ namespace BattleSimulation.Control
             addFuel.Unregister(AddFuel);
             canAfford.UnregisterAcceptor();
             spend.Unregister(Spend);
+            winLevel.Unregister(Win);
+            runPersistence.damageHull.Unregister(OnHullDmgTaken);
+            runPersistence.repairHull.Unregister(OnHullRepaired);
+            WaveController.startWave.Unregister(OnWaveStarted);
+            WaveController.startWave.Unregister(CanStartWave);
         }
 
         //TODO: hook up with initializing a level/battle
@@ -103,9 +120,13 @@ namespace BattleSimulation.Control
                 throw new ArgumentException("amount cannot be negative!");
             int realAmount = Mathf.FloorToInt(param.amount);
             param.amount = realAmount;
+            if (Fuel >= FuelGoal)
+                return true;
             Fuel += realAmount;
             if (Fuel > FuelGoal)
                 Fuel = FuelGoal;
+            if (Fuel == FuelGoal)
+                winLevel.Invoke();
             return true;
         }
 
@@ -133,6 +154,56 @@ namespace BattleSimulation.Control
                 param.toSpendEnergy = Energy;
             }
             return param.toSpendMaterials <= Material;
+        }
+
+        public static void AttackerReachedHub(Attacker attacker)
+        {
+            runPersistence.damageHull.Invoke(attacker.stats.size switch
+            {
+                Game.AttackerStats.AttackerStats.Size.Small => 1,
+                Game.AttackerStats.AttackerStats.Size.Large => 2,
+                Game.AttackerStats.AttackerStats.Size.Boss => 1000,
+                _ => throw new ArgumentOutOfRangeException()
+            });
+        }
+
+        bool OnHullDmgTaken(ref int dmg)
+        {
+            HullDmgTaken += dmg;
+            return true;
+        }
+
+        bool OnHullRepaired(ref int repaired)
+        {
+            HullDmgTaken -= repaired;
+            return true;
+        }
+
+        bool CanStartWave()
+        {
+            return !Won;
+        }
+
+        bool OnWaveStarted()
+        {
+            HullDmgTaken = 0;
+            return true;
+        }
+
+        bool Win()
+        {
+            Won = true;
+            return true;
+        }
+
+        public void Stay()
+        {
+            Won = false;
+        }
+
+        public void NextLevel()
+        {
+            Application.Quit();
         }
     }
 }

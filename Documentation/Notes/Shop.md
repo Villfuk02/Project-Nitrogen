@@ -6,4 +6,4 @@ different specialisations - each offers different things to buy
 - [[Blueprint]]s
 - [[Augment]]s
 - [[Upgrade]]s
-- [[Core Stability]]
+- [[Hull]]

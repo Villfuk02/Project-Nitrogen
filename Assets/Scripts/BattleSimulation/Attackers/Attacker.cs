@@ -24,6 +24,7 @@ namespace BattleSimulation.Attackers
         [SerializeField] UnityEvent<Damage> onDamage;
         [SerializeField] UnityEvent<Damage> onDeath;
         public UnityEvent onRemoved;
+        public UnityEvent<Attacker> onReachedHub;
         [SerializeField] Image highlight;
         [SerializeField] Animator highlightAnim;
         [Header("Constants")]
@@ -77,7 +78,7 @@ namespace BattleSimulation.Attackers
                     }
                     if (!IsDead)
                     {
-                        // damage hub
+                        onReachedHub.Invoke(this);
                     }
                     Destroy(gameObject);
                     return;
