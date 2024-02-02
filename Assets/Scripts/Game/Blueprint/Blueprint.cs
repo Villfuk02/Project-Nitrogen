@@ -7,8 +7,8 @@ namespace Game.Blueprint
     [CreateAssetMenu(fileName = "New Blueprint", menuName = "Blueprint")]
     public class Blueprint : ScriptableObject
     {
-        public enum Rarity { Starter, Common, Rare, Legendary }
-        public enum Type { DefensiveBuilding, EconomicBuilding, Ability, Upgrade }
+        public enum Rarity { Starter, Common, Rare, Legendary, Special }
+        public enum Type { DefensiveBuilding, EconomicBuilding, SpecialBuilding, Ability, Upgrade }
 
         public new string name;
         public GameObject prefab;
@@ -23,9 +23,9 @@ namespace Game.Blueprint
         public int damage = -1;
         public Damage.Damage.Type damageType = 0;
         public int shotInterval = -1;
-        public int materialGeneration = -1;
-        public int energyGeneration = -1;
-        public int fuelGeneration = -1;
+        public int fuelProduction = -1;
+        public int materialProduction = -1;
+        public int energyProduction = -1;
         public int magic1 = -1;
         public List<string> descriptions;
 
@@ -33,9 +33,9 @@ namespace Game.Blueprint
         public bool HasDamage => damage >= 0;
         public bool HasDamageType => damageType > 0;
         public bool HasShotInterval => shotInterval >= 0;
-        public bool HasMaterialGeneration => materialGeneration >= 0;
-        public bool HasEnergyGeneration => energyGeneration >= 0;
-        public bool HasFuelGeneration => fuelGeneration >= 0;
+        public bool HasFuelProduction => fuelProduction >= 0;
+        public bool HasMaterialProduction => materialProduction >= 0;
+        public bool HasEnergyProduction => energyProduction >= 0;
         public float BaseDps => damage * 2000 / shotInterval * 0.01f;
 
         public Blueprint Clone()
@@ -55,9 +55,9 @@ namespace Game.Blueprint
             copy.damage = damage;
             copy.damageType = damageType;
             copy.shotInterval = shotInterval;
-            copy.materialGeneration = materialGeneration;
-            copy.energyGeneration = energyGeneration;
-            copy.fuelGeneration = fuelGeneration;
+            copy.fuelProduction = fuelProduction;
+            copy.materialProduction = materialProduction;
+            copy.energyProduction = energyProduction;
             copy.magic1 = magic1;
             copy.descriptions = new(descriptions);
 

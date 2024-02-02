@@ -1,3 +1,4 @@
+using BattleSimulation.Buildings;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,7 +8,12 @@ namespace Game.InfoPanel
     {
         readonly Blueprint.Blueprint blueprint_;
         readonly Blueprint.Blueprint original_;
+        readonly Building? building_;
         readonly DescriptionFormatter<(Blueprint.Blueprint, Blueprint.Blueprint)> descriptionFormatter_;
+        public BlueprintDescriptionProvider(Building building) : this(building.Blueprint, building.OriginalBlueprint)
+        {
+            building_ = building;
+        }
 
         public BlueprintDescriptionProvider(Blueprint.Blueprint blueprint, Blueprint.Blueprint original)
         {
@@ -20,8 +26,16 @@ namespace Game.InfoPanel
 
         string GenerateRawDescription()
         {
-            List<string> stats = new();
+            StringBuilder sb = new();
 
+            string? extra = building_ != null ? building_.GetExtraStats() : null;
+            if (extra != null)
+            {
+                sb.Append(extra);
+                sb.Append("[BRK]");
+            }
+
+            List<string> stats = new();
             if (blueprint_.HasRange)
                 stats.Add("Range [RNG]");
             if (blueprint_.HasDamage)
@@ -32,12 +46,12 @@ namespace Game.InfoPanel
                 stats.Add("Shot Interval [SHI]");
             if (blueprint_.HasDamage && blueprint_.HasShotInterval)
                 stats.Add("Base Damage/s [DPS]");
-            if (blueprint_.HasEnergyGeneration || blueprint_.HasMaterialGeneration || blueprint_.HasFuelGeneration)
-                stats.Add("Generation [GEN]");
 
-            StringBuilder sb = new();
-            sb.AppendJoin('\n', stats);
-            sb.Append("[BRK]");
+            if (stats.Count > 0)
+            {
+                sb.AppendJoin('\n', stats);
+                sb.Append("[BRK]");
+            }
             foreach (string desc in blueprint_.descriptions)
             {
                 sb.Append(desc);

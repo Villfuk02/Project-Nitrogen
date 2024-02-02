@@ -15,8 +15,8 @@ MonoBehaviour:
   name: Hub
   prefab: {fileID: 475032649215164951, guid: ad3ddd3fb1fee064288dfc89c3d24938, type: 3}
   icon: {fileID: 21300000, guid: 64eec666e0c9b0648b459a16fc529d32, type: 3}
-  rarity: 0
-  type: 1
+  rarity: 4
+  type: 2
   energyCost: 0
   materialCost: 0
   startingCooldown: -1
@@ -25,10 +25,10 @@ MonoBehaviour:
   damage: -1
   damageType: 0
   shotInterval: -1
-  materialGeneration: 10
-  energyGeneration: 10
-  fuelGeneration: 10
+  fuelProduction: 10
+  materialProduction: 10
+  energyProduction: 10
   magic1: -1
   descriptions:
   - When an enemy reaches this building, you lose [HUL]Hull. Protect at all costs!
-  - Produces [GEN] every round.
+  - Produces [PRO] every round.

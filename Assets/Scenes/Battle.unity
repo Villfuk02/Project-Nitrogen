@@ -3350,11 +3350,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 697fa3911599b2643b6eaefbb22d3023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overrideRun: 0
   terrainType: Test
   seed: 1
   pathLengths: 100000001300000016000000
   maxExtraPaths: 4
-  randomSeed: 0
 --- !u!4 &815966620
 Transform:
   m_ObjectHideFlags: 0
@@ -8246,6 +8246,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903307885571, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6698699767758857901, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 7104332458329980866, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7104332458329980866, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7104332458329980866, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7104332458329980866, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7104332458329980866, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7104332458329980866, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

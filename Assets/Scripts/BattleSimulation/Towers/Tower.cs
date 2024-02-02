@@ -10,11 +10,14 @@ namespace BattleSimulation.Towers
     {
         public Targeting.Targeting targeting;
         public GameObject projectilePrefab;
+        protected int damageDealt;
 
         protected override void OnInitBlueprint()
         {
             targeting.SetRange(Blueprint.range);
         }
+
+        public override string? GetExtraStats() => $"Damage dealt {damageDealt}";
 
         public abstract bool Hit(Projectile projectile, Attacker attacker);
     }

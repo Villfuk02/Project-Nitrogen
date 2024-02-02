@@ -1,4 +1,5 @@
 using BattleSimulation.Attackers;
+using BattleSimulation.Buildings;
 using BattleSimulation.World;
 using TMPro;
 using UnityEngine;
@@ -14,7 +15,9 @@ namespace Game.InfoPanel
         [SerializeField] TextMeshProUGUI description;
         [SerializeField] bool visible;
         [SerializeField] Sprite tileIcon;
+        [SerializeField] RectTransform deleteButton;
         DescriptionProvider? descriptionProvider_;
+        Building? building_;
 
         void Start()
         {
@@ -46,8 +49,22 @@ namespace Game.InfoPanel
 
         void UpdateDescription(string desc)
         {
+            deleteButton.gameObject.SetActive(building_ != null && !building_.permanent);
             description.text = desc;
             LayoutRebuilder.ForceRebuildLayoutImmediate(root);
+        }
+
+        public void DeleteBuilding()
+        {
+            if (building_ == null || building_.permanent)
+                return;
+
+            building_!.Delete();
+            if (visible && descriptionProvider_ != null)
+            {
+                descriptionProvider_.HasDescriptionChanged(out string desc);
+                UpdateDescription(desc);
+            }
         }
 
         public void ShowBlueprint(Blueprint.Blueprint blueprint, Blueprint.Blueprint original)
@@ -85,6 +102,17 @@ namespace Game.InfoPanel
             title.text = "Tile";
             icon.sprite = tileIcon;
             descriptionProvider_ = new TileDescriptionProvider(tile);
+            descriptionProvider_.HasDescriptionChanged(out var desc);
+            UpdateDescription(desc);
+        }
+
+        public void ShowBuilding(Building building)
+        {
+            Show();
+            building_ = building;
+            title.text = building.Blueprint.name;
+            icon.sprite = building.Blueprint.icon;
+            descriptionProvider_ = new BlueprintDescriptionProvider(building);
             descriptionProvider_.HasDescriptionChanged(out var desc);
             UpdateDescription(desc);
         }

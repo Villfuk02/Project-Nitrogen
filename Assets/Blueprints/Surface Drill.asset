@@ -25,10 +25,10 @@ MonoBehaviour:
   damage: -1
   damageType: 0
   shotInterval: -1
-  materialGeneration: 10
-  energyGeneration: -1
-  fuelGeneration: -1
+  fuelProduction: -1
+  materialProduction: 10
+  energyProduction: -1
   magic1: -1
   descriptions:
-  - Produces [GEN] every round.
+  - Produces [PRO] every round.
   - Must be built on tiles rich in [MAT]minerals.

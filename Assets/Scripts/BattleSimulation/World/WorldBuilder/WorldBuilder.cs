@@ -155,6 +155,7 @@ namespace BattleSimulation.World.WorldBuilder
             myTransform.localPosition = Vector3.zero;
             centerTile.Building = hub;
             hub.Placed();
+            hub.permanent = true;
             done++;
         }
     }

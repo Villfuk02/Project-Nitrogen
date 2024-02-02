@@ -1,6 +1,3 @@
-- [ ] next level
-- [ ] selling
-- [ ] run
 - [ ] losing
 - [ ] wave generating
 ## polish
@@ -20,12 +17,12 @@
 - [x] base UI
 - [x] selection
 - [x] info panel
-- [ ] selling
+- [x] deletion
 - [ ] abilities
 - [ ] losing
 - [x] fuel
 - [x] winning
-- [ ] next level
+- [x] next level
 - [ ] sound effects
 - [ ] refactoring
 - [ ] TODOs

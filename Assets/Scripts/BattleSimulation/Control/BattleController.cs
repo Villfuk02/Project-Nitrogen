@@ -203,7 +203,7 @@ namespace BattleSimulation.Control
 
         public void NextLevel()
         {
-            Application.Quit();
+            runPersistence.NextLevel();
         }
     }
 }

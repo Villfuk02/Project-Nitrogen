@@ -8,6 +8,7 @@ namespace BattleSimulation.Buildings
         public Blueprint Blueprint { get; private set; }
         public Blueprint OriginalBlueprint { get; private set; }
         public bool placed;
+        public bool permanent;
         [SerializeField] GameObject visuals;
         public Transform[] rotateBack;
 
@@ -27,6 +28,15 @@ namespace BattleSimulation.Buildings
 
         protected virtual void OnInitBlueprint() { }
         protected virtual void OnPlaced() { }
+
+        public virtual string? GetExtraStats() => null;
+
+        public void Delete()
+        {
+            if (permanent)
+                Debug.LogError("Cannot delete permanent building");
+            Destroy(gameObject);
+        }
         protected virtual void OnDestroy() { }
     }
 }

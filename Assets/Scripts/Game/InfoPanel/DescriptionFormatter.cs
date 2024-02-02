@@ -27,9 +27,9 @@ namespace Game.InfoPanel
             { "BRK", "<line-height=150%>\n<line-height=100%>" },
 
             // ICONS
+            { "FUE", TextUtils.Icon.Fuel.Sprite() },
             { "MAT", TextUtils.Icon.Materials.Sprite() },
             { "ENE", TextUtils.Icon.Energy.Sprite() },
-            { "FUE", TextUtils.Icon.Fuel.Sprite() },
             { "HUL", TextUtils.Icon.Hull.Sprite() },
         };
 
@@ -41,7 +41,7 @@ namespace Game.InfoPanel
             { "DMT", s => FormatDamageType(s.blueprint.damageType, s.original.damageType) },
             { "SHI", s => FormatTicksStat(TextUtils.Icon.ShotInterval, s.blueprint.shotInterval, s.original.shotInterval, s.original.HasShotInterval, Improvement.Less) },
             { "DPS", s => FormatFloatStat(TextUtils.Icon.Dps, s.blueprint.BaseDps, s.original.BaseDps, s.original.HasDamage && s.original.HasShotInterval, Improvement.More)},
-            { "GEN", s => FormatGeneration(s.blueprint, s.original) },
+            { "PRO", s => FormatProduction(s.blueprint, s.original) },
             { "M1-", s => FormatIntStat(null, s.blueprint.magic1, s.original.magic1, true, Improvement.Less) },
             { "M1+", s => FormatIntStat(null, s.blueprint.magic1, s.original.magic1, true, Improvement.More) },
         };
@@ -81,16 +81,16 @@ namespace Game.InfoPanel
             return ColorImprovement($"{icon?.Sprite()}{(ticks * 0.05f).ToString("0.##", CultureInfo.InvariantCulture)}s", ticks, original, originalExists, improvement);
         }
 
-        static string FormatGeneration(Blueprint.Blueprint b, Blueprint.Blueprint o)
+        static string FormatProduction(Blueprint.Blueprint b, Blueprint.Blueprint o)
         {
             StringBuilder sb = new();
-            sb.Append(TextUtils.Icon.Generation.Sprite());
-            if (b.HasMaterialGeneration)
-                sb.Append(FormatIntStat(TextUtils.Icon.Materials, b.materialGeneration, o.materialGeneration, o.HasMaterialGeneration, Improvement.More));
-            if (b.HasEnergyGeneration)
-                sb.Append(FormatIntStat(TextUtils.Icon.Energy, b.energyGeneration, o.energyGeneration, o.HasEnergyGeneration, Improvement.More));
-            if (b.HasFuelGeneration)
-                sb.Append(FormatIntStat(TextUtils.Icon.Fuel, b.fuelGeneration, o.fuelGeneration, o.HasFuelGeneration, Improvement.More));
+            sb.Append(TextUtils.Icon.Production.Sprite());
+            if (b.HasFuelProduction)
+                sb.Append(FormatIntStat(TextUtils.Icon.Fuel, b.fuelProduction, o.fuelProduction, o.HasFuelProduction, Improvement.More));
+            if (b.HasMaterialProduction)
+                sb.Append(FormatIntStat(TextUtils.Icon.Materials, b.materialProduction, o.materialProduction, o.HasMaterialProduction, Improvement.More));
+            if (b.HasEnergyProduction)
+                sb.Append(FormatIntStat(TextUtils.Icon.Energy, b.energyProduction, o.energyProduction, o.HasEnergyProduction, Improvement.More));
             return sb.ToString();
         }
 

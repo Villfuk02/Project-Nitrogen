@@ -1,5 +1,6 @@
 using BattleSimulation.World.WorldData;
 using Data.WorldGen;
+using Game.Run;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -58,6 +59,8 @@ namespace WorldGen
                 instance_ = this;
             else
                 throw new("There can be only one!");
+
+            GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunPersistence>().SetupLevel();
             Random = new(worldSettings.seed);
             Tiles = null;
         }

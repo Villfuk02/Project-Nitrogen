@@ -1,4 +1,3 @@
-using BattleSimulation.Buildings;
 using Game.Blueprint;
 using Game.InfoPanel;
 using UnityEngine;
@@ -94,6 +93,10 @@ namespace BattleSimulation.Selection
                     DeselectInWorld();
                 }
             }
+
+            //destroy selected building
+            if (Input.GetKeyDown(KeyCode.Delete) && selected != null && selected.tile != null && selected.tile.Building is { permanent: false } b)
+                b.Delete();
         }
 
         public void SelectInWorld(Selectable select)
@@ -104,8 +107,8 @@ namespace BattleSimulation.Selection
 
             if (select.tile != null)
             {
-                if (select.tile.Building is Building b)
-                    infoPanel.ShowBlueprint(b.Blueprint, b.OriginalBlueprint);
+                if (select.tile.Building != null)
+                    infoPanel.ShowBuilding(select.tile.Building);
                 else
                     infoPanel.ShowTile(select.tile);
             }

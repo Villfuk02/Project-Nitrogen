@@ -44,11 +44,15 @@ namespace BattleSimulation.Towers
         {
             if (attacker.IsDead)
                 return false;
-            (Attacker a, Damage dmg) param = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
-            if (!Attacker.hit.InvokeRef(ref param))
+            (Attacker a, Damage dmg) hitParam = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
+            if (!Attacker.hit.InvokeRef(ref hitParam))
                 return false;
-            if (param.dmg.amount > 0)
-                Attacker.damage.Invoke(param);
+            if (hitParam.dmg.amount > 0)
+            {
+                (Attacker a, Damage dmg) dmgParam = hitParam;
+                if (Attacker.damage.InvokeRef(ref dmgParam))
+                    damageDealt += (int)dmgParam.dmg.amount;
+            }
             return true;
         }
     }
