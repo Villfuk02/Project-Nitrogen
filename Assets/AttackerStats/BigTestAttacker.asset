@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30d4d1898ecf507489487964fd9b2c39, type: 3}
-  m_Name: TestAttacker
+  m_Name: BigTestAttacker
   m_EditorClassIdentifier: 
-  name: Test Attacker
-  prefab: {fileID: 5845349189104484810, guid: 5c1c30ee895bdc7489707bc1a75935bd, type: 3}
+  name: Big Test Attacker
+  prefab: {fileID: 5845349189104484810, guid: 55d6d1a4c211d924993626307efc4bb4, type: 3}
   icon: {fileID: 21300000, guid: cf84b6b4da50518499da12b6c0a44e56, type: 3}
-  size: 0
-  minSpacing: 0
-  baseValue: 5
-  weight: 2
-  speed: 2
-  maxHealth: 5
+  size: 1
+  minSpacing: 3
+  baseValue: 35
+  weight: 1
+  speed: 1.5
+  maxHealth: 40
   descriptions: []

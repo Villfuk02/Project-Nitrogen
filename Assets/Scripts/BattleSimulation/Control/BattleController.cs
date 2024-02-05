@@ -26,6 +26,7 @@ namespace BattleSimulation.Control
         public static RunPersistence runPersistence;
         public int HullDmgTaken { get; private set; }
         public bool Won { get; private set; }
+        public bool Lost { get; private set; }
 
         public enum Affordable { Yes, UseMaterialsAsEnergy, No }
 
@@ -42,6 +43,7 @@ namespace BattleSimulation.Control
             runPersistence.repairHull.Register(OnHullRepaired, 1000);
             WaveController.startWave.Register(OnWaveStarted, 1);
             WaveController.startWave.Register(CanStartWave, -1000);
+            runPersistence.defeat.Register(Lose, 1000);
         }
 
         void OnDestroy()
@@ -56,6 +58,7 @@ namespace BattleSimulation.Control
             runPersistence.repairHull.Unregister(OnHullRepaired);
             WaveController.startWave.Unregister(OnWaveStarted);
             WaveController.startWave.Unregister(CanStartWave);
+            runPersistence.defeat.Unregister(Lose);
         }
 
         //TODO: hook up with initializing a level/battle
@@ -125,7 +128,7 @@ namespace BattleSimulation.Control
             Fuel += realAmount;
             if (Fuel > FuelGoal)
                 Fuel = FuelGoal;
-            if (Fuel == FuelGoal)
+            if (Fuel == FuelGoal && !Lost)
                 winLevel.Invoke();
             return true;
         }
@@ -179,10 +182,7 @@ namespace BattleSimulation.Control
             return true;
         }
 
-        bool CanStartWave()
-        {
-            return !Won;
-        }
+        bool CanStartWave() => !Won && !Lost;
 
         bool OnWaveStarted()
         {
@@ -204,6 +204,12 @@ namespace BattleSimulation.Control
         public void NextLevel()
         {
             runPersistence.NextLevel();
+        }
+
+        bool Lose()
+        {
+            Lost = true;
+            return true;
         }
     }
 }

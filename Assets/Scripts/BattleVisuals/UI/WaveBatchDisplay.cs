@@ -1,7 +1,9 @@
 using BattleSimulation.Control;
+using Game.AttackerStats;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BattleVisuals.UI
 {
@@ -21,18 +23,19 @@ namespace BattleVisuals.UI
         {
             this.wd = wd;
             countText.text = $"{batch.count}x";
-            int pathCount = batch.paths.Length;
+            int pathCount = batch.typePerPath.Length;
             float maxWidth = padding.x * 2;
             count_ = batch.count;
             spacing_ = batch.spacing.GetDisplaySpacing();
             int visCount = Mathf.Min(batch.spacing.GetDisplayAmount(), batch.count);
             for (int p = 0; p < pathCount; p++)
             {
-                if (!batch.paths[p])
+                if (batch.typePerPath[p] == null)
                     continue;
                 for (int i = 0; i < visCount; i++)
                 {
                     GameObject ai = Instantiate(attackerIconPrefab, transform);
+                    ai.GetComponent<Image>().sprite = batch.typePerPath[p].icon;
                     RectTransform rt = (RectTransform)ai.transform;
                     rt.anchoredPosition = new(padding.x + baseSpacing.x * i * spacing_ + shift * p, padding.y + baseSpacing.y * p);
                     if (icons_.Count <= i)

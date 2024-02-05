@@ -14,8 +14,8 @@ namespace Game.Run
                 return;
             Random rand = new(randomSeed);
             ws.seed = rand.NewSeed();
-            int paths = rand.Int(1, Mathf.Clamp(1 + level / 2, 2, 6));
-            int minPathLength = Mathf.Max(27 - 3 * level, 9);
+            int paths = 4;//rand.Int(1, Mathf.Clamp(1 + level / 2, 2, 6)); TODO
+            int minPathLength = 8; //Mathf.Max(27 - 3 * level, 9); TODO
             List<int> pathLengths = new();
             for (int i = 0; i < paths; i++)
             {

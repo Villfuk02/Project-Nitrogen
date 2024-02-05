@@ -18,7 +18,7 @@ namespace Game.Run
 
         public GameCommand<int> damageHull = new();
         public GameCommand<int> repairHull = new();
-
+        public GameCommand defeat = new();
 
         void Awake()
         {
@@ -47,6 +47,8 @@ namespace Game.Run
             if (dmg <= 0)
                 return false;
             Hull -= dmg;
+            if (Hull <= 0)
+                defeat.Invoke();
             return true;
         }
 
@@ -69,6 +71,12 @@ namespace Game.Run
         public void SetupLevel()
         {
             worldSetter.SetupLevel(random_.NewSeed(), level);
+        }
+
+        public void Restart()
+        {
+            SceneManager.LoadScene("Loading");
+            Destroy(gameObject);
         }
     }
 }

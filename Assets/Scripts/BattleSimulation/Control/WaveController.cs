@@ -1,4 +1,5 @@
 using BattleSimulation.Attackers;
+using Game.AttackerStats;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,7 +11,6 @@ namespace BattleSimulation.Control
     public class WaveController : MonoBehaviour
     {
         public WaveGenerator waveGenerator;
-        [SerializeField] GameObject attackerPrefab;
         [SerializeField] int spawnTimer;
         [SerializeField] uint currentIndex;
         public int wave;
@@ -19,7 +19,7 @@ namespace BattleSimulation.Control
         [SerializeField] bool spawning;
         [SerializeField] WaveGenerator.Wave currentWave;
         int paths_;
-        List<(int, int)> spawnQueue_ = new();
+        List<(int delay, int path, AttackerStats attacker)> spawnQueue_ = new();
 
         public static GameCommand startWave = new();
         public static GameEvent onWaveSpawned = new();
@@ -30,6 +30,7 @@ namespace BattleSimulation.Control
         void Awake()
         {
             // only use half the range to prevent overflow
+            // TODO: mangle the value slightly
             currentIndex = (uint)(World.WorldData.World.data.seed & 0x7FFFFFFF);
             paths_ = World.WorldData.World.data.firstPathTiles.Length;
 
@@ -82,39 +83,45 @@ namespace BattleSimulation.Control
                 throw new("Batch cannot be empty!");
             batch.count--;
             if (batch.count == 0)
+            {
                 currentWave.batches.RemoveAt(0);
-            spawnTimer = -batch.spacing.GetTicks();
+                spawnTimer = -AttackerStats.Spacing.BatchSpacing.GetTicks();
+            }
+            else
+            {
+                spawnTimer = -batch.spacing.GetTicks();
+            }
 
             for (int i = 0; i < paths_; i++)
             {
-                if (batch.paths[i])
-                    spawnQueue_.Add((paths_ - i, i));
+                if (batch.typePerPath[i] is AttackerStats s)
+                    spawnQueue_.Add((paths_ - i, i, s));
             }
             onSpawnedOnce.Invoke();
         }
 
         void ProcessSpawnQueue()
         {
-            spawnQueue_ = spawnQueue_.OrderBy(e => e.Item1).ToList();
-            while (spawnQueue_.Count > 0 && spawnQueue_[0].Item1 == 0)
+            spawnQueue_ = spawnQueue_.OrderBy(e => e.delay).ToList();
+            while (spawnQueue_.Count > 0 && spawnQueue_[0].delay == 0)
             {
-                var e = spawnQueue_[0];
+                (int _, int path, var attacker) = spawnQueue_[0];
                 spawnQueue_.RemoveAt(0);
-                Spawn(e.Item2);
+                Spawn(attacker, path);
             }
 
             for (int i = 0; i < spawnQueue_.Count; i++)
             {
                 var e = spawnQueue_[i];
-                e.Item1--;
+                e.delay--;
                 spawnQueue_[i] = e;
             }
         }
 
-        void Spawn(int path)
+        void Spawn(AttackerStats attacker, int path)
         {
             uint index = ++currentIndex;
-            Attacker a = Instantiate(attackerPrefab, transform).GetComponent<Attacker>();
+            Attacker a = Instantiate(attacker.prefab, transform).GetComponent<Attacker>();
             Vector2Int startingPoint = World.WorldData.World.data.pathStarts[path];
             Vector2Int firstTile = World.WorldData.World.data.firstPathTiles[path];
             a.InitPath(startingPoint, firstTile, index);

@@ -47,7 +47,7 @@ namespace Utils
         {
             foreach ((int priority, var handler) in handlerQueue)
             {
-                Debug.Log($"{priority} {handler.Method.Name}");
+                //Debug.Log($"{priority} {handler.Method.Name}");
                 handler.Invoke();
             }
         }
@@ -59,7 +59,7 @@ namespace Utils
         {
             foreach ((int priority, var handler) in handlerQueue)
             {
-                Debug.Log($"{priority} {handler.Method.Name}");
+                //Debug.Log($"{priority} {handler.Method.Name}");
                 handler.Invoke(data);
             }
         }
@@ -72,10 +72,10 @@ namespace Utils
         {
             foreach ((int priority, var handler) in handlerQueue)
             {
-                Debug.Log($"{priority} {handler.Method.Name}");
+                //Debug.Log($"{priority} {handler.Method.Name}");
                 if (!handler.Invoke())
                 {
-                    Debug.Log("Command blocked");
+                    //Debug.Log("Command blocked");
                     return false;
                 }
             }
@@ -91,10 +91,10 @@ namespace Utils
         {
             foreach ((int priority, var handler) in handlerQueue)
             {
-                Debug.Log($"{priority} {handler.Method.Name}");
+                //Debug.Log($"{priority} {handler.Method.Name}");
                 if (!handler.Invoke(ref data))
                 {
-                    Debug.Log("Command blocked");
+                    //Debug.Log("Command blocked");
                     return false;
                 }
             }
@@ -124,7 +124,7 @@ namespace Utils
         {
             foreach ((int priority, var handler) in handlerQueue)
             {
-                Debug.Log($"{priority} {handler.Method.Name}");
+                //Debug.Log($"{priority} {handler.Method.Name}");
                 handler.Invoke(ref data);
             }
 

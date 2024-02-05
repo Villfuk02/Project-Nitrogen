@@ -1,5 +1,6 @@
-- [ ] losing
 - [ ] wave generating
+    - [x] generating
+    - [ ] setting settings from run persistence
 ## polish
 - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)
 - [ ] increase shadow resolution
@@ -8,6 +9,19 @@
 - [ ] damage taken effects
 - [ ] level start
 - [ ] level end
+
+## refactoring
+- [ ] classes should only do their job and nothing more
+- [ ] encapsulation
+- [ ] decomposition
+- [ ] readability
+- [ ] unify singleton names
+- [ ] unify asserts
+- [ ] unify errors
+- [ ] add and unify headers
+
+## questions
+- tutorial
 
 ## bachelor's MVP
 - [x] world gen
@@ -19,10 +33,11 @@
 - [x] info panel
 - [x] deletion
 - [ ] abilities
-- [ ] losing
+- [x] losing
 - [x] fuel
 - [x] winning
 - [x] next level
+- [ ] menu (seed select)
 - [ ] sound effects
 - [ ] refactoring
 - [ ] TODOs
