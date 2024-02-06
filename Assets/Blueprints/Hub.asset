@@ -26,8 +26,8 @@ MonoBehaviour:
   damageType: 0
   shotInterval: -1
   fuelProduction: 10
-  materialProduction: 10
-  energyProduction: 10
+  materialProduction: 20
+  energyProduction: 20
   magic1: -1
   descriptions:
   - Produces [PRO] every round.

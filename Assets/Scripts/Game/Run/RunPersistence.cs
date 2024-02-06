@@ -1,6 +1,6 @@
+using Game.Run.Events;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Utils;
 using Random = Utils.Random.Random;
 using UnityRandom = UnityEngine.Random;
 
@@ -8,17 +8,14 @@ namespace Game.Run
 {
     public class RunPersistence : MonoBehaviour
     {
-        [SerializeField] WorldSetter worldSetter;
+        [SerializeField] LevelSetter worldSetter;
+        [SerializeField] RunEvents runEvents;
         [SerializeField] ulong runSeed;
         [SerializeField] bool randomSeed;
         Random random_;
         public int MaxHull { get; private set; }
         public int Hull { get; private set; }
         public int level;
-
-        public GameCommand<int> damageHull = new();
-        public GameCommand<int> repairHull = new();
-        public GameCommand defeat = new();
 
         void Awake()
         {
@@ -30,8 +27,10 @@ namespace Game.Run
             MaxHull = 10;
             Hull = MaxHull;
 
-            damageHull.Register(DamageHull, 0);
-            repairHull.Register(RepairHull, 0);
+            runEvents.damageHull.Register(DamageHull, 0);
+            runEvents.repairHull.Register(RepairHull, 0);
+            runEvents.nextLevel.Register(NextLevelEvent, 0);
+            runEvents.restart.Register(Restart, 0);
         }
         void Update()
         {
@@ -48,7 +47,7 @@ namespace Game.Run
                 return false;
             Hull -= dmg;
             if (Hull <= 0)
-                defeat.Invoke();
+                runEvents.defeat.Invoke();
             return true;
         }
 
@@ -62,6 +61,11 @@ namespace Game.Run
             return true;
         }
 
+        bool NextLevelEvent()
+        {
+            NextLevel();
+            return true;
+        }
         public void NextLevel()
         {
             level++;
@@ -73,10 +77,11 @@ namespace Game.Run
             worldSetter.SetupLevel(random_.NewSeed(), level);
         }
 
-        public void Restart()
+        public bool Restart()
         {
             SceneManager.LoadScene("Loading");
             Destroy(gameObject);
+            return true;
         }
     }
 }

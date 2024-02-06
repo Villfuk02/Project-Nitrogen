@@ -17,7 +17,7 @@ namespace BattleSimulation.Control
         [SerializeField] float pathDropChance;
         [SerializeField] int maxBatchCount;
         [SerializeField] int parallelMinCount;
-        // TODO: set from level settings
+        public bool overrideRun;
         public int paths;
         public Random random = new(0);
         public float baseValueRate;
@@ -143,7 +143,7 @@ namespace BattleSimulation.Control
             var filteredAttackers = availableAttackers.Where(a => a.MinEffectiveValue(valueRate, 1) * parallelMinCount < bufferLeft);
             WeightedRandomSet<AttackerStats> selection = new(filteredAttackers.Select(a => (a, a.weight)), random.NewSeed());
             if (selection.Count == 0)
-                throw new();
+                return GenerateSequentialWave(valueRate);
             int[] pathSelection = Enumerable.Range(0, paths).ToArray();
             random.Shuffle(pathSelection);
             for (int r = 0; r < 5; r++)

@@ -1,0 +1,16 @@
+{
+    "name": "Game.Run.Events",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c16294785e7a44148be2e5f8661f54ad"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,12 +1,12 @@
 using BattleSimulation.Control;
-using Game.Run;
+using Game.Run.Events;
 using UnityEngine;
 
 namespace BattleVisuals.UI
 {
     public class OverlayController : MonoBehaviour
     {
-        [SerializeField] RunPersistence rp;
+        [SerializeField] RunEvents runEvents;
         [SerializeField] GameObject victoryOverlay;
         [SerializeField] GameObject defeatOverlay;
 
@@ -14,14 +14,14 @@ namespace BattleVisuals.UI
         {
             Hide();
             BattleController.winLevel.Register(OnVictory, 100);
-            rp = GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunPersistence>();
-            rp.defeat.Register(OnDefeat, 100);
+            runEvents = GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunEvents>();
+            runEvents.defeat.Register(OnDefeat, 100);
         }
 
         void OnDestroy()
         {
             BattleController.winLevel.Unregister(OnVictory);
-            rp.defeat.Unregister(OnDefeat);
+            runEvents.defeat.Unregister(OnDefeat);
         }
 
         bool OnVictory()
@@ -44,7 +44,7 @@ namespace BattleVisuals.UI
 
         public void Restart()
         {
-            rp.Restart();
+            runEvents.restart.Invoke();
         }
 
         public void Exit()

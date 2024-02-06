@@ -5419,7 +5419,7 @@ MonoBehaviour:
       m_Calls: []
   highlight: {fileID: 5150071765153014635}
   highlightAnim: {fileID: 1861407652524293487}
-  originalStats: {fileID: 11400000, guid: 22f92218b7c337547a1d8507674d0330, type: 2}
+  originalStats: {fileID: 11400000, guid: c01c38eed1b43144daccc153aecedef9, type: 2}
   target: {fileID: 719971657807235023}
   stats: {fileID: 0}
   pathSegmentProgress: 0
@@ -10542,6 +10542,14 @@ PrefabInstance:
     - target: {fileID: 664633810199549550, guid: 57d125bc5901381459028770bde9b869, type: 3}
       propertyPath: m_SizeDelta.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 664633810199549550, guid: 57d125bc5901381459028770bde9b869, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 664633810199549550, guid: 57d125bc5901381459028770bde9b869, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 664633810199549550, guid: 57d125bc5901381459028770bde9b869, type: 3}
       propertyPath: m_LocalPosition.x

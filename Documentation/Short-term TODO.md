@@ -1,6 +1,6 @@
-- [ ] wave generating
-    - [x] generating
-    - [ ] setting settings from run persistence
+- [ ] abilities
+- [ ] more attackers
+- [ ] more towers
 ## polish
 - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)
 - [ ] increase shadow resolution

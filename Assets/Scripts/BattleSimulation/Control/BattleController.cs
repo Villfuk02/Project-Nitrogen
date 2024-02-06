@@ -1,5 +1,5 @@
 using BattleSimulation.Attackers;
-using Game.Run;
+using Game.Run.Events;
 using System;
 using UnityEngine;
 using Utils;
@@ -23,7 +23,7 @@ namespace BattleSimulation.Control
         public static GameCommand<float> updateEnergyPerWave = new();
         public static GameCommand<float> updateFuelPerWave = new();
         public static GameCommand winLevel = new();
-        public static RunPersistence runPersistence;
+        public static RunEvents runEvents;
         public int HullDmgTaken { get; private set; }
         public bool Won { get; private set; }
         public bool Lost { get; private set; }
@@ -38,12 +38,12 @@ namespace BattleSimulation.Control
             canAfford.RegisterAcceptor(CanAfford);
             spend.Register(Spend, 0);
             winLevel.Register(Win, 0);
-            runPersistence = GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunPersistence>();
-            runPersistence.damageHull.Register(OnHullDmgTaken, 1000);
-            runPersistence.repairHull.Register(OnHullRepaired, 1000);
+            runEvents = GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunEvents>();
+            runEvents.damageHull.Register(OnHullDmgTaken, 1000);
+            runEvents.repairHull.Register(OnHullRepaired, 1000);
             WaveController.startWave.Register(OnWaveStarted, 1);
             WaveController.startWave.Register(CanStartWave, -1000);
-            runPersistence.defeat.Register(Lose, 1000);
+            runEvents.defeat.Register(Lose, 1000);
         }
 
         void OnDestroy()
@@ -54,19 +54,19 @@ namespace BattleSimulation.Control
             canAfford.UnregisterAcceptor();
             spend.Unregister(Spend);
             winLevel.Unregister(Win);
-            runPersistence.damageHull.Unregister(OnHullDmgTaken);
-            runPersistence.repairHull.Unregister(OnHullRepaired);
+            runEvents.damageHull.Unregister(OnHullDmgTaken);
+            runEvents.repairHull.Unregister(OnHullRepaired);
             WaveController.startWave.Unregister(OnWaveStarted);
             WaveController.startWave.Unregister(CanStartWave);
-            runPersistence.defeat.Unregister(Lose);
+            runEvents.defeat.Unregister(Lose);
         }
 
         //TODO: hook up with initializing a level/battle
         void Start()
         {
-            Material = 25;
+            Material = 50;
             Energy = 0;
-            MaxEnergy = 30;
+            MaxEnergy = 50;
             Fuel = 0;
             FuelGoal = 120;
         }
@@ -161,7 +161,7 @@ namespace BattleSimulation.Control
 
         public static void AttackerReachedHub(Attacker attacker)
         {
-            runPersistence.damageHull.Invoke(attacker.stats.size switch
+            runEvents.damageHull.Invoke(attacker.stats.size switch
             {
                 Game.AttackerStats.AttackerStats.Size.Small => 1,
                 Game.AttackerStats.AttackerStats.Size.Large => 2,
@@ -203,7 +203,7 @@ namespace BattleSimulation.Control
 
         public void NextLevel()
         {
-            runPersistence.NextLevel();
+            runEvents.nextLevel.Invoke();
         }
 
         bool Lose()
