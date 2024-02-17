@@ -215,7 +215,7 @@ blockers {
     * Minerals {
         type m
         min 4
-        max 6
+        max 4
         base_probability 0.3
         on_slants false
         forces -2 0.5

@@ -3354,7 +3354,6 @@ MonoBehaviour:
   hovered: {fileID: 0}
   placing: {fileID: 0}
   rotation: 0
-  hoverTilePosition: {x: 0, y: 0, z: 0}
   resetVisuals: 0
 --- !u!114 &793714039
 MonoBehaviour:
@@ -4909,6 +4908,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 05459f1e64a666c4991299d3ab4ba443, type: 2}
   - {fileID: 11400000, guid: 3425f27343a18a24c88b3ec33a6ead8c, type: 2}
   - {fileID: 11400000, guid: f7194962d8ed52a41887aebd5a9644d5, type: 2}
+  - {fileID: 11400000, guid: 795fea2ef81d3f84799dff3a745b2be8, type: 2}
   blueprints: []
   cooldowns: 
   selected: -1
@@ -9033,7 +9033,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 330
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.y
@@ -9041,7 +9041,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 165
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.y

@@ -6,7 +6,7 @@ namespace Game.Damage
 {
     public struct Damage
     {
-        [Flags] public enum Type { HealthLoss = 1 << 0, Physical = 1 << 1, Fire = 1 << 2 }
+        [Flags] public enum Type { HealthLoss = 1 << 0, Physical = 1 << 1, Fire = 1 << 2, Explosive = 1 << 3, Electric = 1 << 4 }
 
         public float amount;
         public Type type;
@@ -24,8 +24,8 @@ namespace Game.Damage
 
     public static class DamageExtensions
     {
-        static readonly string[] HumanReadableNames = { "Health Loss", "Physical", "Fire" };
-        static readonly TextUtils.Icon[] Icons = { TextUtils.Icon.HpLoss, TextUtils.Icon.Physical, TextUtils.Icon.Fire };
+        static readonly string[] HumanReadableNames = { "Health Loss", "Physical", "Fire", "Explosive", "Electric" };
+        static readonly TextUtils.Icon[] Icons = { TextUtils.Icon.HpLoss, TextUtils.Icon.Physical, TextUtils.Icon.Fire, TextUtils.Icon.Explosive, TextUtils.Icon.Energy };
         public static string ToHumanReadable(this Damage.Type type, bool icons)
         {
             List<string> types = new();

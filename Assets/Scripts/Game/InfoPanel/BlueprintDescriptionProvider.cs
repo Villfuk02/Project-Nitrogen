@@ -38,14 +38,22 @@ namespace Game.InfoPanel
             List<string> stats = new();
             if (blueprint_.HasRange)
                 stats.Add("Range [RNG]");
+            if (blueprint_.HasRadius)
+                stats.Add("Radius [RAD]");
             if (blueprint_.HasDamage)
                 stats.Add("Damage [DMG]");
             if (blueprint_.HasDamageType)
                 stats.Add("Damage Type [DMT]");
-            if (blueprint_.HasShotInterval)
-                stats.Add("Shot Interval [SHI]");
-            if (blueprint_.HasDamage && blueprint_.HasShotInterval)
+            if (blueprint_.HasInterval)
+                stats.Add("Interval [INT]");
+            if (blueprint_.HasDamage && blueprint_.HasInterval)
                 stats.Add("Base Damage/s [DPS]");
+            if (blueprint_.HasDelay)
+                stats.Add("Delay [DEL]");
+            if (blueprint_.HasDurationTicks)
+                stats.Add("Duration [DUT]");
+            if (blueprint_.HasDurationWaves)
+                stats.Add("Duration [DUW] waves");
 
             if (stats.Count > 0)
             {

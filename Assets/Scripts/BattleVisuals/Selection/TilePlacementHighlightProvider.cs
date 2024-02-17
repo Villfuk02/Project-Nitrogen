@@ -32,7 +32,7 @@ namespace BattleVisuals.Selection
             bool valid = Tiles.TILES.TryGet((Vector2Int)tile, out var selectedTile);
             if (valid)
                 valid = placement.IsTileValid(selectedTile);
-            return (valid ? IHighlightable.HighlightType.Selected : IHighlightable.HighlightType.Negative, dist / 2);
+            return (valid ? IHighlightable.HighlightType.Selected : IHighlightable.HighlightType.Negative, 2 * dist);
         }
     }
 }

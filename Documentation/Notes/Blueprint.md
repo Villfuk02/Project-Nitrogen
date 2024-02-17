@@ -25,6 +25,6 @@ Blueprint holds **stats** for itself and the [[Building]]/[[Ability]]/... it pro
 [[Building]]s / [[Ability]]s provide behavior along with the necessary values needed fo executing the behavior
 
 Icon outline layers:
-    - 2x Black 1px blur
+    - 2x Black 2px blur
     - 5x White 5px blur
     - 1x Black 35px blur

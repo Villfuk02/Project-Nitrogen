@@ -6,7 +6,7 @@ namespace BattleSimulation.Selection
     public abstract class TilePlacement : Placement
     {
         public Tile selectedTile;
-        public override bool Setup(Selectable selected, int rotation, Vector3 pos, Transform defaultParent)
+        public override bool Setup(Selectable selected, int rotation, Vector3? pos, Transform defaultParent)
         {
             var newSelectedTile = selected == null ? null : selected.tile;
 

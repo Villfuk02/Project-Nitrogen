@@ -80,6 +80,11 @@ namespace Utils
         public static bool IsInRange(Vector2Int v, Vector2Int size) => v is { x: >= 0, y: >= 0 } && v.x < size.x && v.y < size.y;
 
         /// <summary>
+        /// Is v.x in the range [0..size.x] and v.y in the range [0..size.y]?
+        /// </summary>
+        public static bool IsInRange(Vector2 v, Vector2 size) => v is { x: >= 0, y: >= 0 } && v.x <= size.x && v.y <= size.y;
+
+        /// <summary>
         /// Flips the slant, switching the east and west directions.
         /// </summary>
         public static Slant FlipSlant(Slant s)

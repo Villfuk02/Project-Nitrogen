@@ -65,8 +65,8 @@ namespace BattleSimulation.Control
         void Start()
         {
             Material = 50;
-            Energy = 0;
-            MaxEnergy = 50;
+            Energy = 30;
+            MaxEnergy = 100;
             Fuel = 0;
             FuelGoal = 120;
         }

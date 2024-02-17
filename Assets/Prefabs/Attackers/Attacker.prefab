@@ -1335,7 +1335,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 50
+        scalar: 20
         minScalar: 30
         maxCurve:
           serializedVersion: 2
@@ -5414,11 +5414,14 @@ MonoBehaviour:
   onRemoved:
     m_PersistentCalls:
       m_Calls: []
+  onReachedHub:
+    m_PersistentCalls:
+      m_Calls: []
   highlight: {fileID: 5150071765153014635}
   highlightAnim: {fileID: 1861407652524293487}
   originalStats: {fileID: 11400000, guid: 22f92218b7c337547a1d8507674d0330, type: 2}
-  stats: {fileID: 0}
   target: {fileID: 719971657807235023}
+  stats: {fileID: 0}
   pathSegmentProgress: 0
   pathSegmentTarget: {x: 0, y: 0}
   lastTarget: {x: 0, y: 0}
@@ -6604,7 +6607,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 15
+        scalar: 5
         minScalar: 30
         maxCurve:
           serializedVersion: 2

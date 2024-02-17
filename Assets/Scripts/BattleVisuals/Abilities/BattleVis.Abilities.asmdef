@@ -1,0 +1,17 @@
+{
+    "name": "BattleVis.Abilities",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f851e836c4248df4093183bdcecd2397",
+        "GUID:6073d15ac0306a8499fd0cd1111f876f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

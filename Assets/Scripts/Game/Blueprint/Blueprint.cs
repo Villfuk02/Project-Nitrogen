@@ -22,7 +22,11 @@ namespace Game.Blueprint
         public float range = -1;
         public int damage = -1;
         public Damage.Damage.Type damageType = 0;
-        public int shotInterval = -1;
+        public int interval = -1;
+        public float radius = -1;
+        public int delay = -1;
+        public int durationTicks = -1;
+        public int durationWaves = -1;
         public int fuelProduction = -1;
         public int materialProduction = -1;
         public int energyProduction = -1;
@@ -32,11 +36,16 @@ namespace Game.Blueprint
         public bool HasRange => range >= 0;
         public bool HasDamage => damage >= 0;
         public bool HasDamageType => damageType > 0;
-        public bool HasShotInterval => shotInterval >= 0;
+        public bool HasInterval => interval >= 0;
+        public bool HasRadius => radius >= 0;
+        public bool HasDelay => delay >= 0;
+        public bool HasDurationTicks => durationTicks >= 0;
+        public bool HasDurationWaves => durationWaves >= 0;
         public bool HasFuelProduction => fuelProduction >= 0;
         public bool HasMaterialProduction => materialProduction >= 0;
         public bool HasEnergyProduction => energyProduction >= 0;
-        public float BaseDps => damage * 2000 / shotInterval * 0.01f;
+        // ReSharper disable once PossibleLossOfFraction
+        public float BaseDps => damage * 2000 / interval * 0.01f;
 
         public Blueprint Clone()
         {
@@ -54,7 +63,11 @@ namespace Game.Blueprint
             copy.range = range;
             copy.damage = damage;
             copy.damageType = damageType;
-            copy.shotInterval = shotInterval;
+            copy.interval = interval;
+            copy.radius = radius;
+            copy.delay = delay;
+            copy.durationTicks = durationTicks;
+            copy.durationWaves = durationWaves;
             copy.fuelProduction = fuelProduction;
             copy.materialProduction = materialProduction;
             copy.energyProduction = energyProduction;

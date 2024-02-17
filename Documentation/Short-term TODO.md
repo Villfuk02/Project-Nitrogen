@@ -1,6 +1,27 @@
 - [ ] abilities
-- [ ] more attackers
-- [ ] more towers
+    - [x] meteor
+    - [ ] > inherited prefabs
+    - [ ] > use most only during waves
+    - [ ] lightning storm
+    - [ ] temporary tower
+    - [ ] converts material to fuel
+    - [ ] laser strike
+- [ ] tower effects
+    - [ ] tower damage boost ability
+- [ ] attacker effects
+    - [ ] freeze
+- [ ] more attackers (see [[Attacker#ideas]])
+- [ ] more towers (see [[Tower#tower ideas]])
+- [ ] more economic buildings
+    - [ ] energy maker
+    - [ ] produces material per kill in radius
+    - [ ] reactor - increasing production, but expensive
+    - [ ] alternative fuel source
+    - [ ] materializer - if you have enough energy, spends it to make materials
+- [ ] support building
+    - [ ] speeds up towers
+    - [ ] pushes back attackers
+    - [ ] makes material producers generate extra energy
 ## polish
 - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)
 - [ ] increase shadow resolution
@@ -22,6 +43,9 @@
 
 ## questions
 - tutorial
+- postup (bc + staátnice)
+- kontroly
+- jazyk
 
 ## bachelor's MVP
 - [x] world gen

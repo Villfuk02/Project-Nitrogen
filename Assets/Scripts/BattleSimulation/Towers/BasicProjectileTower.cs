@@ -32,7 +32,7 @@ namespace BattleSimulation.Towers
 
         void Shoot(Attacker target)
         {
-            shotTimer = Blueprint.shotInterval;
+            shotTimer = Blueprint.interval;
             var p = Instantiate(projectilePrefab, World.WorldData.World.instance.transform).GetComponent<LockOnProjectile>();
             p.transform.position = projectileOrigin.position;
             p.source = this;

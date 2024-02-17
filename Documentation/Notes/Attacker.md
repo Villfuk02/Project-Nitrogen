@@ -11,7 +11,7 @@ two sizes
 - large (target 0.6 units above ground)
 - flying? (target 0.6 units above ground)
 
-concepts
+### ideas
 - leaves barrier after death to protect others
 - pressure units (short term or long term threats) 
 - slimes - many types like balloons from Bloons TD

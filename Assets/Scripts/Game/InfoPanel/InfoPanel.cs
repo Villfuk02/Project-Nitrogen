@@ -70,6 +70,7 @@ namespace Game.InfoPanel
         public void ShowBlueprint(Blueprint.Blueprint blueprint, Blueprint.Blueprint original)
         {
             Show();
+            building_ = null;
             title.text = blueprint.name;
             icon.sprite = blueprint.icon;
             descriptionProvider_ = new BlueprintDescriptionProvider(blueprint, original);
@@ -80,6 +81,7 @@ namespace Game.InfoPanel
         public void ShowAttacker(Attacker attacker)
         {
             Show();
+            building_ = null;
             title.text = attacker.stats.name;
             icon.sprite = attacker.stats.icon;
             descriptionProvider_ = new AttackerDescriptionProvider(attacker);
@@ -89,6 +91,7 @@ namespace Game.InfoPanel
         public void ShowAttacker(AttackerStats.AttackerStats stats, AttackerStats.AttackerStats original)
         {
             Show();
+            building_ = null;
             title.text = stats.name;
             icon.sprite = stats.icon;
             descriptionProvider_ = new AttackerDescriptionProvider(stats, original);
@@ -99,6 +102,7 @@ namespace Game.InfoPanel
         public void ShowTile(Tile tile)
         {
             Show();
+            building_ = null;
             title.text = "Tile";
             icon.sprite = tileIcon;
             descriptionProvider_ = new TileDescriptionProvider(tile);

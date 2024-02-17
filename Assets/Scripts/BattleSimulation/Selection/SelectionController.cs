@@ -19,7 +19,7 @@ namespace BattleSimulation.Selection
         public Selectable hovered;
         public Placement placing;
         public int rotation;
-        public Vector3 hoverTilePosition;
+        public Vector3? hoverTilePosition;
         public bool resetVisuals;
 
         void Awake()
@@ -36,8 +36,10 @@ namespace BattleSimulation.Selection
             else
                 hovered = null;
 
-            if (Physics.Raycast(ray, out RaycastHit terrainHit, 100, coarseTerrainMask_))
+            if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out RaycastHit terrainHit, 100, coarseTerrainMask_))
                 hoverTilePosition = WorldUtils.WorldPosToTilePos(terrainHit.point);
+            else
+                hoverTilePosition = hovered == null ? null : hovered.transform.position;
 
             // num keys
             for (int i = 0; i < 9; i++)
@@ -66,7 +68,7 @@ namespace BattleSimulation.Selection
             if (placing != null)
                 resetVisuals |= placing.Setup(hovered, rotation, hoverTilePosition, transform);
 
-            //mouse 0
+            //left click
             if (Input.GetMouseButtonUp(0))
             {
                 if (placing != null)

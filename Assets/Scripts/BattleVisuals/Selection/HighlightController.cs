@@ -169,7 +169,7 @@ namespace BattleVisuals.Selection
         {
             var pos = WorldUtils.TilePosToWorldPos(new Vector3(point.x, point.y, World.data.tiles.GetHeightAt(point) ?? -1000));
             (var h, float r) = lastHighlightProvider.GetAffectedArea(pos);
-            return (h, scale <= rangeVisualsMinScale || r >= scale);
+            return (h, scale <= rangeVisualsMinScale || r >= scale * 2.83f);
         }
 
         public bool StepRangeVisuals()
@@ -195,9 +195,10 @@ namespace BattleVisuals.Selection
             int priorityAdjustment = 0;
             if (childrenValues.NW != childrenValues.NE || childrenValues.NW != childrenValues.SW || childrenValues.NW != childrenValues.SE)
                 priorityAdjustment -= 100000;
+            Vector2 priorityPos = selection.hoverTilePosition is not null ? (Vector2)selection.hoverTilePosition : Vector2.zero;
             foreach (var child in node.children!.Value)
             {
-                float priority = (child.pos - (Vector2)selection.hoverTilePosition).sqrMagnitude - child.scale * child.scale * 1000;
+                float priority = (child.pos - priorityPos).sqrMagnitude - child.scale * child.scale * 1000;
                 rangeVisualQueue_.Enqueue(child, priority + priorityAdjustment);
             }
 
