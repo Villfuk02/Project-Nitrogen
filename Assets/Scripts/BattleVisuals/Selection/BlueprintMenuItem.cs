@@ -34,7 +34,7 @@ namespace BattleVisuals.Selection
 
             display.UpdateText((int)param.priceEnergy, (int)param.priceMaterials, GetTextColor(cooldown > 0, affordable));
 
-            bool ready = cooldown == 0 && affordable != BattleController.Affordable.No && (display.blueprint.type == Blueprint.Type.Ability || !waveStarted);
+            bool ready = cooldown == 0 && affordable != BattleController.Affordable.No && display.blueprint.type == Blueprint.Type.Ability == waveStarted;
             display.highlight.color = GetHighlightColor(ready, selected);
         }
 

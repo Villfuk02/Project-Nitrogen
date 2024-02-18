@@ -1,8 +1,9 @@
+- [x] wave end bug
 - [ ] abilities
     - [x] meteor
-    - [ ] > inherited prefabs
-    - [ ] > use most only during waves
-    - [ ] lightning storm
+    - [x] > use abilities only during waves
+    - [x] > deactivate timed or delayed abilities at end of wave
+    - [x] lightning storm
     - [ ] temporary tower
     - [ ] converts material to fuel
     - [ ] laser strike
@@ -43,7 +44,7 @@
 
 ## questions
 - tutorial
-- postup (bc + staátnice)
+- postup (bc + státnice)
 - kontroly
 - jazyk
 

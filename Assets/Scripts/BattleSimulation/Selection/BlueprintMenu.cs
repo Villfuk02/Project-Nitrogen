@@ -21,14 +21,14 @@ namespace BattleSimulation.Selection
                 blueprints[i] = originalBlueprints[i].Clone();
                 cooldowns[i] = blueprints[i].startingCooldown;
             }
-            WaveController.onWaveFinished.Register(WaveFinished, 10);
-            WaveController.startWave.Register(WaveStarted, 10);
+            WaveController.onWaveFinished.Register(OnWaveFinished, 10);
+            WaveController.startWave.Register(OnWaveStarted, 10);
         }
 
         void OnDestroy()
         {
-            WaveController.onWaveFinished.Unregister(WaveFinished);
-            WaveController.startWave.Unregister(WaveStarted);
+            WaveController.onWaveFinished.Unregister(OnWaveFinished);
+            WaveController.startWave.Unregister(OnWaveStarted);
         }
 
         void Update()
@@ -55,9 +55,9 @@ namespace BattleSimulation.Selection
             return true;
         }
 
-        public bool OnPlace()
+        public bool TryPlace()
         {
-            if (blueprints[selected].type != Blueprint.Type.Ability && waveStarted)
+            if (blueprints[selected].type == Blueprint.Type.Ability != waveStarted)
                 return false;
             if (cooldowns[selected] > 0)
                 return false;
@@ -67,13 +67,13 @@ namespace BattleSimulation.Selection
             return true;
         }
 
-        public bool WaveStarted()
+        public bool OnWaveStarted()
         {
             waveStarted = true;
             return true;
         }
 
-        public void WaveFinished()
+        public void OnWaveFinished()
         {
             waveStarted = false;
             ReduceCooldowns();

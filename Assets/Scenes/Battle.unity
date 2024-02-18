@@ -832,6 +832,7 @@ MonoBehaviour:
   attackersLeft: 0
   startNextWave: 0
   spawning: 0
+  waveStarted: 0
   currentWave:
     batches: []
   onSpawnedOnce:
@@ -4909,6 +4910,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3425f27343a18a24c88b3ec33a6ead8c, type: 2}
   - {fileID: 11400000, guid: f7194962d8ed52a41887aebd5a9644d5, type: 2}
   - {fileID: 11400000, guid: 795fea2ef81d3f84799dff3a745b2be8, type: 2}
+  - {fileID: 11400000, guid: e8d1ee3073478c044a79ec282da3dac3, type: 2}
+  - {fileID: 11400000, guid: 742301ba2e463c84da4eb9b309716433, type: 2}
   blueprints: []
   cooldowns: 
   selected: -1
@@ -9049,7 +9052,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010511, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_fontSizeBase
-      value: 26
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903060301604, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_Size

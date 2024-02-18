@@ -50,10 +50,8 @@ namespace Game.InfoPanel
                 stats.Add("Base Damage/s [DPS]");
             if (blueprint_.HasDelay)
                 stats.Add("Delay [DEL]");
-            if (blueprint_.HasDurationTicks)
-                stats.Add("Duration [DUT]");
-            if (blueprint_.HasDurationWaves)
-                stats.Add("Duration [DUW] waves");
+            if (blueprint_.HasDurationTicks || blueprint_.HasDurationWaves)
+                stats.Add("Duration [DUR]");
 
             if (stats.Count > 0)
             {

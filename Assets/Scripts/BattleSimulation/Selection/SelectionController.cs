@@ -73,7 +73,7 @@ namespace BattleSimulation.Selection
             {
                 if (placing != null)
                 {
-                    if (placing.IsValid() && blueprintMenu.OnPlace())
+                    if (placing.IsValid() && blueprintMenu.TryPlace())
                     {
                         placing.Place();
                         placing = null;

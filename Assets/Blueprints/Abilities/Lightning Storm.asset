@@ -10,29 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed9e4bc5a30718f41968ff1efaf3e48d, type: 3}
-  m_Name: Meteor
+  m_Name: Lightning Storm
   m_EditorClassIdentifier: 
-  name: Meteor
-  prefab: {fileID: 6702536568690210424, guid: 4adf973834d51aa46b002beec0046a4c, type: 3}
-  icon: {fileID: 21300000, guid: 15addddcc13488e46af0c99f24ffd745, type: 3}
-  rarity: 1
+  name: Lightning Storm
+  prefab: {fileID: 6702536568690210424, guid: 80beae23b6bc2b043a890a18b9eb4db1, type: 3}
+  icon: {fileID: 21300000, guid: 306d278575019d645a71c2f91e05defb, type: 3}
+  rarity: 2
   type: 3
-  energyCost: 40
+  energyCost: 30
   materialCost: 0
   startingCooldown: 0
   cooldown: 0
   range: -1
-  damage: 6
-  damageType: 10
-  interval: -1
-  radius: 1.4
-  delay: 16
+  damage: 10
+  damageType: 16
+  interval: 30
+  radius: 2.5
+  delay: -1
   durationTicks: -1
   durationWaves: -1
   fuelProduction: -1
   materialProduction: -1
   energyProduction: -1
-  magic1: -1
+  magic1: 4
   descriptions:
-  - Impacts the ground, dealing damage to all attackers within [RAD] tiles from the
-    impact.
+  - Strikes [M1+] times, hitting a random attacker within [RAD] tiles each time.

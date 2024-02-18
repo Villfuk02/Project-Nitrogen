@@ -10,29 +10,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed9e4bc5a30718f41968ff1efaf3e48d, type: 3}
-  m_Name: Meteor
+  m_Name: HoloProjector
   m_EditorClassIdentifier: 
-  name: Meteor
-  prefab: {fileID: 6702536568690210424, guid: 4adf973834d51aa46b002beec0046a4c, type: 3}
-  icon: {fileID: 21300000, guid: 15addddcc13488e46af0c99f24ffd745, type: 3}
-  rarity: 1
+  name: Holo-Projector
+  prefab: {fileID: 0}
+  icon: {fileID: 21300000, guid: 2f8da793a4314b14cb87170ce8d35156, type: 3}
+  rarity: 2
   type: 3
-  energyCost: 40
+  energyCost: 25
   materialCost: 0
   startingCooldown: 0
-  cooldown: 0
-  range: -1
-  damage: 6
-  damageType: 10
-  interval: -1
-  radius: 1.4
-  delay: 16
+  cooldown: 1
+  range: 3.6
+  damage: 2
+  damageType: 1
+  interval: 30
+  radius: -1
+  delay: 24
   durationTicks: -1
-  durationWaves: -1
+  durationWaves: 3
   fuelProduction: -1
   materialProduction: -1
   energyProduction: -1
   magic1: -1
   descriptions:
-  - Impacts the ground, dealing damage to all attackers within [RAD] tiles from the
-    impact.
+  - Can be placed on tiles with small obstacles.
+  - When placed, instantly deals damage to all attackers within range.
+  - Conjures a tower for [DUR]. Attacker targetted by it must stay within range for
+    [DEL] to take damage.

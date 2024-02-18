@@ -198,7 +198,7 @@ namespace BattleVisuals.Selection
             Vector2 priorityPos = selection.hoverTilePosition is not null ? (Vector2)selection.hoverTilePosition : Vector2.zero;
             foreach (var child in node.children!.Value)
             {
-                float priority = (child.pos - priorityPos).sqrMagnitude - child.scale * child.scale * 1000;
+                float priority = (child.pos - priorityPos).sqrMagnitude - child.scale * child.scale * 200000;
                 rangeVisualQueue_.Enqueue(child, priority + priorityAdjustment);
             }
 

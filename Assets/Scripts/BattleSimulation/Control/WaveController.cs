@@ -17,6 +17,7 @@ namespace BattleSimulation.Control
         public int attackersLeft;
         [SerializeField] bool startNextWave;
         [SerializeField] bool spawning;
+        [SerializeField] bool waveStarted;
         [SerializeField] WaveGenerator.Wave currentWave;
         int paths_;
         List<(int delay, int path, AttackerStats attacker)> spawnQueue_ = new();
@@ -67,6 +68,12 @@ namespace BattleSimulation.Control
 
             if (spawnQueue_.Count > 0)
                 ProcessSpawnQueue();
+
+            if (attackersLeft == 0 && !spawning && waveStarted)
+            {
+                waveStarted = false;
+                onWaveFinished.Broadcast();
+            }
         }
 
         void ProcessSpawn()
@@ -95,7 +102,10 @@ namespace BattleSimulation.Control
             for (int i = 0; i < paths_; i++)
             {
                 if (batch.typePerPath[i] is AttackerStats s)
+                {
                     spawnQueue_.Add((paths_ - i, i, s));
+                    attackersLeft++;
+                }
             }
             onSpawnedOnce.Invoke();
         }
@@ -127,8 +137,6 @@ namespace BattleSimulation.Control
             a.InitPath(startingPoint, firstTile, index);
             a.onRemoved.AddListener(AttackerRemoved);
             a.onReachedHub.AddListener(BattleController.AttackerReachedHub);
-
-            attackersLeft++;
         }
 
         bool StartNextWave()
@@ -136,6 +144,7 @@ namespace BattleSimulation.Control
             wave++;
             spawnTimer = 0;
             spawning = true;
+            waveStarted = true;
             currentWave = waveGenerator.GetWave(wave);
             return true;
         }
@@ -143,8 +152,6 @@ namespace BattleSimulation.Control
         public void AttackerRemoved()
         {
             attackersLeft--;
-            if (attackersLeft == 0)
-                onWaveFinished.Broadcast();
         }
     }
 }
