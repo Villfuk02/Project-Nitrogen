@@ -1,16 +1,18 @@
 using BattleSimulation.World;
+using System.Linq;
 using UnityEngine;
 using Utils;
 
 namespace BattleSimulation.Selection
 {
-    public class TowerPlacement : BuildingPlacement
+    public class SimpleBuildingPlacement : BuildingPlacement
     {
         [SerializeField] bool onSlants;
+        [SerializeField] Tile.Obstacle[] allowedObstacles;
 
         public override bool IsTileValid(Tile tile)
         {
-            if (tile == null || tile.Building != null || tile.obstacle != Tile.Obstacle.None)
+            if (tile == null || tile.Building != null || !allowedObstacles.Contains(tile.obstacle))
                 return false;
             if (!onSlants && tile.slant != WorldUtils.Slant.None)
                 return false;

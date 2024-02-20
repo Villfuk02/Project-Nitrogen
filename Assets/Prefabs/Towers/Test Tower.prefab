@@ -294,6 +294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   placed: 0
+  permanent: 0
   visuals: {fileID: 475032649205546438}
   rotateBack:
   - {fileID: 475032647605434327}
@@ -334,6 +335,7 @@ MonoBehaviour:
   selectedTile: {fileID: 0}
   b: {fileID: 475032649215164953}
   onSlants: 1
+  allowedObstacles: 00000000
 --- !u!114 &2692797349279770925
 MonoBehaviour:
   m_ObjectHideFlags: 0

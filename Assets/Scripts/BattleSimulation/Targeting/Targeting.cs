@@ -92,6 +92,11 @@ namespace BattleSimulation.Targeting
             return inRange.Where(a => a != null && IsValidTarget(a));
         }
 
+        public bool IsInRangeAndValid(Attacker a)
+        {
+            return a != null && inRange.Contains(a) && IsValidTarget(a);
+        }
+
         void OnDrawGizmosSelected()
         {
             foreach (Attacker attacker in inRange)

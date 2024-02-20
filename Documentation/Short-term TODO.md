@@ -1,12 +1,19 @@
-- [x] wave end bug
 - [ ] abilities
     - [x] meteor
     - [x] > use abilities only during waves
     - [x] > deactivate timed or delayed abilities at end of wave
     - [x] lightning storm
     - [ ] temporary tower
-    - [ ] converts material to fuel
+        - [x] script
+        - [x] model
+        - [x] particles
+        - [x] differentiate delay from duration
+        - [ ] change targeting priority
+    - [ ] convert material to fuel
+        - [ ] use anytime
+        - [ ] use button?
     - [ ] laser strike
+    - [ ] upgrade blueprint stats
 - [ ] tower effects
     - [ ] tower damage boost ability
 - [ ] attacker effects
@@ -25,6 +32,7 @@
     - [ ] makes material producers generate extra energy
 ## polish
 - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)
+- [ ] info panel text style tweaks
 - [ ] increase shadow resolution
 - [ ] redo building look to make them more visible
 - [ ] low hull effects
@@ -47,6 +55,7 @@
 - postup (bc + státnice)
 - kontroly
 - jazyk
+- dotnet2
 
 ## bachelor's MVP
 - [x] world gen

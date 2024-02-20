@@ -527,7 +527,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: time
+      name: duration
       rect:
         serializedVersion: 2
         x: 384
@@ -547,6 +547,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: delay
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 642
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6259de5cf39255f4e8b1fce84f37e13e
+      internalID: 209008387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -558,19 +579,20 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      explosive: 1769282286
+      energy: -992439401
       health: 1768218070
       hull: 1898444093
       fuel: -497393668
       damage: -1242754439
       large: 620751762
       small: 1524529626
-      time: 1837413387
       boss: 919425569
+      duration: 1837413387
       physical: 145129011
       hploss: -408159089
       fire: 161699792
       speed: 1147109685
+      delay: 209008387
       range: 63292639
       icons_8: 84070370
       material: 2124651440
@@ -578,7 +600,7 @@ TextureImporter:
       shotinterval: 599189466
       dps: 1316403603
       generation: -342673344
-      energy: -992439401
+      explosive: 1769282286
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

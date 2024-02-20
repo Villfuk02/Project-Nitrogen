@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed9e4bc5a30718f41968ff1efaf3e48d, type: 3}
-  m_Name: HoloProjector
+  m_Name: HoloSiphon
   m_EditorClassIdentifier: 
-  name: Holo-Projector
-  prefab: {fileID: 0}
+  name: Holo-Siphon
+  prefab: {fileID: 475032649215164951, guid: d04197c98f73e6e4c8cf8bd15cdd2ad0, type: 3}
   icon: {fileID: 21300000, guid: 2f8da793a4314b14cb87170ce8d35156, type: 3}
   rarity: 2
   type: 3
@@ -21,7 +21,7 @@ MonoBehaviour:
   materialCost: 0
   startingCooldown: 0
   cooldown: 1
-  range: 3.6
+  range: 2.8
   damage: 2
   damageType: 1
   interval: 30

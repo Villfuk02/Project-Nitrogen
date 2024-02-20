@@ -6,8 +6,9 @@ using UnityEngine.Events;
 
 namespace BattleSimulation.Towers
 {
-    public class BasicProjectileTower : Tower
+    public class BasicProjectileTower : Tower, IProjectileSource
     {
+        public GameObject projectilePrefab;
         [SerializeField] Transform projectileOrigin;
         [SerializeField] int shotTimer;
         [SerializeField] UnityEvent onShoot;
@@ -17,17 +18,14 @@ namespace BattleSimulation.Towers
             if (!placed)
                 return;
 
+            shotTimer--;
             if (shotTimer > 0)
-            {
-                shotTimer--;
                 return;
-            }
 
-            targeting.Retarget();
+            if (targeting.target == null)
+                targeting.Retarget();
             if (targeting.target != null)
-            {
                 Shoot(targeting.target);
-            }
         }
 
         void Shoot(Attacker target)
@@ -40,7 +38,7 @@ namespace BattleSimulation.Towers
             onShoot.Invoke();
         }
 
-        public override bool Hit(Projectile projectile, Attacker attacker)
+        public virtual bool Hit(Projectile projectile, Attacker attacker)
         {
             if (attacker.IsDead)
                 return false;

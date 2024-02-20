@@ -159,6 +159,12 @@ MonoBehaviour:
     m_Scale: 1
     m_Name: time
     m_HashCode: 4074549
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 20
+    m_Scale: 1
+    m_Name: delay
+    m_HashCode: 115079157
   m_SpriteGlyphTable:
   - m_Index: 0
     m_Metrics:
@@ -460,6 +466,21 @@ MonoBehaviour:
     m_Scale: 1
     m_AtlasIndex: 0
     sprite: {fileID: 1837413387, guid: 2c44b0242c64fb8429d9ca3205dde69c, type: 3}
+  - m_Index: 20
+    m_Metrics:
+      m_Width: 128
+      m_Height: 128
+      m_HorizontalBearingX: -20
+      m_HorizontalBearingY: 104
+      m_HorizontalAdvance: 88
+    m_GlyphRect:
+      m_X: 512
+      m_Y: 642
+      m_Width: 128
+      m_Height: 128
+    m_Scale: 1
+    m_AtlasIndex: 0
+    sprite: {fileID: 209008387, guid: 2c44b0242c64fb8429d9ca3205dde69c, type: 3}
   spriteInfoList: []
   fallbackSpriteAssets: []
 --- !u!21 &7380557556305619228

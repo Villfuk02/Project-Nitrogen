@@ -21,15 +21,17 @@ MonoBehaviour:
   materialCost: 20
   startingCooldown: 0
   cooldown: 0
-  range: 5
+  range: 4
   damage: 1
   damageType: 2
   interval: 16
   radius: -1
   delay: -1
-  duration: -1
+  durationTicks: -1
+  durationWaves: -1
   fuelProduction: -1
   materialProduction: -1
   energyProduction: -1
   magic1: -1
-  descriptions: []
+  descriptions:
+  - Cannot shoot upwards and at attackers not in line of sight.

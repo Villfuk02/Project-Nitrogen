@@ -42,7 +42,7 @@ namespace Game.InfoPanel
             { "INT", s => FormatTicksStat(TextUtils.Icon.Interval, s.blueprint.interval, s.original.interval, s.original.HasInterval, Improvement.Less) },
             { "DPS", s => FormatFloatStat(TextUtils.Icon.Dps, s.blueprint.BaseDps, s.original.BaseDps, s.original.HasDamage && s.original.HasInterval, Improvement.More)},
             { "RAD", s => FormatFloatStat(TextUtils.Icon.Radius, s.blueprint.radius, s.original.radius, s.original.HasRadius, Improvement.More)},
-            { "DEL", s => FormatTicksStat(TextUtils.Icon.Time, s.blueprint.delay, s.original.delay, s.original.HasDelay, Improvement.Less)},
+            { "DEL", s => FormatTicksStat(TextUtils.Icon.Delay, s.blueprint.delay, s.original.delay, s.original.HasDelay, Improvement.Less)},
             { "DUR", s => FormatDuration(s.blueprint, s.original)},
             { "PRO", s => FormatProduction(s.blueprint, s.original) },
             { "M1-", s => FormatIntStat(null, s.blueprint.magic1, s.original.magic1, true, Improvement.Less) },
@@ -100,8 +100,8 @@ namespace Game.InfoPanel
         static string FormatDuration(Blueprint.Blueprint b, Blueprint.Blueprint o)
         {
             if (b.HasDurationTicks)
-                return FormatTicksStat(TextUtils.Icon.Time, b.durationTicks, o.durationTicks, o.HasDurationTicks, Improvement.More);
-            return $"{FormatIntStat(TextUtils.Icon.Time, b.durationWaves, o.durationWaves, o.HasDurationWaves, Improvement.More)} waves";
+                return FormatTicksStat(TextUtils.Icon.Duration, b.durationTicks, o.durationTicks, o.HasDurationTicks, Improvement.More);
+            return $"{FormatIntStat(TextUtils.Icon.Duration, b.durationWaves, o.durationWaves, o.HasDurationWaves, Improvement.More)} waves";
         }
 
         static string ColorImprovement<T>(string text, T stat, T original, bool existedBefore, Improvement improvement) where T : IComparable<T>

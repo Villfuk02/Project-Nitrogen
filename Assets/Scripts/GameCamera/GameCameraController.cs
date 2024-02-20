@@ -1,5 +1,6 @@
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Utils;
 
 namespace GameCamera
@@ -50,7 +51,8 @@ namespace GameCamera
                 camSpacePosTarget += realMove * new Vector3(-Mathf.Sin(rotationRad), 0, -Mathf.Cos(rotationRad));
             if (Input.GetKey(KeyCode.D))
                 camSpacePosTarget += realMove * new Vector3(Mathf.Cos(rotationRad), 0, -Mathf.Sin(rotationRad));
-            camSpacePosTarget += Input.mouseScrollDelta.y * zoomSpeed * Vector3.up;
+            if (!EventSystem.current.IsPointerOverGameObject())
+                camSpacePosTarget += Input.mouseScrollDelta.y * zoomSpeed * Vector3.up;
 
             // limits
             camSpacePosTarget = new(
