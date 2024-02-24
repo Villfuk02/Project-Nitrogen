@@ -69,7 +69,7 @@ namespace BattleSimulation.Selection
                 resetVisuals |= placing.Setup(hovered, rotation, hoverTilePosition, transform);
 
             //left click
-            if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
             {
                 if (placing != null)
                 {

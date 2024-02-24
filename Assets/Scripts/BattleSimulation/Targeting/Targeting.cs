@@ -16,8 +16,10 @@ namespace BattleSimulation.Targeting
         [Header("Settings")]
         [SerializeField] protected bool checkLineOfSight;
         protected abstract TargetingPriority[] Priorities { get; }
+        protected int selectedPriority;
+        public bool CanChangePriority => Priorities.Length > 1;
+        public string CurrentPriority => Priorities[selectedPriority].Name;
         [Header("Runtime values")]
-        [SerializeField] int selectedPriority;
         public Attacker target;
         protected HashSet<Attacker> inRange = new();
 
@@ -96,6 +98,9 @@ namespace BattleSimulation.Targeting
         {
             return a != null && inRange.Contains(a) && IsValidTarget(a);
         }
+
+        public void NextPriority() => selectedPriority = (selectedPriority + 1) % Priorities.Length;
+        public void PrevPriority() => selectedPriority = (selectedPriority + Priorities.Length - 1) % Priorities.Length;
 
         void OnDrawGizmosSelected()
         {
