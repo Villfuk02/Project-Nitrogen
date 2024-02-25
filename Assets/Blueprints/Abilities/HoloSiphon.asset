@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Holo-Siphon
   prefab: {fileID: 475032649215164951, guid: d04197c98f73e6e4c8cf8bd15cdd2ad0, type: 3}
-  icon: {fileID: 21300000, guid: 2f8da793a4314b14cb87170ce8d35156, type: 3}
+  icon: {fileID: 21300000, guid: 2cc27b3a43549f34cb9f476133317b1f, type: 3}
   rarity: 2
   type: 3
   energyCost: 25

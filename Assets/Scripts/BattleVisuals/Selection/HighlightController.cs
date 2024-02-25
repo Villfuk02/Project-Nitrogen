@@ -3,7 +3,6 @@ using BattleSimulation.World.WorldData;
 using BattleVisuals.Selection.Highlightable;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using Utils;
 using Object = UnityEngine.Object;
@@ -12,33 +11,18 @@ namespace BattleVisuals.Selection
 {
     public class HighlightController : MonoBehaviour
     {
-        // sent to shader
-        struct CompactQuadTreeNode
-        {
-            // ReSharper disable twice NotAccessedField.Local
-            public short first;
-            public short second;
-
-            public static short GetValue(short childrenIndex)
-            {
-                return childrenIndex;
-            }
-            public static short GetValue(IHighlightable.HighlightType h)
-            {
-                return (short)((int)h | 0x8000);
-            }
-        }
-
-        static readonly int Data = Shader.PropertyToID("_Data");
+        static readonly TextureFormat TextureFormat = TextureFormat.R8;
+        static readonly int HighlightMap = Shader.PropertyToID("_HighlightMap");
+        static readonly int WorldSize = Shader.PropertyToID("_WorldSize");
+        static readonly int Offset = Shader.PropertyToID("_Offset");
         [Header("References")]
         [SerializeField] SelectionController selection;
         [SerializeField] Material terrainMaterial;
         [Header("Settings")]
         [SerializeField] Color[] highlightColors;
-        [SerializeField] float rangeVisualsScale;
-        [SerializeField] float rangeVisualsMinScale;
+        [SerializeField] int pixelsPerUnit;
+        [SerializeField] int layers;
         [SerializeField] float areaSamplesPerFrameMultiplier;
-        [SerializeField] int halfMaxQuadCount;
         [Header("Runtime variables")]
         [SerializeField] HighlightProvider lastHighlightProvider;
         [SerializeField] bool doFixedReset;
@@ -46,9 +30,10 @@ namespace BattleVisuals.Selection
         readonly Dictionary<IHighlightable, IHighlightable.HighlightType> highlighted_ = new();
         QuadTree<(IHighlightable.HighlightType h, bool done)> rangeVisuals_;
         readonly PriorityQueue<QuadTree<(IHighlightable.HighlightType h, bool done)>, float> rangeVisualQueue_ = new();
-        ComputeBuffer dataBuffer_;
-        CompactQuadTreeNode[] dataArray_;
-        int nodeCount_;
+        int textureSize_;
+        Vector2 offset_;
+        Texture2D texture_;
+        byte[] resetArray_;
 
         void Awake()
         {
@@ -87,8 +72,9 @@ namespace BattleVisuals.Selection
 
                 rangeVisuals_ = null;
                 rangeVisualQueue_.Clear();
-                nodeCount_ = 0;
-                UpdateMaterial();
+                for (int m = 0; m <= layers; m++)
+                    texture_.SetPixelData(resetArray_, m);
+                texture_.Apply(false);
                 lastHighlightProvider = null;
                 return;
             }
@@ -99,10 +85,13 @@ namespace BattleVisuals.Selection
                     doReset = false;
 
                 lastHighlightProvider = hp;
-                rangeVisuals_ = new(WorldUtils.WORLD_CENTER, rangeVisualsScale, CalculateRangeVisualAt(WorldUtils.WORLD_CENTER, rangeVisualsScale), null);
+                rangeVisuals_ = new(Vector2Int.zero, textureSize_, CalculateRangeVisualAt(Vector2.zero, textureSize_), null);
                 rangeVisualQueue_.Clear();
                 rangeVisualQueue_.Enqueue(rangeVisuals_, 0);
-                nodeCount_ = 1;
+                for (int m = 0; m <= layers; m++)
+                    texture_.SetPixelData(resetArray_, m);
+                DrawNode(rangeVisuals_.pos, rangeVisuals_.scale, rangeVisuals_.value.h);
+                texture_.Apply(false);
             }
             UpdateHighlights(hp.GetHighlights(), hovered, selection.placing == null || selection.placing.IsValid());
 
@@ -114,8 +103,10 @@ namespace BattleVisuals.Selection
                     break;
             }
 
-            UpdateMaterial();
+            texture_.Apply(false);
         }
+
+        Vector2 CenteredPos(Vector2Int pixelPos, int scale) => (pixelPos + (scale - 1) * 0.5f * Vector2.one) / pixelsPerUnit - offset_ + WorldUtils.WORLD_CENTER;
 
         void FixedUpdate()
         {
@@ -164,12 +155,16 @@ namespace BattleVisuals.Selection
                     element.Unhighlight();
             }
         }
-
+        (IHighlightable.HighlightType h, bool done) CalculateRangeVisualAt(Vector2Int pixel, int scale)
+        {
+            (var h, bool d) = CalculateRangeVisualAt(CenteredPos(pixel, scale), scale / (float)pixelsPerUnit);
+            return (h, scale == 1 || d);
+        }
         public (IHighlightable.HighlightType h, bool done) CalculateRangeVisualAt(Vector2 point, float scale)
         {
             var pos = WorldUtils.TilePosToWorldPos(new Vector3(point.x, point.y, World.data.tiles.GetHeightAt(point) ?? -1000));
             (var h, float r) = lastHighlightProvider.GetAffectedArea(pos);
-            return (h, scale <= rangeVisualsMinScale || r >= scale * 2.83f);
+            return (h, r >= scale * 0.71f);
         }
 
         public bool StepRangeVisuals()
@@ -183,10 +178,13 @@ namespace BattleVisuals.Selection
             if (node.value.done)
                 return true;
 
-            float childrenScale = node.scale / 2;
+            int childrenScale = node.scale / 2;
             var childrenValues = node.GetChildrenPositions.Map(p => CalculateRangeVisualAt(p, childrenScale));
             node.SetChildrenValues(childrenValues);
-            nodeCount_ += 4;
+            foreach (var child in node.children!)
+            {
+                DrawNode(child.pos, child.scale, child.value.h);
+            }
             if (childrenValues.All(v => v.done))
             {
                 CheckDone(node);
@@ -198,7 +196,7 @@ namespace BattleVisuals.Selection
             Vector2 priorityPos = selection.hoverTilePosition is not null ? (Vector2)selection.hoverTilePosition : Vector2.zero;
             foreach (var child in node.children!.Value)
             {
-                float priority = (child.pos - priorityPos).sqrMagnitude - child.scale * child.scale * 200000;
+                float priority = ((Vector2)child.pos / pixelsPerUnit - offset_ - priorityPos).sqrMagnitude - child.scale * child.scale * 200000f / pixelsPerUnit / pixelsPerUnit;
                 rangeVisualQueue_.Enqueue(child, priority + priorityAdjustment);
             }
 
@@ -207,56 +205,30 @@ namespace BattleVisuals.Selection
 
         void InitMaterial()
         {
-            dataBuffer_ = new(halfMaxQuadCount, Marshal.SizeOf(typeof(CompactQuadTreeNode)));
-            dataArray_ = new CompactQuadTreeNode[halfMaxQuadCount];
-            UpdateMaterial();
+            textureSize_ = 1 << layers;
+            resetArray_ = Enumerable.Repeat((byte)0xFF, textureSize_ * textureSize_).ToArray();
+            texture_ = new(textureSize_, textureSize_, TextureFormat, true)
+            {
+                filterMode = FilterMode.Point,
+                wrapMode = TextureWrapMode.Clamp
+            };
+            for (int m = 0; m <= layers; m++)
+                texture_.SetPixelData(resetArray_, m);
+            texture_.Apply(false);
+            terrainMaterial.SetTexture(HighlightMap, texture_);
+            float worldSize = textureSize_ / (float)pixelsPerUnit;
+            offset_ = Vector2.one * ((textureSize_ - 1) / (float)pixelsPerUnit / 2);
+            terrainMaterial.SetVector(WorldSize, new(worldSize, worldSize));
+            terrainMaterial.SetVector(Offset, offset_ + Vector2.one / pixelsPerUnit / 2);
         }
 
-        void UpdateMaterial()
+        void DrawNode(Vector2Int pos, int scale, IHighlightable.HighlightType highlightType)
         {
-            if (nodeCount_ > 2 * halfMaxQuadCount - 1)
-                Debug.LogWarning($"{nodeCount_} nodes is over the allowed maximum {2 * halfMaxQuadCount - 1}");
+            int layer = 0;
+            while (scale > 1 << layer)
+                layer++;
 
-            if (nodeCount_ == 0)
-            {
-                CompactQuadTreeNode n = new()
-                {
-                    first = CompactQuadTreeNode.GetValue(IHighlightable.HighlightType.Selected)
-                };
-                dataArray_[0] = n;
-            }
-            else
-            {
-                int count = 2;
-
-                void HandleNode(QuadTree<(IHighlightable.HighlightType h, bool done)> node, int index)
-                {
-                    if (node.children.HasValue && count <= 2 * halfMaxQuadCount - 5)
-                    {
-                        int cc = count;
-                        if (index % 2 == 0)
-                            dataArray_[index / 2].first = CompactQuadTreeNode.GetValue((short)count);
-                        else
-                            dataArray_[index / 2].second = CompactQuadTreeNode.GetValue((short)count);
-                        count += 4;
-                        HandleNode(node.children.Value.SE, cc);
-                        HandleNode(node.children.Value.NE, cc + 1);
-                        HandleNode(node.children.Value.SW, cc + 2);
-                        HandleNode(node.children.Value.NW, cc + 3);
-                    }
-                    else
-                    {
-                        if (index % 2 == 0)
-                            dataArray_[index / 2].first = CompactQuadTreeNode.GetValue(node.value.h);
-                        else
-                            dataArray_[index / 2].second = CompactQuadTreeNode.GetValue(node.value.h);
-                    }
-                }
-                HandleNode(rangeVisuals_, 0);
-            }
-
-            dataBuffer_.SetData(dataArray_);
-            terrainMaterial.SetBuffer(Data, dataBuffer_);
+            texture_.SetPixel(pos.x / scale, pos.y / scale, new((int)highlightType / 255f, 0, 0), layer);
         }
 
         void CheckDone(QuadTree<(IHighlightable.HighlightType h, bool done)> node)
@@ -265,7 +237,6 @@ namespace BattleVisuals.Selection
                 return;
             node.value.done = true;
             node.children = null;
-            nodeCount_ -= 4;
 
             if (node.parent != null)
                 CheckDone(node.parent);
@@ -282,7 +253,7 @@ namespace BattleVisuals.Selection
             if (node.children is null)
             {
                 Gizmos.color = highlightColors[(int)node.value.h];
-                Gizmos.DrawWireCube(WorldUtils.TilePosToWorldPos(node.pos), new(node.scale * 2, 0.1f, node.scale * 2));
+                Gizmos.DrawWireCube(WorldUtils.TilePosToWorldPos(CenteredPos(node.pos, node.scale)), new(node.scale * 0.8f / pixelsPerUnit, 0.1f, node.scale * 0.8f / pixelsPerUnit));
             }
             else
             {
@@ -291,11 +262,6 @@ namespace BattleVisuals.Selection
                     DrawRecursiveGizmos(child);
                 }
             }
-        }
-
-        void OnDestroy()
-        {
-            dataBuffer_.Release();
         }
     }
 }

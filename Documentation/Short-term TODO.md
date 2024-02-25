@@ -1,4 +1,5 @@
-- [ ] try making range visualisation texture on cpu
+- [x] make range visualisation texture on cpu
+- [x] holo-siphon icon
 - [ ] text
 - [ ] refactoring
 ## polish

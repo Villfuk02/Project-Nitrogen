@@ -3369,17 +3369,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selection: {fileID: 793714038}
-  terrainMaterial: {fileID: 2100000, guid: fccfa01402859324cbc5ac9a1761ff4a, type: 2}
+  terrainMaterial: {fileID: 2100000, guid: 0ebc071c9663e6d4f9343281ccf613f7, type: 2}
   highlightColors:
   - {r: 0, g: 0.5647059, b: 1, a: 1}
   - {r: 1, g: 0, b: 0.39316654, a: 1}
   - {r: 1, g: 0.77254903, b: 0, a: 1}
   - {r: 0.06666667, g: 1, b: 0, a: 1}
   - {r: 0, g: 0.82529235, b: 1, a: 1}
-  rangeVisualsScale: 4
-  rangeVisualsMinScale: 0.02
+  pixelsPerUnit: 16
+  layers: 8
   areaSamplesPerFrameMultiplier: 1
-  halfMaxQuadCount: 12000
   lastHighlightProvider: {fileID: 0}
   doFixedReset: 0
   doReset: 0

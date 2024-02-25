@@ -32,9 +32,26 @@ Visualisation
 - Draw on which parts of paths will [[Attacker]]s be targeted
     - green - all sizes
     - yellow - only large 
-- right now it is done with line renderers
-    - sample terrain height along the line to draw it right above the terrain
-    - later maybe use a shader on the terrain itself
+
+Terrain shader uses compressed texture format instead of raw texture 
+- Options:
+    - quadrant compression format, 2bytes per node
+        - less CPU time, because the data is already in this format
+        - up to 48KiB per frame
+        - more GPU time
+    - 256x256 texture, 1byte per pixel 
+        - more CPU time
+        - 64KiB per frame
+        - fast on GPU
+            - only 1 channel - cannot interpolate
+            - ![[Pasted image 20240225190014.png]]
+    - mipmaps -> one additional state
+        - less CPU time
+        - 33% more data
+    - more pixels per byte
+        - possible future optimization
+        - less data
+        - more difficult indexing and stuff both on CPU and GPU
 
 Make sure towers that test line of sight don't have misleading range visualisation. When a path is on a border, the more forgiving option should be true. For example the following path is on a border, but must act like green: 
 ![[Pasted image 20230921191841.png]]

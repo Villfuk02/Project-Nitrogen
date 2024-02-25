@@ -2,15 +2,16 @@ using UnityEngine;
 
 namespace Utils
 {
+    // TODO: generalize, in HighlightController use a derived class instead
     public class QuadTree<T>
     {
-        public readonly Vector2 pos;
-        public readonly float scale;
+        public readonly Vector2Int pos;
+        public readonly int scale;
         public readonly QuadTree<T> parent;
         public T value;
         public DiagonalDirs<QuadTree<T>>? children;
 
-        public QuadTree(Vector2 pos, float scale, T value, QuadTree<T> parent)
+        public QuadTree(Vector2Int pos, int scale, T value, QuadTree<T> parent)
         {
             this.pos = pos;
             this.scale = scale;
@@ -18,7 +19,7 @@ namespace Utils
             this.parent = parent;
         }
 
-        public DiagonalDirs<Vector2> GetChildrenPositions => WorldUtils.DIAGONAL_DIRS.Map(o => pos + (Vector2)o * scale);
+        public DiagonalDirs<Vector2Int> GetChildrenPositions => WorldUtils.DIAGONAL_DIRS.Map(o => pos + (Vector2Int.one + o) * scale / 4);
 
         public void SetChildrenValues(DiagonalDirs<T> values)
         {
@@ -29,21 +30,6 @@ namespace Utils
                 new(positions[2], scale / 2, values[2], this),
                 new(positions[3], scale / 2, values[3], this)
                 );
-        }
-
-        public QuadTree<T> GetClosestTo(Vector2 point)
-        {
-            if (children == null)
-                return this;
-
-            var diff = point - pos;
-            return diff switch
-            {
-                { x: <= 0, y: >= 0 } => children.Value.NW,
-                { x: >= 0, y: >= 0 } => children.Value.NE,
-                { x: >= 0, y: <= 0 } => children.Value.SE,
-                _ => children.Value.SW
-            };
         }
     }
 }

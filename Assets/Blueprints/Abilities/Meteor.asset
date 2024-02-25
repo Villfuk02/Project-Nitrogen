@@ -34,5 +34,4 @@ MonoBehaviour:
   energyProduction: -1
   magic1: -1
   descriptions:
-  - Impacts the ground, dealing damage to all attackers within [RAD] tiles from the
-    impact.
+  - Impacts the ground, dealing damage to all attackers within radius.

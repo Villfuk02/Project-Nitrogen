@@ -55,6 +55,7 @@ namespace Game.InfoPanel
         void UpdateDescription(string desc)
         {
             deleteButton.gameObject.SetActive(building_ != null && !building_.permanent);
+            UpdateTargeting();
             description.text = desc;
             LayoutRebuilder.ForceRebuildLayoutImmediate(root);
         }

@@ -34,4 +34,4 @@ MonoBehaviour:
   energyProduction: -1
   magic1: 4
   descriptions:
-  - Strikes [M1+] times, hitting a random attacker within [RAD] tiles each time.
+  - Strikes [M1+] times, each time hitting a random attacker within radius.
