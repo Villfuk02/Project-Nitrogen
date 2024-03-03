@@ -22,25 +22,24 @@ namespace BattleSimulation.Control
         int paths_;
         List<(int delay, int path, AttackerStats attacker)> spawnQueue_ = new();
 
-        public static GameCommand startWave = new();
-        public static GameEvent onWaveSpawned = new();
-        public static GameEvent onWaveFinished = new();
+        public static ModifiableCommand startWave = new();
+        public static EventReactionChain onWaveSpawned = new();
+        public static EventReactionChain onWaveFinished = new();
 
         [SerializeField] UnityEvent onSpawnedOnce;
 
         void Awake()
         {
             // only use half the range to prevent overflow
-            // TODO: mangle the value slightly
-            currentIndex = (uint)(World.WorldData.World.data.seed & 0x7FFFFFFF);
+            currentIndex = (uint)(World.WorldData.World.data.seed ^ 0x55555555 & 0x7FFFFFFF);
             paths_ = World.WorldData.World.data.firstPathTiles.Length;
 
-            startWave.Register(StartNextWave, 0);
+            startWave.RegisterHandler(StartNextWave);
         }
 
         void OnDestroy()
         {
-            startWave.Unregister(StartNextWave);
+            startWave.UnregisterHandler(StartNextWave);
         }
 
         void Update()

@@ -18,12 +18,12 @@ namespace BattleSimulation.Abilities
         }
         protected override void OnPlaced()
         {
-            WaveController.onWaveFinished.Register(OnWaveFinished, 100);
+            WaveController.onWaveFinished.RegisterReaction(OnWaveFinished, 100);
         }
         protected void OnDestroy()
         {
             if (placed)
-                WaveController.onWaveFinished.Unregister(OnWaveFinished);
+                WaveController.onWaveFinished.UnregisterReaction(OnWaveFinished);
         }
 
         void FixedUpdate()

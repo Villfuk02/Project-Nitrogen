@@ -24,9 +24,15 @@
     - [ ] playtest?
     - [ ] závěr (+future work)
 ## implementation
-- [ ] TODOs
+- [x] TODOs
 - [ ] refactoring
-    - [ ] make GameEvents interface more intuitive 
+    - [x] make GameEvents interface more intuitive
+    - [ ] BattleSim
+    - [ ] BattleVis
+    - [ ] Data
+    - [ ] Game
+    - [ ] Utils
+    - [ ] WorldGen
     - [ ] classes should only do their job and nothing more
     - [ ] encapsulation
     - [ ] decomposition

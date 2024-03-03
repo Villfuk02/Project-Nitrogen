@@ -2,34 +2,31 @@ using UnityEngine;
 
 namespace Utils
 {
-    // TODO: generalize, in HighlightController use a derived class instead
     public class QuadTree<T>
     {
+        public delegate T CalculateValue(Vector2Int pos, int depth);
         public readonly Vector2Int pos;
-        public readonly int scale;
+        public readonly int depth;
         public readonly QuadTree<T> parent;
         public T value;
         public DiagonalDirs<QuadTree<T>>? children;
 
-        public QuadTree(Vector2Int pos, int scale, T value, QuadTree<T> parent)
+        public QuadTree(Vector2Int pos, int depth, T value, QuadTree<T> parent)
         {
             this.pos = pos;
-            this.scale = scale;
+            this.depth = depth;
             this.value = value;
             this.parent = parent;
         }
 
-        public DiagonalDirs<Vector2Int> GetChildrenPositions => WorldUtils.DIAGONAL_DIRS.Map(o => pos + (Vector2Int.one + o) * scale / 4);
-
-        public void SetChildrenValues(DiagonalDirs<T> values)
+        public QuadTree(Vector2Int pos, int depth, CalculateValue valueProvider, QuadTree<T> parent) : this(pos, depth, default(T), parent)
         {
-            var positions = GetChildrenPositions;
-            children = new(
-                new(positions[0], scale / 2, values[0], this),
-                new(positions[1], scale / 2, values[1], this),
-                new(positions[2], scale / 2, values[2], this),
-                new(positions[3], scale / 2, values[3], this)
-                );
+            value = valueProvider(pos, depth);
+        }
+
+        public void InitializeChildren(CalculateValue valueProvider)
+        {
+            children = WorldUtils.DIAGONAL_DIRS.Map(offset => new QuadTree<T>(pos * 2 + (offset + Vector2Int.one) / 2, depth + 1, valueProvider, this));
         }
     }
 }

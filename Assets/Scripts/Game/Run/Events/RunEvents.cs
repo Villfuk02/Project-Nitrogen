@@ -5,10 +5,10 @@ namespace Game.Run.Events
 {
     public class RunEvents : MonoBehaviour
     {
-        public GameCommand<int> damageHull = new();
-        public GameCommand<int> repairHull = new();
-        public GameCommand defeat = new();
-        public GameCommand nextLevel = new();
-        public GameCommand restart = new();
+        public ModifiableCommand<int> damageHull = new();
+        public ModifiableCommand<int> repairHull = new();
+        public ModifiableCommand defeat = new();
+        public ModifiableCommand nextLevel = new();
+        public ModifiableCommand restart = new();
     }
 }

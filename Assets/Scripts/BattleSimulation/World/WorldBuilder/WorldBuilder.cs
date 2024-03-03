@@ -26,7 +26,7 @@ namespace BattleSimulation.World.WorldBuilder
         [SerializeField] int done;
         [SerializeField] Tile centerTile;
         readonly Stopwatch frameTimer_ = new();
-        const int MILLIS_PER_FRAME = 12; //TODO: Make framerate-based
+        int millisPerFrame_ = 12;
 
         void Awake()
         {
@@ -38,6 +38,7 @@ namespace BattleSimulation.World.WorldBuilder
 
         void Update()
         {
+            millisPerFrame_ = Mathf.Clamp(500 / Application.targetFrameRate, 5, 50);
             frameTimer_.Restart();
             if (done < 5)
                 return;
@@ -49,44 +50,35 @@ namespace BattleSimulation.World.WorldBuilder
             }
         }
 
-        public void PlaceTilesTrigger() => StartCoroutine(PlaceTiles(10));
-        public void BuildTerrainTrigger() => StartCoroutine(BuildTerrain(10));
-        public void PlaceDecorationsTrigger() => StartCoroutine(PlaceDecorations(10));
+        public void PlaceTilesTrigger() => StartCoroutine(PlaceTiles());
+        public void BuildTerrainTrigger() => StartCoroutine(BuildTerrain());
+        public void PlaceDecorationsTrigger() => StartCoroutine(PlaceDecorations());
         public void RenderPathTrigger() => StartCoroutine(RenderPath());
         public void PlaceHubTrigger() => StartCoroutine(PlaceHub());
 
-        IEnumerator PlaceTiles(int batchSize)
+        IEnumerator PlaceTiles()
         {
-            int p = 0;
             foreach (var pos in WorldUtils.WORLD_SIZE)
             {
                 PlaceTile(pos);
-                p++;
-                if (p % batchSize == 0 && frameTimer_.ElapsedMilliseconds >= MILLIS_PER_FRAME)
-                {
+                if (frameTimer_.ElapsedMilliseconds >= millisPerFrame_)
                     yield return null;
-                }
             }
             centerTile = Tiles.TILES[WorldUtils.WORLD_CENTER];
             done++;
         }
-        IEnumerator BuildTerrain(int batchSize)
+        IEnumerator BuildTerrain()
         {
-            int p = 0;
             foreach (var pos in WorldUtils.WORLD_SIZE + Vector2Int.one)
             {
                 PlaceModule(pos);
-                p++;
-                if (p % batchSize == 0 && frameTimer_.ElapsedMilliseconds >= MILLIS_PER_FRAME)
-                {
+                if (frameTimer_.ElapsedMilliseconds >= millisPerFrame_)
                     yield return null;
-                }
             }
             done++;
         }
-        IEnumerator PlaceDecorations(int batchSize)
+        IEnumerator PlaceDecorations()
         {
-            int p = 0;
             foreach (var tile in worldData.tiles)
             {
                 if (Tiles.TILES[tile.pos] == null)
@@ -94,11 +86,8 @@ namespace BattleSimulation.World.WorldBuilder
                 foreach (var decoration in tile.decorations)
                 {
                     PlaceDecoration(decoration, Tiles.TILES[tile.pos].decorationHolder);
-                    p++;
-                    if (p % batchSize == 0 && frameTimer_.ElapsedMilliseconds >= MILLIS_PER_FRAME)
-                    {
+                    if (frameTimer_.ElapsedMilliseconds >= millisPerFrame_)
                         yield return null;
-                    }
                 }
             }
             done++;
@@ -118,7 +107,7 @@ namespace BattleSimulation.World.WorldBuilder
             t.position = WorldUtils.SlotPosToWorldPos(pos.x, pos.y, height + module.HeightOffset);
             t.localScale = new Vector3(module.Flipped ? -1 : 1, 1, 1) * 1.01f;
             t.localRotation = Quaternion.Euler(0, 90 * module.Rotated, 0);
-            t.GetComponent<MeshFilter>().mesh = module.Collision; //TODO: Choose a real model
+            t.GetComponent<MeshFilter>().mesh = module.Collision;
             t.GetComponent<MeshCollider>().sharedMesh = module.Collision;
         }
         void PlaceDecoration(DecorationInstance decoration, Transform parent)

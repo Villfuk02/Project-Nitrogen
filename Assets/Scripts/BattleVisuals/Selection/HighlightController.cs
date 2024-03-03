@@ -85,12 +85,12 @@ namespace BattleVisuals.Selection
                     doReset = false;
 
                 lastHighlightProvider = hp;
-                rangeVisuals_ = new(Vector2Int.zero, textureSize_, CalculateRangeVisualAt(Vector2.zero, textureSize_), null);
+                rangeVisuals_ = new(Vector2Int.zero, 0, CalculateRangeVisualAt, null);
                 rangeVisualQueue_.Clear();
                 rangeVisualQueue_.Enqueue(rangeVisuals_, 0);
                 for (int m = 0; m <= layers; m++)
                     texture_.SetPixelData(resetArray_, m);
-                DrawNode(rangeVisuals_.pos, rangeVisuals_.scale, rangeVisuals_.value.h);
+                DrawNode(rangeVisuals_.pos, rangeVisuals_.depth, rangeVisuals_.value.h);
                 texture_.Apply(false);
             }
             UpdateHighlights(hp.GetHighlights(), hovered, selection.placing == null || selection.placing.IsValid());
@@ -106,7 +106,7 @@ namespace BattleVisuals.Selection
             texture_.Apply(false);
         }
 
-        Vector2 CenteredPos(Vector2Int pixelPos, int scale) => (pixelPos + (scale - 1) * 0.5f * Vector2.one) / pixelsPerUnit - offset_ + WorldUtils.WORLD_CENTER;
+        Vector2 CenteredPos(Vector2Int pixelPos, int scale) => (pixelPos * scale + (scale - 1) * 0.5f * Vector2.one) / pixelsPerUnit - offset_ + WorldUtils.WORLD_CENTER;
 
         void FixedUpdate()
         {
@@ -155,8 +155,9 @@ namespace BattleVisuals.Selection
                     element.Unhighlight();
             }
         }
-        (IHighlightable.HighlightType h, bool done) CalculateRangeVisualAt(Vector2Int pixel, int scale)
+        (IHighlightable.HighlightType h, bool done) CalculateRangeVisualAt(Vector2Int pixel, int depth)
         {
+            int scale = textureSize_ >> depth;
             (var h, bool d) = CalculateRangeVisualAt(CenteredPos(pixel, scale), scale / (float)pixelsPerUnit);
             return (h, scale == 1 || d);
         }
@@ -178,25 +179,26 @@ namespace BattleVisuals.Selection
             if (node.value.done)
                 return true;
 
-            int childrenScale = node.scale / 2;
-            var childrenValues = node.GetChildrenPositions.Map(p => CalculateRangeVisualAt(p, childrenScale));
-            node.SetChildrenValues(childrenValues);
+            node.InitializeChildren(CalculateRangeVisualAt);
+            var children = node.children!.Value;
             foreach (var child in node.children!)
             {
-                DrawNode(child.pos, child.scale, child.value.h);
+                DrawNode(child.pos, child.depth, child.value.h);
             }
-            if (childrenValues.All(v => v.done))
+            if (children.All(v => v.value.done))
             {
                 CheckDone(node);
                 return true;
             }
             int priorityAdjustment = 0;
-            if (childrenValues.NW != childrenValues.NE || childrenValues.NW != childrenValues.SW || childrenValues.NW != childrenValues.SE)
+            if (children.NW.value.h != children.NE.value.h || children.NW.value.h != children.SW.value.h || children.NW.value.h != children.SE.value.h)
                 priorityAdjustment -= 100000;
             Vector2 priorityPos = selection.hoverTilePosition is not null ? (Vector2)selection.hoverTilePosition : Vector2.zero;
+            float worldScale = (textureSize_ >> node.depth + 1) / (float)pixelsPerUnit;
+            float scalePriorityBonus = worldScale * worldScale * 200000f;
             foreach (var child in node.children!.Value)
             {
-                float priority = ((Vector2)child.pos / pixelsPerUnit - offset_ - priorityPos).sqrMagnitude - child.scale * child.scale * 200000f / pixelsPerUnit / pixelsPerUnit;
+                float priority = ((Vector2)child.pos / pixelsPerUnit - offset_ - priorityPos).sqrMagnitude - scalePriorityBonus;
                 rangeVisualQueue_.Enqueue(child, priority + priorityAdjustment);
             }
 
@@ -222,13 +224,9 @@ namespace BattleVisuals.Selection
             terrainMaterial.SetVector(Offset, offset_ + Vector2.one / pixelsPerUnit / 2);
         }
 
-        void DrawNode(Vector2Int pos, int scale, IHighlightable.HighlightType highlightType)
+        void DrawNode(Vector2Int pos, int depth, IHighlightable.HighlightType highlightType)
         {
-            int layer = 0;
-            while (scale > 1 << layer)
-                layer++;
-
-            texture_.SetPixel(pos.x / scale, pos.y / scale, new((int)highlightType / 255f, 0, 0), layer);
+            texture_.SetPixel(pos.x, pos.y, new((int)highlightType / 255f, 0, 0), layers - depth);
         }
 
         void CheckDone(QuadTree<(IHighlightable.HighlightType h, bool done)> node)
@@ -250,10 +248,11 @@ namespace BattleVisuals.Selection
 
         void DrawRecursiveGizmos(QuadTree<(IHighlightable.HighlightType h, bool done)> node)
         {
+            int scale = textureSize_ >> node.depth;
             if (node.children is null)
             {
                 Gizmos.color = highlightColors[(int)node.value.h];
-                Gizmos.DrawWireCube(WorldUtils.TilePosToWorldPos(CenteredPos(node.pos, node.scale)), new(node.scale * 0.8f / pixelsPerUnit, 0.1f, node.scale * 0.8f / pixelsPerUnit));
+                Gizmos.DrawWireCube(WorldUtils.TilePosToWorldPos(CenteredPos(node.pos, scale)), new(scale * 0.8f / pixelsPerUnit, 0.1f, scale * 0.8f / pixelsPerUnit));
             }
             else
             {

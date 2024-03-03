@@ -27,10 +27,10 @@ namespace Game.Run
             MaxHull = 10;
             Hull = MaxHull;
 
-            runEvents.damageHull.Register(DamageHull, 0);
-            runEvents.repairHull.Register(RepairHull, 0);
-            runEvents.nextLevel.Register(NextLevelEvent, 0);
-            runEvents.restart.Register(Restart, 0);
+            runEvents.damageHull.RegisterHandler(DamageHull);
+            runEvents.repairHull.RegisterHandler(RepairHull);
+            runEvents.nextLevel.RegisterHandler(NextLevelEvent);
+            runEvents.restart.RegisterHandler(Restart);
         }
         void Update()
         {

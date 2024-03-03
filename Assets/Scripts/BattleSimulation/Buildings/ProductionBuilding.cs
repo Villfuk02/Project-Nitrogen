@@ -10,10 +10,10 @@ namespace BattleSimulation.Buildings
         protected int energyProduced;
         protected override void OnPlaced()
         {
-            WaveController.onWaveFinished.Register(Produce, 100);
-            BattleController.updateMaterialsPerWave.Register(ProvideMaterialsIncome, -100);
-            BattleController.updateEnergyPerWave.Register(ProvideEnergyIncome, -100);
-            BattleController.updateFuelPerWave.Register(ProvideFuelIncome, -100);
+            WaveController.onWaveFinished.RegisterReaction(Produce, 100);
+            BattleController.updateMaterialsPerWave.RegisterModifier(ProvideMaterialsIncome, -100);
+            BattleController.updateEnergyPerWave.RegisterModifier(ProvideEnergyIncome, -100);
+            BattleController.updateFuelPerWave.RegisterModifier(ProvideFuelIncome, -100);
 
             BattleController.updateMaterialsPerWave.Invoke(0);
             BattleController.updateEnergyPerWave.Invoke(0);
@@ -24,10 +24,10 @@ namespace BattleSimulation.Buildings
         {
             if (placed)
             {
-                WaveController.onWaveFinished.Unregister(Produce);
-                BattleController.updateMaterialsPerWave.Unregister(ProvideMaterialsIncome);
-                BattleController.updateEnergyPerWave.Unregister(ProvideEnergyIncome);
-                BattleController.updateFuelPerWave.Unregister(ProvideFuelIncome);
+                WaveController.onWaveFinished.UnregisterReaction(Produce);
+                BattleController.updateMaterialsPerWave.UnregisterModifier(ProvideMaterialsIncome);
+                BattleController.updateEnergyPerWave.UnregisterModifier(ProvideEnergyIncome);
+                BattleController.updateFuelPerWave.UnregisterModifier(ProvideFuelIncome);
             }
 
             base.OnDestroy();

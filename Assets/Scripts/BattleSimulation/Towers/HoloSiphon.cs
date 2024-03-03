@@ -16,7 +16,7 @@ namespace BattleSimulation.Towers
         {
             base.OnPlaced();
             wavesLeft = Blueprint.durationWaves;
-            WaveController.onWaveFinished.Register(DecrementWaves, 100);
+            WaveController.onWaveFinished.RegisterReaction(DecrementWaves, 100);
 
             foreach (var a in targeting.GetValidTargets())
                 Hit(a);
@@ -26,7 +26,7 @@ namespace BattleSimulation.Towers
         {
             base.OnDestroy();
             if (placed)
-                WaveController.onWaveFinished.Unregister(DecrementWaves);
+                WaveController.onWaveFinished.UnregisterReaction(DecrementWaves);
         }
         void FixedUpdate()
         {

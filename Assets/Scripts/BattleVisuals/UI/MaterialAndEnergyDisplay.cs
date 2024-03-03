@@ -19,14 +19,14 @@ namespace BattleVisuals.UI
 
         void Awake()
         {
-            BattleController.updateMaterialsPerWave.Register(UpdateMaterialsIncome, 0);
-            BattleController.updateEnergyPerWave.Register(UpdateEnergyIncome, 0);
+            BattleController.updateMaterialsPerWave.RegisterHandler(UpdateMaterialsIncome);
+            BattleController.updateEnergyPerWave.RegisterHandler(UpdateEnergyIncome);
         }
 
         void OnDestroy()
         {
-            BattleController.updateMaterialsPerWave.Unregister(UpdateMaterialsIncome);
-            BattleController.updateEnergyPerWave.Unregister(UpdateEnergyIncome);
+            BattleController.updateMaterialsPerWave.UnregisterHandler(UpdateMaterialsIncome);
+            BattleController.updateEnergyPerWave.UnregisterHandler(UpdateEnergyIncome);
         }
 
         void Update()

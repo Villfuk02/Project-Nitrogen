@@ -11,13 +11,13 @@ namespace BattleSimulation.Attackers
 {
     public class Attacker : MonoBehaviour, IHighlightable
     {
-        public static GameCommand<(Attacker target, Damage damage)> hit = new();
-        public static GameCommand<(Attacker target, Damage damage)> damage = new();
-        public static GameCommand<(Attacker target, Damage cause)> die = new();
+        public static ModifiableCommand<(Attacker target, Damage damage)> hit = new();
+        public static ModifiableCommand<(Attacker target, Damage damage)> damage = new();
+        public static ModifiableCommand<(Attacker target, Damage cause)> die = new();
         static Attacker()
         {
-            damage.Register(DamageHandler, 0);
-            die.Register(DeathHandler, 0);
+            damage.RegisterHandler(DamageHandler);
+            die.RegisterHandler(DeathHandler);
         }
         [Header("References")]
         [SerializeField] Rigidbody rb;

@@ -13,27 +13,25 @@ namespace BattleVisuals.UI
         void Awake()
         {
             Hide();
-            BattleController.winLevel.Register(OnVictory, 100);
+            BattleController.winLevel.RegisterReaction(OnVictory, 100);
             runEvents = GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunEvents>();
-            runEvents.defeat.Register(OnDefeat, 100);
+            runEvents.defeat.RegisterReaction(OnDefeat, 100);
         }
 
         void OnDestroy()
         {
-            BattleController.winLevel.Unregister(OnVictory);
-            runEvents.defeat.Unregister(OnDefeat);
+            BattleController.winLevel.UnregisterReaction(OnVictory);
+            runEvents.defeat.UnregisterReaction(OnDefeat);
         }
 
-        bool OnVictory()
+        void OnVictory()
         {
             victoryOverlay.SetActive(true);
-            return true;
         }
 
-        bool OnDefeat()
+        void OnDefeat()
         {
             defeatOverlay.SetActive(true);
-            return true;
         }
 
         public void Hide()

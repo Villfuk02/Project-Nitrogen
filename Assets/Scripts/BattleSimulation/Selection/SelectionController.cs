@@ -14,6 +14,9 @@ namespace BattleSimulation.Selection
         [SerializeField] Camera mainCamera;
         [SerializeField] BlueprintMenu blueprintMenu;
         [SerializeField] InfoPanel infoPanel;
+        [Header("Settings")]
+        [SerializeField] float rotationHoldDelay;
+        [SerializeField] float rotationInterval;
         [Header("Runtime values")]
         public Selectable selected;
         public Selectable hovered;
@@ -21,6 +24,8 @@ namespace BattleSimulation.Selection
         public int rotation;
         public Vector3? hoverTilePosition;
         public bool resetVisuals;
+        float rotationHoldTime_;
+        float lastRotationTime_;
 
         void Awake()
         {
@@ -56,7 +61,29 @@ namespace BattleSimulation.Selection
 
             // R
             if (Input.GetKeyDown(KeyCode.R))
-                rotation++; //TODO: press and hold
+            {
+                rotation++;
+                lastRotationTime_ = 0;
+            }
+            if (Input.GetKey(KeyCode.R))
+            {
+                rotationHoldTime_ += Time.deltaTime;
+                if (lastRotationTime_ == 0 && rotationHoldTime_ > rotationHoldDelay)
+                {
+                    rotation++;
+                    lastRotationTime_ = rotationHoldDelay;
+                }
+                while (lastRotationTime_ >= rotationHoldDelay && lastRotationTime_ + rotationInterval < rotationHoldTime_)
+                {
+                    rotation++;
+                    lastRotationTime_ += rotationInterval;
+                }
+            }
+            if (Input.GetKeyUp(KeyCode.R))
+            {
+                rotationHoldTime_ = 0;
+                lastRotationTime_ = 0;
+            }
 
             // right click
             if (Input.GetMouseButtonUp(1))
@@ -83,7 +110,7 @@ namespace BattleSimulation.Selection
                     }
                     else
                     {
-                        // TODO: feedback for the player
+                        // TODO: feedback for the player - sound effect
                     }
                 }
                 else if (hovered != null)

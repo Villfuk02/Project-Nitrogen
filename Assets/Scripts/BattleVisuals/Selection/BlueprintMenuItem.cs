@@ -23,16 +23,9 @@ namespace BattleVisuals.Selection
 
             display.targetCooldownFill = cooldown / (float)Mathf.Max(display.blueprint.cooldown, 1);
 
-            (float priceEnergy, float priceMaterials, int toSpendEnergy, int toSpendMaterials) param = (display.blueprint.energyCost, display.blueprint.materialCost, 0, 0);
-            BattleController.Affordable affordable;
-            if (!BattleController.canAfford.Query(ref param))
-                affordable = BattleController.Affordable.No;
-            else if (param.priceEnergy == param.toSpendEnergy)
-                affordable = BattleController.Affordable.Yes;
-            else
-                affordable = BattleController.Affordable.UseMaterialsAsEnergy;
+            var (affordable, energy, materials) = BattleController.canAfford.Query((display.blueprint.energyCost, display.blueprint.materialCost));
 
-            display.UpdateText((int)param.priceEnergy, (int)param.priceMaterials, GetTextColor(cooldown > 0, affordable));
+            display.UpdateText(energy, materials, GetTextColor(cooldown > 0, affordable));
 
             bool ready = cooldown == 0 && affordable != BattleController.Affordable.No && display.blueprint.type == Blueprint.Type.Ability == waveStarted;
             display.highlight.color = GetHighlightColor(ready, selected);

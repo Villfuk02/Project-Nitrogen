@@ -14,15 +14,15 @@ namespace BattleSimulation.Control
         public int Fuel { get; private set; }
         public int FuelGoal { get; private set; }
 
-        public static GameCommand<(object source, float amount)> addMaterial = new();
-        public static GameCommand<(object source, float amount)> addEnergy = new();
-        public static GameCommand<(object source, float amount)> addFuel = new();
-        public static GameQuery<(float priceEnergy, float priceMaterials, int toSpendEnergy, int toSpendMaterials)> canAfford = new();
-        public static GameCommand<(int energy, int materials)> spend = new();
-        public static GameCommand<float> updateMaterialsPerWave = new();
-        public static GameCommand<float> updateEnergyPerWave = new();
-        public static GameCommand<float> updateFuelPerWave = new();
-        public static GameCommand winLevel = new();
+        public static ModifiableCommand<(object source, float amount)> addMaterial = new();
+        public static ModifiableCommand<(object source, float amount)> addEnergy = new();
+        public static ModifiableCommand<(object source, float amount)> addFuel = new();
+        public static ModifiableQuery<(float energy, float materials), (Affordable affordable, int energy, int materials)> canAfford = new();
+        public static ModifiableCommand<(int energy, int materials)> spend = new();
+        public static ModifiableCommand<float> updateMaterialsPerWave = new();
+        public static ModifiableCommand<float> updateEnergyPerWave = new();
+        public static ModifiableCommand<float> updateFuelPerWave = new();
+        public static ModifiableCommand winLevel = new();
         public static RunEvents runEvents;
         public int HullDmgTaken { get; private set; }
         public bool Won { get; private set; }
@@ -32,36 +32,35 @@ namespace BattleSimulation.Control
 
         void Awake()
         {
-            addMaterial.Register(AddMaterial, 0);
-            addEnergy.Register(AddEnergy, 0);
-            addFuel.Register(AddFuel, 0);
+            addMaterial.RegisterHandler(AddMaterial);
+            addEnergy.RegisterHandler(AddEnergy);
+            addFuel.RegisterHandler(AddFuel);
             canAfford.RegisterAcceptor(CanAfford);
-            spend.Register(Spend, 0);
-            winLevel.Register(Win, 0);
+            spend.RegisterHandler(Spend);
+            winLevel.RegisterHandler(Win);
             runEvents = GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunEvents>();
-            runEvents.damageHull.Register(OnHullDmgTaken, 1000);
-            runEvents.repairHull.Register(OnHullRepaired, 1000);
-            WaveController.startWave.Register(OnWaveStarted, 1);
-            WaveController.startWave.Register(CanStartWave, -1000);
-            runEvents.defeat.Register(Lose, 1000);
+            runEvents.damageHull.RegisterReaction(OnHullDmgTaken, 1000);
+            runEvents.repairHull.RegisterReaction(OnHullRepaired, 1000);
+            WaveController.startWave.RegisterReaction(OnWaveStarted, 1);
+            WaveController.startWave.RegisterModifier(CanStartWave, -1000);
+            runEvents.defeat.RegisterReaction(Lose, 1000);
         }
 
         void OnDestroy()
         {
-            addMaterial.Unregister(AddMaterial);
-            addEnergy.Unregister(AddEnergy);
-            addFuel.Unregister(AddFuel);
-            canAfford.UnregisterAcceptor();
-            spend.Unregister(Spend);
-            winLevel.Unregister(Win);
-            runEvents.damageHull.Unregister(OnHullDmgTaken);
-            runEvents.repairHull.Unregister(OnHullRepaired);
-            WaveController.startWave.Unregister(OnWaveStarted);
-            WaveController.startWave.Unregister(CanStartWave);
-            runEvents.defeat.Unregister(Lose);
+            addMaterial.UnregisterHandler(AddMaterial);
+            addEnergy.UnregisterHandler(AddEnergy);
+            addFuel.UnregisterHandler(AddFuel);
+            canAfford.UnregisterAcceptor(CanAfford);
+            spend.UnregisterHandler(Spend);
+            winLevel.UnregisterHandler(Win);
+            runEvents.damageHull.UnregisterReaction(OnHullDmgTaken);
+            runEvents.repairHull.UnregisterReaction(OnHullRepaired);
+            WaveController.startWave.UnregisterReaction(OnWaveStarted);
+            WaveController.startWave.UnregisterModifier(CanStartWave);
+            runEvents.defeat.UnregisterReaction(Lose);
         }
 
-        //TODO: hook up with initializing a level/battle
         void Start()
         {
             Material = 50;
@@ -80,20 +79,12 @@ namespace BattleSimulation.Control
             }
         }
 
-        public static Affordable CanAfford(int energy, int materials)
-        {
-            (float priceEnergy, float priceMaterials, int toSpendEnergy, int toSpendMaterials) queryParam = (energy, materials, 0, 0);
-            if (!canAfford.Query(ref queryParam))
-                return Affordable.No;
-            return queryParam.priceEnergy == queryParam.toSpendEnergy ? Affordable.Yes : Affordable.UseMaterialsAsEnergy;
-        }
-
         public static bool AdjustAndTrySpend(int energy, int materials)
         {
-            (float priceEnergy, float priceMaterials, int toSpendEnergy, int toSpendMaterials) queryParam = (energy, materials, 0, 0);
-            if (!canAfford.Query(ref queryParam))
+            var (affordable, spendEnergy, spendMaterials) = canAfford.Query((energy, materials));
+            if (affordable == Affordable.No)
                 return false;
-            spend.Invoke((queryParam.toSpendEnergy, queryParam.toSpendMaterials));
+            spend.Invoke((spendEnergy, spendMaterials));
             return true;
         }
 
@@ -144,19 +135,24 @@ namespace BattleSimulation.Control
             return true;
         }
 
-        bool CanAfford(ref (float priceEnergy, float priceMaterials, int toSpendEnergy, int toSpendMaterials) param)
+        (Affordable, int energy, int materials) CanAfford((float energy, float materials) param)
         {
-            param.toSpendEnergy = Mathf.FloorToInt(param.priceEnergy);
-            param.priceEnergy = param.toSpendEnergy;
-            param.toSpendMaterials = Mathf.FloorToInt(param.priceMaterials);
-            param.priceMaterials = param.toSpendMaterials;
+            int energy = Mathf.FloorToInt(param.energy);
+            int materials = Mathf.FloorToInt(param.materials);
 
-            if (param.toSpendEnergy > Energy)
+            Affordable result = Affordable.Yes;
+
+            if (energy > Energy)
             {
-                param.toSpendMaterials += param.toSpendEnergy - Energy;
-                param.toSpendEnergy = Energy;
+                materials += energy - Energy;
+                energy = Energy;
+                result = Affordable.UseMaterialsAsEnergy;
             }
-            return param.toSpendMaterials <= Material;
+
+            if (param.materials > Material)
+                result = Affordable.No;
+
+            return (result, energy, materials);
         }
 
         public static void AttackerReachedHub(Attacker attacker)
@@ -170,24 +166,21 @@ namespace BattleSimulation.Control
             });
         }
 
-        bool OnHullDmgTaken(ref int dmg)
+        void OnHullDmgTaken(int dmg)
         {
             HullDmgTaken += dmg;
-            return true;
         }
 
-        bool OnHullRepaired(ref int repaired)
+        void OnHullRepaired(int repaired)
         {
             HullDmgTaken -= repaired;
-            return true;
         }
 
         bool CanStartWave() => !Won && !Lost;
 
-        bool OnWaveStarted()
+        void OnWaveStarted()
         {
             HullDmgTaken = 0;
-            return true;
         }
 
         bool Win()
@@ -206,10 +199,9 @@ namespace BattleSimulation.Control
             runEvents.nextLevel.Invoke();
         }
 
-        bool Lose()
+        void Lose()
         {
             Lost = true;
-            return true;
         }
     }
 }

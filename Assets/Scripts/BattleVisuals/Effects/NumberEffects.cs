@@ -36,18 +36,18 @@ namespace BattleVisuals.Effects
         {
             fullSizeDamageLog = Mathf.Log(fullSizeDamage);
 
-            Attacker.damage.Register(SpawnDamage, 100);
-            BattleController.addMaterial.Register(SpawnMaterial, 100);
-            BattleController.addEnergy.Register(SpawnEnergy, 100);
-            BattleController.addFuel.Register(SpawnFuel, 100);
+            Attacker.damage.RegisterReaction(SpawnDamage, 100);
+            BattleController.addMaterial.RegisterReaction(SpawnMaterial, 100);
+            BattleController.addEnergy.RegisterReaction(SpawnEnergy, 100);
+            BattleController.addFuel.RegisterReaction(SpawnFuel, 100);
         }
 
         void OnDestroy()
         {
-            Attacker.damage.Unregister(SpawnDamage);
-            BattleController.addMaterial.Unregister(SpawnMaterial);
-            BattleController.addEnergy.Unregister(SpawnEnergy);
-            BattleController.addFuel.Unregister(SpawnFuel);
+            Attacker.damage.UnregisterReaction(SpawnDamage);
+            BattleController.addMaterial.UnregisterReaction(SpawnMaterial);
+            BattleController.addEnergy.UnregisterReaction(SpawnEnergy);
+            BattleController.addFuel.UnregisterReaction(SpawnFuel);
         }
 
         void Update()
@@ -55,23 +55,22 @@ namespace BattleVisuals.Effects
             createdThisFrame_.Clear();
         }
 
-        bool SpawnDamage(ref (Attacker target, Damage damage) param)
+        void SpawnDamage((Attacker target, Damage damage) param)
         {
             float size = damageMinFontSize + Mathf.Log(param.damage.amount) / fullSizeDamageLog * (damageMaxFontSize - damageMinFontSize);
             Vector2 r = Random.insideUnitCircle;
             Vector3 vel = new(r.x, 2, r.y);
             Spawn(param.damage.amount.ToString(CultureInfo.InvariantCulture), size, damageColor, damageTimeToLive, param.target.target.position + Vector3.up * 0.3f, vel, Vector3.down * 10);
-            return true;
         }
 
-        bool SpawnMaterial(ref (object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Materials.Sprite()}", materialsColor);
-        bool SpawnEnergy(ref (object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Energy.Sprite()}", energyColor);
-        bool SpawnFuel(ref (object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Fuel.Sprite()}", fuelColor);
+        void SpawnMaterial((object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Materials.Sprite()}", materialsColor);
+        void SpawnEnergy((object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Energy.Sprite()}", energyColor);
+        void SpawnFuel((object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Fuel.Sprite()}", fuelColor);
 
-        bool SpawnProduction(object source, string text, Color color)
+        void SpawnProduction(object source, string text, Color color)
         {
             if (source == null || source is not Building b)
-                return true;
+                return;
             Vector3 pos = b.transform.position + Vector3.up;
             if (createdThisFrame_.ContainsKey(b))
             {
@@ -83,7 +82,6 @@ namespace BattleVisuals.Effects
                 Spawn(text, productionFontSize, color, productionTimeToLive, pos, Vector3.up * 1.5f, Vector3.down * 0.5f);
                 createdThisFrame_[b] = 1;
             }
-            return true;
         }
 
         void Spawn(string s, float textSize, Color color, float timeToLive, Vector3 position, Vector3 velocity, Vector3 acceleration)

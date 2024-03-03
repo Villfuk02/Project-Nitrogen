@@ -28,13 +28,13 @@ namespace BattleVisuals.UI
         int fuelProduction_;
         void Awake()
         {
-            BattleController.updateFuelPerWave.Register(UpdateFuelIncome, 10);
+            BattleController.updateFuelPerWave.RegisterReaction(UpdateFuelIncome, 10);
             BattleController.updateFuelPerWave.Invoke(0);
         }
 
         void OnDestroy()
         {
-            BattleController.updateFuelPerWave.Unregister(UpdateFuelIncome);
+            BattleController.updateFuelPerWave.UnregisterReaction(UpdateFuelIncome);
         }
 
         void Start()
@@ -107,10 +107,9 @@ namespace BattleVisuals.UI
             wavesLayout.anchoredPosition = Vector2.right * offset_;
         }
 
-        bool UpdateFuelIncome(ref float income)
+        void UpdateFuelIncome(float income)
         {
             fuelProduction_ = (int)income;
-            return true;
         }
     }
 }
