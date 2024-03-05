@@ -1,9 +1,8 @@
 using BattleSimulation.Buildings;
-using Game.Damage;
 
 namespace BattleSimulation.Towers
 {
-    public abstract class Tower : Building, IDamageSource
+    public abstract class Tower : Building
     {
         public Targeting.Targeting targeting;
         protected int damageDealt;

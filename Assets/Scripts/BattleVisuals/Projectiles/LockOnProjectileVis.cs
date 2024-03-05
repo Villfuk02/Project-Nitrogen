@@ -6,10 +6,12 @@ namespace BattleVisuals.Projectiles
 {
     public class LockOnProjectileVis : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] LockOnProjectile sim;
+        [SerializeField] float stoppedLifetime;
+        [Header("Runtime variables")]
         [SerializeField] Vector3 realPos;
         [SerializeField] Vector3 lastDir;
-        [SerializeField] float stoppedLifetime;
 
         void Start()
         {
@@ -23,27 +25,25 @@ namespace BattleVisuals.Projectiles
                 Destroy(gameObject);
                 return;
             }
-            if (sim.target == null)
-            {
-                if (sim.hit)
-                {
-                    stoppedLifetime -= Time.deltaTime;
-                    lastDir = Vector3.zero;
-                }
-                realPos += lastDir * (sim.speed * Time.deltaTime);
-            }
-            else
+
+            float moveDistance = sim.speed * Time.deltaTime;
+            if (sim.target != null)
             {
                 var offset = sim.target.target.position - realPos;
-                float distance = offset.magnitude;
-                float move = Math.Min(sim.speed * Time.deltaTime, distance);
-
-                if (move <= 0.01f)
-                    stoppedLifetime -= Time.deltaTime;
-
                 lastDir = offset.normalized;
-                realPos += lastDir * move;
+                float distance = offset.magnitude;
+                moveDistance = Math.Min(moveDistance, distance);
+
+                if (moveDistance <= 0.01f)
+                    stoppedLifetime -= Time.deltaTime;
             }
+            else if (sim.hit)
+            {
+                stoppedLifetime -= Time.deltaTime;
+                lastDir = Vector3.zero;
+            }
+
+            realPos += lastDir * moveDistance;
             transform.position = realPos;
         }
     }

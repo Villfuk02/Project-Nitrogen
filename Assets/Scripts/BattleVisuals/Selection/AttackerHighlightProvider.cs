@@ -7,6 +7,7 @@ namespace BattleVisuals.Selection
 {
     public class AttackerHighlightProvider : HighlightProvider
     {
+        [Header("References")]
         [SerializeField] Attacker a;
         public override int AreaSamplesPerFrame => 0;
 

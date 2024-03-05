@@ -15,14 +15,14 @@ namespace WorldGen.Path
         Array2D<bool> hasPath_;
         Array2D<bool> outlined_;
         /// <summary>
-        /// Makes the final paths, taking into account terrain and blockers. Then stores them directly in <see cref="Tiles"/>.
+        /// Makes the final paths, taking into account terrain and obstacles. Then stores them directly in <see cref="Tiles"/>.
         /// </summary>
         /// <param name="starts">Start tile of each path.</param>
         /// <param name="maxExtraPaths">Maximum number of extra branches.</param>
         public void FinalizePaths(Vector2Int[] starts, int maxExtraPaths)
         {
             WaitForStep(StepType.Phase);
-            Debug.Log("Finalizing Paths");
+            print("Finalizing Paths");
 
             RegisterGizmos(StepType.Phase, () =>
             {
@@ -88,106 +88,110 @@ namespace WorldGen.Path
                     stack.RemoveFirst();
                 else
                     stack.RemoveLast();
-                lastFound = PathStep(currentTile, path);
+                lastFound = PathStep(currentTile, path, foundAny, stack);
                 if (lastFound)
                     foundAny = true;
             }
             WaitForStep(StepType.MicroStep);
+        }
 
-            //adds all valid one-tile continuations to the stack, ordered by how good they are 
-            bool PathStep(TileData tile, Vector2Int[] path)
+        /// <summary>
+        /// joins a path to an existing one if possible and returns true
+        /// otherwise finds all valid one-tile continuations, ordered by how good they are and appends them to the stack
+        /// </summary>
+        bool PathStep(TileData tile, Vector2Int[] path, bool foundAny, LinkedList<(TileData tile, Vector2Int[] path)> stack)
+        {
+            RegisterGizmos(StepType.MicroStep, () =>
             {
-                RegisterGizmos(StepType.MicroStep, () =>
+                List<GizmoManager.GizmoObject> gizmos = new()
                 {
-                    List<GizmoManager.GizmoObject> gizmos = new()
+                    new GizmoManager.Cube(Color.magenta, WorldUtils.TilePosToWorldPos(tile.pos), 0.2f)
+                };
+                TileData prev = null;
+                foreach (var pos in path)
+                {
+                    TileData current = Tiles[pos];
+                    if (prev is not null)
                     {
-                            new GizmoManager.Cube(Color.magenta, WorldUtils.TilePosToWorldPos(tile.pos), 0.2f)
-                    };
-                    TileData prev = null;
-                    foreach (var pos in path)
-                    {
-                        TileData current = Tiles[pos];
-                        if (prev is not null)
-                        {
-                            gizmos.Add(new GizmoManager.Line(Color.magenta, WorldUtils.TilePosToWorldPos(pos), WorldUtils.TilePosToWorldPos(prev.pos)));
-                        }
-
-                        prev = current;
+                        gizmos.Add(new GizmoManager.Line(Color.magenta, WorldUtils.TilePosToWorldPos(pos), WorldUtils.TilePosToWorldPos(prev.pos)));
                     }
 
-                    return gizmos;
-                });
-
-                //if this tile already has a path, check if the path can join to it
-                if (hasPath_[tile.pos])
-                {
-                    //reject the branch if it doesn't do through a tile that's at least two tiles from any other path
-                    if (foundAny && path.All(p => outlined_[p]))
-                        return false;
-
-                    //otherwise accept it
-                    TileData prev = null;
-                    foreach (var pos in path)
-                    {
-                        hasPath_[pos] = true;
-                        foreach (var dir in WorldUtils.ADJACENT_DIRS)
-                            outlined_.TrySet(pos + dir, true);
-                        UpdateRepulsionField(pos);
-
-                        TileData current = Tiles[pos];
-                        if (prev is not null)
-                        {
-                            if (!prev.pathNext.Contains(current))
-                                prev.pathNext.Add(current);
-                            RegisterGizmos(StepType.Phase, () => new GizmoManager.Line(Color.cyan, WorldUtils.TilePosToWorldPos(pos), WorldUtils.TilePosToWorldPos(prev.pos)));
-                        }
-
-                        prev = current;
-                    }
-                    extraPaths_--;
-
-                    WaitForStep(StepType.Step);
-                    RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TilePosToWorldPos(start.pos), 0.3f));
-                    RegisterGizmos(StepType.Step, () => outlined_.IndexedEnumerable.Where(p => !p.value).Select(p => new GizmoManager.Cube(Color.green, WorldUtils.TilePosToWorldPos(p.index), 0.15f)));
-                    return true;
+                    prev = current;
                 }
 
-                //find all valid continuations
-                var validNeighbors = new List<TileData>();
-                for (int i = 0; i < 4; i++)
-                {
-                    //the next tile must be one closer to the center
-                    if (tile.neighbors[i] is not TileData neighbor || neighbor.dist != tile.dist - 1)
-                        continue;
-                    validNeighbors.Add(neighbor);
-                }
+                return gizmos;
+            });
 
-                if (validNeighbors.Count == 0)
-                    return false;
+            //if this tile already has a path, check if the path can join to it
+            if (hasPath_[tile.pos])
+                return TryJoinPath(path, foundAny);
 
-                //order them by ascending repulsion (trying to avoid other paths), but put the option that goes straight first
-                //however, order is reversed, because paths are added like to a stack
-                validNeighbors = validNeighbors.OrderByDescending(n => repulsion_[n.pos]).ToList();
-                if (path.Length > 1)
-                {
-                    var straight = validNeighbors.Find(n => n.pos.x == path[^2].x || n.pos.y == path[^2].y);
-                    if (straight != null)
-                    {
-                        validNeighbors.Remove(straight);
-                        validNeighbors.Add(straight);
-                    }
-                }
-
-                //add them to the stack
-                foreach (var neighbor in validNeighbors)
-                {
-                    var newPath = new Vector2Int[path.Length + 1];
-                    Array.Copy(path, newPath, path.Length);
-                    newPath[^1] = neighbor.pos;
-                    stack.AddLast((neighbor, newPath));
-                }
-                return false;
+            //add valid neighbors to the stack
+            foreach (var neighbor in FindValidContinuations(tile, path))
+            {
+                var newPath = new Vector2Int[path.Length + 1];
+                Array.Copy(path, newPath, path.Length);
+                newPath[^1] = neighbor.pos;
+                stack.AddLast((neighbor, newPath));
             }
+            return false;
+        }
+
+        List<TileData> FindValidContinuations(TileData tile, Vector2Int[] path)
+        {
+            // find all valid continuations
+            // the next tile must be one closer to the center
+            var validNeighborsTemp = tile.neighbors.Where(n => n is not null && n.dist == tile.dist - 1);
+            // order them by ascending repulsion (trying to avoid other paths)
+            // however, order is reversed, because paths are added like to a stack
+            var validNeighbors = validNeighborsTemp.OrderByDescending(n => repulsion_[n.pos]).ToList();
+
+            // if there is an option that goes straight, prioritize it (put it last)
+            if (path.Length <= 1)
+                return validNeighbors;
+
+            var straight = validNeighbors.Find(n => n.pos.x == path[^2].x || n.pos.y == path[^2].y);
+            if (straight == null)
+                return validNeighbors;
+
+            validNeighbors.Remove(straight);
+            validNeighbors.Add(straight);
+
+            return validNeighbors;
+        }
+
+        bool TryJoinPath(Vector2Int[] path, bool foundAny)
+        {
+            //reject the branch if it doesn't go through a tile that's not a neighbor of any other path
+            //but only when we've already found a path
+            if (foundAny && path.All(p => outlined_[p]))
+                return false;
+
+            //otherwise accept it
+            TileData prev = null;
+            foreach (var pos in path)
+            {
+                hasPath_[pos] = true;
+                foreach (var dir in WorldUtils.ADJACENT_DIRS)
+                    outlined_.TrySet(pos + dir, true);
+                UpdateRepulsionField(pos);
+
+                TileData current = Tiles[pos];
+                if (prev is not null)
+                {
+                    if (!prev.pathNext.Contains(current))
+                        prev.pathNext.Add(current);
+                    RegisterGizmos(StepType.Phase, () => new GizmoManager.Line(Color.cyan, WorldUtils.TilePosToWorldPos(pos), WorldUtils.TilePosToWorldPos(prev.pos)));
+                }
+
+                prev = current;
+            }
+
+            extraPaths_--;
+
+            WaitForStep(StepType.Step);
+            RegisterGizmos(StepType.Step, () => outlined_.IndexedEnumerable.Where(p => !p.value).Select(p => new GizmoManager.Cube(Color.green, WorldUtils.TilePosToWorldPos(p.index), 0.15f)));
+            return true;
         }
 
         /// <summary>

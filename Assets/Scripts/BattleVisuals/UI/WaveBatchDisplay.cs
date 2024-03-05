@@ -27,7 +27,7 @@ namespace BattleVisuals.UI
             float maxWidth = padding.x * 2;
             count_ = batch.count;
             spacing_ = batch.spacing.GetDisplaySpacing();
-            int visCount = Mathf.Min(batch.spacing.GetDisplayAmount(), batch.count);
+            int visCount = Mathf.Min(batch.spacing.GetMaxDisplayCount(), batch.count);
             for (int p = 0; p < pathCount; p++)
             {
                 if (batch.typePerPath[p] == null)

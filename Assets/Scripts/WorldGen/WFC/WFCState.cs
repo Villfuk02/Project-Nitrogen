@@ -66,47 +66,47 @@ namespace WorldGen.WFC
         }
 
         //PASSAGES
-        public CardinalDirs<(bool passable, bool unpassable)> GetValidPassagesAtSlot(Vector2Int pos)
+        public CardinalDirs<(bool passable, bool impassable)> GetValidPassagesAtSlot(Vector2Int pos)
         {
-            var ret = new CardinalDirs<(bool passable, bool unpassable)>();
+            var ret = new CardinalDirs<(bool passable, bool impassable)>();
             for (int i = 0; i < 4; i++)
             {
                 ret[i] = GetValidPassageAtSlot(pos, i);
             }
             return ret;
         }
-        (bool passable, bool unpassable) GetValidPassageAtSlot(Vector2Int pos, int direction)
+        (bool passable, bool impassable) GetValidPassageAtSlot(Vector2Int pos, int direction)
         {
             if (!slots.IsInBounds(pos + WorldUtils.CARDINAL_DIRS[direction]))
                 return (true, true);
-            int index = GetPassageArrayIndex(pos, direction, true);
+            int index = GetPassageArrayIndex(pos, direction);
             return (passages_[index], passages_[index + 1]);
         }
 
-        public void SetValidPassagesAtSlot(Vector2Int pos, CardinalDirs<(bool passable, bool unpassable)> p)
+        public void SetValidPassagesAtSlot(Vector2Int pos, CardinalDirs<(bool passable, bool impassable)> p)
         {
             for (int i = 0; i < 4; i++)
             {
                 SetValidPassageAtSlot(pos, i, p[i]);
             }
         }
-        void SetValidPassageAtSlot(Vector2Int pos, int direction, (bool passable, bool unpassable) p)
+        void SetValidPassageAtSlot(Vector2Int pos, int direction, (bool passable, bool impassable) p)
         {
             if (!slots.IsInBounds(pos + WorldUtils.CARDINAL_DIRS[direction]))
                 return;
-            int index = GetPassageArrayIndex(pos, direction, true);
+            int index = GetPassageArrayIndex(pos, direction);
             passages_[index] = p.passable;
-            passages_[index + 1] = p.unpassable;
+            passages_[index + 1] = p.impassable;
         }
 
-        public void SetValidPassageAtTile(Vector2Int pos, int direction, (bool passable, bool unpassable) p)
+        public void SetValidPassageAtTile(Vector2Int pos, int direction, (bool passable, bool impassable) p)
         {
             SetValidPassageAtSlot(pos + TileToSlotArrayOffsets[direction], 3 - direction, p);
         }
 
-        static int GetPassageArrayIndex(Vector2Int slotPos, int direction, bool passable)
+        static int GetPassageArrayIndex(Vector2Int slotPos, int direction)
         {
-            return (slotPos.x + slotPos.y * (WorldUtils.WORLD_SIZE.x + 1)) * 4 + SlotToPassageArrayOffsets[direction] + (passable ? 0 : 1);
+            return (slotPos.x + slotPos.y * (WorldUtils.WORLD_SIZE.x + 1)) * 4 + SlotToPassageArrayOffsets[direction];
         }
         //TILES
         public DiagonalDirs<WFCTile> GetValidTilesAtSlot(Vector2Int pos)

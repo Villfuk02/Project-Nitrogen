@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Utils;
-using Object = UnityEngine.Object;
 
 namespace BattleVisuals.Selection
 {
@@ -41,6 +40,7 @@ namespace BattleVisuals.Selection
         }
         void Update()
         {
+            // TODO: Split off range visuals calculation
             if (selection.resetVisuals)
             {
                 selection.resetVisuals = false;
@@ -151,7 +151,7 @@ namespace BattleVisuals.Selection
             foreach (var element in highlighted_.Keys.Where(element => !keep.Contains(element)).ToArray())
             {
                 highlighted_.Remove(element);
-                if (element as Object)
+                if (element as Object != null)
                     element.Unhighlight();
             }
         }

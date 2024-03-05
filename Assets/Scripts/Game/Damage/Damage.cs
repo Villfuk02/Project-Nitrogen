@@ -10,16 +10,16 @@ namespace Game.Damage
 
         public float amount;
         public Type type;
-        public IDamageSource source;
+        public object source;
 
-        public Damage(float amount, Type type, IDamageSource source)
+        public Damage(float amount, Type type, object source)
         {
             this.amount = amount;
             this.type = type;
             this.source = source;
         }
 
-        public override string ToString() => $"{amount} damage (type={type}, source={source})";
+        public readonly override string ToString() => $"{amount} damage (type={type}, source={source})";
     }
 
     public static class DamageExtensions

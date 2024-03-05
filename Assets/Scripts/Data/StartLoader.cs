@@ -4,7 +4,6 @@ using System.Collections;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 
 namespace Data
 {
@@ -36,13 +35,8 @@ namespace Data
                 return;
 
             finishedLoading_ = false;
-            Debug.Log("Finished loading");
+            print("Finished loading");
             onLoaded.Invoke();
-        }
-
-        public void ChangeScene(string sceneName)
-        {
-            SceneManager.LoadScene(sceneName);
         }
     }
 }

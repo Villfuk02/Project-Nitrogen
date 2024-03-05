@@ -7,7 +7,7 @@ namespace WorldGen.WorldSettings
         public bool overrideRun;
         public string terrainType;
         public ulong seed;
-        //always keep these in ascending order
+        // always keep these in ascending order
         public int[] pathLengths;
         public int maxExtraPaths;
     }

@@ -7,7 +7,9 @@ namespace BattleVisuals.Selection
 {
     public class BlueprintMenuItem : MonoBehaviour
     {
+        [Header("References")]
         public BlueprintDisplay display;
+        [Header("Settings")]
         [SerializeField] Color unreadyHighlightColor;
         [SerializeField] Color readyHighlightColor;
         [SerializeField] Color selectedHighlightColor;
@@ -23,11 +25,12 @@ namespace BattleVisuals.Selection
 
             display.targetCooldownFill = cooldown / (float)Mathf.Max(display.blueprint.cooldown, 1);
 
-            var (affordable, energy, materials) = BattleController.canAfford.Query((display.blueprint.energyCost, display.blueprint.materialCost));
+            var (affordable, _, _) = BattleController.canAfford.Query((display.blueprint.energyCost, display.blueprint.materialCost));
 
-            display.UpdateText(energy, materials, GetTextColor(cooldown > 0, affordable));
+            display.UpdateText(display.blueprint.energyCost, display.blueprint.materialCost, GetTextColor(cooldown > 0, affordable));
 
-            bool ready = cooldown == 0 && affordable != BattleController.Affordable.No && display.blueprint.type == Blueprint.Type.Ability == waveStarted;
+            bool availableAtThisTime = (display.blueprint.type == Blueprint.Type.Ability) == waveStarted;
+            bool ready = cooldown == 0 && affordable != BattleController.Affordable.No && availableAtThisTime;
             display.highlight.color = GetHighlightColor(ready, selected);
         }
 

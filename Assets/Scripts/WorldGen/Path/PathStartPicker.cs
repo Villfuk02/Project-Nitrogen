@@ -17,7 +17,7 @@ namespace WorldGen.Path
         public Vector2Int[] PickStarts(int[] pathLengths)
         {
             WaitForStep(StepType.Phase);
-            Debug.Log("Picking Starts");
+            print("Picking Starts");
 
             RegisterGizmos(StepType.Phase, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TilePosToWorldPos(WorldUtils.WORLD_CENTER), 0.4f));
 

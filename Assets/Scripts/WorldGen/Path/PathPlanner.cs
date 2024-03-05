@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils;
 using Utils.Random;
 using static WorldGen.WorldGenerator;
@@ -21,7 +20,6 @@ namespace WorldGen.Path
         [SerializeField] float endTemperature;
         [SerializeField] float stepsPerUnitLengthSquared;
 
-        [FormerlySerializedAs("steps")]
         [Header("Runtime variables")]
         [SerializeField] int stepsLeft;
         [SerializeField] float temperature;
@@ -35,7 +33,7 @@ namespace WorldGen.Path
         public Vector2Int[][] PlanPaths(Vector2Int[] starts, int[] pathLengths)
         {
             WaitForStep(StepType.Phase);
-            Debug.Log("Planning paths");
+            print("Planning paths");
 
             RegisterGizmos(StepType.Phase, () => new List<Vector2Int>(starts) { WorldUtils.WORLD_CENTER }.Select(p => new GizmoManager.Cube(Color.magenta, WorldUtils.TilePosToWorldPos(p), 0.4f)));
 
@@ -66,7 +64,7 @@ namespace WorldGen.Path
                 paths[i] = MakePathPrototype(starts[i], pathLengths[i], distances);
             }
 
-            Debug.Log($"Path prototypes picked, relaxing in {stepsLeft} steps");
+            print($"Path prototypes picked, relaxing in {stepsLeft} steps");
             WaitForStep(StepType.Step);
             RegisterGizmos(StepType.MicroStep, () => paths.SelectMany(p => DrawPath(p, Color.red)));
 
@@ -104,11 +102,11 @@ namespace WorldGen.Path
 
             if (found == null)
             {
-                Debug.Log("Planning paths failed");
+                print("Planning paths failed");
             }
             else
             {
-                Debug.Log("Paths planned");
+                print("Paths planned");
                 RegisterGizmos(StepType.Phase, () => found.SelectMany(p => DrawPath(p, Color.green)));
             }
 
@@ -158,7 +156,7 @@ namespace WorldGen.Path
             return path;
         }
         /// <summary>
-        /// Relax paths, trying to get it converge to valid paths with nice shapes.
+        /// Relax paths, making them converge to valid paths with nice shapes.
         /// </summary>
         bool RelaxPaths(IEnumerable<LinkedList<Vector2Int>> paths)
         {

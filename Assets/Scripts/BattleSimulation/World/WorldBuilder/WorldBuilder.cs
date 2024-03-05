@@ -107,8 +107,8 @@ namespace BattleSimulation.World.WorldBuilder
             t.position = WorldUtils.SlotPosToWorldPos(pos.x, pos.y, height + module.HeightOffset);
             t.localScale = new Vector3(module.Flipped ? -1 : 1, 1, 1) * 1.01f;
             t.localRotation = Quaternion.Euler(0, 90 * module.Rotated, 0);
-            t.GetComponent<MeshFilter>().mesh = module.Collision;
-            t.GetComponent<MeshCollider>().sharedMesh = module.Collision;
+            t.GetComponent<MeshFilter>().mesh = module.CollisionMesh;
+            t.GetComponent<MeshCollider>().sharedMesh = module.CollisionMesh;
         }
         void PlaceDecoration(DecorationInstance decoration, Transform parent)
         {
@@ -125,10 +125,10 @@ namespace BattleSimulation.World.WorldBuilder
             t.slant = tileData.slant;
             if (tileData.dist != int.MaxValue)
                 t.obstacle = Tile.Obstacle.Path;
-            else if (tileData.blocker is null)
+            else if (tileData.obstacle is null)
                 t.obstacle = Tile.Obstacle.None;
             else
-                t.obstacle = (Tile.Obstacle)((int)tileData.blocker.BlockerType + 2);
+                t.obstacle = (Tile.Obstacle)((int)tileData.obstacle.ObstacleType + 2);
             t.transform.localPosition = WorldUtils.TilePosToWorldPos(pos.x, pos.y, worldData.tiles.GetHeightAt(pos)!.Value);
             Tiles.TILES[pos] = t;
         }

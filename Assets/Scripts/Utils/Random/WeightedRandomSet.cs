@@ -67,13 +67,13 @@ namespace Utils.Random
         /// Adds a new item to the set, if not present.
         /// </summary>
         /// <param name="item">The item to add.</param>
-        /// <param name="weight">Nonnegative weight. The greater weight, the greater chance to be selected.</param>
+        /// <param name="weight">Positive weight. The greater weight, the greater chance to be selected.</param>
         public void Add(T item, float weight)
         {
             if (positions_.ContainsKey(item))
                 return;
-            if (weight < 0)
-                throw new ArgumentException("Weight cannot be negative.");
+            if (weight <= 0)
+                throw new ArgumentException("Weight must be positive.");
             positions_.Add(item, list_.Count);
             list_.Add((item, weight));
             totalWeight_ += weight;
@@ -119,12 +119,17 @@ namespace Utils.Random
             Remove(ret);
             return ret;
         }
+
         /// <summary>
-        /// Changes the weight of an item already in the set. Throws an exception when the item isn't present.
+        /// Changes the weight of an item already in the set.
         /// </summary>
+        /// <param name="item">Item to update. Throws an exception when the item isn't present.</param>
+        /// <param name="newWeight">Positive weight. The greater weight, the greater chance to be selected.</param>
         /// <exception cref="InvalidOperationException"></exception>
         public void UpdateWeight(T item, float newWeight)
         {
+            if (newWeight <= 0)
+                throw new ArgumentException("Weight must be positive.");
             if (!positions_.ContainsKey(item))
                 throw new InvalidOperationException($"Item {item} was not present in the set.");
             int pos = positions_[item];

@@ -22,7 +22,7 @@ TagManager:
   - Attacker
   - Targeting
   - AttackerTarget
-  - CoarseBlocker
+  - CoarseObstacle
   - Projectile
   - 
   - 

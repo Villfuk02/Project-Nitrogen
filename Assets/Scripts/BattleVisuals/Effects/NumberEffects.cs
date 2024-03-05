@@ -13,23 +13,23 @@ namespace BattleVisuals.Effects
 {
     public class NumberEffects : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] GameObject numberEffectPrefab;
-
+        [Header("Settings - damage")]
         [SerializeField] float damageTimeToLive;
-        [SerializeField] float productionTimeToLive;
-        [SerializeField] float productionDelay;
-
-        [SerializeField] Color materialsColor;
-        [SerializeField] Color energyColor;
-        [SerializeField] Color fuelColor;
         [SerializeField] Color damageColor;
-
-        [SerializeField] float productionFontSize;
         [SerializeField] float damageMinFontSize;
         [SerializeField] float damageMaxFontSize;
         [SerializeField] float fullSizeDamage;
+        [Header("Settings - production")]
+        [SerializeField] float productionTimeToLive;
+        [SerializeField] float productionDelay;
+        [SerializeField] Color materialsColor;
+        [SerializeField] Color energyColor;
+        [SerializeField] Color fuelColor;
+        [SerializeField] float productionFontSize;
+        [Header("Runtime variables")]
         [SerializeField] float fullSizeDamageLog;
-
         readonly Dictionary<object, int> createdThisFrame_ = new();
 
         void Start()
@@ -57,7 +57,7 @@ namespace BattleVisuals.Effects
 
         void SpawnDamage((Attacker target, Damage damage) param)
         {
-            float size = damageMinFontSize + Mathf.Log(param.damage.amount) / fullSizeDamageLog * (damageMaxFontSize - damageMinFontSize);
+            float size = Mathf.Lerp(damageMinFontSize, damageMaxFontSize, Mathf.Log(param.damage.amount) / fullSizeDamageLog);
             Vector2 r = Random.insideUnitCircle;
             Vector3 vel = new(r.x, 2, r.y);
             Spawn(param.damage.amount.ToString(CultureInfo.InvariantCulture), size, damageColor, damageTimeToLive, param.target.target.position + Vector3.up * 0.3f, vel, Vector3.down * 10);

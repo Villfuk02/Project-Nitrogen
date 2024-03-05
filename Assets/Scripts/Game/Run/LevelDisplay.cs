@@ -5,17 +5,19 @@ namespace Game.Run
 {
     public class LevelDisplay : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] RunPersistence rp;
         [SerializeField] TextMeshProUGUI txt;
-        int displayed_;
+        [Header("Runtime variables")]
+        [SerializeField] int displayed;
 
         void Update()
         {
-            if (rp.level != displayed_)
-            {
-                displayed_ = rp.level;
-                txt.text = $"Level {displayed_}";
-            }
+            if (rp.level == displayed)
+                return;
+
+            displayed = rp.level;
+            txt.text = $"Level {displayed}";
         }
     }
 }

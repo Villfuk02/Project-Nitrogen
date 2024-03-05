@@ -1,4 +1,5 @@
 using Game.Blueprint;
+using System;
 using UnityEngine;
 
 namespace BattleSimulation.Buildings
@@ -34,7 +35,7 @@ namespace BattleSimulation.Buildings
         public void Delete()
         {
             if (permanent)
-                Debug.LogError("Cannot delete permanent building");
+                throw new InvalidOperationException("Cannot delete permanent building");
             Destroy(gameObject);
         }
         protected virtual void OnDestroy() { }

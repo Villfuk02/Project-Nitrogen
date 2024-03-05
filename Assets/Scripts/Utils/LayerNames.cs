@@ -13,7 +13,7 @@ namespace Utils
         public const string ATTACKER = "Attacker";
         public const string TARGETING = "Targeting";
         public const string ATTACKER_TARGET = "AttackerTarget";
-        public const string COARSE_BLOCKER = "CoarseBlocker";
+        public const string COARSE_OBSTACLE = "CoarseObstacle";
         public const string PROJECTILE = "Projectile";
     }
 }

@@ -149,7 +149,7 @@ namespace BattleSimulation.Control
                 result = Affordable.UseMaterialsAsEnergy;
             }
 
-            if (param.materials > Material)
+            if (materials > Material)
                 result = Affordable.No;
 
             return (result, energy, materials);

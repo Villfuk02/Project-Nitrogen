@@ -4011,7 +4011,7 @@ GameObject:
   - component: {fileID: 987874900}
   - component: {fileID: 987874899}
   m_Layer: 0
-  m_Name: Blocker Generator
+  m_Name: Obstacle Generator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7147,7 +7147,7 @@ MonoBehaviour:
   pathStartPicker: {fileID: 1087793670}
   pathPlanner: {fileID: 1087793668}
   wfc: {fileID: 134019243}
-  blockerGenerator: {fileID: 987874899}
+  obstacleGenerator: {fileID: 987874899}
   pathFinalizer: {fileID: 1087793671}
   scatterer: {fileID: 449949343}
   tries: 20
@@ -8144,7 +8144,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sr: {fileID: 2038851960}
-  pixelsPerUnit: 4
   gradient:
     serializedVersion: 2
     key0: {r: 1, g: 0, b: 1, a: 1}
@@ -8174,7 +8173,8 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 7
     m_NumAlphaKeys: 2
-  module: -1
+  pixelsPerUnit: 10
+  decorationIndex: -1
 --- !u!1 &2046862147
 GameObject:
   m_ObjectHideFlags: 0

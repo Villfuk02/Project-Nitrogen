@@ -27,7 +27,7 @@ namespace BattleSimulation.Targeting
         {
             if (!layerMaskInit_)
             {
-                visibilityMask = LayerMask.GetMask(LayerNames.COARSE_TERRAIN, LayerNames.COARSE_BLOCKER);
+                visibilityMask = LayerMask.GetMask(LayerNames.COARSE_TERRAIN, LayerNames.COARSE_OBSTACLE);
                 layerMaskInit_ = true;
             }
             InitComponents();

@@ -547,6 +547,7 @@ MonoBehaviour:
   runEvents: {fileID: 2056610542}
   runSeed: 0
   randomSeed: 1
+  startMaxHull: 20
   level: 0
 --- !u!4 &2056610539
 Transform:
@@ -590,6 +591,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rp: {fileID: 2056610538}
   txt: {fileID: 774620863}
+  displayed: 0
 --- !u!114 &2056610542
 MonoBehaviour:
   m_ObjectHideFlags: 0

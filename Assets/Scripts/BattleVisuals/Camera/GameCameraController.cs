@@ -1,14 +1,13 @@
-
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Utils;
 
-namespace GameCamera
+namespace BattleVisuals.Camera
 {
     public class GameCameraController : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] Camera cam;
+        [SerializeField] UnityEngine.Camera cam;
         [Header("Settings")]
         [SerializeField] Vector2 distBounds;
         [SerializeField] float moveSpeed;
@@ -21,13 +20,13 @@ namespace GameCamera
         [SerializeField] float interpolationSpeed;
         [SerializeField] float rotAcceleration;
         [SerializeField] float rotInertia;
-        [Header("Runtime")]
+        [Header("Runtime variables")]
         [SerializeField] float rotation;
-        [SerializeField] float rotationVel;
+        [SerializeField] float rotationVelocity;
         [SerializeField] float rotationTarget;
         [SerializeField] Vector3 camSpacePos;
         [SerializeField] Vector3 camSpacePosTarget;
-        [SerializeField] float angle;
+        [SerializeField] float pitchAngle;
 
         void Start()
         {
@@ -36,43 +35,59 @@ namespace GameCamera
 
         void Update()
         {
-            // inputs
-            if (Input.GetKeyUp(KeyCode.Q))
-                rotationTarget += 90;
-            if (Input.GetKeyUp(KeyCode.E))
-                rotationTarget -= 90;
-            float rotationRad = rotation / 180 * Mathf.PI;
-            float realMove = moveSpeed * Time.deltaTime * camSpacePos.y;
-            if (Input.GetKey(KeyCode.W))
-                camSpacePosTarget += realMove * new Vector3(Mathf.Sin(rotationRad), 0, Mathf.Cos(rotationRad));
-            if (Input.GetKey(KeyCode.A))
-                camSpacePosTarget += realMove * new Vector3(-Mathf.Cos(rotationRad), 0, Mathf.Sin(rotationRad));
-            if (Input.GetKey(KeyCode.S))
-                camSpacePosTarget += realMove * new Vector3(-Mathf.Sin(rotationRad), 0, -Mathf.Cos(rotationRad));
-            if (Input.GetKey(KeyCode.D))
-                camSpacePosTarget += realMove * new Vector3(Mathf.Cos(rotationRad), 0, -Mathf.Sin(rotationRad));
-            if (!EventSystem.current.IsPointerOverGameObject())
-                camSpacePosTarget += Input.mouseScrollDelta.y * zoomSpeed * Vector3.up;
+            HandleInputs();
+            Clamp();
+            Interpolate();
+            Apply();
+        }
 
-            // limits
+        void Apply()
+        {
+            float rotationRad = rotation * Mathf.Deg2Rad;
+            transform.localPosition = new Vector3(camSpacePos.x, transform.localPosition.y, camSpacePos.z)
+                                      - new Vector3(Mathf.Sin(rotationRad), 0, Mathf.Cos(rotationRad)) * camHeight / Mathf.Tan(pitchAngle / 180 * Mathf.PI);
+            transform.localRotation = Quaternion.Euler(pitchAngle, rotation, 0);
+            cam.orthographicSize = camSpacePos.y;
+        }
+
+        void Interpolate()
+        {
+            camSpacePos = Vector3.Lerp(camSpacePos, camSpacePosTarget, Time.deltaTime * interpolationSpeed);
+            pitchAngle = Mathf.Lerp(minAngle, maxAngle, (camSpacePos.y - minZoom) / (maxZoom - minZoom));
+            rotationVelocity *= Mathf.Pow(rotInertia, Time.deltaTime);
+            rotationVelocity += (rotationTarget - rotation) * rotAcceleration;
+            rotation += rotationVelocity * Time.deltaTime;
+        }
+
+        void Clamp()
+        {
             camSpacePosTarget = new(
                 Mathf.Clamp(camSpacePosTarget.x, -distBounds.x, distBounds.x),
                 Mathf.Clamp(camSpacePosTarget.y, minZoom, maxZoom),
                 Mathf.Clamp(camSpacePosTarget.z, -distBounds.y, distBounds.y));
+        }
 
-            // update
-            camSpacePos = Vector3.Lerp(camSpacePos, camSpacePosTarget, Time.deltaTime * interpolationSpeed);
-            angle = Mathf.Lerp(minAngle, maxAngle, (camSpacePos.y - minZoom) / (maxZoom - minZoom));
-            rotationVel *= Mathf.Pow(rotInertia, Time.deltaTime);
-            rotationVel += (rotationTarget - rotation) * rotAcceleration;
-            rotation += rotationVel * Time.deltaTime;
+        void HandleInputs()
+        {
+            if (Input.GetKeyUp(KeyCode.Q))
+                rotationTarget += 90;
+            if (Input.GetKeyUp(KeyCode.E))
+                rotationTarget -= 90;
 
-            // apply
-            rotationRad = rotation / 180 * Mathf.PI;
-            transform.localPosition = new Vector3(camSpacePos.x, transform.localPosition.y, camSpacePos.z)
-                - new Vector3(Mathf.Sin(rotationRad), 0, Mathf.Cos(rotationRad)) * camHeight / Mathf.Tan(angle / 180 * Mathf.PI);
-            transform.localRotation = Quaternion.Euler(angle, rotation, 0);
-            cam.orthographicSize = camSpacePos.y;
+            float realMove = moveSpeed * Time.deltaTime * camSpacePos.y;
+            Vector2Int inputDirection = Vector2Int.zero;
+            if (Input.GetKey(KeyCode.W))
+                inputDirection += Vector2Int.up;
+            if (Input.GetKey(KeyCode.S))
+                inputDirection += Vector2Int.down;
+            if (Input.GetKey(KeyCode.A))
+                inputDirection += Vector2Int.left;
+            if (Input.GetKey(KeyCode.D))
+                inputDirection += Vector2Int.right;
+            camSpacePosTarget += realMove * (Quaternion.Euler(0, rotation, 0) * new Vector3(inputDirection.x, 0, inputDirection.y));
+
+            if (!EventSystem.current.IsPointerOverGameObject())
+                camSpacePosTarget += Input.mouseScrollDelta.y * zoomSpeed * Vector3.up;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace BattleSimulation.World.WorldData
         public WorldUtils.Slant slant;
         public CardinalDirs<TileData> neighbors;
         public bool passable;
-        public BlockerData blocker;
+        public ObstacleData obstacle;
         public int dist;
         public List<TileData> pathNext = new();
         public List<DecorationInstance> decorations = new();

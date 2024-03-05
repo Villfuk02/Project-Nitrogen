@@ -47,10 +47,12 @@ namespace Game.AttackerStats
 
     public static class SpacingExtensions
     {
-        static readonly (int ticks, float dispSpacing, int dispAmount)[] SpacingParams = { (2, 0.375f, 5), (5, 0.5f, 4), (10, 0.75f, 3), (20, 1, 2), (40, 1.5f, 2) };
-        public static int GetTicks(this Spacing spacing) => SpacingParams[(int)spacing].ticks;
+        static readonly int[] TicksSpacing = { 2, 5, 10, 20, 40 };
+        static readonly float[] DisplaySpacing = { 0.375f, 0.5f, 0.75f, 1, 1.5f };
+        static readonly int[] MaxDisplayCount = { 5, 4, 3, 2, 2 };
+        public static int GetTicks(this Spacing spacing) => TicksSpacing[(int)spacing];
         public static float GetSeconds(this Spacing spacing) => spacing.GetTicks() * 0.05f;
-        public static float GetDisplaySpacing(this Spacing spacing) => SpacingParams[(int)spacing].dispSpacing;
-        public static int GetDisplayAmount(this Spacing spacing) => SpacingParams[(int)spacing].dispAmount;
+        public static float GetDisplaySpacing(this Spacing spacing) => DisplaySpacing[(int)spacing];
+        public static int GetMaxDisplayCount(this Spacing spacing) => MaxDisplayCount[(int)spacing];
     }
 }

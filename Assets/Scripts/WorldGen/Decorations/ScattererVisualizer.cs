@@ -6,50 +6,68 @@ namespace WorldGen.Decorations
 {
     public class ScattererVisualizer : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] SpriteRenderer sr;
-        [SerializeField] int pixelsPerUnit;
+        [Header("Settings")]
         [SerializeField] Gradient gradient;
-        [SerializeField] int module = -1;
+        [Header("Runtime controls")]
+        [SerializeField] int pixelsPerUnit = 1;
+        [SerializeField] int decorationIndex = -1;
+        [Header("Runtime variables")]
         Texture2D tex_;
         Color32[] cols_;
+        int lastIndex_ = -1;
+        int lastPixelsPerUnit_;
 
         void Update()
         {
-            if (sr.enabled && module >= 0 && module < WorldGenerator.TerrainType.ScattererData.decorations.Length)
-                DisplayField(WorldGenerator.TerrainType.ScattererData.decorations[module]);
+            if (!sr.enabled || (lastIndex_ == decorationIndex && lastPixelsPerUnit_ == pixelsPerUnit))
+                return;
+            if (decorationIndex >= 0 && decorationIndex < WorldGenerator.TerrainType.ScattererData.decorations.Length)
+                DisplayField(WorldGenerator.TerrainType.ScattererData.decorations[decorationIndex]);
+            else
+                Clear();
+            lastIndex_ = decorationIndex;
+            lastPixelsPerUnit_ = pixelsPerUnit;
         }
 
         void DisplayField(Decoration decoration)
         {
             Vector2Int texSize = WorldUtils.WORLD_SIZE * pixelsPerUnit;
+
             if (cols_ is null || cols_.Length != texSize.x * texSize.y)
                 cols_ = new Color32[texSize.x * texSize.y];
-            bool different = false;
-            foreach (Vector2Int v in texSize)
-            {
-                int i = v.x + v.y * texSize.x;
-                Vector2 tilePos = (Vector2.one * 0.5f + v) / pixelsPerUnit - Vector2.one * 0.5f;
-                float e = new DecorationEvaluator(tilePos).Evaluate(decoration);
-                Color32 c = gradient.Evaluate(1 / (1 + Mathf.Exp(-e)));
-                if (c.r != cols_[i].r || c.g != cols_[i].g || c.b != cols_[i].b)
-                    different = true;
-                cols_[i] = c;
-            }
-            if (tex_ == null)
-            {
-                tex_ = new(texSize.x, texSize.y)
-                {
-                    filterMode = FilterMode.Point
-                };
-                Sprite sp = Sprite.Create(tex_, new(Vector2.zero, texSize), Vector2.one * 0.5f, pixelsPerUnit);
-                sr.sprite = sp;
-            }
-            if (different)
-            {
-                tex_.SetPixels32(cols_);
-                tex_.Apply();
-            }
 
+            foreach (Vector2Int pixel in texSize)
+                cols_[pixel.x + pixel.y * texSize.x] = EvaluatePixel(pixel, decoration);
+
+            if (tex_ == null || tex_.width != texSize.x || tex_.height != texSize.y)
+                ResetTexture(texSize);
+
+            tex_.SetPixels32(cols_);
+            tex_.Apply();
+        }
+
+        Color32 EvaluatePixel(Vector2Int pixel, Decoration decoration)
+        {
+            Vector2 tilePos = (Vector2.one * 0.5f + pixel) / pixelsPerUnit - Vector2.one * 0.5f;
+            float value = new DecorationEvaluator(tilePos).Evaluate(decoration);
+            return gradient.Evaluate(1 / (1 + Mathf.Exp(-value)));
+        }
+
+        void ResetTexture(Vector2Int size)
+        {
+            tex_ = new(size.x, size.y)
+            {
+                filterMode = FilterMode.Point
+            };
+            sr.sprite = Sprite.Create(tex_, new(Vector2.zero, size), Vector2.one * 0.5f, pixelsPerUnit);
+        }
+
+        void Clear()
+        {
+            tex_ = null;
+            sr.sprite = null;
         }
     }
 }

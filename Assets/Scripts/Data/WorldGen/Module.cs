@@ -7,7 +7,7 @@ using static Data.Parsers.Parsers;
 
 namespace Data.WorldGen
 {
-    public record Module(string Name, float Weight, bool Flipped, int Rotated, int HeightOffset, Mesh Collision, ModuleShape Shape, string[] Models)
+    public record Module(string Name, float Weight, bool Flipped, int Rotated, int HeightOffset, Mesh CollisionMesh, ModuleShape Shape)
     {
         public static Module[] Parse(string name, ParseStream stream)
         {
@@ -18,15 +18,16 @@ namespace Data.WorldGen
             var heightOffset = pp.Register("height_offset", ParseInt, 0);
             var collisionPath = pp.Register("collision", ParseWord);
             var shape = pp.Register("shape", Chain(ParseBlock, ModuleShape.Parse));
-            var getModels = pp.Register("models", Chain(ParseLine, ParseList, ParseWord), null);
 
             pp.Parse(blockStream);
 
+            var parsedWeight = weight();
+            if (parsedWeight <= 0)
+                throw new ParseException(blockStream, "weight must be positive");
             (bool flipped, int rotated) = variants();
-            var mesh = Resources.Load<Mesh>(collisionPath()) ?? throw new ParseException(blockStream, $"Could not load prefab at \"{collisionPath()}\"");
-            var models = getModels()?.ToArray() ?? new[] { collisionPath() };
+            var mesh = Resources.Load<Mesh>(collisionPath()) ?? throw new ParseException(blockStream, $"Could not load mesh at \"{collisionPath()}\"");
 
-            Module settings = new(name, weight(), flipped, rotated, heightOffset(), mesh, shape(), models);
+            Module settings = new(name, parsedWeight, flipped, rotated, heightOffset(), mesh, shape());
 
             return settings.MakeVariants();
         }

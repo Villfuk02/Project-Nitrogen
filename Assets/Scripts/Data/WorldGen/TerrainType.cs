@@ -5,7 +5,7 @@ using static Data.Parsers.Parsers;
 
 namespace Data.WorldGen
 {
-    public record TerrainType(string DisplayName, char[] Surfaces, int MaxHeight, Module[] Modules, BlockersData Blockers, ScattererData ScattererData, List<FractalNoiseNode> NoiseNodes)
+    public record TerrainType(string DisplayName, char[] Surfaces, int MaxHeight, Module[] Modules, ObstaclesData Obstacles, ScattererData ScattererData, List<FractalNoiseNode> NoiseNodes)
     {
         public static TerrainType Parse(ParseStream stream)
         {
@@ -15,8 +15,8 @@ namespace Data.WorldGen
             var surfaces = pp.Register("surfaces", Chain(ParseLine, ParseList, ParseChar));
             var maxHeight = pp.Register("max_height", ParseInt);
             var modules = pp.Register("modules", Chain(ParseBlock, ParseModules));
-            var blockers = pp.Register("blockers", Chain(ParseBlock, s => BlockersData.Parse(s, surfaces())));
-            var scatterer = pp.Register("scatterer", Chain(ParseBlock, s => ScattererData.Parse(s, blockers().Blockers.Keys, noiseNodes)));
+            var obstacles = pp.Register("obstacles", Chain(ParseBlock, s => ObstaclesData.Parse(s, surfaces())));
+            var scatterer = pp.Register("scatterer", Chain(ParseBlock, s => ScattererData.Parse(s, obstacles().Obstacles.Keys, noiseNodes)));
 
             pp.Parse(stream);
 
@@ -25,7 +25,7 @@ namespace Data.WorldGen
                 surfaces().ToArray(),
                 maxHeight(),
                 modules(),
-                blockers(),
+                obstacles(),
                 scatterer(),
                 noiseNodes
             );

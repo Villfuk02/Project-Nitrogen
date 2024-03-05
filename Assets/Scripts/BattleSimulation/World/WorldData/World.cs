@@ -15,12 +15,6 @@ namespace BattleSimulation.World.WorldData
             instance = this;
         }
 
-        void FixedUpdate()
-        {
-            if (Time.fixedDeltaTime != 0.05f)
-                Debug.LogWarning($"Fixed tick took {Time.fixedDeltaTime}s instead of 0.05s!");
-        }
-
         public void SetReady()
         {
             data = worldData;

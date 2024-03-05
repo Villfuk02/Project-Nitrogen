@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BattleSimulation.Abilities
 {
-    public class Meteor : Ability, IDamageSource
+    public class Meteor : Ability
     {
         [SerializeField] Targeting.Targeting targeting;
         public int delayLeft;

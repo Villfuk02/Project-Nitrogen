@@ -65,12 +65,32 @@ namespace Utils
             array_ = new T[Count];
         }
         /// <summary>
-        /// Creates a new array of the given size, using the provided array as to store its values.
+        /// Creates a new array of the given size, using the provided array to store its values.
         /// </summary>
         public Array2D(T[] array, Vector2Int size)
         {
             array_ = array;
             Size = size;
+        }
+        /// <summary>
+        /// Puts value at each index in the array.
+        /// </summary>
+        public void Fill(T value)
+        {
+            foreach (var i in Size)
+            {
+                this[i] = value;
+            }
+        }
+        /// <summary>
+        /// Puts a result of getValue at each index in the array.
+        /// </summary>
+        public void Fill(Func<T> getValue)
+        {
+            foreach (var i in Size)
+            {
+                this[i] = getValue();
+            }
         }
 
         public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)array_).GetEnumerator();

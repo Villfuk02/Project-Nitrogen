@@ -4,7 +4,9 @@ namespace BattleVisuals
 {
     public class PositionInterpolation : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] Transform sim;
+        [Header("Runtime variables")]
         [SerializeField] Vector3 lastTargetPos;
         [SerializeField] float sinceTargetChange;
         [SerializeField] Vector3 lastVelocity;

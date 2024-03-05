@@ -8,14 +8,18 @@ namespace Game.Run
 {
     public class RunPersistence : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] LevelSetter worldSetter;
         [SerializeField] RunEvents runEvents;
+        [Header("Settings")]
         [SerializeField] ulong runSeed;
         [SerializeField] bool randomSeed;
-        Random random_;
+        [SerializeField] int startMaxHull;
+        [Header("Runtime variables")]
+        public int level;
         public int MaxHull { get; private set; }
         public int Hull { get; private set; }
-        public int level;
+        Random random_;
 
         void Awake()
         {
@@ -24,12 +28,12 @@ namespace Game.Run
                 runSeed = (ulong)UnityRandom.Range(int.MinValue, int.MaxValue) + ((ulong)UnityRandom.Range(int.MinValue, int.MaxValue) << 32);
             random_ = new(runSeed);
 
-            MaxHull = 10;
+            MaxHull = startMaxHull;
             Hull = MaxHull;
 
             runEvents.damageHull.RegisterHandler(DamageHull);
             runEvents.repairHull.RegisterHandler(RepairHull);
-            runEvents.nextLevel.RegisterHandler(NextLevelEvent);
+            runEvents.nextLevel.RegisterHandler(NextLevelCommand);
             runEvents.restart.RegisterHandler(Restart);
         }
         void Update()
@@ -61,7 +65,7 @@ namespace Game.Run
             return true;
         }
 
-        bool NextLevelEvent()
+        bool NextLevelCommand()
         {
             NextLevel();
             return true;

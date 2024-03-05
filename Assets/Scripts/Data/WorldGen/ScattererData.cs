@@ -11,15 +11,15 @@ namespace Data.WorldGen
     {
         public Decoration[] decorations;
         public Predicate<Vector2Int> isPath = null;
-        public Dictionary<string, Predicate<Vector2Int>> isBlocker = new();
+        public Dictionary<string, Predicate<Vector2Int>> isObstacle = new();
 
-        public static ScattererData Parse(ParseStream stream, IEnumerable<string> blockers, List<FractalNoiseNode> noiseNodes)
+        public static ScattererData Parse(ParseStream stream, IEnumerable<string> obstacles, List<FractalNoiseNode> noiseNodes)
         {
             ScattererData sd = new();
 
-            foreach (string blocker in blockers)
+            foreach (string obstacle in obstacles)
             {
-                sd.isBlocker.Add(blocker, null);
+                sd.isObstacle.Add(obstacle, null);
             }
 
             Node ParseNode(ParseStream parseStream)
@@ -34,12 +34,12 @@ namespace Data.WorldGen
                         return ClampNode.Parse(parseStream, ParseNode);
                     case "path":
                         return SDFNode.Parse(parseStream, pos => sd.isPath(pos));
-                    case "blocker":
-                        string blocker = ParseWord(parseStream);
+                    case "obstacle":
+                        string obstacle = ParseWord(parseStream);
                         SkipWhitespace(parseStream);
-                        if (!sd.isBlocker.ContainsKey(blocker))
-                            throw new ParseException(parseStream, $"Blocker \"{blocker}\" was not defined.");
-                        return SDFNode.Parse(parseStream, pos => sd.isBlocker[blocker](pos));
+                        if (!sd.isObstacle.ContainsKey(obstacle))
+                            throw new ParseException(parseStream, $"Obstacle \"{obstacle}\" was not defined.");
+                        return SDFNode.Parse(parseStream, pos => sd.isObstacle[obstacle](pos));
                     case "fractal_noise":
                         var n = FractalNoiseNode.Parse(parseStream);
                         noiseNodes.Add(n);
@@ -109,7 +109,7 @@ namespace Data.WorldGen
         public abstract T Accept<T>(IDecorationNodeVisitor<T> visitor);
     }
 
-    public record CompositeNode(List<Node> Children) : Node()
+    public record CompositeNode(List<Node> Children) : Node
     {
         public static CompositeNode Parse(ParseStream stream, Parse<Node> nodeFactory) => new(ParseChildren(stream, nodeFactory));
         public static List<Node> ParseChildren(ParseStream stream, Parse<Node> nodeFactory)

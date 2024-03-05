@@ -7,7 +7,6 @@ namespace Game.InfoPanel
     public class BlueprintDescriptionProvider : DescriptionProvider
     {
         readonly Blueprint.Blueprint blueprint_;
-        readonly Blueprint.Blueprint original_;
         readonly Building? building_;
         readonly DescriptionFormatter<(Blueprint.Blueprint, Blueprint.Blueprint)> descriptionFormatter_;
         public BlueprintDescriptionProvider(Building building) : this(building.Blueprint, building.OriginalBlueprint)
@@ -18,7 +17,6 @@ namespace Game.InfoPanel
         public BlueprintDescriptionProvider(Blueprint.Blueprint blueprint, Blueprint.Blueprint original)
         {
             blueprint_ = blueprint;
-            original_ = original;
             descriptionFormatter_ = DescriptionFormat.Blueprint(blueprint, original);
         }
 

@@ -36,14 +36,15 @@
 \contentsline {subsection}{\numberline {3.4.2}Paths}{6}{subsection.3.4.2}%
 \contentsline {subsection}{\numberline {3.4.3}Terrain}{7}{subsection.3.4.3}%
 \contentsline {subsection}{\numberline {3.4.4}Resources and obstacles}{7}{subsection.3.4.4}%
-\contentsline {subsection}{\numberline {3.4.5}World builder}{7}{subsection.3.4.5}%
-\contentsline {subsection}{\numberline {3.4.6}Terrain types}{7}{subsection.3.4.6}%
-\contentsline {subsection}{\numberline {3.4.7}Attacker waves}{7}{subsection.3.4.7}%
+\contentsline {subsection}{\numberline {3.4.5}Terrain type definition}{7}{subsection.3.4.5}%
+\contentsline {subsection}{\numberline {3.4.6}World builder}{7}{subsection.3.4.6}%
+\contentsline {subsection}{\numberline {3.4.7}Terrain types}{7}{subsection.3.4.7}%
+\contentsline {subsection}{\numberline {3.4.8}Attacker waves}{7}{subsection.3.4.8}%
 \contentsline {section}{\numberline {3.5}Simulation}{7}{section.3.5}%
 \contentsline {subsection}{\numberline {3.5.1}Visuals and interpolation}{7}{subsection.3.5.1}%
 \contentsline {section}{\numberline {3.6}Attacker targeting}{7}{section.3.6}%
 \contentsline {section}{\numberline {3.7}Game events}{7}{section.3.7}%
-\contentsline {section}{\numberline {3.8}Range visualisation}{7}{section.3.8}%
+\contentsline {section}{\numberline {3.8}Range visualization}{7}{section.3.8}%
 \contentsline {section}{\numberline {3.9}Selection}{7}{section.3.9}%
 \contentsline {section}{\numberline {3.10}Blueprints}{7}{section.3.10}%
 \contentsline {subsection}{\numberline {3.10.1}Dynamic descriptions}{7}{subsection.3.10.1}%

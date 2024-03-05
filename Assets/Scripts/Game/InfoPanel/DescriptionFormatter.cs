@@ -136,15 +136,17 @@ namespace Game.InfoPanel
 
         public string Format(string description)
         {
-            // split string on tags, replace tags, join
+            // split string on tags
             var split = description.Split('[', ']');
             for (int i = 0; i < split.Length; i++)
             {
                 if (i % 2 == 0)
                     continue;
+                // replace tags
                 split[i] = FormatTag(split[i]);
             }
 
+            // join
             return string.Join("", split);
         }
 

@@ -11,15 +11,18 @@ namespace Game.InfoPanel
 {
     public class InfoPanel : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] RectTransform root;
         [SerializeField] TextMeshProUGUI title;
         [SerializeField] Image icon;
         [SerializeField] TextMeshProUGUI description;
-        [SerializeField] bool visible;
-        [SerializeField] Sprite tileIcon;
         [SerializeField] RectTransform deleteButton;
         [SerializeField] RectTransform targetingSection;
         [SerializeField] TextMeshProUGUI targetingText;
+        [Header("Settings")]
+        [SerializeField] Sprite tileIcon;
+        [Header("Runtime variables")]
+        [SerializeField] bool visible;
         DescriptionProvider? descriptionProvider_;
         Building? building_;
 

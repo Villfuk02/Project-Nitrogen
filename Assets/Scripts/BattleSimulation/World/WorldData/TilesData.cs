@@ -43,7 +43,7 @@ namespace BattleSimulation.World.WorldData
                 t.passable = true;
                 t.neighbors = connections;
                 t.dist = int.MaxValue;
-                t.blocker = null;
+                t.obstacle = null;
             }
             //for each tile along a path, store the path distance to center
             foreach (var path in paths)

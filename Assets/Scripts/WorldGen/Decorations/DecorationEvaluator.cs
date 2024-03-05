@@ -1,4 +1,5 @@
 using Data.WorldGen;
+using System;
 using System.Linq;
 using UnityEngine;
 using Utils;
@@ -29,93 +30,51 @@ namespace WorldGen.Decorations
         {
             Vector2Int rounded = position_.Round();
             bool inside = node.IsPosInside(rounded);
-            float prevMinDist = float.PositiveInfinity;
-            for (int r = 0; r < Mathf.Max(WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y) + 1; r++)
+            float minDist = float.PositiveInfinity;
+            for (int radius = 0; radius < Mathf.Max(WorldUtils.WORLD_SIZE.x, WorldUtils.WORLD_SIZE.y) + 1; radius++)
             {
-                float minDist = float.PositiveInfinity;
-                Vector2Int boundsMin = new(Mathf.Max(rounded.x - r, 0), Mathf.Max(rounded.y - r, 0));
-                Vector2Int boundsMax = new(Mathf.Min(rounded.x + r, WorldUtils.WORLD_SIZE.x - 1), Mathf.Min(rounded.y + r, WorldUtils.WORLD_SIZE.y - 1));
+                int minAchievableDist = radius - 1;
+                if (minAchievableDist > minDist)
+                    break;
+                float radiusMinDist = MinDistanceAtRadius(radius, rounded, inside, node.IsPosInside);
+                minDist = Mathf.Min(minDist, radiusMinDist);
+            }
 
-                if (boundsMin.x == rounded.x - r)
-                {
-                    for (int y = boundsMin.y; y <= boundsMax.y; y++)
-                    {
-                        if (node.IsPosInside(new(boundsMin.x, y)) == inside)
-                            continue;
+            return inside ? -minDist : minDist;
+        }
 
-                        float dist = GetSignedDistance(position_, new(boundsMin.x, y));
-                        if (dist < minDist)
-                            minDist = dist;
-                    }
-                }
-                if (boundsMax.x == rounded.x + r)
+        float MinDistanceAtRadius(int radius, Vector2Int centerTile, bool inside, Predicate<Vector2Int> isInside)
+        {
+            float minDist = float.PositiveInfinity;
+            for (int direction = 0; direction < 4; direction++)
+            {
+                Vector2Int cornerTile = centerTile + radius * WorldUtils.DIAGONAL_DIRS[direction];
+                for (int i = 0; i < 2 * radius; i++)
                 {
-                    for (int y = boundsMin.y; y <= boundsMax.y; y++)
-                    {
-                        if (node.IsPosInside(new(boundsMax.x, y)) == inside)
-                            continue;
-
-                        float dist = GetSignedDistance(position_, new(boundsMax.x, y));
-                        if (dist < minDist)
-                            minDist = dist;
-                    }
-                }
-                if (boundsMin.y == rounded.y - r)
-                {
-                    for (int x = boundsMin.x; x <= boundsMax.x; x++)
-                    {
-                        if (node.IsPosInside(new(x, boundsMin.y)) == inside)
-                            continue;
-
-                        float dist = GetSignedDistance(position_, new(x, boundsMin.y));
-                        if (dist < minDist)
-                            minDist = dist;
-                    }
-                }
-                if (boundsMax.y == rounded.y + r)
-                {
-                    for (int x = boundsMin.x; x <= boundsMax.x; x++)
-                    {
-                        if (node.IsPosInside(new(x, boundsMax.y)) == inside)
-                            continue;
-
-                        float dist = GetSignedDistance(position_, new(x, boundsMax.y));
-                        if (dist < minDist)
-                            minDist = dist;
-                    }
-                }
-                if (!float.IsPositiveInfinity(minDist))
-                {
-                    if (!float.IsPositiveInfinity(prevMinDist))
-                    {
-                        if (prevMinDist < minDist)
-                            minDist = prevMinDist;
-                        return inside ? -minDist : minDist;
-                    }
-                    prevMinDist = minDist;
-                }
-                else if (!float.IsPositiveInfinity(prevMinDist))
-                {
-                    return inside ? -prevMinDist : prevMinDist;
+                    Vector2Int tile = cornerTile - i * WorldUtils.CARDINAL_DIRS[direction];
+                    if (!WorldUtils.IsInRange(tile, WorldUtils.WORLD_SIZE) || isInside(tile) == inside)
+                        continue;
+                    float dist = GetSignedDistance(position_, tile);
+                    minDist = Mathf.Min(minDist, dist);
                 }
             }
 
-            throw new();
+            return minDist;
         }
 
         static float GetSignedDistance(Vector2 pos, Vector2Int tile)
         {
-            static float CoordDiff(float pos, float target)
+            return new Vector2(GetSignedDistance1D(pos.x, tile.x), GetSignedDistance1D(pos.y, tile.y)).magnitude;
+        }
+        static float GetSignedDistance1D(float pos, int tilePos)
+        {
+            float diff = pos - tilePos;
+            return diff switch
             {
-                float diff = pos - target;
-                return diff switch
-                {
-                    < -0.5f => diff + 0.5f,
-                    > 0.5f => diff - 0.5f,
-                    _ => 0
-                };
-            }
-            return new Vector2(CoordDiff(pos.x, tile.x), CoordDiff(pos.y, tile.y)).magnitude;
+                < -0.5f => diff + 0.5f,
+                > 0.5f => diff - 0.5f,
+                _ => 0
+            };
         }
 
         public float VisitFractalNoiseNode(FractalNoiseNode node) => node.Noise.EvaluateAt(position_);

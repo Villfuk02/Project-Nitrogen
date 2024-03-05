@@ -6,29 +6,37 @@ namespace BattleVisuals.Attackers
 {
     public class HealthDisplay : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] Attacker attacker;
         [SerializeField] GameObject divider;
         [SerializeField] Transform dividerHolder;
         [SerializeField] Image shadow;
         [SerializeField] Image health;
+        [Header("Settings")]
         [SerializeField] float shadowSpeed;
         [SerializeField] Color[] colors;
+        [Header("Runtime variables")]
         [SerializeField] int max;
-        [SerializeField] int division;
         void Start()
         {
             max = attacker.stats.maxHealth;
-            division = 1;
-            int divisionOrder = 0;
-            while (division * 10 < max)
+            CalculateDivisions(out int divisionOrder, out float divisionCount);
+            for (int i = 1; i < divisionCount; i++)
+                Instantiate(divider, dividerHolder).transform.localPosition = Vector3.right * i / divisionCount;
+            health.color = colors[divisionOrder];
+        }
+
+        void CalculateDivisions(out int divisionOrder, out float divisionCount)
+        {
+            int size = 1;
+            divisionOrder = 0;
+            while (size * 10 < max)
             {
                 divisionOrder++;
-                division *= 10;
+                size *= 10;
             }
-            float divisions = max / (float)division;
-            for (int i = 1; i < divisions; i++)
-                Instantiate(divider, dividerHolder).transform.localPosition = Vector3.right * i / divisions;
-            health.color = colors[divisionOrder];
+
+            divisionCount = max / (float)size;
         }
 
         void Update()

@@ -2,7 +2,7 @@
 - section titles
 - game design section order
 - used packages
-- can I assume the reader knows Unity?
+- how much do I need to describe Unity?
 ## text
 - [x] kapitoly
 - [ ] sekce a podsekce
@@ -29,10 +29,10 @@
     - [x] make GameEvents interface more intuitive
     - [ ] BattleSim
     - [ ] BattleVis
-    - [ ] Data
-    - [ ] Game
-    - [ ] Utils
-    - [ ] WorldGen
+    - [x] Data
+    - [x] Game
+    - [x] Utils
+    - [x] WorldGen
     - [ ] classes should only do their job and nothing more
     - [ ] encapsulation
     - [ ] decomposition
@@ -41,6 +41,7 @@
     - [ ] unify asserts
     - [ ] unify errors
     - [ ] add and unify headers
+    - [ ] comments
 - [ ] menu (seed select)
 - [ ] level progression
 - [ ] sound effects

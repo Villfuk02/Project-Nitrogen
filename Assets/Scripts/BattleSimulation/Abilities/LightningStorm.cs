@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace BattleSimulation.Abilities
 {
-    public class LightningStorm : Ability, IDamageSource
+    public class LightningStorm : Ability
     {
         [SerializeField] Targeting.Targeting targeting;
         [SerializeField] UnityEvent<Transform> onHit;

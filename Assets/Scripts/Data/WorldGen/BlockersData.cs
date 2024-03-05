@@ -5,36 +5,36 @@ using static Data.Parsers.Parsers;
 
 namespace Data.WorldGen
 {
-    public record BlockersData(BlockerData[][] Layers, BlockerData[] Fillers, Dictionary<string, BlockerData> Blockers)
+    public record ObstaclesData(ObstacleData[][] Layers, ObstacleData[] Fillers, Dictionary<string, ObstacleData> Obstacles)
     {
-        public static BlockersData Parse(ParseStream stream, IEnumerable<char> allSurfaces)
+        public static ObstaclesData Parse(ParseStream stream, IEnumerable<char> allSurfaces)
         {
-            var pp = new PropertyParserWithNamedExtra<BlockerData>();
+            var pp = new PropertyParserWithNamedExtra<ObstacleData>();
             var getLayers = pp.Register("layers", Chain(ParseBlock, ParseList, ParseLine, ParseList, ParseWord));
             var getFillers = pp.Register("fillers", Chain(ParseLine, ParseList, ParseWord));
-            pp.RegisterExtraParser((n, s) => BlockerData.Parse(n, s, getLayers().Count, allSurfaces.ToArray()));
+            pp.RegisterExtraParser((n, s) => ObstacleData.Parse(n, s, getLayers().Count, allSurfaces.ToArray()));
 
             pp.Parse(stream);
 
-            var blockers = new Dictionary<string, BlockerData>();
-            foreach (var blocker in pp.ParsedExtra)
+            var obstacles = new Dictionary<string, ObstacleData>();
+            foreach (var obstacle in pp.ParsedExtra)
             {
-                if (blockers.ContainsKey(blocker.Name))
-                    throw new ParseException(stream, $"Duplicate blocker \"{blocker.Name}\".");
-                blockers[blocker.Name] = blocker;
+                if (obstacles.ContainsKey(obstacle.Name))
+                    throw new ParseException(stream, $"Duplicate obstacle \"{obstacle.Name}\".");
+                obstacles[obstacle.Name] = obstacle;
             }
 
             var parsedLayers = getLayers();
-            var layers = new BlockerData[parsedLayers.Count][];
+            var layers = new ObstacleData[parsedLayers.Count][];
             for (int i = 0; i < parsedLayers.Count; i++)
             {
                 if (parsedLayers[i].Count == 0)
-                    throw new ParseException(stream, $"Layer {i} has no blockers specified.");
-                layers[i] = new BlockerData[parsedLayers[i].Count];
+                    throw new ParseException(stream, $"Layer {i} has no obstacles specified.");
+                layers[i] = new ObstacleData[parsedLayers[i].Count];
                 for (int j = 0; j < parsedLayers[i].Count; j++)
                 {
-                    if (!blockers.TryGetValue(parsedLayers[i][j], out var b))
-                        throw new ParseException(stream, $"Blocker \"{parsedLayers[i][j]}\" was not defined.");
+                    if (!obstacles.TryGetValue(parsedLayers[i][j], out var b))
+                        throw new ParseException(stream, $"Obstacle \"{parsedLayers[i][j]}\" was not defined.");
                     layers[i][j] = b;
                 }
             }
@@ -42,22 +42,22 @@ namespace Data.WorldGen
             var parsedFillers = getFillers();
             if (parsedFillers.Count == 0)
                 throw new ParseException(stream, "No fillers specified.");
-            var fillers = new BlockerData[parsedFillers.Count];
+            var fillers = new ObstacleData[parsedFillers.Count];
             for (int j = 0; j < parsedFillers.Count; j++)
             {
-                if (!blockers.TryGetValue(parsedFillers[j], out var b))
-                    throw new ParseException(stream, $"Blocker \"{parsedFillers[j]}\" was not defined.");
+                if (!obstacles.TryGetValue(parsedFillers[j], out var b))
+                    throw new ParseException(stream, $"Obstacle \"{parsedFillers[j]}\" was not defined.");
                 fillers[j] = b;
             }
 
-            return new(layers, fillers, blockers);
+            return new(layers, fillers, obstacles);
         }
     }
 
-    public record BlockerData(string Name, BlockerData.Type BlockerType, int Min, int Max, float BaseProbability, char[] ValidSurfaces, bool OnSlants, float[] Forces)
+    public record ObstacleData(string Name, ObstacleData.Type ObstacleType, int Min, int Max, float BaseProbability, char[] ValidSurfaces, bool OnSlants, float[] Forces)
     {
         public enum Type { Small, Large, Fuel, Minerals }
-        public static BlockerData Parse(string name, ParseStream stream, int layerCount, char[] allSurfaces)
+        public static ObstacleData Parse(string name, ParseStream stream, int layerCount, char[] allSurfaces)
         {
             using BlockParseStream blockStream = new(stream);
             PropertyParser pp = new();
@@ -85,7 +85,7 @@ namespace Data.WorldGen
                 "l" or "large" => Type.Large,
                 "f" or "fuel" => Type.Fuel,
                 "m" or "minerals" => Type.Minerals,
-                { } w => throw new ParseException(stream, $"Invalid blocker type \"{w}\".")
+                { } w => throw new ParseException(stream, $"Invalid obstacle type \"{w}\".")
             };
         }
     }

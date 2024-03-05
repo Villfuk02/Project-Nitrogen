@@ -17,15 +17,30 @@ namespace WorldGen.Decorations
         public void Scatter()
         {
             WaitForStep(StepType.Phase);
-            Debug.Log("Scattering");
+            print("Scattering");
 
+            Initialize();
+
+            foreach (var d in decorations_)
+            {
+                WaitForStep(StepType.Step);
+                RegisterGizmos(StepType.Step, () => colliders_.SelectMany(list => list, (_, v) => new GizmoManager.Sphere(Color.green, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
+                ScatterStep(d);
+            }
+            print("Scattered");
+            RegisterGizmos(StepType.Phase, () => colliders_.SelectMany(list => list, (_, v) => new GizmoManager.Sphere(Color.yellow, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
+        }
+
+        void Initialize()
+        {
             decorations_ = WorldGenerator.TerrainType.ScattererData.decorations;
             WorldGenerator.TerrainType.ScattererData.isPath = pos => WorldUtils.IsInRange(pos, WorldUtils.WORLD_SIZE) && Tiles[pos].dist != int.MaxValue;
-            var blockers = WorldGenerator.TerrainType.ScattererData.isBlocker.Keys.Select(n => WorldGenerator.TerrainType.Blockers.Blockers[n]).ToArray();
-            foreach (var blocker in blockers)
+            var obstacles = WorldGenerator.TerrainType.ScattererData.isObstacle.Keys.Select(n => WorldGenerator.TerrainType.Obstacles.Obstacles[n]).ToArray();
+            foreach (var obstacle in obstacles)
             {
-                WorldGenerator.TerrainType.ScattererData.isBlocker[blocker.Name] = pos => WorldUtils.IsInRange(pos, WorldUtils.WORLD_SIZE) && Tiles[pos].blocker == blocker;
+                WorldGenerator.TerrainType.ScattererData.isObstacle[obstacle.Name] = pos => WorldUtils.IsInRange(pos, WorldUtils.WORLD_SIZE) && Tiles[pos].obstacle == obstacle;
             }
+
             foreach (var fractalNoiseNode in WorldGenerator.TerrainType.NoiseNodes)
             {
                 fractalNoiseNode.Noise.Init(WorldGenerator.Random.NewSeed());
@@ -35,37 +50,24 @@ namespace WorldGen.Decorations
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
                 allTiles_.Add(v);
             colliders_ = new(WorldUtils.WORLD_SIZE);
-            foreach (var (pos, _) in colliders_.IndexedEnumerable)
-            {
-                colliders_[pos] = new();
-            }
-
-            foreach (var d in decorations_)
-            {
-                WaitForStep(StepType.Step);
-                RegisterGizmos(StepType.Step, () => colliders_.SelectMany(list => list, (_, v) => new GizmoManager.Sphere(Color.green, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
-                ScatterStep(d);
-            }
-            Debug.Log("Scattered");
-            RegisterGizmos(StepType.Phase, () => colliders_.SelectMany(list => list, (_, v) => new GizmoManager.Sphere(Color.yellow, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
+            colliders_.Fill(() => new());
         }
 
 
         void ScatterStep(Decoration decoration)
         {
-            Debug.Log($"Scattering {decoration.Name}");
+            print($"Scattering {decoration.Name}");
 
             Array2D<List<Vector3>> currentColliders = new(WorldUtils.WORLD_SIZE);
             Array2D<List<Vector3>> futureColliders = new(WorldUtils.WORLD_SIZE);
             List<Vector2Int> groups = new(9);
             foreach (var group in Vector2Int.one * 3)
                 groups.Add(group);
-            List<Task> tasks = new();
             WorldGenerator.Random.Shuffle(groups);
             WorldGenerator.Random.Shuffle(allTiles_);
             foreach (var group in groups)
             {
-                tasks.Clear();
+                List<Task> tasks = new();
                 foreach (var tile in allTiles_)
                 {
                     if (tile.x % 3 != group.x || tile.y % 3 != group.y)
@@ -87,28 +89,7 @@ namespace WorldGen.Decorations
             WaitForStep(StepType.MicroStep);
             RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.red, WorldUtils.TilePosToWorldPos(tile), new Vector3(2, 0.1f, 2)), tile);
 
-            Dictionary<Vector2, Vector3> merging = new();
-            foreach (Vector2Int d in WorldUtils.ADJACENT_AND_ZERO)
-            {
-                Vector2Int t = tile + d;
-                if (currentColliders.TryGet(t, out var cList) && cList is not null)
-                {
-                    foreach (Vector3 col in cList)
-                    {
-                        merging.Add(new(col.x, col.y), col);
-                    }
-                }
-
-                if (colliders_.TryGet(t, out var pList) && pList is not null)
-                {
-                    foreach (Vector3 col in pList)
-                    {
-                        merging.TryAdd(new(col.x, col.y), col);
-                    }
-                }
-            }
-
-            IEnumerable<Vector3> relevantColliders = merging.Values;
+            var relevantColliders = MergeColliderLists(tile, currentColliders);
             List<Vector3> generatedCurrent = new();
             List<Vector3> generatedFuture = new();
 
@@ -116,9 +97,24 @@ namespace WorldGen.Decorations
 
             for (int i = 0; i < decoration.TriesPerTile; i++)
             {
-                Vector2 pos = tile + new Vector2(rand.Float(), rand.Float()) - Vector2.one * 0.5f;
-                TryPosition(pos);
+                TryPosition(tile + new Vector2(rand.Float(-0.5f, 0.5f), rand.Float(-0.5f, 0.5f)));
             }
+
+            WaitForStep(StepType.MicroStep);
+            RegisterGizmos(StepType.Step, () =>
+            {
+                List<GizmoManager.GizmoObject> gizmos = new();
+                gizmos.AddRange(generatedFuture.Select(v => new GizmoManager.Sphere(Color.green, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
+                gizmos.AddRange(generatedCurrent.Select(v => new GizmoManager.Sphere(Color.cyan, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
+                return gizmos;
+            });
+
+            futureColliders[tile] ??= new();
+            futureColliders[tile].AddRange(generatedFuture);
+            currentColliders[tile] = generatedCurrent;
+
+            ExpireGizmos(tile);
+            return;
 
             void TryPosition(Vector2 pos)
             {
@@ -144,21 +140,31 @@ namespace WorldGen.Decorations
 
                 Tiles[tile].decorations.Add(new() { decoration = decoration, position = pos, size = decoration.GetScale(v), eulerRotation = rotation });
             }
+        }
 
-            WaitForStep(StepType.MicroStep);
-            RegisterGizmos(StepType.Step, () =>
+        Vector3[] MergeColliderLists(Vector2Int tile, Array2D<List<Vector3>> currentColliders)
+        {
+            Dictionary<Vector2, Vector3> merging = new();
+            foreach (Vector2Int direction in WorldUtils.ADJACENT_AND_ZERO)
             {
-                List<GizmoManager.GizmoObject> gizmos = new();
-                gizmos.AddRange(generatedFuture.Select(v => new GizmoManager.Sphere(Color.green, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
-                gizmos.AddRange(generatedCurrent.Select(v => new GizmoManager.Sphere(Color.cyan, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
-                return gizmos;
-            });
+                Vector2Int t = tile + direction;
+                if (currentColliders.TryGet(t, out var cList) && cList is not null)
+                {
+                    foreach (Vector3 col in cList)
+                    {
+                        merging.Add(new(col.x, col.y), col);
+                    }
+                }
 
-            futureColliders[tile] ??= new();
-            futureColliders[tile].AddRange(generatedFuture);
-            currentColliders[tile] = generatedCurrent;
-
-            ExpireGizmos(tile);
+                if (colliders_.TryGet(t, out var pList) && pList is not null)
+                {
+                    foreach (Vector3 col in pList)
+                    {
+                        merging.TryAdd(new(col.x, col.y), col);
+                    }
+                }
+            }
+            return merging.Values.ToArray();
         }
     }
 }

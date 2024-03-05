@@ -4,6 +4,7 @@ namespace BattleVisuals
 {
     public class CanvasFaceCamera : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] Camera cam;
         void Start()
         {

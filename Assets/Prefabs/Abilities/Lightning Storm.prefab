@@ -105,7 +105,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkLineOfSight: 0
-  selectedPriority: 0
   target: {fileID: 0}
   radiusTrigger: {fileID: 7471581768413437108}
   heightTrigger: {fileID: 3822997109746519742}
@@ -5477,3 +5476,5 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  particlesMultiplier: 1
+  lightningBoltSteps: 11

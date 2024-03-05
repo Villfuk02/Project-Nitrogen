@@ -12,7 +12,6 @@ modules {
              o     o
             d0x o d0x
         }
-        # models Terrain/Flat
     }
 
     * StraightCliff {
@@ -193,7 +192,7 @@ modules {
     }
 }
 
-blockers {
+obstacles {
     layers {
         Fuel
         Minerals
@@ -237,7 +236,7 @@ blockers {
 
 scatterer {
     * Fuel {
-        prefab Terrain/Blockers/Fuel
+        prefab Terrain/obstacles/Fuel
         tries_per_tile 50
         placement_radius 0.05
         persistent_radius 0.25
@@ -247,7 +246,7 @@ scatterer {
         value_threshold 0
         value {
             clamp -3 1.5 {
-                blocker Fuel 1 -1
+                obstacle Fuel 1 -1
                 fractal_noise {
                     octaves 2
                     bias 0
@@ -262,7 +261,7 @@ scatterer {
     }
 
     * Minerals {
-        prefab Terrain/Blockers/Minerals
+        prefab Terrain/obstacles/Minerals
         tries_per_tile 50
         placement_radius 0.05
         persistent_radius 0.15
@@ -272,7 +271,7 @@ scatterer {
         value_threshold 0
         value {
             clamp -3 1.5 {
-                blocker Minerals 1 -1
+                obstacle Minerals 1 -1
                 fractal_noise {
                     octaves 2
                     bias 0
@@ -287,7 +286,7 @@ scatterer {
     }
 
     * BigRocks {
-        prefab Terrain/Blockers/BigRock
+        prefab Terrain/obstacles/BigRock
         tries_per_tile 10
         placement_radius 0.25
         persistent_radius 0.25
@@ -297,7 +296,7 @@ scatterer {
         value_threshold 0
         value {
             clamp -3 0.3 {
-                blocker BigRocks 1 -2
+                obstacle BigRocks 1 -2
                 fractal_noise {
                     octaves 2
                     bias 0
@@ -312,7 +311,7 @@ scatterer {
     }
 
     * SmallRocks {
-        prefab Terrain/Blockers/Rock
+        prefab Terrain/obstacles/Rock
         tries_per_tile 90
         placement_radius 0.1
         persistent_radius 0.05
@@ -323,7 +322,7 @@ scatterer {
         value {
             clamp -10 0.5 {
                 clamp -10 0.2 {
-                    blocker SmallRocks 1 -3
+                    obstacle SmallRocks 1 -3
                 }
                 fractal_noise {
                     octaves 2

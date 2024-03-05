@@ -44,7 +44,6 @@ namespace Game.Blueprint
         public bool HasFuelProduction => fuelProduction >= 0;
         public bool HasMaterialProduction => materialProduction >= 0;
         public bool HasEnergyProduction => energyProduction >= 0;
-        // ReSharper disable once PossibleLossOfFraction
         public float BaseDps => damage * 2000 / interval * 0.01f;
 
         public Blueprint Clone()

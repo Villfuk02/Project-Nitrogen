@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
-using WorldGen.Blockers;
 using WorldGen.Decorations;
+using WorldGen.Obstacles;
 using WorldGen.Path;
 using WorldGen.WFC;
 using Random = Utils.Random.Random;
@@ -31,24 +31,22 @@ namespace WorldGen
         [SerializeField] PathStartPicker pathStartPicker;
         [SerializeField] PathPlanner pathPlanner;
         [SerializeField] WFCGenerator wfc;
-        [SerializeField] BlockerGenerator blockerGenerator;
+        [SerializeField] ObstacleGenerator obstacleGenerator;
         [SerializeField] PathFinalizer pathFinalizer;
         [SerializeField] Scatterer scatterer;
         [Header("Settings")]
         [SerializeField] int tries;
-
-        [Header("Events")]
         [SerializeField] UnityEvent onGeneratedTerrain;
         [SerializeField] UnityEvent onFinalizedPaths;
         [SerializeField] UnityEvent onScatteredDecorations;
 
-        //Runtime Values
+        [Header("Runtime variables")]
+        readonly object steppedLock_ = new();
         public static Random Random { get; private set; }
         public static TerrainType TerrainType { get; private set; }
         public static TilesData Tiles { get; private set; }
 
         readonly AutoResetEvent waitForStepEvent_ = new(false);
-        readonly object steppedLock_ = new();
 
         public enum StepType { None, Phase, Step, MicroStep }
         public static readonly StepType[] STEP_TYPES = (StepType[])Enum.GetValues(typeof(StepType));
@@ -58,7 +56,7 @@ namespace WorldGen
             if (instance_ == null)
                 instance_ = this;
             else
-                throw new("There can be only one!");
+                throw new("There can be only one instance of WorldGenerator");
 
             GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunPersistence>().SetupLevel();
             Random = new(worldSettings.seed);
@@ -74,7 +72,6 @@ namespace WorldGen
             if (Input.GetKeyDown(KeyCode.T) || Input.GetKey(KeyCode.H))
                 Step();
 
-            // DON'T STOP ME NOOOOOW
             if (stepType == StepType.None)
                 return;
 
@@ -133,7 +130,7 @@ namespace WorldGen
 
             onGeneratedTerrain.Invoke();
 
-            await Task.Run(() => blockerGenerator.PlaceBlockers(starts, worldSettings.pathLengths));
+            await Task.Run(() => obstacleGenerator.PlaceObstacles(starts, worldSettings.pathLengths));
             await Task.Run(() => pathFinalizer.FinalizePaths(starts, worldSettings.maxExtraPaths));
 
             onFinalizedPaths.Invoke();
@@ -142,7 +139,7 @@ namespace WorldGen
 
             onScatteredDecorations.Invoke();
 
-            Debug.Log("GENERATING SUCCESS");
+            print("SUCCESSFULLY GENERATED");
         }
 
         void Step()

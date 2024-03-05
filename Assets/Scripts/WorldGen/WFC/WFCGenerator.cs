@@ -1,5 +1,4 @@
 using Data.WorldGen;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,70 +10,72 @@ namespace WorldGen.WFC
 {
     public class WFCGenerator : MonoBehaviour
     {
+        [Header("Settings")]
         [SerializeField] int backtrackingDepth;
-
-        // Runtime variables
-        public static float MaxEntropy { get; private set; }
+        [Header("Runtime variables")]
         RandomSet<WFCSlot> dirty_;
         WFCState state_;
         FixedCapacityStack<WFCState> stateStack_;
+        public static float MaxEntropy { get; private set; }
+        int steps_;
 
         /// <summary>
-        /// Generate the terrain using the Wave function collapse algorithm.
+        /// Generate the terrain using the wave function collapse algorithm.
         /// </summary>
         public WFCState Generate(Vector2Int[][] paths)
         {
             WaitForStep(StepType.Phase);
-            Debug.Log("Starting WFC");
+            print("Starting WFC");
 
-            int heightCount = WorldGenerator.TerrainType.MaxHeight + 1;
-            MaxEntropy = CalculateEntropy(WorldGenerator.TerrainType.Modules.GroupBy(m => m.Weight).ToDictionary(g => g.Key, g => g.Count() * heightCount));
+            InitWFC(paths);
 
-            int[] flatPathDistances = new int[WorldUtils.WORLD_SIZE.x * WorldUtils.WORLD_SIZE.y];
-            Array.Fill(flatPathDistances, int.MaxValue);
-            var pathDistances = new Array2D<int>(flatPathDistances, WorldUtils.WORLD_SIZE);
-            foreach (var path in paths)
-            {
-                for (int i = 0; i < path.Length; i++)
-                {
-                    pathDistances[path[i]] = path.Length - i;
-                }
-            }
-
-            InitWFC(pathDistances);
-
-            stateStack_ = new(backtrackingDepth);
-            int steps = 0;
             while (state_.uncollapsed > 0)
             {
-                while (dirty_.Count > 0)
+                if (!TryStep())
                 {
-                    WaitForStep(StepType.MicroStep);
-                    UpdateNext();
-                    //we've backtracked too many times
-                    if (state_ is null)
-                    {
-                        Debug.Log("WFC failed");
-                        return null;
-                    }
-                    RegisterGizmos(StepType.MicroStep, DrawEntropy);
+                    print("WFC failed");
+                    return null;
                 }
-                if (steps == 0)
-                    Debug.Log("Initial position solved");
-                WaitForStep(StepType.Step);
-                stateStack_.Push(new(state_));
-                state_.CollapseRandom(this);
-                steps++;
-                RegisterGizmosIfExactly(StepType.Step, DrawEntropy);
-                RegisterGizmos(StepType.Step, DrawMesh);
             }
 
             RegisterGizmos(StepType.Phase, DrawMesh);
-            Debug.Log($"WFC Done in {steps} steps");
+            print($"WFC Done in {steps_} steps");
             return state_;
         }
-        void InitWFC(IReadOnlyArray2D<int> pathDistances)
+
+        bool TryStep()
         {
+            if (!TryPropagateConstraints())
+                return false;
+
+            WaitForStep(StepType.Step);
+            stateStack_.Push(new(state_));
+            state_.CollapseRandom(this);
+            steps_++;
+            RegisterGizmosIfExactly(StepType.Step, DrawEntropy);
+            RegisterGizmos(StepType.Step, DrawMesh);
+            return true;
+        }
+
+        bool TryPropagateConstraints()
+        {
+            while (dirty_.Count > 0)
+            {
+                WaitForStep(StepType.MicroStep);
+                if (!TryUpdateNext())
+                    return false;
+
+                RegisterGizmos(StepType.MicroStep, DrawEntropy);
+            }
+
+            return true;
+        }
+
+        void InitWFC(Vector2Int[][] paths)
+        {
+            int heightCount = WorldGenerator.TerrainType.MaxHeight + 1;
+            MaxEntropy = CalculateEntropy(WorldGenerator.TerrainType.Modules.GroupBy(m => m.Weight).ToDictionary(g => g.Key, g => g.Count() * heightCount));
+
             state_ = new();
             dirty_ = new(WorldGenerator.Random.NewSeed());
             foreach (var pos in WorldUtils.WORLD_SIZE + Vector2Int.one)
@@ -88,62 +89,84 @@ namespace WorldGen.WFC
             centerTile.slants.Clear();
             centerTile.slants.Add(WorldUtils.Slant.None);
 
-            foreach ((var pos, int distance) in pathDistances.IndexedEnumerable)
-            {
-                if (distance == int.MaxValue)
-                    continue;
+            InitPassages(paths);
 
-                for (int direction = 0; direction < 4; direction++)
-                {
-                    Vector2Int neighbor = pos + WorldUtils.CARDINAL_DIRS[direction];
-                    //if there is no neighbor, there's the edge of the word in this direction, there must be a passage, because a path could start from there
-                    //if the neighbor's distance differs exactly by one, the path probably goes through here, so there must be a passage
-                    if (!pathDistances.TryGet(neighbor, out int neighborDistance) || neighborDistance - distance == 1 || neighborDistance - distance == -1)
-                    {
-                        RegisterGizmos(StepType.Step, () => DrawPassage(pos, direction, (true, false)));
-                        state_.SetValidPassageAtTile(pos, direction, (true, false));
-                    }
-                    //if the neighbor's distance differs more, but a path still goes through it, it's a different path and they must be separated
-                    else if (neighborDistance != int.MaxValue)
-                    {
-                        RegisterGizmos(StepType.Step, () => DrawPassage(pos, direction, (false, true)));
-                        state_.SetValidPassageAtTile(pos, direction, (false, true));
-                    }
-                }
+            stateStack_ = new(backtrackingDepth);
+            steps_ = 0;
+        }
+
+        void InitPassages(Vector2Int[][] paths)
+        {
+            var pathDistances = new Array2D<int?>(WorldUtils.WORLD_SIZE);
+            foreach (var path in paths)
+                for (int i = 0; i < path.Length; i++)
+                    pathDistances[path[i]] = path.Length - i;
+
+            foreach ((var pos, int? distance) in pathDistances.IndexedEnumerable)
+                InitTilePassages(distance, pos, pathDistances);
+        }
+
+        void InitTilePassages(int? distance, Vector2Int pos, IReadOnlyArray2D<int?> pathDistances)
+        {
+            if (distance is not int dist)
+                return;
+
+            for (int direction = 0; direction < 4; direction++)
+            {
+                Vector2Int neighbor = pos + WorldUtils.CARDINAL_DIRS[direction];
+                bool hasNeighbor = pathDistances.TryGet(neighbor, out int? neighborDistance);
+                ForcedPassages(dist, hasNeighbor, neighborDistance, out bool passable, out bool impassable);
+                state_.SetValidPassageAtTile(pos, direction, (passable, impassable));
+                if (passable != impassable)
+                    RegisterGizmos(StepType.Step, () => DrawPassage(pos, direction, (passable, impassable)));
             }
         }
 
-        void UpdateNext()
+        static void ForcedPassages(int distance, bool hasNeighbor, int? neighborDistance, out bool passable, out bool impassable)
+        {
+            passable = true;
+            impassable = true;
+            if (!hasNeighbor)
+            {
+                impassable = false;
+                return;
+            }
+
+            if (neighborDistance is not int neighborDist)
+                return;
+
+            if (Mathf.Abs(neighborDist - distance) == 1)
+                impassable = false;
+            else
+                passable = false;
+        }
+
+        bool TryUpdateNext()
         {
             WFCSlot s = dirty_.PopRandom();
             (WFCSlot n, bool backtrack) = s.UpdateValidModules(state_);
             if (backtrack)
-            {
-                Backtrack();
-            }
-            else if (n is not null)
+                return TryBacktrack();
+
+            if (n is not null)
             {
                 MarkNeighborsDirty(n.pos, n.UpdateConstraints(state_));
                 state_.slots[n.pos] = n;
             }
+            return true;
         }
-        void Backtrack()
+        bool TryBacktrack()
         {
             dirty_.Clear();
             Vector2Int lastCollapsedSlot = state_.lastCollapsedSlot;
             (Module module, int height) lastCollapsedTo = state_.lastCollapsedTo;
-            //if it can't backtrack anymore or it has backtracked so many times the stateStack is empty, set state to null to signify backtracking is not possible anymore
             if (stateStack_.Count == 0)
-            {
-                state_ = null;
-            }
-            else
-            {
-                state_ = stateStack_.Pop();
-                state_.slots[lastCollapsedSlot].MarkInvalid(lastCollapsedTo);
-                MarkDirty(lastCollapsedSlot);
-            }
+                return false;
 
+            state_ = stateStack_.Pop();
+            state_.slots[lastCollapsedSlot].MarkInvalid(lastCollapsedTo);
+            MarkDirty(lastCollapsedSlot);
+            return true;
         }
 
         public void MarkNeighborsDirty(Vector2Int pos, IEnumerable<Vector2Int> offsets)
@@ -206,12 +229,12 @@ namespace WorldGen.WFC
         {
             return state_.slots.Where(s => s.Collapsed.module is not null)
                 .Select(s => new { s, m = s.Collapsed })
-                .Select(t => new GizmoManager.Mesh(Color.white, t.m.module.Collision,
+                .Select(t => new GizmoManager.Mesh(Color.white, t.m.module.CollisionMesh,
                     WorldUtils.SlotPosToWorldPos(t.s.pos.x, t.s.pos.y, t.m.height + t.m.module.HeightOffset),
                     new(t.m.module.Flipped ? -1 : 1, 1, 1), Quaternion.Euler(0, 90 * t.m.module.Rotated, 0))).ToList();
         }
 
-        static GizmoManager.Cube DrawPassage(Vector2Int tilePos, int direction, (bool passable, bool unpassable) p)
+        static GizmoManager.Cube DrawPassage(Vector2Int tilePos, int direction, (bool passable, bool impassable) p)
         {
             Color c = p switch
             {
