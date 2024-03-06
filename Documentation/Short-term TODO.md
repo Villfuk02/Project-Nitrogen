@@ -1,7 +1,6 @@
 ## questions
 - >reorder sections
 - used packages
-- how much do I need to describe Unity?
 ## text
 - [x] kapitoly
 - [ ] sekce a podsekce

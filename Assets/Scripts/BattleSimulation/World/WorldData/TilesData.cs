@@ -18,16 +18,18 @@ namespace BattleSimulation.World.WorldData
         public TilesData(IReadOnlyArray2D<(Module module, int height)> slots, Func<Vector2Int, int, bool> isPassable, IEnumerable<Vector2Int[]> paths)
         {
             tiles_ = new(WorldUtils.WORLD_SIZE);
+            tiles_.Fill(() => new());
             foreach (Vector2Int pos in WorldUtils.WORLD_SIZE)
-                tiles_[pos] = InitTile(slots, isPassable, pos);
+                InitTile(slots, isPassable, pos);
 
             foreach (var path in paths)
                 for (int i = 0; i < path.Length; i++)
                     tiles_[path[i]].dist = path.Length - i;
         }
 
-        TileData InitTile(IReadOnlyArray2D<(Module module, int height)> slots, Func<Vector2Int, int, bool> isPassable, Vector2Int pos)
+        void InitTile(IReadOnlyArray2D<(Module module, int height)> slots, Func<Vector2Int, int, bool> isPassable, Vector2Int pos)
         {
+            TileData t = this[pos];
             CardinalDirs<TileData> connections = new();
             for (int d = 0; d < 4; d++)
             {
@@ -36,16 +38,13 @@ namespace BattleSimulation.World.WorldData
                     connections[d] = this[p];
             }
 
-            return new()
-            {
-                pos = pos,
-                height = slots[pos].height + slots[pos].module.Shape.Heights.NE,
-                slant = slots[pos].module.Shape.Slants.NE,
-                passable = true,
-                neighbors = connections,
-                dist = int.MaxValue,
-                obstacle = null
-            };
+            t.pos = pos;
+            t.height = slots[pos].height + slots[pos].module.Shape.Heights.NE;
+            t.slant = slots[pos].module.Shape.Slants.NE;
+            t.passable = true;
+            t.neighbors = connections;
+            t.dist = int.MaxValue;
+            t.obstacle = null;
         }
 
         /// <summary>
