@@ -7,10 +7,11 @@ namespace BattleVisuals.Towers
     public class TestTowerVisuals : MonoBehaviour
     {
         static readonly int ShootTrigger = Animator.StringToHash("Shoot");
+        [Header("References")]
         [SerializeField] TestTower t;
         [SerializeField] Animator shootAnim;
         [SerializeField] Transform turretPivot;
-
+        [Header("Runtime variables")]
         [SerializeField] Attacker currentTarget;
         [SerializeField] Transform currentTargetVisual;
 

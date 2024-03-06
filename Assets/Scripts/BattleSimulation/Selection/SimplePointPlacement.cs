@@ -20,7 +20,7 @@ namespace BattleSimulation.Selection
                 return false;
             }
             var newPos = (Vector2)pos;
-            transform.localPosition = WorldUtils.TilePosToWorldPos(newPos, World.WorldData.World.data.tiles.GetHeightAt(newPos) ?? 0);
+            transform.localPosition = WorldUtils.TilePosToWorldPos(newPos, World.WorldData.World.data.tiles.GetHeightAt(newPos));
 
             if (selectedPos is Vector2 sp && (sp - newPos).sqrMagnitude < deadZone * deadZone)
                 return false;

@@ -155,7 +155,6 @@ RectTransform:
   m_Children:
   - {fileID: 2017860232}
   - {fileID: 635154927}
-  - {fileID: 1263618878}
   m_Father: {fileID: 52235131}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -368,6 +367,7 @@ RectTransform:
   - {fileID: 1777147247}
   - {fileID: 289512042}
   - {fileID: 7626638}
+  - {fileID: 1263618878}
   m_Father: {fileID: 2056032789}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1180,16 +1180,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberEffectPrefab: {fileID: 7217571459049444440, guid: 8ecb4953dee557f418d546ed9fb344ec, type: 3}
   damageTimeToLive: 1
+  damageColor: {r: 1, g: 0.04241266, b: 0, a: 0}
+  damageMinFontSize: 25
+  damageMaxFontSize: 50
+  fullSizeDamage: 100
   productionTimeToLive: 2.5
   productionDelay: 0.5
   materialsColor: {r: 1, g: 0.4289409, b: 0, a: 0}
   energyColor: {r: 0, g: 0.59077597, b: 1, a: 0}
   fuelColor: {r: 0, g: 0.764151, b: 0.029711913, a: 0}
-  damageColor: {r: 1, g: 0.04241266, b: 0, a: 0}
   productionFontSize: 40
-  damageMinFontSize: 25
-  damageMaxFontSize: 50
-  fullSizeDamage: 100
   fullSizeDamageLog: 0
 --- !u!4 &246038280
 Transform:
@@ -2802,15 +2802,15 @@ MonoBehaviour:
   fuelText: {fileID: 2017860233}
   incomeText: {fileID: 635154928}
   goalText: {fileID: 289512043}
+  predictionArrowHolder: {fileID: 1263618878}
   animationDivisor: 20
-  fuelDisplay: 0
   emptyWidth: 100
   minWidth: 120
   maxWidth: 600
+  incomeColor: {r: 0.7019608, g: 1, b: 0.70980394, a: 1}
+  fuelDisplay: 0
   currentWidth: 0
   incomeWidth: 90
-  incomeColor: {r: 0.7019608, g: 1, b: 0.70980394, a: 1}
-  predictionArrowHolder: {fileID: 1263618878}
 --- !u!114 &568931859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2830,10 +2830,10 @@ MonoBehaviour:
   maxHullText: {fileID: 1691845708}
   dmgTakenText: {fileID: 62492777}
   animationDivisor: 20
-  hullDisplay: 0
   emptyWidth: 100
   minWidth: 150
   maxWidth: 580
+  hullDisplay: 0
   currentWidth: 0
   currentBackgroundWidth: 0
 --- !u!1 &592770690
@@ -3314,6 +3314,7 @@ GameObject:
   - component: {fileID: 793714037}
   - component: {fileID: 793714038}
   - component: {fileID: 793714039}
+  - component: {fileID: 793714040}
   m_Layer: 0
   m_Name: Selection Controller
   m_TagString: Untagged
@@ -3353,11 +3354,25 @@ MonoBehaviour:
   infoPanel: {fileID: 884524845}
   rotationHoldDelay: 0.6
   rotationInterval: 0.2
+  resetVisuals:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 793714039}
+        m_TargetAssemblyTypeName: BattleVisuals.Selection.HighlightController, BattleVis.Selection
+        m_MethodName: ResetVisuals
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   selected: {fileID: 0}
   hovered: {fileID: 0}
   placing: {fileID: 0}
   rotation: 0
-  resetVisuals: 0
 --- !u!114 &793714039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3371,19 +3386,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selection: {fileID: 793714038}
-  terrainMaterial: {fileID: 2100000, guid: 0ebc071c9663e6d4f9343281ccf613f7, type: 2}
+  rangeVisualization: {fileID: 793714040}
   highlightColors:
   - {r: 0, g: 0.5647059, b: 1, a: 1}
   - {r: 1, g: 0, b: 0.39316654, a: 1}
   - {r: 1, g: 0.77254903, b: 0, a: 1}
   - {r: 0.06666667, g: 1, b: 0, a: 1}
   - {r: 0, g: 0.82529235, b: 1, a: 1}
+  highlightProvider: {fileID: 0}
+  doFixedReset: 0
+  doReset: 0
+--- !u!114 &793714040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793714036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d60a726234d0a254889befe9593082af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightController: {fileID: 793714039}
+  terrainMaterial: {fileID: 2100000, guid: 0ebc071c9663e6d4f9343281ccf613f7, type: 2}
   pixelsPerUnit: 16
   layers: 8
   areaSamplesPerFrameMultiplier: 1
-  lastHighlightProvider: {fileID: 0}
-  doFixedReset: 0
-  doReset: 0
 --- !u!1 &803329318
 GameObject:
   m_ObjectHideFlags: 0
@@ -3936,11 +3965,11 @@ MonoBehaviour:
   rotAcceleration: 5
   rotInertia: 1e-15
   rotation: 45
-  rotationVel: 0
+  rotationVelocity: 0
   rotationTarget: 45
   camSpacePos: {x: 0, y: 7.2, z: 0}
   camSpacePosTarget: {x: 0, y: 7.2, z: 0}
-  angle: 30
+  pitchAngle: 0
 --- !u!1 &978346909
 GameObject:
   m_ObjectHideFlags: 0
@@ -5167,14 +5196,14 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7626638}
-  m_RootOrder: 2
+  m_Father: {fileID: 52235131}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -8, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: -50, y: -19.999817}
   m_SizeDelta: {x: 32, y: 32}
-  m_Pivot: {x: 1, y: 0.5}
+  m_Pivot: {x: 0, y: 1}
 --- !u!1 &1281044094
 GameObject:
   m_ObjectHideFlags: 0
@@ -5830,11 +5859,11 @@ MonoBehaviour:
   linePrefab: {fileID: 315257208492628400, guid: 6918aa5953bda704e8d611a0d7a7f1a6, type: 3}
   mat: {fileID: 2100000, guid: fc1ea633985178c4781bf2efc98cba6d, type: 2}
   pathLabelPrefab: {fileID: 1017458255275309035, guid: e48fb10fd6c71fc4ba83ad5968eaf4a5, type: 3}
-  height: 0.15
+  heightAboveGround: 0.15
   scrollSpeed: -1
-  width: 0.4
+  lineWidth: 0.4
   labelPos: {x: 0.5, y: 0.5}
-  offset: 0
+  materialScrollOffset: 0
 --- !u!1 &1496287834
 GameObject:
   m_ObjectHideFlags: 0

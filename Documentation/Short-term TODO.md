@@ -1,6 +1,5 @@
 ## questions
-- section titles
-- game design section order
+- >reorder sections
 - used packages
 - how much do I need to describe Unity?
 ## text
@@ -28,20 +27,22 @@
 - [ ] refactoring
     - [x] make GameEvents interface more intuitive
     - [ ] BattleSim
-    - [ ] BattleVis
+    - [x] BattleVis
     - [x] Data
     - [x] Game
     - [x] Utils
     - [x] WorldGen
-    - [ ] classes should only do their job and nothing more
-    - [ ] encapsulation
-    - [ ] decomposition
-    - [ ] readability
+    - [ ] unify UI interpolation
+        - [ ] fills
+        - [ ] texts
     - [ ] unify singleton names
+    - [ ] unify reference names
+    - [ ] kill all value tuples
+    - [ ] check nullables
     - [ ] unify asserts
     - [ ] unify errors
-    - [ ] add and unify headers
-    - [ ] comments
+    - [ ] unify headers
+    - [ ] unify comments
 - [ ] menu (seed select)
 - [ ] level progression
 - [ ] sound effects

@@ -4,11 +4,14 @@ namespace BattleVisuals.Towers
 {
     public class HoloSiphon : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] BattleSimulation.Towers.HoloSiphon sim;
         [SerializeField] ParticleSystem localParticles;
         [SerializeField] ParticleSystem targetParticles;
         [SerializeField] Transform particleHolder;
+        [Header("Settings")]
         [SerializeField] Gradient particleColor;
+        [Header("Runtime variables")]
         [SerializeField] bool playing;
 
         void Start()

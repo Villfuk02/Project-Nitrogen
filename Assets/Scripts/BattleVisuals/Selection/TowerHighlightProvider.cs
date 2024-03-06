@@ -4,7 +4,6 @@ using BattleSimulation.World;
 using BattleVisuals.Selection.Highlightable;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace BattleVisuals.Selection

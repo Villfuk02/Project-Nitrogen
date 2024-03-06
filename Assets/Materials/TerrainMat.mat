@@ -8,13 +8,13 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: TerrainMat
-  m_Shader: {fileID: 4800000, guid: b64d2d230b2c81b4f845a5cf93012a62, type: 3}
+  m_Shader: {fileID: 4800000, guid: a0d72d9c0729f834fb4ba8539b429856, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -37,6 +37,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HighlightMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -72,6 +76,7 @@ Material:
     - _OcclusionStrength: 1
     - _OutlineRadius: 0.0624
     - _Parallax: 0.02
+    - _PxPerUnit: 0.04
     - _Scale: 4
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -86,9 +91,10 @@ Material:
     - _LargeColor: {r: 1, g: 0.77254903, b: 0, a: 0.29803923}
     - _LowColor: {r: 0.2735849, g: 0.079617955, b: 0.024519395, a: 1}
     - _NegativeColor: {r: 1, g: 0.1, b: 0, a: 0.29803923}
-    - _Offset: {r: 0, g: 0, b: 0, a: 0}
+    - _Offset: {r: 8, g: 8, b: 0, a: 0}
     - _SelectedColor: {r: 0, g: 0.5647059, b: 1, a: 1}
     - _ShadowColor: {r: 1, g: 0.061771594, b: 0, a: 0.29803923}
     - _SmallColor: {r: 0.06666667, g: 1, b: 0, a: 0.29803923}
     - _SpecialColor: {r: 0.06666667, g: 1, b: 0, a: 1}
+    - _WorldSize: {r: 16, g: 16, b: 0, a: 0}
   m_BuildTextureStacks: []

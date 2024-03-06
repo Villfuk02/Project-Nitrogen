@@ -30,9 +30,8 @@ namespace BattleVisuals.Selection
             Vector3 offset = tilePos - tile;
             float dist = 0.5f - Mathf.Min(Mathf.Abs(offset.x), Mathf.Abs(offset.y));
             bool valid = Tiles.TILES.TryGet((Vector2Int)tile, out var selectedTile);
-            if (valid)
-                valid = placement.IsTileValid(selectedTile);
-            return (valid ? IHighlightable.HighlightType.Selected : IHighlightable.HighlightType.Negative, 2 * dist);
+            valid &= placement.IsTileValid(selectedTile);
+            return (valid ? IHighlightable.HighlightType.Special : IHighlightable.HighlightType.Selected, 2 * dist);
         }
     }
 }

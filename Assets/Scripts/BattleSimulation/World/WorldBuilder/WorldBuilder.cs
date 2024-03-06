@@ -113,7 +113,7 @@ namespace BattleSimulation.World.WorldBuilder
         void PlaceDecoration(DecorationInstance decoration, Transform parent)
         {
             Transform t = Instantiate(decoration.decoration.Prefab, parent).transform;
-            t.position = WorldUtils.TilePosToWorldPos(decoration.position.x, decoration.position.y, worldData.tiles.GetHeightAt(decoration.position)!.Value);
+            t.position = WorldUtils.TilePosToWorldPos(decoration.position.x, decoration.position.y, worldData.tiles.GetHeightAt(decoration.position));
             t.localScale = Vector3.one * decoration.size;
             t.localRotation = Quaternion.Euler(decoration.eulerRotation);
         }
@@ -129,7 +129,7 @@ namespace BattleSimulation.World.WorldBuilder
                 t.obstacle = Tile.Obstacle.None;
             else
                 t.obstacle = (Tile.Obstacle)((int)tileData.obstacle.ObstacleType + 2);
-            t.transform.localPosition = WorldUtils.TilePosToWorldPos(pos.x, pos.y, worldData.tiles.GetHeightAt(pos)!.Value);
+            t.transform.localPosition = WorldUtils.TilePosToWorldPos(pos.x, pos.y, worldData.tiles.GetHeightAt(pos));
             Tiles.TILES[pos] = t;
         }
 

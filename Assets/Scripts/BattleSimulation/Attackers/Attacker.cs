@@ -94,7 +94,7 @@ namespace BattleSimulation.Attackers
         void UpdateWorldPosition()
         {
             Vector2 pos = Vector2.Lerp(lastTarget, pathSegmentTarget, pathSegmentProgress);
-            float height = World.WorldData.World.data.tiles.GetHeightAt(pos) ?? World.WorldData.World.data.tiles.GetHeightAt(pathSegmentTarget)!.Value;
+            float height = World.WorldData.World.data.tiles.GetHeightAt(pos);
             Vector3 worldPos = WorldUtils.TilePosToWorldPos(pos.x, pos.y, height);
             rb.MovePosition(worldPos);
             transform.position = worldPos;
@@ -167,9 +167,9 @@ namespace BattleSimulation.Attackers
 
         void OnDrawGizmosSelected()
         {
-            if (World.WorldData.World.instance is null || !World.WorldData.World.instance.Ready)
+            if (World.WorldData.World.instance == null || !World.WorldData.World.instance.Ready)
                 return;
-            float height = World.WorldData.World.data.tiles.GetHeightAt(pathSegmentTarget) ?? 0;
+            float height = World.WorldData.World.data.tiles.GetHeightAt(pathSegmentTarget);
             Vector3 segTarget = WorldUtils.TilePosToWorldPos(pathSegmentTarget.x, pathSegmentTarget.y, height);
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireCube(segTarget, Vector3.one * 0.15f);

@@ -7,9 +7,11 @@ namespace BattleVisuals.UI
 {
     public class WaveDisplay : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] GameObject waveBatchPrefab;
         [SerializeField] TextMeshProUGUI waveNumberText;
         [SerializeField] GameObject waveTag;
+        [Header("Runtime variables")]
         readonly List<WaveBatchDisplay> batches_ = new();
 
         public void Init(WaveGenerator.Wave wave, int waveNumber, WavesDisplay wd)

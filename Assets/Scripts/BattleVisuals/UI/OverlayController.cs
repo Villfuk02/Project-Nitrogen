@@ -6,6 +6,7 @@ namespace BattleVisuals.UI
 {
     public class OverlayController : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] RunEvents runEvents;
         [SerializeField] GameObject victoryOverlay;
         [SerializeField] GameObject defeatOverlay;

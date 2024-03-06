@@ -15,12 +15,12 @@ namespace BattleVisuals.World
         [SerializeField] Material mat;
         [SerializeField] GameObject pathLabelPrefab;
         [Header("Settings")]
-        [SerializeField] float height;
+        [SerializeField] float heightAboveGround;
         [SerializeField] float scrollSpeed;
-        [SerializeField] float width;
+        [SerializeField] float lineWidth;
         [SerializeField] Vector2 labelPos;
-        [Header("Runtime Values")]
-        [SerializeField] float offset;
+        [Header("Runtime variables")]
+        [SerializeField] float materialScrollOffset;
         readonly HashSet<(Vector2Int, Vector2Int)> taken_ = new();
 
         void OnApplicationQuit()
@@ -30,64 +30,60 @@ namespace BattleVisuals.World
 
         void Update()
         {
-            offset += scrollSpeed * Time.deltaTime;
-            mat.SetTextureOffset(MainTex, Vector2.right * offset);
+            materialScrollOffset += scrollSpeed * Time.deltaTime;
+            mat.SetTextureOffset(MainTex, Vector2.right * materialScrollOffset);
         }
 
         public void RenderPaths()
         {
-            void DrawPath(Vector2Int? from, TileData t)
-            {
-                if (from is not null)
-                {
-                    if (!taken_.Contains((from.Value, t.pos)))
-                    {
-                        MakeSegment(from.Value, t.pos);
-                    }
-                }
-                foreach (TileData nt in t.pathNext)
-                {
-                    DrawPath(t.pos, nt);
-                }
-            }
             for (int i = 0; i < worldData.firstPathTiles.Length; i++)
             {
-                DrawPath(worldData.pathStarts[i], worldData.tiles[worldData.firstPathTiles[i]]);
+                DrawPathRecursive(worldData.pathStarts[i], worldData.tiles[worldData.firstPathTiles[i]]);
                 MakeLabel(worldData.pathStarts[i], worldData.firstPathTiles[i], (char)('A' + i));
             }
         }
 
-        void MakeSegment(Vector2Int start, Vector2Int end)
+        void DrawPathRecursive(Vector2Int? from, TileData t)
         {
-            taken_.Add((start, end));
+            if (from is not null)
+                TrySpawnSegment(from.Value, t.pos);
+
+            foreach (TileData nt in t.pathNext)
+                DrawPathRecursive(t.pos, nt);
+        }
+
+        void TrySpawnSegment(Vector2Int from, Vector2Int to)
+        {
+            if (taken_.Contains((from, to)))
+                return;
+            taken_.Add((from, to));
+
             LineRenderer lr = Instantiate(linePrefab, transform).GetComponent<LineRenderer>();
-            Vector2 off = 0.5f * width * ((Vector2)(end - start)).normalized;
-            (float startHeight, float endHeight) = GetSegmentHeights(start, end);
+            Vector2 offset = 0.5f * lineWidth * (Vector2)(to - from);
+            float startHeight = worldData.tiles.GetHeightAt(from);
+            float endHeight = worldData.tiles.GetHeightAt(to);
             lr.SetPositions(new[] {
-            WorldUtils.TilePosToWorldPos(start - off) + Vector3.up * (height + startHeight * WorldUtils.HEIGHT_STEP),
-            WorldUtils.TilePosToWorldPos(start + off) + Vector3.up * (height + startHeight * WorldUtils.HEIGHT_STEP),
-            WorldUtils.TilePosToWorldPos(end   - off) + Vector3.up * (height + endHeight * WorldUtils.HEIGHT_STEP)
-        });
+                GetPointWorldPos(from - offset, startHeight),
+                GetPointWorldPos(from + offset, startHeight),
+                GetPointWorldPos(to - offset, endHeight)
+            });
+        }
+
+        Vector3 GetPointWorldPos(Vector2 tilePos, float heightOffset)
+        {
+            return WorldUtils.TilePosToWorldPos(tilePos) + Vector3.up * (heightAboveGround + heightOffset * WorldUtils.HEIGHT_STEP);
         }
 
         void MakeLabel(Vector2Int start, Vector2Int first, char label)
         {
-            (float startHeight, float _) = GetSegmentHeights(start, first);
-            var lgo = Instantiate(pathLabelPrefab, transform);
-            lgo.GetComponentInChildren<TextMeshProUGUI>().text = label.ToString();
+            float startHeight = worldData.tiles.GetHeightAt(start);
+            var labelGameObject = Instantiate(pathLabelPrefab, transform);
+            labelGameObject.GetComponentInChildren<TextMeshProUGUI>().text = label.ToString();
             var startPos = WorldUtils.TilePosToWorldPos(start);
             var firstPos = WorldUtils.TilePosToWorldPos(first);
             var offset = startPos - firstPos;
-            Vector3 pos = WorldUtils.TilePosToWorldPos(start) + offset * labelPos.x + Vector3.up * (labelPos.y + startHeight * WorldUtils.HEIGHT_STEP);
-            lgo.transform.localPosition = pos;
-        }
-
-        (float startHeight, float endHeight) GetSegmentHeights(Vector2Int start, Vector2Int end)
-        {
-            float endHeight = worldData.tiles.GetHeightAt(end).GetValueOrDefault(0);
-            float startHeight = worldData.tiles.GetHeightAt(start)
-                .GetValueOrDefault(worldData.tiles.GetHeightAt(0.6f * (Vector2)end + 0.4f * (Vector2)start).GetValueOrDefault(endHeight));
-            return (startHeight, endHeight);
+            Vector3 pos = WorldUtils.TilePosToWorldPos(new Vector3(start.x, start.y, startHeight)) + offset * labelPos.x + Vector3.up * labelPos.y;
+            labelGameObject.transform.localPosition = pos;
         }
     }
 }

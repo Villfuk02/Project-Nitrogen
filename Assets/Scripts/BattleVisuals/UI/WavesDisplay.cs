@@ -10,6 +10,7 @@ namespace BattleVisuals.UI
 {
     public class WavesDisplay : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] GameObject waveDisplayPrefab;
         [SerializeField] GameObject pathLabelPrefab;
         [SerializeField] WaveController wc;
@@ -18,10 +19,11 @@ namespace BattleVisuals.UI
         [SerializeField] TextMeshProUGUI remainingText;
         [SerializeField] RectTransform wavesLayout;
         [SerializeField] RectTransform pathLabelHolder;
+        [Header("Settings")]
         [SerializeField] Vector2 labelOffset;
-        readonly List<WaveDisplay> waves_ = new();
-
         [SerializeField] float minimumWidth;
+        [Header("Runtime variables")]
+        readonly List<WaveDisplay> waves_ = new();
         [SerializeField] int displayedUpTo;
         float lastWidth_;
         float offset_;
@@ -42,9 +44,9 @@ namespace BattleVisuals.UI
             int paths = World.data.firstPathTiles.Length;
             for (int i = 0; i < paths; i++)
             {
-                var lgo = Instantiate(pathLabelPrefab, pathLabelHolder);
-                lgo.GetComponent<TextMeshProUGUI>().text = ((char)('A' + i)).ToString();
-                lgo.GetComponent<RectTransform>().anchoredPosition = labelOffset * i;
+                var label = Instantiate(pathLabelPrefab, pathLabelHolder);
+                label.GetComponent<TextMeshProUGUI>().text = ((char)('A' + i)).ToString();
+                label.GetComponent<RectTransform>().anchoredPosition = labelOffset * i;
             }
         }
 
@@ -52,21 +54,24 @@ namespace BattleVisuals.UI
         {
             ForceUpdate();
             waveNumber.text = wc.wave.ToString();
-            int remain;
-            if (fuelProduction_ <= 0)
-                remain = -1;
-            else
-                remain = (bc.FuelGoal - bc.Fuel + fuelProduction_ - 1) / fuelProduction_;
-            remainingText.text = remain switch
-            {
-                <= 0 => "<size=36>departing</size>",
-                1 => "<size=26>last\n\nwave left</size>",
-                _ => $"{remain}\n<size=26>waves left</size>"
-            };
+            remainingText.text = GetWavesLeftText();
             if (wavesLayout.rect.width < minimumWidth)
                 DisplayNext();
 
             offset_ = Mathf.Lerp(offset_, 0, Time.deltaTime * 5);
+        }
+
+        string GetWavesLeftText()
+        {
+            if (fuelProduction_ <= 0)
+                return "???";
+            int remaining = (bc.FuelGoal - bc.Fuel + fuelProduction_ - 1) / fuelProduction_;
+            return remaining switch
+            {
+                <= 0 => "<size=36>departing</size>",
+                1 => "<size=26>last\n\nwave left</size>",
+                _ => $"{remaining}\n<size=26>waves left</size>"
+            };
         }
 
         void DisplayNext()

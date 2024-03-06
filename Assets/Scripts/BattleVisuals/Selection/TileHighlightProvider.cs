@@ -11,15 +11,10 @@ namespace BattleVisuals.Selection
         [SerializeField] HighlightProvider buildingHighlightProvider;
         bool HasBuildingHighlightProvider()
         {
-            if (buildingHighlightProvider != null)
-                return true;
-
-            if (t.Building != null)
-            {
+            if (t.Building != null && buildingHighlightProvider == null)
                 buildingHighlightProvider = t.Building.GetComponent<HighlightProvider>();
-                return true;
-            }
-            return false;
+
+            return buildingHighlightProvider != null;
         }
         public override int AreaSamplesPerFrame => HasBuildingHighlightProvider() ? buildingHighlightProvider.AreaSamplesPerFrame : 400;
         public override IEnumerable<(IHighlightable.HighlightType, IHighlightable)> GetHighlights()

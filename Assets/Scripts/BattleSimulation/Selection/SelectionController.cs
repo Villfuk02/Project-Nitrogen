@@ -1,6 +1,7 @@
 using Game.Blueprint;
 using Game.InfoPanel;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using Utils;
 
@@ -17,13 +18,13 @@ namespace BattleSimulation.Selection
         [Header("Settings")]
         [SerializeField] float rotationHoldDelay;
         [SerializeField] float rotationInterval;
+        [SerializeField] UnityEvent resetVisuals;
         [Header("Runtime values")]
         public Selectable selected;
         public Selectable hovered;
         public Placement placing;
         public int rotation;
         public Vector3? hoverTilePosition;
-        public bool resetVisuals;
         float rotationHoldTime_;
         float lastRotationTime_;
 
@@ -92,8 +93,8 @@ namespace BattleSimulation.Selection
                 DeselectInWorld();
             }
 
-            if (placing != null)
-                resetVisuals |= placing.Setup(hovered, rotation, hoverTilePosition, transform);
+            if (placing != null && placing.Setup(hovered, rotation, hoverTilePosition, transform))
+                resetVisuals.Invoke();
 
             //left click
             if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
@@ -106,7 +107,7 @@ namespace BattleSimulation.Selection
                         placing = null;
                         DeselectFromMenu();
                         DeselectInWorld();
-                        resetVisuals = true;
+                        resetVisuals.Invoke();
                     }
                     else
                     {
@@ -132,7 +133,7 @@ namespace BattleSimulation.Selection
         {
             DeselectFromMenu();
             selected = select;
-            resetVisuals = true;
+            resetVisuals.Invoke();
 
             if (select.tile != null)
             {
@@ -150,7 +151,7 @@ namespace BattleSimulation.Selection
         public void DeselectInWorld()
         {
             selected = null;
-            resetVisuals = true;
+            resetVisuals.Invoke();
             infoPanel.Hide();
         }
 
@@ -165,7 +166,7 @@ namespace BattleSimulation.Selection
             placing = Instantiate(blueprint.prefab, transform).GetComponent<Placement>();
             placing.GetComponent<IBlueprinted>().InitBlueprint(blueprint);
             placing.Setup(hovered, rotation, hoverTilePosition, transform);
-            resetVisuals = true;
+            resetVisuals.Invoke();
             infoPanel.ShowBlueprint(blueprint, originalBlueprint);
         }
 
@@ -175,7 +176,7 @@ namespace BattleSimulation.Selection
                 Destroy(placing.gameObject);
             placing = null;
             blueprintMenu.Deselect();
-            resetVisuals = true;
+            resetVisuals.Invoke();
             infoPanel.Hide();
         }
     }
