@@ -9,10 +9,14 @@ namespace BattleSimulation.Abilities
 {
     public class LightningStorm : Ability
     {
+        [Header("References")]
         [SerializeField] Targeting.Targeting targeting;
+        [Header("Settings")]
         [SerializeField] UnityEvent<Transform> onHit;
-        int timer_;
+
+        [Header("Runtime variables")]
         public int strikes;
+        int timer_;
 
         protected override void OnInitBlueprint()
         {
@@ -30,7 +34,7 @@ namespace BattleSimulation.Abilities
         }
         void FixedUpdate()
         {
-            if (!placed)
+            if (!placed || strikes < 0)
                 return;
             if (strikes == 0)
             {
@@ -38,27 +42,29 @@ namespace BattleSimulation.Abilities
                 Destroy(gameObject, 5f);
                 return;
             }
-            if (timer_ == 0 && strikes > 0)
-            {
-                timer_ = Blueprint.interval;
-                strikes--;
-                var targets = targeting.GetValidTargets().Where(a => !a.IsDead).ToArray();
-                if (targets.Length > 0)
-                    Hit(targets[Random.Range(0, targets.Length)]);
-            }
+            if (timer_ == 0)
+                Strike();
             timer_--;
+        }
+
+        void Strike()
+        {
+            strikes--;
+            timer_ = Blueprint.interval;
+            var targets = targeting.GetValidTargets().ToArray();
+            if (targets.Length <= 0)
+                return;
+            Hit(targets[Random.Range(0, targets.Length)]);
         }
 
         void Hit(Attacker attacker)
         {
             onHit.Invoke(attacker.target);
-            if (attacker.IsDead)
-                return;
             (Attacker a, Damage dmg) hitParam = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
-            if (!Attacker.hit.InvokeRef(ref hitParam) || hitParam.dmg.amount <= 0)
+            if (!Attacker.HIT.InvokeRef(ref hitParam) || hitParam.dmg.amount <= 0)
                 return;
 
-            Attacker.damage.Invoke(hitParam);
+            Attacker.DAMAGE.Invoke(hitParam);
         }
 
         void OnWaveFinished()

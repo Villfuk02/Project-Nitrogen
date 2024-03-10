@@ -11,14 +11,14 @@ namespace BattleVisuals.Selection
         [SerializeField] Attacker a;
         public override int AreaSamplesPerFrame => 0;
 
-        public override (IHighlightable.HighlightType highlight, float radius) GetAffectedArea(Vector3 baseWorldPos)
+        public override (HighlightType highlight, float radius) GetAffectedArea(Vector3 baseWorldPos)
         {
-            return (IHighlightable.HighlightType.Selected, float.PositiveInfinity);
+            return (HighlightType.Selected, float.PositiveInfinity);
         }
 
-        public override IEnumerable<(IHighlightable.HighlightType, IHighlightable)> GetHighlights()
+        public override IEnumerable<(HighlightType, IHighlightable)> GetHighlights()
         {
-            yield return (IHighlightable.HighlightType.Selected, a);
+            yield return (HighlightType.Selected, a);
         }
     }
 }

@@ -1,6 +1,7 @@
 using BattleSimulation.Control;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 using WorldGen.WorldSettings;
 using Random = Utils.Random.Random;
 
@@ -12,7 +13,7 @@ namespace Game.Run
         {
             Random rand = new(randomSeed);
             int paths;
-            WorldSettings ws = GameObject.FindGameObjectWithTag("WorldSettings").GetComponent<WorldSettings>();
+            WorldSettings ws = GameObject.FindGameObjectWithTag(TagNames.WORLD_SETTINGS).GetComponent<WorldSettings>();
             if (!ws.overrideRun)
             {
                 ws.seed = rand.NewSeed();
@@ -32,9 +33,9 @@ namespace Game.Run
                 paths = ws.pathLengths.Length;
             }
 
-            WaveGenerator wg = GameObject.FindGameObjectWithTag("WaveGenerator").GetComponent<WaveGenerator>();
+            WaveGenerator wg = GameObject.FindGameObjectWithTag(TagNames.WAVE_GENERATOR).GetComponent<WaveGenerator>();
             wg.paths = paths;
-            if (!wg.overrideRun)
+            if (!wg.overrideRunSettings)
             {
                 wg.baseValueRate = 1.2f + 0.3f * level;
                 wg.baseEffectiveValueBuffer = 8 + 2 * level;

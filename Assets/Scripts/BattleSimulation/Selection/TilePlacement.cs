@@ -5,6 +5,7 @@ namespace BattleSimulation.Selection
 {
     public abstract class TilePlacement : Placement
     {
+        [Header("Runtime variables")]
         public Tile selectedTile;
         public override bool Setup(Selectable selected, int rotation, Vector3? pos, Transform defaultParent)
         {
@@ -13,25 +14,23 @@ namespace BattleSimulation.Selection
             if (newSelectedTile == selectedTile)
                 return false;
 
+            Transform t = transform;
             if (newSelectedTile != null)
             {
-                Transform myTransform = transform;
-                myTransform.SetParent(newSelectedTile.transform);
-                myTransform.localPosition = Vector3.zero;
+                t.SetParent(newSelectedTile.transform);
+                t.localPosition = Vector3.zero;
             }
             else
             {
-                transform.SetParent(defaultParent);
+                t.SetParent(defaultParent);
+                t.localPosition = Vector3.one * 1000;
             }
 
             selectedTile = newSelectedTile;
             return true;
         }
 
-        public override bool IsValid()
-        {
-            return IsTileValid(selectedTile);
-        }
+        public override bool IsValid() => IsTileValid(selectedTile);
 
         public abstract bool IsTileValid(Tile tile);
     }

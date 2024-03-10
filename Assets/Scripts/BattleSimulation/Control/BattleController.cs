@@ -8,12 +8,7 @@ namespace BattleSimulation.Control
 {
     public class BattleController : MonoBehaviour
     {
-        public int Material { get; private set; }
-        public int Energy { get; private set; }
-        public int MaxEnergy { get; private set; }
-        public int Fuel { get; private set; }
-        public int FuelGoal { get; private set; }
-
+        public enum Affordable { Yes, UseMaterialsAsEnergy, No }
         public static ModifiableCommand<(object source, float amount)> addMaterial = new();
         public static ModifiableCommand<(object source, float amount)> addEnergy = new();
         public static ModifiableCommand<(object source, float amount)> addFuel = new();
@@ -24,11 +19,18 @@ namespace BattleSimulation.Control
         public static ModifiableCommand<float> updateFuelPerWave = new();
         public static ModifiableCommand winLevel = new();
         public static RunEvents runEvents;
+
+        // Runtime variables
+        public int Material { get; private set; }
+        public int Energy { get; private set; }
+        public int MaxEnergy { get; private set; }
+        public int Fuel { get; private set; }
+        public int FuelGoal { get; private set; }
+
         public int HullDmgTaken { get; private set; }
         public bool Won { get; private set; }
         public bool Lost { get; private set; }
 
-        public enum Affordable { Yes, UseMaterialsAsEnergy, No }
 
         void Awake()
         {
@@ -38,11 +40,14 @@ namespace BattleSimulation.Control
             canAfford.RegisterAcceptor(CanAfford);
             spend.RegisterHandler(Spend);
             winLevel.RegisterHandler(Win);
+
             runEvents = GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunEvents>();
             runEvents.damageHull.RegisterReaction(OnHullDmgTaken, 1000);
             runEvents.repairHull.RegisterReaction(OnHullRepaired, 1000);
+
             WaveController.startWave.RegisterReaction(OnWaveStarted, 1);
             WaveController.startWave.RegisterModifier(CanStartWave, -1000);
+
             runEvents.defeat.RegisterReaction(Lose, 1000);
         }
 
@@ -54,10 +59,13 @@ namespace BattleSimulation.Control
             canAfford.UnregisterAcceptor(CanAfford);
             spend.UnregisterHandler(Spend);
             winLevel.UnregisterHandler(Win);
+
             runEvents.damageHull.UnregisterReaction(OnHullDmgTaken);
             runEvents.repairHull.UnregisterReaction(OnHullRepaired);
+
             WaveController.startWave.UnregisterReaction(OnWaveStarted);
             WaveController.startWave.UnregisterModifier(CanStartWave);
+
             runEvents.defeat.UnregisterReaction(Lose);
         }
 
@@ -91,7 +99,7 @@ namespace BattleSimulation.Control
         bool AddMaterial(ref (object source, float amount) param)
         {
             if (param.amount < 0)
-                throw new ArgumentException("amount cannot be negative!");
+                throw new ArgumentException("Amount cannot be negative");
             int realAmount = Mathf.FloorToInt(param.amount);
             param.amount = realAmount;
             Material += realAmount;
@@ -100,7 +108,7 @@ namespace BattleSimulation.Control
         bool AddEnergy(ref (object source, float amount) param)
         {
             if (param.amount < 0)
-                throw new ArgumentException("amount cannot be negative!");
+                throw new ArgumentException("Amount cannot be negative");
             int realAmount = Mathf.FloorToInt(param.amount);
             param.amount = realAmount;
             Energy += realAmount;
@@ -111,7 +119,7 @@ namespace BattleSimulation.Control
         bool AddFuel(ref (object source, float amount) param)
         {
             if (param.amount < 0)
-                throw new ArgumentException("amount cannot be negative!");
+                throw new ArgumentException("Amount cannot be negative");
             int realAmount = Mathf.FloorToInt(param.amount);
             param.amount = realAmount;
             if (Fuel >= FuelGoal)
@@ -127,9 +135,9 @@ namespace BattleSimulation.Control
         bool Spend(ref (int energy, int materials) param)
         {
             if (param.energy < 0 || param.materials < 0)
-                throw new ArgumentException("amount cannot be negative!");
+                throw new ArgumentException("Amount cannot be negative");
             if (param.energy > Energy || param.materials > Material)
-                throw new("CANNOT AFFORD!");
+                throw new InvalidOperationException("Cannot afford");
             Material -= param.materials;
             Energy -= param.energy;
             return true;

@@ -1,3 +1,4 @@
+using BattleSimulation.World.WorldData;
 using Data.WorldGen;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +18,9 @@ namespace WorldGen.WFC
         readonly List<Module> validModules_;
         readonly Dictionary<Module, HashSet<int>> validHeights_;
 
-        (Module module, int height) invalidModule_ = (null, -1);
+        TilesData.CollapsedSlot invalidModule_ = TilesData.CollapsedSlot.NONE;
 
-        public (Module module, int height) Collapsed { get; private set; } = (null, -1);
+        public TilesData.CollapsedSlot Collapsed { get; private set; } = TilesData.CollapsedSlot.NONE;
         public float TotalEntropy { get; private set; }
 
         public WFCSlot(Vector2Int pos, ref WFCState state)
@@ -52,21 +53,21 @@ namespace WorldGen.WFC
         {
             WFCSlot n = new(pos);
 
-            var possibilities = new WeightedRandomSet<(Module module, int height)>(WorldGenerator.Random.NewSeed());
+            var possibilities = new WeightedRandomSet<TilesData.CollapsedSlot>(WorldGenerator.Random.NewSeed());
 
             foreach (var m in validModules_)
                 foreach (int h in validHeights_[m])
-                    possibilities.Add((m, h), m.Weight);
+                    possibilities.Add(new() { module = m, height = h }, m.Weight);
 
-            (var module, int height) = possibilities.PopRandom();
-            n.Collapsed = (module, height);
-            n.validModules_.Add(module);
-            n.validHeights_[module] = new() { height };
+            var slot = possibilities.PopRandom();
+            n.Collapsed = slot;
+            n.validModules_.Add(slot.module);
+            n.validHeights_[slot.module] = new() { slot.height };
             state.uncollapsed--;
             return n;
         }
 
-        public void MarkInvalid((Module module, int height) invalid)
+        public void MarkInvalid(TilesData.CollapsedSlot invalid)
         {
             invalidModule_ = invalid;
         }

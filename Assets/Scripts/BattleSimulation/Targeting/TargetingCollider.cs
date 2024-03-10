@@ -7,7 +7,7 @@ namespace BattleSimulation.Targeting
     internal class TargetingCollider : MonoBehaviour, ITargetingChild
     {
         ITargetingParent parent_;
-        public void InitParent(ITargetingParent targetingParent)
+        public void SetParent(ITargetingParent targetingParent)
         {
             parent_ = targetingParent;
         }

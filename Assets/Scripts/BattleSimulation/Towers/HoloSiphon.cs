@@ -7,7 +7,8 @@ namespace BattleSimulation.Towers
 {
     public class HoloSiphon : Tower
     {
-        [SerializeField] int shotTimer;
+        [Header("Runtime variables")]
+        [SerializeField] int retargetTimer;
         public int chargeTimer;
         [SerializeField] int wavesLeft;
         public Attacker selectedTarget;
@@ -33,6 +34,25 @@ namespace BattleSimulation.Towers
             if (!placed)
                 return;
 
+            UpdateCharge();
+            UpdateTarget();
+        }
+
+        void UpdateTarget()
+        {
+            retargetTimer--;
+            if (retargetTimer > 0)
+                return;
+
+            targeting.Retarget();
+            selectedTarget = targeting.target;
+            chargeTimer = 0;
+            if (selectedTarget != null)
+                retargetTimer = Blueprint.interval;
+        }
+
+        void UpdateCharge()
+        {
             if (targeting.IsInRangeAndValid(selectedTarget))
             {
                 chargeTimer++;
@@ -47,19 +67,9 @@ namespace BattleSimulation.Towers
                 selectedTarget = null;
                 chargeTimer = 0;
             }
-
-            shotTimer--;
-            if (shotTimer > 0)
-                return;
-
-            targeting.Retarget();
-            selectedTarget = targeting.target;
-            chargeTimer = 0;
-            if (selectedTarget != null)
-                shotTimer = Blueprint.interval;
         }
 
-        public override string? GetExtraStats() => $"Damage dealt {damageDealt}\nWaves left {wavesLeft}";
+        public override string? GetExtraStats() => $"Damage dealt [#DMG]{damageDealt}\nWaves left [#DUR]{wavesLeft}";
 
         public void DecrementWaves()
         {
@@ -73,10 +83,10 @@ namespace BattleSimulation.Towers
             if (attacker.IsDead)
                 return;
             (Attacker a, Damage dmg) hitParam = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
-            if (!Attacker.hit.InvokeRef(ref hitParam) || hitParam.dmg.amount <= 0)
+            if (!Attacker.HIT.InvokeRef(ref hitParam) || hitParam.dmg.amount <= 0)
                 return;
             (Attacker a, Damage dmg) dmgParam = hitParam;
-            if (Attacker.damage.InvokeRef(ref dmgParam))
+            if (Attacker.DAMAGE.InvokeRef(ref dmgParam))
                 damageDealt += (int)dmgParam.dmg.amount;
         }
     }

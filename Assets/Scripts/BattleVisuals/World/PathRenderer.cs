@@ -21,7 +21,7 @@ namespace BattleVisuals.World
         [SerializeField] Vector2 labelPos;
         [Header("Runtime variables")]
         [SerializeField] float materialScrollOffset;
-        readonly HashSet<(Vector2Int, Vector2Int)> taken_ = new();
+        readonly HashSet<(Vector2Int, Vector2Int)> instantiatedSegments_ = new();
 
         void OnApplicationQuit()
         {
@@ -54,9 +54,9 @@ namespace BattleVisuals.World
 
         void TrySpawnSegment(Vector2Int from, Vector2Int to)
         {
-            if (taken_.Contains((from, to)))
+            if (instantiatedSegments_.Contains((from, to)))
                 return;
-            taken_.Add((from, to));
+            instantiatedSegments_.Add((from, to));
 
             LineRenderer lr = Instantiate(linePrefab, transform).GetComponent<LineRenderer>();
             Vector2 offset = 0.5f * lineWidth * (Vector2)(to - from);

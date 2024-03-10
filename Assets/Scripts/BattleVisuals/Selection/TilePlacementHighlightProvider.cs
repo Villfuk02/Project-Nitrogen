@@ -13,25 +13,25 @@ namespace BattleVisuals.Selection
         [SerializeField] Building b;
         [SerializeField] TilePlacement placement;
         public override int AreaSamplesPerFrame => 400;
-        public override IEnumerable<(IHighlightable.HighlightType, IHighlightable)> GetHighlights()
+        public override IEnumerable<(HighlightType, IHighlightable)> GetHighlights()
         {
             if (!transform.parent.TryGetComponent<Tile>(out var tile))
                 yield break;
 
-            yield return (IHighlightable.HighlightType.Selected, tile);
+            yield return (HighlightType.Selected, tile);
         }
 
-        public override (IHighlightable.HighlightType highlight, float radius) GetAffectedArea(Vector3 baseWorldPos)
+        public override (HighlightType highlight, float radius) GetAffectedArea(Vector3 baseWorldPos)
         {
             if (b != null && b.placed)
-                return (IHighlightable.HighlightType.Selected, float.PositiveInfinity);
+                return (HighlightType.Selected, float.PositiveInfinity);
             Vector3 tilePos = WorldUtils.WorldPosToTilePos(baseWorldPos);
             Vector3Int tile = tilePos.Round();
             Vector3 offset = tilePos - tile;
             float dist = 0.5f - Mathf.Min(Mathf.Abs(offset.x), Mathf.Abs(offset.y));
             bool valid = Tiles.TILES.TryGet((Vector2Int)tile, out var selectedTile);
             valid &= placement.IsTileValid(selectedTile);
-            return (valid ? IHighlightable.HighlightType.Special : IHighlightable.HighlightType.Selected, 2 * dist);
+            return (valid ? HighlightType.Special : HighlightType.Selected, 2 * dist);
         }
     }
 }

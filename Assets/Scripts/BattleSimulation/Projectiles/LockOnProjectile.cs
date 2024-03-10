@@ -10,11 +10,10 @@ namespace BattleSimulation.Projectiles
         [Header("Settings")]
         public float speed;
         public float maxRange;
-        [Header("Runtime Values")]
+        [Header("Runtime values")]
         public Attacker target;
         public Vector3 lastDir;
         public bool hit;
-        [SerializeField] bool underground;
 
 
         void FixedUpdate()
@@ -26,26 +25,35 @@ namespace BattleSimulation.Projectiles
             }
             maxRange -= speed * Time.fixedDeltaTime;
 
-            if (target == null)
+            if (target != null)
+            {
+                MoveTowardsTarget();
+            }
+            else
             {
                 target = null;
                 transform.Translate(lastDir * (speed * Time.fixedDeltaTime));
             }
-            else
-            {
-                var position = transform.localPosition;
-                var offset = target.target.position - position;
-                float distance = offset.magnitude;
-                float move = Math.Min(speed * Time.fixedDeltaTime, distance);
-                lastDir = offset.normalized;
-                transform.Translate(lastDir * move);
-            }
 
+            CheckTerrain();
+        }
+
+        void CheckTerrain()
+        {
             var newTilePos = WorldUtils.WorldPosToTilePos(transform.localPosition);
-            bool newUnderground = World.WorldData.World.data.tiles.GetHeightAt(newTilePos) >= newTilePos.z;
-            if (newUnderground && !underground)
+            bool underground = World.WorldData.World.data.tiles.GetHeightAt(newTilePos) >= newTilePos.z;
+            if (underground && !hit)
                 HitTerrain();
-            underground = newUnderground;
+        }
+
+        void MoveTowardsTarget()
+        {
+            var position = transform.localPosition;
+            var offset = target.target.position - position;
+            float distance = offset.magnitude;
+            float move = Math.Min(speed * Time.fixedDeltaTime, distance);
+            lastDir = offset.normalized;
+            transform.Translate(lastDir * move);
         }
 
         protected override void HitAttacker(Attacker attacker)

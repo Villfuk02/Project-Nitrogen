@@ -32,7 +32,7 @@ namespace WorldGen.Obstacles
                 if (Tiles[v].dist == int.MaxValue)
                     emptyTiles_.Add(v);
             }
-            //first generate obstacles on random tiles that don't have a planned path going through them
+            // first generate obstacles on random tiles that don't have a planned path going through them
             for (var layer = 0; layer < layers.Length; layer++)
             {
                 DrawGizmos(StepType.Step);
@@ -42,7 +42,7 @@ namespace WorldGen.Obstacles
             DrawGizmos(StepType.Step);
             WaitForStep(StepType.Step);
 
-            //then fill all tiles with the filler obstacle and remove them in a random order, keeping only those that would allow for a shorter path than intended from any start
+            // then fill all tiles with the filler obstacle and remove them in a random order, keeping only those that would allow for a shorter path than intended from any start
             EnsurePathLengths(pathStarts, pathLengths, fillers);
 
             Tiles.RecalculateDistances();
@@ -121,7 +121,7 @@ namespace WorldGen.Obstacles
                 probability = Mathf.Clamp01(probability);
                 if (forcePlace)
                     placeable.Add(o, probability + 0.01f);
-                else if (WorldGenerator.Random.Float() < probability)
+                else if (WorldGenerator.Random.Bool(probability))
                     placeable.Add(o, probability);
             }
 

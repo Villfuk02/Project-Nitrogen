@@ -30,8 +30,8 @@ namespace Game.InfoPanel
                 Tile.Obstacle.Path => "Attacker path runs across",
                 Tile.Obstacle.Small => "Contains a small obstacle",
                 Tile.Obstacle.Large => "Contains a large obstacle",
-                Tile.Obstacle.Fuel => "Rich in [FUE]Fuel",
-                Tile.Obstacle.Minerals => "Rich in [MAT]Minerals",
+                Tile.Obstacle.Fuel => "Rich in [#FUE]Fuel",
+                Tile.Obstacle.Minerals => "Rich in [#MAT]Minerals",
                 _ => throw new ArgumentOutOfRangeException()
             });
 

@@ -8,10 +8,13 @@ namespace BattleSimulation.Towers
 {
     public class BasicProjectileTower : Tower, IProjectileSource
     {
-        public GameObject projectilePrefab;
+        [Header("References")]
         [SerializeField] Transform projectileOrigin;
-        [SerializeField] int shotTimer;
+        [Header("Settings")]
+        public GameObject projectilePrefab;
         [SerializeField] UnityEvent onShoot;
+        [Header("Runtime variables")]
+        [SerializeField] int shotTimer;
 
         void FixedUpdate()
         {
@@ -43,12 +46,12 @@ namespace BattleSimulation.Towers
             if (attacker.IsDead)
                 return false;
             (Attacker a, Damage dmg) hitParam = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
-            if (!Attacker.hit.InvokeRef(ref hitParam))
+            if (!Attacker.HIT.InvokeRef(ref hitParam))
                 return false;
             if (hitParam.dmg.amount > 0)
             {
                 (Attacker a, Damage dmg) dmgParam = hitParam;
-                if (Attacker.damage.InvokeRef(ref dmgParam))
+                if (Attacker.DAMAGE.InvokeRef(ref dmgParam))
                     damageDealt += (int)dmgParam.dmg.amount;
             }
             return true;

@@ -15,7 +15,9 @@ namespace BattleSimulation.Targeting
         static bool layerMaskInit_;
         [Header("Settings")]
         [SerializeField] protected bool checkLineOfSight;
-        protected abstract TargetingPriority[] Priorities { get; }
+
+        [SerializeField] TargetingPriority.Set availablePriorities;
+        protected TargetingPriority[] Priorities { get; private set; }
         protected int selectedPriority;
         public bool CanChangePriority => Priorities.Length > 1;
         public string CurrentPriority => Priorities[selectedPriority].Name;
@@ -25,13 +27,14 @@ namespace BattleSimulation.Targeting
 
         void Awake()
         {
+            Priorities = availablePriorities.ToArray();
             if (!layerMaskInit_)
             {
                 visibilityMask = LayerMask.GetMask(LayerNames.COARSE_TERRAIN, LayerNames.COARSE_OBSTACLE);
                 layerMaskInit_ = true;
             }
             InitComponents();
-            targetingComponent.InitParent(this);
+            targetingComponent.SetParent(this);
         }
 
         protected abstract void InitComponents();
@@ -63,7 +66,7 @@ namespace BattleSimulation.Targeting
         }
         bool IsValidTarget(Attacker t)
         {
-            return t != null && IsValidTargetPosition(t.target.position);
+            return t != null && !t.IsDead && IsValidTargetPosition(t.target.position);
         }
         public bool IsValidTargetPosition(Vector3 pos)
         {
@@ -100,7 +103,7 @@ namespace BattleSimulation.Targeting
         }
 
         public void NextPriority() => selectedPriority = (selectedPriority + 1) % Priorities.Length;
-        public void PrevPriority() => selectedPriority = (selectedPriority + Priorities.Length - 1) % Priorities.Length;
+        public void PrevPriority() => selectedPriority = MathUtils.Mod(selectedPriority - 1, Priorities.Length);
 
         void OnDrawGizmosSelected()
         {

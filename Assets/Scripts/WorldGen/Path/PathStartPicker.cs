@@ -23,7 +23,7 @@ namespace WorldGen.Path
 
             GetPossibleStarts(out var oddStarts, out var evenStarts);
 
-            //prepare variables
+            // prepare variables
             int pathCount = pathLengths.Length;
             int perimeter = (WorldUtils.WORLD_SIZE.x + WorldUtils.WORLD_SIZE.y) * 2;
             float minDistSqr = perimeter * startSpacingMultiplier / pathCount;
@@ -73,14 +73,14 @@ namespace WorldGen.Path
         {
             Vector2Int result;
             var tooFar = new List<Vector2Int>();
-            //rejection sampling
+            // rejection sampling
             while (true)
             {
                 result = available.PopRandom();
 
                 RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.yellow, WorldUtils.TilePosToWorldPos(result), 0.2f));
 
-                //if the candidate is too far from the center, reject it, but don't forget to add it back into the set of available starts
+                // if the candidate is too far from the center, reject it, but don't forget to add it back into the set of available starts
                 if (result.ManhattanDistance(WorldUtils.WORLD_CENTER) > length)
                 {
                     tooFar.Add(result);

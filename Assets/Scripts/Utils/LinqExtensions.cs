@@ -9,7 +9,7 @@ namespace Utils
     {
         public static T? ArgMin<T, TValue>(this IEnumerable<T> list, Func<T, TValue> mapping) where TValue : IComparable<TValue>
         {
-            var enumerator = list.GetEnumerator();
+            using var enumerator = list.GetEnumerator();
             if (!enumerator.MoveNext())
                 throw new InvalidOperationException("Provided enumerable is empty.");
 
@@ -28,7 +28,7 @@ namespace Utils
         }
         public static T? ArgMax<T, TValue>(this IEnumerable<T> list, Func<T, TValue> mapping) where TValue : IComparable<TValue>
         {
-            var enumerator = list.GetEnumerator();
+            using var enumerator = list.GetEnumerator();
             if (!enumerator.MoveNext())
                 throw new InvalidOperationException("Provided enumerable is empty.");
 

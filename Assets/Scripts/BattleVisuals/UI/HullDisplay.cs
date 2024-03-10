@@ -3,6 +3,7 @@ using Game.Run;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 namespace BattleVisuals.UI
 {
@@ -16,7 +17,7 @@ namespace BattleVisuals.UI
         [SerializeField] TextMeshProUGUI maxHullText;
         [SerializeField] TextMeshProUGUI dmgTakenText;
         [Header("Settings")]
-        [SerializeField] int animationDivisor;
+        [SerializeField] int convergenceDivisor;
         [SerializeField] float emptyWidth;
         [SerializeField] float minWidth;
         [SerializeField] float maxWidth;
@@ -28,7 +29,7 @@ namespace BattleVisuals.UI
 
         void Awake()
         {
-            runPersistence_ = GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunPersistence>();
+            runPersistence_ = GameObject.FindGameObjectWithTag(TagNames.RUN_PERSISTENCE).GetComponent<RunPersistence>();
         }
 
         void Update()
@@ -41,7 +42,7 @@ namespace BattleVisuals.UI
         void UpdateTexts()
         {
             maxHullText.text = runPersistence_.MaxHull.ToString();
-            hullDisplay = runPersistence_.Hull - (runPersistence_.Hull - hullDisplay) * (animationDivisor - 1) / animationDivisor;
+            MathUtils.StepTowards(ref hullDisplay, runPersistence_.Hull, convergenceDivisor);
             hullText.text = hullDisplay.ToString();
             dmgTakenText.text = (-bc.HullDmgTaken).ToString();
         }

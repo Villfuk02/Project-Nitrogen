@@ -23,7 +23,7 @@ namespace Data.WorldGen
 
             var parsedWeight = weight();
             if (parsedWeight <= 0)
-                throw new ParseException(blockStream, "weight must be positive");
+                throw new ParseException(blockStream, "Weight must be positive.");
             (bool flipped, int rotated) = variants();
             var mesh = Resources.Load<Mesh>(collisionPath()) ?? throw new ParseException(blockStream, $"Could not load mesh at \"{collisionPath()}\"");
 

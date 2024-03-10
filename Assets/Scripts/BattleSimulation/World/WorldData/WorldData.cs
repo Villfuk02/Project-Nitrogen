@@ -21,7 +21,7 @@ namespace BattleSimulation.World.WorldData
         /// <summary>
         /// The generated terrain <see cref="Module"/>s and their heights.
         /// </summary>
-        public Array2D<(Module module, int height)> terrain;
+        public Array2D<TilesData.CollapsedSlot> terrain;
         /// <summary>
         /// The generated tiles.
         /// </summary>

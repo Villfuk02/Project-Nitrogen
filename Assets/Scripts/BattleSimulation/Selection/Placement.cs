@@ -5,6 +5,7 @@ namespace BattleSimulation.Selection
 {
     public abstract class Placement : MonoBehaviour
     {
+        [Header("Settings")]
         public UnityEvent onPlaced;
 
         public abstract bool Setup(Selectable? selected, int rotation, Vector3? pos, Transform defaultParent);

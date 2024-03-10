@@ -8,11 +8,11 @@ namespace InfiniteCombo.Nitrogen.Editor
     [InitializeOnLoad]
     public class EditorInit
     {
-        public static readonly int? START_SCENE = 0;
+        static readonly int? StartScene = 0;
 
         static EditorInit()
         {
-            if (START_SCENE is int index)
+            if (StartScene is int index)
             {
                 var pathOfFirstScene = EditorBuildSettings.scenes[index].path;
                 var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(pathOfFirstScene);

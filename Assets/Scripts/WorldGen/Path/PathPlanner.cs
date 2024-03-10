@@ -40,7 +40,7 @@ namespace WorldGen.Path
             if (pathLengths.Length == 0)
                 return Array.Empty<Vector2Int[]>();
 
-            //prepare variables
+            // prepare variables
             int totalLength = pathLengths.Sum();
             stepsLeft = (int)(stepsPerUnitLengthSquared * totalLength * totalLength);
             temperature = startTemperature;
@@ -56,7 +56,7 @@ namespace WorldGen.Path
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
                 distances[v] = v.ManhattanDistance(WorldUtils.WORLD_CENTER);
 
-            //make a prototype for each path
+            // make a prototype for each path
             var paths = new LinkedList<Vector2Int>[pathCount];
             for (int i = 0; i < pathCount; i++)
             {
@@ -68,23 +68,23 @@ namespace WorldGen.Path
             WaitForStep(StepType.Step);
             RegisterGizmos(StepType.MicroStep, () => paths.SelectMany(p => DrawPath(p, Color.red)));
 
-            //relax paths, trying to get it converge to valid paths with nice shapes
+            // relax paths, trying to get it converge to valid paths with nice shapes
             Vector2Int[][] found = null;
             while (stepsLeft > 0)
             {
-                //if unable to relax any more, return early (should only happen when the temperature is way too low)
+                // if unable to relax any more, return early (should only happen when the temperature is way too low)
                 if (!RelaxPaths(paths))
                     break;
 
-                //if any path intersects with itself, check for any crossings and try to untwist them
-                //RelaxPaths is unlikely to fix a path crossing itself
+                // if any path intersects with itself, check for any crossings and try to untwist them
+                // RelaxPaths is unlikely to fix a path crossing itself
                 if (paths.Any(p => !p.AllDistinct()))
                 {
                     RegisterGizmos(StepType.MicroStep, () => paths.SelectMany(p => DrawPath(p, Color.red)), RelaxPathGizmosDuration);
                     foreach (var path in paths)
                         UntwistCrossing(path);
                 }
-                //if there are no invalid crossings, save the paths
+                // if there are no invalid crossings, save the paths
                 else if (!InvalidCrossings(paths))
                 {
                     RegisterGizmos(StepType.MicroStep, () => paths.SelectMany(p => DrawPath(p, Color.green)), RelaxPathGizmosDuration);
@@ -123,7 +123,7 @@ namespace WorldGen.Path
             var path = new LinkedList<Vector2Int>();
             path.AddFirst(start);
 
-            //for each direction calculate how much it's aligned with the direction from start to center, in the range [0..1]
+            // for each direction calculate how much it's aligned with the direction from start to center, in the range [0..1]
             var directionToCenter = ((Vector2)(WorldUtils.WORLD_CENTER - start)).normalized;
             var alignment = WorldUtils.CARDINAL_DIRS.Map(d => (1 + Vector2.Dot(d, directionToCenter)) / 2);
 
@@ -138,7 +138,7 @@ namespace WorldGen.Path
                 {
                     var dir = WorldUtils.CARDINAL_DIRS[d];
                     Vector2Int neighbor = current + dir;
-                    //skip the tiles that would be too far from the center to get there in time
+                    // skip the tiles that would be too far from the center to get there in time
                     if (distance.TryGet(neighbor, out int dist) && dist <= length)
                         validNeighbors.Add(neighbor, 1f / (crowding_[neighbor] + 1) + alignmentBonus * alignment[d]);
                 }
@@ -160,11 +160,11 @@ namespace WorldGen.Path
         /// </summary>
         bool RelaxPaths(IEnumerable<LinkedList<Vector2Int>> paths)
         {
-            //all the offsets with manhattan length of two
+            // all the offsets with manhattan length of two
             var dirsToTry = WorldUtils.DIAGONAL_DIRS.Concat(WorldUtils.CARDINAL_DIRS.Select(d => 2 * d)).ToArray();
 
             var possibleChanges = new WeightedRandomSet<(LinkedListNode<Vector2Int>, Vector2Int)>(WorldGenerator.Random.NewSeed());
-            //find all path nodes that can be switched to another position (and the switch has positive weight)
+            // find all path nodes that can be switched to another position (and the switch has positive weight)
             foreach (var path in paths)
             {
                 var prev = path.First;
@@ -176,13 +176,13 @@ namespace WorldGen.Path
                     foreach (var offset in dirsToTry)
                     {
                         var newPos = pos + offset;
-                        //all nodes still have to be 1 tile apart, so only consider switching when this holds
+                        // all nodes still have to be 1 tile apart, so only consider switching when this holds
                         if (newPos.ManhattanDistance(prev.Value) != 1 || newPos.ManhattanDistance(next.Value) != 1)
                             continue;
 
-                        //only consider switching when it the new position is less crowded, the better the improvement the better the weight
-                        //but temperature is added, so with high temperature, even very bad switches are likely - this allows for more exploration
-                        //when the temperature eventually gets low, only the highest quality switches happen and the path doesn't change much
+                        // only consider switching when it the new position is less crowded, the better the improvement the better the weight
+                        // but temperature is added, so with high temperature, even very bad switches are likely - this allows for more exploration
+                        // when the temperature eventually gets low, only the highest quality switches happen and the path doesn't change much
                         float improvement = crowding_.GetOrDefault(pos, int.MaxValue) - crowding_.GetOrDefault(newPos, int.MaxValue) + temperature;
                         if (improvement > 0)
                             possibleChanges.Add((current, newPos), improvement);
@@ -201,7 +201,7 @@ namespace WorldGen.Path
             RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.yellow, WorldUtils.TilePosToWorldPos(newNodePos), 0.4f));
             WaitForStep(StepType.MicroStep);
             ExpireGizmos(RelaxPathGizmosDuration);
-            //make the chosen switch
+            // make the chosen switch
             crowding_.Add(crowdingPenaltyTemplate_, newNodePos - Vector2Int.one);
             crowding_.Subtract(crowdingPenaltyTemplate_, node.Value - Vector2Int.one);
             node.Value = newNodePos;

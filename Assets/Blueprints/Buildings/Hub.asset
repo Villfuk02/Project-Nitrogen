@@ -35,4 +35,4 @@ MonoBehaviour:
   magic1: -1
   descriptions:
   - Produces [PRO] every round.
-  - When an enemy reaches this building, you lose [HUL]Hull. Protect at all costs!
+  - When an enemy reaches this building, you lose [#HUL]Hull. Protect at all costs!

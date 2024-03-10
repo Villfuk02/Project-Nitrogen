@@ -9,9 +9,9 @@ namespace Utils.Random
     /// </summary>
     public class RandomSet<T> : ICollection<T>
     {
-        //underlying container of items
+        // underlying container of items
         readonly List<T> list_;
-        //maps items to their position in list_
+        // maps items to their position in list_
         readonly Dictionary<T, int> positions_;
         readonly Random random_;
 
@@ -100,7 +100,7 @@ namespace Utils.Random
         public T PopRandom()
         {
             if (list_.Count == 0)
-                throw new InvalidOperationException("Cannot pop from an empty set.");
+                throw new InvalidOperationException("Cannot pop from an empty set");
             int r = random_.Int(list_.Count);
             T ret = list_[r];
             Remove(ret);

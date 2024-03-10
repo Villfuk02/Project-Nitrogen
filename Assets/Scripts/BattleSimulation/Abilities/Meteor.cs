@@ -7,7 +7,10 @@ namespace BattleSimulation.Abilities
 {
     public class Meteor : Ability
     {
+        [Header("References")]
         [SerializeField] Targeting.Targeting targeting;
+
+        [Header("Runtime variables")]
         public int delayLeft;
         bool waveEnded_;
 
@@ -31,28 +34,30 @@ namespace BattleSimulation.Abilities
             if (!placed)
                 return;
             if (delayLeft == 0 && !waveEnded_)
-            {
-                foreach (var a in targeting.GetValidTargets())
-                    Hit(a);
-                Destroy(gameObject, 3f);
-            }
+                Explode();
             delayLeft--;
+        }
+
+        void Explode()
+        {
+            foreach (var a in targeting.GetValidTargets())
+                Hit(a);
+            Destroy(gameObject, 3f);
         }
 
         void Hit(Attacker attacker)
         {
-            if (attacker.IsDead)
-                return;
             (Attacker a, Damage dmg) hitParam = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
-            if (!Attacker.hit.InvokeRef(ref hitParam) || hitParam.dmg.amount <= 0)
+            if (!Attacker.HIT.InvokeRef(ref hitParam) || hitParam.dmg.amount <= 0)
                 return;
 
-            Attacker.damage.Invoke(hitParam);
+            Attacker.DAMAGE.Invoke(hitParam);
         }
 
         void OnWaveFinished()
         {
             waveEnded_ = true;
+            Destroy(gameObject, 3f);
         }
     }
 }

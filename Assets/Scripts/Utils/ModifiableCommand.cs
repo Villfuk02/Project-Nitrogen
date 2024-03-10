@@ -9,7 +9,7 @@ namespace Utils
         protected THandler handler;
         public void RegisterReaction(TReaction reaction, int priority)
         {
-            if (priority <= 0) throw new ArgumentException("priority must be positive");
+            if (priority <= 0) throw new ArgumentException("Priority must be positive");
             reactions.Add(priority, reaction);
         }
 
@@ -17,7 +17,7 @@ namespace Utils
 
         public void RegisterModifier(THandler modifier, int priority)
         {
-            if (priority >= 0) throw new ArgumentException("priority must be negative");
+            if (priority >= 0) throw new ArgumentException("Priority must be negative");
             modifiers.Add(priority, modifier);
         }
 

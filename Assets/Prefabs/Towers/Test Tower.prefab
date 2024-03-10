@@ -47,13 +47,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkLineOfSight: 1
-  selectedPriority: 0
+  availablePriorities: -1
   target: {fileID: 0}
   radiusTrigger: {fileID: 475032649220956779}
   heightTrigger: {fileID: 475032648339523277}
-  currentRange: 0
   canTargetDownwards: 1
   canTargetUpwards: 0
+  currentRange: 0
 --- !u!1 &475032647752064191
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,11 +293,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 722d63706a2aba447ac7b3e678624ac9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placed: 0
-  permanent: 0
   visuals: {fileID: 475032649205546438}
   rotateBack:
   - {fileID: 475032647605434327}
+  permanent: 0
+  placed: 0
   targeting: {fileID: 475032647605434328}
   projectilePrefab: {fileID: 2180857672546275147, guid: 11ce8002ce61abc4e9c537826979384e, type: 3}
   projectileOrigin: {fileID: 475032647605434327}

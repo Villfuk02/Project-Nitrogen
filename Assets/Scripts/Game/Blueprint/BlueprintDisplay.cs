@@ -73,7 +73,7 @@ namespace Game.Blueprint
 
         public void UpdateText(int energy, int materials, Color color)
         {
-            (string text, bool useSmallerFont) = GetTextFromCost(energy, materials);
+            string text = GetTextFromCost(energy, materials, out var useSmallerFont);
             costText.text = text;
             costText.fontSize = useSmallerFont ? smallFont : largeFont;
             costText.color = color;
@@ -89,10 +89,11 @@ namespace Game.Blueprint
             _ => throw new ArgumentOutOfRangeException(nameof(type))
         };
 
-        static (string, bool) GetTextFromCost(int energy, int materials)
+        static string GetTextFromCost(int energy, int materials, out bool useSmallerFont)
         {
+            useSmallerFont = false;
             if (energy <= 0 && materials <= 0)
-                return ("FREE", false);
+                return "FREE";
 
             string res = "";
             int parts = 0;
@@ -106,7 +107,9 @@ namespace Game.Blueprint
                 res += $"{materials}{TextUtils.Icon.Materials.Sprite()}";
                 parts++;
             }
-            return (res, parts > 1);
+
+            useSmallerFont = parts > 1;
+            return res;
         }
     }
 }

@@ -67,7 +67,7 @@ namespace Utils
                 return CARDINAL_DIRS[random.Int(4)];
             Vector2Int o = to - from;
             if (Mathf.Abs(o.x) == Mathf.Abs(o.y))
-                o += random.Float() < 0.5f ? Vector2Int.right : Vector2Int.left;
+                o += random.Bool() ? Vector2Int.right : Vector2Int.left;
 
             if (Mathf.Abs(o.x) > Mathf.Abs(o.y))
                 return new((int)Mathf.Sign(o.x), 0);
@@ -137,7 +137,7 @@ namespace Utils
                 1 => E,
                 2 => S,
                 3 => W,
-                _ => throw new("This cannot happen.")
+                _ => throw new IndexOutOfRangeException()
             };
             set
             {
@@ -151,9 +151,9 @@ namespace Utils
             }
         }
         /// <summary>
-        /// Returns a new <see cref="CardinalDirs{TR}"/>, each element being the result of applying 'map' to the corresponding element of this collection.
+        /// Returns a new <see cref="CardinalDirs{TResult}"/>, each element being the result of applying 'map' to the corresponding element of this collection.
         /// </summary>
-        public readonly CardinalDirs<TR> Map<TR>(Func<T, TR> map) => new(map(N), map(E), map(S), map(W));
+        public readonly CardinalDirs<TResult> Map<TResult>(Func<T, TResult> map) => new(map(N), map(E), map(S), map(W));
         /// <summary>
         /// Returns a new <see cref="CardinalDirs{T}"/> obtained by rotating this one by 'steps' 90 degree rotations clockwise.
         /// </summary>
@@ -209,7 +209,7 @@ namespace Utils
                 1 => NE,
                 2 => SE,
                 3 => SW,
-                _ => throw new("This cannot happen.")
+                _ => throw new IndexOutOfRangeException()
             };
             set
             {
@@ -223,9 +223,9 @@ namespace Utils
             }
         }
         /// <summary>
-        /// Returns a new <see cref="DiagonalDirs{TR}"/>, each element being the result of applying 'map' to the corresponding element of this collection.
+        /// Returns a new <see cref="DiagonalDirs{TResult}"/>, each element being the result of applying 'map' to the corresponding element of this collection.
         /// </summary>
-        public readonly DiagonalDirs<TR> Map<TR>(Func<T, TR> map) => new(map(NW), map(NE), map(SE), map(SW));
+        public readonly DiagonalDirs<TResult> Map<TResult>(Func<T, TResult> map) => new(map(NW), map(NE), map(SE), map(SW));
         /// <summary>
         /// Returns a new <see cref="DiagonalDirs{T}"/> obtained by rotating this one by 'steps' 90 degree rotations clockwise.
         /// </summary>

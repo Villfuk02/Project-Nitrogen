@@ -10,7 +10,14 @@ namespace BattleSimulation.Control
 {
     public class WaveController : MonoBehaviour
     {
+        public static ModifiableCommand startWave = new();
+        public static EventReactionChain onWaveSpawned = new();
+        public static EventReactionChain onWaveFinished = new();
+        [Header("References")]
         public WaveGenerator waveGenerator;
+        [Header("Settings")]
+        [SerializeField] UnityEvent onSpawnedOnce;
+        [Header("Runtime variables")]
         [SerializeField] int spawnTimer;
         [SerializeField] uint currentIndex;
         public int wave;
@@ -20,18 +27,19 @@ namespace BattleSimulation.Control
         [SerializeField] bool waveStarted;
         [SerializeField] WaveGenerator.Wave currentWave;
         int paths_;
-        List<(int delay, int path, AttackerStats attacker)> spawnQueue_ = new();
 
-        public static ModifiableCommand startWave = new();
-        public static EventReactionChain onWaveSpawned = new();
-        public static EventReactionChain onWaveFinished = new();
-
-        [SerializeField] UnityEvent onSpawnedOnce;
+        struct QueuedAttacker
+        {
+            public AttackerStats attacker;
+            public int path;
+            public int delay;
+        }
+        List<QueuedAttacker> spawnQueue_ = new();
 
         void Awake()
         {
             // only use half the range to prevent overflow
-            currentIndex = (uint)(World.WorldData.World.data.seed ^ 0x55555555 & 0x7FFFFFFF);
+            currentIndex = (uint)(World.WorldData.World.data.seed & 0x7FFFFFFF);
             paths_ = World.WorldData.World.data.firstPathTiles.Length;
 
             startWave.RegisterHandler(StartNextWave);
@@ -45,9 +53,7 @@ namespace BattleSimulation.Control
         void Update()
         {
             if (attackersLeft == 0 && !spawning && spawnQueue_.Count == 0 && Input.GetKeyUp(KeyCode.Return))
-            {
                 startNextWave = true;
-            }
         }
 
         void FixedUpdate()
@@ -86,7 +92,7 @@ namespace BattleSimulation.Control
 
             WaveGenerator.Batch batch = currentWave.batches[0];
             if (batch.count <= 0)
-                throw new("Batch cannot be empty!");
+                throw new("Batch cannot be empty");
             batch.count--;
             if (batch.count == 0)
             {
@@ -102,7 +108,7 @@ namespace BattleSimulation.Control
             {
                 if (batch.typePerPath[i] is AttackerStats s)
                 {
-                    spawnQueue_.Add((paths_ - i, i, s));
+                    spawnQueue_.Add(new() { attacker = s, path = i, delay = paths_ - i });
                     attackersLeft++;
                 }
             }
@@ -114,7 +120,8 @@ namespace BattleSimulation.Control
             spawnQueue_ = spawnQueue_.OrderBy(e => e.delay).ToList();
             while (spawnQueue_.Count > 0 && spawnQueue_[0].delay == 0)
             {
-                (int _, int path, var attacker) = spawnQueue_[0];
+                int path = spawnQueue_[0].path;
+                var attacker = spawnQueue_[0].attacker;
                 spawnQueue_.RemoveAt(0);
                 Spawn(attacker, path);
             }
@@ -129,11 +136,10 @@ namespace BattleSimulation.Control
 
         void Spawn(AttackerStats attacker, int path)
         {
-            uint index = ++currentIndex;
             Attacker a = Instantiate(attacker.prefab, transform).GetComponent<Attacker>();
             Vector2Int startingPoint = World.WorldData.World.data.pathStarts[path];
             Vector2Int firstTile = World.WorldData.World.data.firstPathTiles[path];
-            a.InitPath(startingPoint, firstTile, index);
+            a.InitPath(startingPoint, firstTile, ++currentIndex);
             a.onRemoved.AddListener(AttackerRemoved);
             a.onReachedHub.AddListener(BattleController.AttackerReachedHub);
         }

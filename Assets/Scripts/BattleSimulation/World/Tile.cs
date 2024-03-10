@@ -7,14 +7,15 @@ namespace BattleSimulation.World
 {
     public class Tile : MonoBehaviour, IHighlightable
     {
+        public enum Obstacle { None, Path, Small, Large, Fuel, Minerals }
+
         [Header("References")]
         [SerializeField] Transform slantedParts;
         [SerializeField] Animator highlightAnim;
         public Transform decorationHolder;
         [SerializeField] SpriteRenderer[] highlights;
-        [Header("Properties")]
+        [Header("Settings - auto-assigned")]
         public Vector2Int pos;
-        public enum Obstacle { None, Path, Small, Large, Fuel, Minerals }
         public Obstacle obstacle;
         public WorldUtils.Slant slant;
 
@@ -31,9 +32,7 @@ namespace BattleSimulation.World
 
                 building.transform.localRotation = slantedParts.localRotation;
                 foreach (var t in building.rotateBack)
-                {
                     t.rotation = Quaternion.identity;
-                }
             }
         }
 
@@ -46,9 +45,8 @@ namespace BattleSimulation.World
         public void Highlight(Color color)
         {
             foreach (var sr in highlights)
-            {
                 sr.color = color;
-            }
+
             highlightAnim.SetTrigger(IHighlightable.HIGHLIGHT_TRIGGER);
         }
 

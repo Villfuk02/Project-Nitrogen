@@ -47,12 +47,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkLineOfSight: 0
+  availablePriorities: -1
   target: {fileID: 0}
   radiusTrigger: {fileID: 475032649220956779}
   heightTrigger: {fileID: 475032648339523277}
-  currentRange: 0
   canTargetDownwards: 1
   canTargetUpwards: 1
+  currentRange: 0
 --- !u!1 &475032647752064191
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,10 +323,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dde0397a93b8c446aa2830733a07756, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placed: 0
-  permanent: 0
   visuals: {fileID: 475032649205546438}
   rotateBack: []
+  permanent: 0
+  placed: 0
   targeting: {fileID: 475032647605434328}
   shotTimer: 0
   chargeTimer: 0

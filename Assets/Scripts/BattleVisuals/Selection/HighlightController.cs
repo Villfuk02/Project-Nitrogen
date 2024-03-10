@@ -17,7 +17,7 @@ namespace BattleVisuals.Selection
         public HighlightProvider highlightProvider;
         [SerializeField] bool doFixedReset;
         [SerializeField] bool doReset;
-        readonly Dictionary<IHighlightable, IHighlightable.HighlightType> highlighted_ = new();
+        readonly Dictionary<IHighlightable, HighlightType> highlighted_ = new();
 
         void Update()
         {
@@ -45,7 +45,7 @@ namespace BattleVisuals.Selection
 
         void ClearVisuals(IHighlightable hovered, bool hpChanged)
         {
-            UpdateHighlights(null, hovered, true);
+            UpdateHighlights(null, hovered);
             doFixedReset = false;
             doReset = false;
 
@@ -86,9 +86,9 @@ namespace BattleVisuals.Selection
             doReset = true;
         }
 
-        void UpdateHighlights(IEnumerable<(IHighlightable.HighlightType, IHighlightable)> newHighlights, IHighlightable hovered, bool isHoveredValid = true)
+        void UpdateHighlights(IEnumerable<(HighlightType, IHighlightable)> newHighlights, IHighlightable hovered, bool isHoveredValid = true)
         {
-            List<(IHighlightable.HighlightType highlight, IHighlightable element)> highlightList = newHighlights?.ToList() ?? new();
+            List<(HighlightType highlight, IHighlightable element)> highlightList = newHighlights?.ToList() ?? new();
 
             if (hovered != null)
                 HighlightHovered(hovered, isHoveredValid, highlightList);
@@ -96,7 +96,7 @@ namespace BattleVisuals.Selection
             RemoveOldHighlights(highlightList);
         }
 
-        void RemoveOldHighlights(List<(IHighlightable.HighlightType highlight, IHighlightable element)> newHighlights)
+        void RemoveOldHighlights(IEnumerable<(HighlightType highlight, IHighlightable element)> newHighlights)
         {
             var keep = newHighlights.Select(p => p.element).ToHashSet();
             foreach (var element in highlighted_.Keys.Where(element => !keep.Contains(element)).ToArray())
@@ -107,11 +107,11 @@ namespace BattleVisuals.Selection
             }
         }
 
-        void UpdateChangedHighlights(List<(IHighlightable.HighlightType highlight, IHighlightable element)> newHighlights)
+        void UpdateChangedHighlights(List<(HighlightType highlight, IHighlightable element)> newHighlights)
         {
             foreach (var (highlight, element) in newHighlights)
             {
-                if (highlighted_.TryGetValue(element, out var cachedRelation) && highlight == cachedRelation)
+                if (highlighted_.TryGetValue(element, out var cachedType) && highlight == cachedType)
                     continue;
 
                 highlighted_[element] = highlight;
@@ -119,9 +119,9 @@ namespace BattleVisuals.Selection
             }
         }
 
-        static void HighlightHovered(IHighlightable hovered, bool isValid, List<(IHighlightable.HighlightType highlight, IHighlightable element)> highlightList)
+        static void HighlightHovered(IHighlightable hovered, bool isValid, List<(HighlightType highlight, IHighlightable element)> highlightList)
         {
-            var hoverHighlight = isValid ? IHighlightable.HighlightType.Hovered : IHighlightable.HighlightType.Negative;
+            var hoverHighlight = isValid ? HighlightType.Hovered : HighlightType.Negative;
             highlightList.RemoveAll(e => e.element == hovered);
             highlightList.Add((hoverHighlight, hovered));
         }

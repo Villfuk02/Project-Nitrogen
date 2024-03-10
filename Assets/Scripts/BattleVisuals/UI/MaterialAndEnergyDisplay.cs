@@ -2,6 +2,7 @@ using BattleSimulation.Control;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 namespace BattleVisuals.UI
 {
@@ -15,7 +16,7 @@ namespace BattleVisuals.UI
         [SerializeField] TextMeshProUGUI materialIncomeText;
         [SerializeField] Image energyFill;
         [Header("Settings")]
-        [SerializeField] int animationDivisor;
+        [SerializeField] int convergenceDivisor;
         [Header("Runtime variables")]
         [SerializeField] int energyDisplay;
         [SerializeField] int materialDisplay;
@@ -36,10 +37,10 @@ namespace BattleVisuals.UI
         {
             float energyFillAmount = Mathf.Clamp01(bc.Energy / (float)bc.MaxEnergy);
             energyFill.fillAmount = Mathf.Lerp(energyFill.fillAmount, energyFillAmount, Time.deltaTime * 4);
-            energyDisplay = bc.Energy - (bc.Energy - energyDisplay) * (animationDivisor - 1) / animationDivisor;
+            MathUtils.StepTowards(ref energyDisplay, bc.Energy, convergenceDivisor);
             energyText.text = $"{energyDisplay}<size=15>/{bc.MaxEnergy}</size>";
 
-            materialDisplay = bc.Material - (bc.Material - materialDisplay) * (animationDivisor - 1) / animationDivisor;
+            MathUtils.StepTowards(ref materialDisplay, bc.Material, convergenceDivisor);
             materialText.text = materialDisplay.ToString();
         }
 

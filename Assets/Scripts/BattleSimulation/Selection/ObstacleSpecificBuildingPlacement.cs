@@ -6,6 +6,7 @@ namespace BattleSimulation.Selection
 {
     public class ObstacleSpecificBuildingPlacement : BuildingPlacement
     {
+        [Header("Settings")]
         [SerializeField] Tile.Obstacle obstacleType;
         [SerializeField] bool onSlants;
 

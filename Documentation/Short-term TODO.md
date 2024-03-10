@@ -1,9 +1,9 @@
 ## questions
-- >reorder sections
 - used packages
+- separate get and set access?
 ## text
-- [x] kapitoly
-- [ ] sekce a podsekce
+- [ ] reorder sections and subsections
+- [ ] sections and subsections
     - [x] úvod (cíle / účel)
     - [x] game design
     - [x] anylýza
@@ -12,7 +12,7 @@
     - [ ] uživatelská dokumentace (hráč)
     - [ ] playtest?
     - [x] závěr (+future work)
-- [ ] nástřel odstvaců v bodech
+- [ ] summarize each paragraph
     - [ ] úvod (cíle / účel)
     - [ ] game design
     - [ ] anylýza
@@ -22,26 +22,6 @@
     - [ ] playtest?
     - [ ] závěr (+future work)
 ## implementation
-- [x] TODOs
-- [ ] refactoring
-    - [x] make GameEvents interface more intuitive
-    - [ ] BattleSim
-    - [x] BattleVis
-    - [x] Data
-    - [x] Game
-    - [x] Utils
-    - [x] WorldGen
-    - [ ] unify UI interpolation
-        - [ ] fills
-        - [ ] texts
-    - [ ] unify singleton names
-    - [ ] unify reference names
-    - [ ] kill all value tuples
-    - [ ] check nullables
-    - [ ] unify asserts
-    - [ ] unify errors
-    - [ ] unify headers
-    - [ ] unify comments
 - [ ] menu (seed select)
 - [ ] level progression
 - [ ] sound effects

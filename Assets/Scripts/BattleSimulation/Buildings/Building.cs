@@ -6,12 +6,15 @@ namespace BattleSimulation.Buildings
 {
     public abstract class Building : MonoBehaviour, IBlueprinted
     {
-        public Blueprint Blueprint { get; private set; }
-        public Blueprint OriginalBlueprint { get; private set; }
-        public bool placed;
-        public bool permanent;
+        [Header("References")]
         [SerializeField] GameObject visuals;
         public Transform[] rotateBack;
+        [Header("Settings")]
+        public bool permanent;
+        [Header("Runtime variables")]
+        public bool placed;
+        public Blueprint Blueprint { get; private set; }
+        public Blueprint OriginalBlueprint { get; private set; }
 
         public void InitBlueprint(Blueprint blueprint)
         {

@@ -57,7 +57,7 @@ namespace WorldGen.Path
 
             for (int i = 0; i < targetCount; i++)
             {
-                //the method below doesn't differentiate between the first path and side branches, so we increment extraPaths to account for the first path
+                // the method below doesn't differentiate between the first path and side branches, so we increment extraPaths to account for the first path
                 extraPaths_++;
                 TracePath(paths[i]);
             }
@@ -79,7 +79,7 @@ namespace WorldGen.Path
             LinkedList<(TileData tile, Vector2Int[] path)> stack = new();
             stack.AddFirst((start, new[] { start.pos }));
             bool lastFound = false;
-            //basically DFS, but once a path is finalized, take the next step from the bottom of the stack
+            // basically DFS, but once a path is finalized, take the next step from the bottom of the stack
             while (extraPaths_ > 0 && stack.Count > 0)
             {
                 WaitForStep(StepType.MicroStep);
@@ -122,11 +122,11 @@ namespace WorldGen.Path
                 return gizmos;
             });
 
-            //if this tile already has a path, check if the path can join to it
+            // if this tile already has a path, check if the path can join to it
             if (hasPath_[tile.pos])
                 return TryJoinPath(path, foundAny);
 
-            //add valid neighbors to the stack
+            // add valid neighbors to the stack
             foreach (var neighbor in FindValidContinuations(tile, path))
             {
                 var newPath = new Vector2Int[path.Length + 1];
@@ -162,12 +162,12 @@ namespace WorldGen.Path
 
         bool TryJoinPath(Vector2Int[] path, bool foundAny)
         {
-            //reject the branch if it doesn't go through a tile that's not a neighbor of any other path
-            //but only when we've already found a path
+            // reject the branch if it doesn't go through a tile that's not a neighbor of any other path
+            // but only when we've already found a path
             if (foundAny && path.All(p => outlined_[p]))
                 return false;
 
-            //otherwise accept it
+            // otherwise accept it
             TileData prev = null;
             foreach (var pos in path)
             {

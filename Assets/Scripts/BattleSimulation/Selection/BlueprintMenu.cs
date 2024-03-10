@@ -1,12 +1,15 @@
 using BattleSimulation.Control;
 using Game.Blueprint;
+using System.Linq;
 using UnityEngine;
 
 namespace BattleSimulation.Selection
 {
     public class BlueprintMenu : MonoBehaviour
     {
+        [Header("Settings")]
         public Blueprint[] originalBlueprints;
+        [Header("Runtime variables")]
         public Blueprint[] blueprints;
         public int[] cooldowns;
         public int selected;
@@ -14,13 +17,9 @@ namespace BattleSimulation.Selection
 
         void Awake()
         {
-            blueprints = new Blueprint[originalBlueprints.Length];
-            cooldowns = new int[blueprints.Length];
-            for (int i = 0; i < blueprints.Length; i++)
-            {
-                blueprints[i] = originalBlueprints[i].Clone();
-                cooldowns[i] = blueprints[i].startingCooldown;
-            }
+            blueprints = originalBlueprints.Select(b => b.Clone()).ToArray();
+            cooldowns = blueprints.Select(b => b.startingCooldown).ToArray();
+
             WaveController.onWaveFinished.RegisterReaction(OnWaveFinished, 10);
             WaveController.startWave.RegisterReaction(OnWaveStarted, 10);
         }
@@ -81,18 +80,14 @@ namespace BattleSimulation.Selection
         public void ReduceCooldowns()
         {
             for (int i = 0; i < cooldowns.Length; i++)
-            {
                 if (cooldowns[i] > 0)
                     cooldowns[i]--;
-            }
         }
 
         void FinishCooldowns()
         {
             for (int i = 0; i < cooldowns.Length; i++)
-            {
                 cooldowns[i] = 0;
-            }
         }
     }
 }

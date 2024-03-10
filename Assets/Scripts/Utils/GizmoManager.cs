@@ -12,7 +12,7 @@ namespace Utils
         [SerializeField] bool draw;
         [SerializeField] bool onlyDrawWhenSelected;
         readonly object lock_ = new();
-        //holds all the gizmos to keep drawing
+        // holds all the gizmos to keep drawing
         readonly Dictionary<object, List<GizmoObject>> objects_ = new();
 
         void Awake()

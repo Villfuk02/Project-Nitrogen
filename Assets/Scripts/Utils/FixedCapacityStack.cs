@@ -26,9 +26,9 @@ namespace Utils
         public T Pop()
         {
             if (Count == 0)
-                throw new System.InvalidOperationException("Cannot pop from empty stack.");
+                throw new System.InvalidOperationException("Cannot pop from an empty stack");
             T r = array_[index_];
-            index_ = (index_ + capacity_ - 1) % capacity_;
+            index_ = MathUtils.Mod(index_ - 1, capacity_);
             Count--;
             return r;
         }

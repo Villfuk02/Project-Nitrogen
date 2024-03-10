@@ -19,7 +19,7 @@ namespace BattleSimulation.Selection
         [SerializeField] float rotationHoldDelay;
         [SerializeField] float rotationInterval;
         [SerializeField] UnityEvent resetVisuals;
-        [Header("Runtime values")]
+        [Header("Runtime variables")]
         public Selectable selected;
         public Selectable hovered;
         public Placement placing;
@@ -35,7 +35,111 @@ namespace BattleSimulation.Selection
         }
         void Update()
         {
-            // mouse movement
+            UpdateHover();
+            HandleNumberKeys();
+            HandleRotation();
+            HandleDeselect();
+
+            if (placing != null && placing.Setup(hovered, rotation, hoverTilePosition, transform))
+                resetVisuals.Invoke();
+
+            HandleSelectOrPlace();
+            HandleDelete();
+        }
+
+        void HandleDelete()
+        {
+            if (Input.GetKeyDown(KeyCode.Delete) && selected != null && selected.tile != null && selected.tile.Building is { permanent: false } b)
+                b.Delete();
+        }
+
+        void HandleSelectOrPlace()
+        {
+            if (!Input.GetMouseButtonUp(0) || EventSystem.current.IsPointerOverGameObject())
+                return;
+
+            if (placing != null)
+            {
+                if (placing.IsValid() && blueprintMenu.TryPlace())
+                {
+                    placing.Place();
+                    placing = null;
+                    DeselectFromMenu();
+                    DeselectInWorld();
+                    resetVisuals.Invoke();
+                }
+                else
+                {
+                    // TODO: feedback for the player - sound effect
+                }
+            }
+            else if (hovered != null)
+            {
+                SelectInWorld(hovered);
+            }
+            else
+            {
+                DeselectInWorld();
+            }
+        }
+
+        void HandleDeselect()
+        {
+            if (!Input.GetMouseButtonUp(1) && !Input.GetKeyDown(KeyCode.Escape))
+                return;
+
+            DeselectFromMenu();
+            DeselectInWorld();
+        }
+
+        void HandleRotation()
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                rotation++;
+                lastRotationTime_ = 0;
+            }
+
+
+            if (Input.GetKeyUp(KeyCode.R))
+            {
+                rotationHoldTime_ = 0;
+                return;
+            }
+
+            if (!Input.GetKey(KeyCode.R))
+                return;
+
+            rotationHoldTime_ += Time.deltaTime;
+            if (lastRotationTime_ == 0 && rotationHoldTime_ > rotationHoldDelay)
+            {
+                rotation++;
+                lastRotationTime_ = rotationHoldDelay;
+            }
+
+            while (lastRotationTime_ >= rotationHoldDelay && rotationHoldTime_ > lastRotationTime_ + rotationInterval)
+            {
+                rotation++;
+                lastRotationTime_ += rotationInterval;
+            }
+        }
+
+        void HandleNumberKeys()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                KeyCode key = i == 9 ? KeyCode.Alpha0 : KeyCode.Alpha1 + i;
+                if (!Input.GetKeyDown(key))
+                    continue;
+                if (blueprintMenu.selected == i)
+                    DeselectFromMenu();
+                else
+                    SelectFromMenu(i);
+            }
+        }
+
+        void UpdateHover()
+        {
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out RaycastHit selectionHit, 100, selectionMask_))
                 hovered = selectionHit.transform.GetComponent<Selectable>();
@@ -46,87 +150,6 @@ namespace BattleSimulation.Selection
                 hoverTilePosition = WorldUtils.WorldPosToTilePos(terrainHit.point);
             else
                 hoverTilePosition = hovered == null ? null : hovered.transform.position;
-
-            // num keys
-            for (int i = 0; i < 9; i++)
-            {
-                KeyCode key = KeyCode.Alpha1 + i;
-                if (!Input.GetKeyDown(key))
-                    continue;
-                // replace with select / unavailable / deselect based on blueprintMenu state
-                if (blueprintMenu.selected == i)
-                    DeselectFromMenu();
-                else
-                    SelectFromMenu(i);
-            }
-
-            // R
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                rotation++;
-                lastRotationTime_ = 0;
-            }
-            if (Input.GetKey(KeyCode.R))
-            {
-                rotationHoldTime_ += Time.deltaTime;
-                if (lastRotationTime_ == 0 && rotationHoldTime_ > rotationHoldDelay)
-                {
-                    rotation++;
-                    lastRotationTime_ = rotationHoldDelay;
-                }
-                while (lastRotationTime_ >= rotationHoldDelay && lastRotationTime_ + rotationInterval < rotationHoldTime_)
-                {
-                    rotation++;
-                    lastRotationTime_ += rotationInterval;
-                }
-            }
-            if (Input.GetKeyUp(KeyCode.R))
-            {
-                rotationHoldTime_ = 0;
-                lastRotationTime_ = 0;
-            }
-
-            // right click
-            if (Input.GetMouseButtonUp(1))
-            {
-                DeselectFromMenu();
-                DeselectInWorld();
-            }
-
-            if (placing != null && placing.Setup(hovered, rotation, hoverTilePosition, transform))
-                resetVisuals.Invoke();
-
-            //left click
-            if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
-            {
-                if (placing != null)
-                {
-                    if (placing.IsValid() && blueprintMenu.TryPlace())
-                    {
-                        placing.Place();
-                        placing = null;
-                        DeselectFromMenu();
-                        DeselectInWorld();
-                        resetVisuals.Invoke();
-                    }
-                    else
-                    {
-                        // TODO: feedback for the player - sound effect
-                    }
-                }
-                else if (hovered != null)
-                {
-                    SelectInWorld(hovered);
-                }
-                else
-                {
-                    DeselectInWorld();
-                }
-            }
-
-            //destroy selected building
-            if (Input.GetKeyDown(KeyCode.Delete) && selected != null && selected.tile != null && selected.tile.Building is { permanent: false } b)
-                b.Delete();
         }
 
         public void SelectInWorld(Selectable select)

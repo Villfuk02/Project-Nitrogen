@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 namespace BattleVisuals.UI
 {
@@ -17,7 +18,7 @@ namespace BattleVisuals.UI
         [SerializeField] TextMeshProUGUI goalText;
         [SerializeField] RectTransform predictionArrowHolder;
         [Header("Settings")]
-        [SerializeField] int animationDivisor;
+        [SerializeField] int convergenceDivisor;
         [SerializeField] float emptyWidth;
         [SerializeField] float minWidth;
         [SerializeField] float maxWidth;
@@ -50,6 +51,37 @@ namespace BattleVisuals.UI
             UpdatePredictionArrows();
         }
 
+        void UpdateFill()
+        {
+            float targetWidth;
+            if (bc.Fuel == 0)
+            {
+                fill.color = Color.clear;
+                targetWidth = emptyWidth;
+            }
+            else
+            {
+                fill.color = Color.white;
+                targetWidth = Mathf.Lerp(minWidth, maxWidth, bc.Fuel / (float)bc.FuelGoal);
+            }
+
+            currentWidth = Mathf.Lerp(currentWidth, targetWidth, 10 * Time.deltaTime);
+            fill.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, currentWidth);
+        }
+
+        void UpdateFuelText()
+        {
+            MathUtils.StepTowards(ref fuelDisplay, bc.Fuel, convergenceDivisor);
+            fuelText.text = fuelDisplay.ToString();
+        }
+
+        void UpdateIncomeTextColor()
+        {
+            var c = incomeColor;
+            c.a = Mathf.Lerp(0, c.a, (maxWidth - currentWidth - incomeWidth) / incomeWidth);
+            incomeText.color = c;
+        }
+
         void UpdatePredictionArrows()
         {
             int remain;
@@ -76,37 +108,6 @@ namespace BattleVisuals.UI
             {
                 predictionArrows_[i].anchoredPosition = Vector2.right * (startPosition + arrowSpacing_ * (i + 1));
             }
-        }
-
-        void UpdateIncomeTextColor()
-        {
-            var c = incomeColor;
-            c.a = Mathf.Lerp(0, c.a, (maxWidth - currentWidth - incomeWidth) / incomeWidth);
-            incomeText.color = c;
-        }
-
-        void UpdateFuelText()
-        {
-            fuelDisplay = bc.Fuel - (bc.Fuel - fuelDisplay) * (animationDivisor - 1) / animationDivisor;
-            fuelText.text = fuelDisplay.ToString();
-        }
-
-        void UpdateFill()
-        {
-            float targetWidth;
-            if (bc.Fuel == 0)
-            {
-                fill.color = Color.clear;
-                targetWidth = emptyWidth;
-            }
-            else
-            {
-                fill.color = Color.white;
-                targetWidth = Mathf.Lerp(minWidth, maxWidth, bc.Fuel / (float)bc.FuelGoal);
-            }
-
-            currentWidth = Mathf.Lerp(currentWidth, targetWidth, 10 * Time.deltaTime);
-            fill.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, currentWidth);
         }
 
         bool UpdateFuelIncome(ref float income)

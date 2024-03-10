@@ -51,7 +51,6 @@ MonoBehaviour:
   target: {fileID: 0}
   lastDir: {x: 0, y: 0, z: 0}
   hit: 0
-  underground: 0
 --- !u!135 &8397199185045344311
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -335,6 +334,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sim: {fileID: 4262303229317810700}
+  stoppedLifetime: 0
   realPos: {x: 0, y: 0, z: 0}
   lastDir: {x: 0, y: 0, z: 0}
-  stoppedLifetime: 0

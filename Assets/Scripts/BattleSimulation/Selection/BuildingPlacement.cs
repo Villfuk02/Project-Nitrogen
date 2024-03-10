@@ -5,6 +5,7 @@ namespace BattleSimulation.Selection
 {
     public abstract class BuildingPlacement : TilePlacement
     {
+        [Header("References")]
         [SerializeField] protected Building b;
         public override void Place()
         {

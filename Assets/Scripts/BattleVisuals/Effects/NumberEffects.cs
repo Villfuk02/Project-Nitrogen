@@ -36,7 +36,7 @@ namespace BattleVisuals.Effects
         {
             fullSizeDamageLog = Mathf.Log(fullSizeDamage);
 
-            Attacker.damage.RegisterReaction(SpawnDamage, 100);
+            Attacker.DAMAGE.RegisterReaction(SpawnDamage, 100);
             BattleController.addMaterial.RegisterReaction(SpawnMaterial, 100);
             BattleController.addEnergy.RegisterReaction(SpawnEnergy, 100);
             BattleController.addFuel.RegisterReaction(SpawnFuel, 100);
@@ -44,7 +44,7 @@ namespace BattleVisuals.Effects
 
         void OnDestroy()
         {
-            Attacker.damage.UnregisterReaction(SpawnDamage);
+            Attacker.DAMAGE.UnregisterReaction(SpawnDamage);
             BattleController.addMaterial.UnregisterReaction(SpawnMaterial);
             BattleController.addEnergy.UnregisterReaction(SpawnEnergy);
             BattleController.addFuel.UnregisterReaction(SpawnFuel);

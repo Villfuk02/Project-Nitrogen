@@ -1,6 +1,7 @@
 using BattleSimulation.Control;
 using Game.Run.Events;
 using UnityEngine;
+using Utils;
 
 namespace BattleVisuals.UI
 {
@@ -15,7 +16,7 @@ namespace BattleVisuals.UI
         {
             Hide();
             BattleController.winLevel.RegisterReaction(OnVictory, 100);
-            runEvents = GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunEvents>();
+            runEvents = GameObject.FindGameObjectWithTag(TagNames.RUN_PERSISTENCE).GetComponent<RunEvents>();
             runEvents.defeat.RegisterReaction(OnDefeat, 100);
         }
 

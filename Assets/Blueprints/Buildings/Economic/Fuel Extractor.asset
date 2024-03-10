@@ -24,11 +24,15 @@ MonoBehaviour:
   range: -1
   damage: -1
   damageType: 0
-  shotInterval: -1
+  interval: -1
+  radius: -1
+  delay: -1
+  durationTicks: -1
+  durationWaves: -1
   fuelProduction: 5
   materialProduction: -1
   energyProduction: -1
   magic1: -1
   descriptions:
   - Produces [PRO] every round.
-  - Must be built on tiles rich in [FUE]fuel.
+  - Must be built on tiles rich in [#FUE]fuel.

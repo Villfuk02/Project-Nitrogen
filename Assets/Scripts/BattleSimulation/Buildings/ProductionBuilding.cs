@@ -11,6 +11,7 @@ namespace BattleSimulation.Buildings
         protected override void OnPlaced()
         {
             WaveController.onWaveFinished.RegisterReaction(Produce, 100);
+
             BattleController.updateMaterialsPerWave.RegisterModifier(ProvideMaterialsIncome, -100);
             BattleController.updateEnergyPerWave.RegisterModifier(ProvideEnergyIncome, -100);
             BattleController.updateFuelPerWave.RegisterModifier(ProvideFuelIncome, -100);
@@ -83,11 +84,11 @@ namespace BattleSimulation.Buildings
             StringBuilder sb = new();
             sb.Append("Produced");
             if (fuelProduced > 0)
-                sb.Append($" [FUE]{fuelProduced}");
+                sb.Append($" [#FUE]{fuelProduced}");
             if (materialsProduced > 0)
-                sb.Append($" [MAT]{materialsProduced}");
+                sb.Append($" [#MAT]{materialsProduced}");
             if (energyProduced > 0)
-                sb.Append($" [ENE]{energyProduced}");
+                sb.Append($" [#ENE]{energyProduced}");
             return sb.ToString();
         }
     }

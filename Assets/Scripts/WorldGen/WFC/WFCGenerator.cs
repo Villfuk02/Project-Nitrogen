@@ -1,4 +1,3 @@
-using Data.WorldGen;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -97,32 +96,33 @@ namespace WorldGen.WFC
 
         void InitPassages(Vector2Int[][] paths)
         {
-            var pathDistances = new Array2D<int?>(WorldUtils.WORLD_SIZE);
+            var pathDistances = new Array2D<int>(WorldUtils.WORLD_SIZE);
+            pathDistances.Fill(int.MaxValue);
             foreach (var path in paths)
                 for (int i = 0; i < path.Length; i++)
                     pathDistances[path[i]] = path.Length - i;
 
-            foreach ((var pos, int? distance) in pathDistances.IndexedEnumerable)
+            foreach ((var pos, int distance) in pathDistances.IndexedEnumerable)
                 InitTilePassages(distance, pos, pathDistances);
         }
 
-        void InitTilePassages(int? distance, Vector2Int pos, IReadOnlyArray2D<int?> pathDistances)
+        void InitTilePassages(int distance, Vector2Int pos, IReadOnlyArray2D<int> pathDistances)
         {
-            if (distance is not int dist)
+            if (distance == int.MaxValue)
                 return;
 
             for (int direction = 0; direction < 4; direction++)
             {
                 Vector2Int neighbor = pos + WorldUtils.CARDINAL_DIRS[direction];
-                bool hasNeighbor = pathDistances.TryGet(neighbor, out int? neighborDistance);
-                ForcedPassages(dist, hasNeighbor, neighborDistance, out bool passable, out bool impassable);
+                bool hasNeighbor = pathDistances.TryGet(neighbor, out int neighborDistance);
+                ForcedPassages(distance, hasNeighbor, neighborDistance, out bool passable, out bool impassable);
                 state_.SetValidPassageAtTile(pos, direction, (passable, impassable));
                 if (passable != impassable)
                     RegisterGizmos(StepType.Step, () => DrawPassage(pos, direction, (passable, impassable)));
             }
         }
 
-        static void ForcedPassages(int distance, bool hasNeighbor, int? neighborDistance, out bool passable, out bool impassable)
+        static void ForcedPassages(int distance, bool hasNeighbor, int neighborDistance, out bool passable, out bool impassable)
         {
             passable = true;
             impassable = true;
@@ -132,10 +132,10 @@ namespace WorldGen.WFC
                 return;
             }
 
-            if (neighborDistance is not int neighborDist)
+            if (neighborDistance == int.MaxValue)
                 return;
 
-            if (Mathf.Abs(neighborDist - distance) == 1)
+            if (Mathf.Abs(neighborDistance - distance) == 1)
                 impassable = false;
             else
                 passable = false;
@@ -159,7 +159,7 @@ namespace WorldGen.WFC
         {
             dirty_.Clear();
             Vector2Int lastCollapsedSlot = state_.lastCollapsedSlot;
-            (Module module, int height) lastCollapsedTo = state_.lastCollapsedTo;
+            var lastCollapsedTo = state_.lastCollapsedTo;
             if (stateStack_.Count == 0)
                 return false;
 

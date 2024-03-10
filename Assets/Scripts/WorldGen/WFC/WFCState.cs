@@ -1,4 +1,4 @@
-using Data.WorldGen;
+using BattleSimulation.World.WorldData;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -20,7 +20,7 @@ namespace WorldGen.WFC
         public readonly WeightedRandomSet<Vector2Int> entropyQueue;
 
         public Vector2Int lastCollapsedSlot;
-        public (Module module, int height) lastCollapsedTo;
+        public TilesData.CollapsedSlot lastCollapsedTo;
         int id_;
         public WFCState()
         {
@@ -57,15 +57,15 @@ namespace WorldGen.WFC
             slots[pos] = s;
         }
 
-        //FINAL GETTERS
-        public Array2D<(Module module, int height)> GetCollapsedSlots() => new(slots.Select(s => s.Collapsed).ToArray(), slots.Size);
+        // FINAL GETTERS
+        public Array2D<TilesData.CollapsedSlot> GetCollapsedSlots() => new(slots.Select(s => s.Collapsed).ToArray(), slots.Size);
         public bool GetPassageAtTile(Vector2Int pos, int direction)
         {
             (bool passable, bool _) = GetValidPassageAtSlot(pos + TileToSlotArrayOffsets[direction], 3 - direction);
             return passable;
         }
 
-        //PASSAGES
+        // PASSAGES
         public CardinalDirs<(bool passable, bool impassable)> GetValidPassagesAtSlot(Vector2Int pos)
         {
             var ret = new CardinalDirs<(bool passable, bool impassable)>();
@@ -108,7 +108,7 @@ namespace WorldGen.WFC
         {
             return (slotPos.x + slotPos.y * (WorldUtils.WORLD_SIZE.x + 1)) * 4 + SlotToPassageArrayOffsets[direction];
         }
-        //TILES
+        // TILES
         public DiagonalDirs<WFCTile> GetValidTilesAtSlot(Vector2Int pos)
         {
             return SlotToTileArrayOffsets.Map(o => tiles_[pos + o]);

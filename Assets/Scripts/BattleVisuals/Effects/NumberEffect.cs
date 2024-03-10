@@ -7,7 +7,7 @@ namespace BattleVisuals.Effects
     {
         [Header("References")]
         [SerializeField] TextMeshProUGUI text;
-        [Header("Settings")]
+        [Header("Settings - auto-assigned")]
         [SerializeField] float timeToLive;
         [SerializeField] Vector3 velocity;
         [SerializeField] Vector3 acceleration;

@@ -6,14 +6,14 @@ namespace Utils.Random
 {
     public class Random
     {
-        //Linear congruential generator, MODULO 2^64
-        //MULTIPLIER taken from:
-        //TABLES OF LINEAR CONGRUENTIAL GENERATORS OF DIFFERENT SIZES AND GOOD LATTICE STRUCTURE by PIERRE L'ECUYER, Table 4
-        //https://citeseerx.ist.psu.edu/doc/10.1.1.34.1024
+        // Linear congruential generator, MODULO 2^64
+        // MULTIPLIER taken from:
+        // TABLES OF LINEAR CONGRUENTIAL GENERATORS OF DIFFERENT SIZES AND GOOD LATTICE STRUCTURE by PIERRE L'ECUYER, Table 4
+        // https://citeseerx.ist.psu.edu/doc/10.1.1.34.1024
         const ulong MULTIPLIER = 3935559000370003845ul;
-        //INCREMENT can be any odd number
+        // INCREMENT can be any odd number
         const ulong INCREMENT = 0x_FACED;
-        //see NewSeed()
+        // see NewSeed()
         const ulong SEED_MASK = 0x1D15ED_ACE71C_AC1D;
         /// <summary>
         /// Get the current state.
@@ -22,7 +22,7 @@ namespace Utils.Random
 
         public Random(ulong seed) => CurrentState = seed;
 
-        //Advance to the next state.
+        // Advance to the next state.
         void Step() => CurrentState = MULTIPLIER * CurrentState + INCREMENT;
 
         /// <summary>
@@ -118,5 +118,9 @@ namespace Utils.Random
                 (list[j], list[k]) = (list[k], list[j]);
             }
         }
+        /// <summary>
+        /// Returns true with the given probability.
+        /// </summary>
+        public bool Bool(float probability = 0.5f) => ExclusiveFraction() < probability;
     }
 }

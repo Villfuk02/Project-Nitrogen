@@ -9,9 +9,9 @@ namespace Utils.Random
     /// </summary>
     public class WeightedRandomSet<T> : IEnumerable<(T item, float weight)>
     {
-        //underlying container of items
+        // underlying container of items
         readonly List<(T item, float weight)> list_;
-        //maps items to their position in list_
+        // maps items to their position in list_
         readonly Dictionary<T, int> positions_;
         readonly Random random_;
         float totalWeight_;
@@ -73,7 +73,7 @@ namespace Utils.Random
             if (positions_.ContainsKey(item))
                 return;
             if (weight <= 0)
-                throw new ArgumentException("Weight must be positive.");
+                throw new ArgumentException("Weight must be positive");
             positions_.Add(item, list_.Count);
             list_.Add((item, weight));
             totalWeight_ += weight;
@@ -104,7 +104,7 @@ namespace Utils.Random
         public T PopRandom()
         {
             if (totalWeight_ <= 0)
-                throw new InvalidOperationException("Cannot pop from an empty set.");
+                throw new InvalidOperationException("Cannot pop from an empty set");
             float r = random_.Float(0, totalWeight_);
             int pos = 0;
             for (int i = 0; i < list_.Count; i++)
@@ -129,9 +129,9 @@ namespace Utils.Random
         public void UpdateWeight(T item, float newWeight)
         {
             if (newWeight <= 0)
-                throw new ArgumentException("Weight must be positive.");
+                throw new ArgumentException("Weight must be positive");
             if (!positions_.ContainsKey(item))
-                throw new InvalidOperationException($"Item {item} was not present in the set.");
+                throw new InvalidOperationException($"Item {item} was not present in the set");
             int pos = positions_[item];
             totalWeight_ -= list_[pos].weight;
             totalWeight_ += newWeight;

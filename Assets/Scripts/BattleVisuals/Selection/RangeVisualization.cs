@@ -21,8 +21,8 @@ namespace BattleVisuals.Selection
         [SerializeField] int layers;
         [SerializeField] float areaSamplesPerFrameMultiplier;
         [Header("Runtime variables")]
-        QuadTree<(IHighlightable.HighlightType h, bool done)> rangeVisuals_;
-        readonly PriorityQueue<QuadTree<(IHighlightable.HighlightType h, bool done)>, float> rangeVisualQueue_ = new();
+        QuadTree<(HighlightType h, bool done)> rangeVisuals_;
+        readonly PriorityQueue<QuadTree<(HighlightType h, bool done)>, float> rangeVisualQueue_ = new();
         int textureSize_;
         Vector2 offset_;
         Texture2D texture_;
@@ -70,20 +70,20 @@ namespace BattleVisuals.Selection
             return (pixelPos * size + (size - 1) * 0.5f * Vector2.one) / pixelsPerUnit - offset_ + WorldUtils.WORLD_CENTER;
         }
 
-        (IHighlightable.HighlightType h, bool done) CalculateRangeVisualAt(Vector2Int pixel, int depth)
+        (HighlightType h, bool done) CalculateRangeVisualAt(Vector2Int pixel, int depth)
         {
             int size = textureSize_ >> depth;
             (var h, bool done) = CalculateRangeVisualAt(PixelToTilePos(pixel, size), size / (float)pixelsPerUnit);
             return (h, done || size == 1);
         }
-        (IHighlightable.HighlightType h, bool done) CalculateRangeVisualAt(Vector2 point, float size)
+        (HighlightType h, bool done) CalculateRangeVisualAt(Vector2 point, float size)
         {
             var pos = WorldUtils.TilePosToWorldPos(new Vector3(point.x, point.y, World.data.tiles.GetHeightAt(point)));
             (var h, float r) = highlightController.highlightProvider.GetAffectedArea(pos);
             return (h, r >= size * 0.71f);
         }
 
-        void TryExpandNode(QuadTree<(IHighlightable.HighlightType h, bool done)> node, Vector2 priorityTilePosition)
+        void TryExpandNode(QuadTree<(HighlightType h, bool done)> node, Vector2 priorityTilePosition)
         {
             if (node.children.HasValue)
                 return;
@@ -132,12 +132,12 @@ namespace BattleVisuals.Selection
             terrainMaterial.SetVector(Offset, offset_ + Vector2.one / pixelsPerUnit / 2);
         }
 
-        void PaintNode(Vector2Int pos, int depth, IHighlightable.HighlightType highlightType)
+        void PaintNode(Vector2Int pos, int depth, HighlightType highlightType)
         {
             texture_.SetPixel(pos.x, pos.y, new((int)highlightType / 255f, 0, 0), layers - depth);
         }
 
-        static void TrySimplify(QuadTree<(IHighlightable.HighlightType h, bool done)> node)
+        static void TrySimplify(QuadTree<(HighlightType h, bool done)> node)
         {
             if (!node.children.HasValue || !node.children.Value.All(c => c.value.done && c.value.h == node.value.h))
                 return;
@@ -154,7 +154,7 @@ namespace BattleVisuals.Selection
                 DrawGizmosRecursive(rangeVisuals_);
         }
 
-        void DrawGizmosRecursive(QuadTree<(IHighlightable.HighlightType h, bool done)> node)
+        void DrawGizmosRecursive(QuadTree<(HighlightType h, bool done)> node)
         {
             if (node.children is not null)
             {

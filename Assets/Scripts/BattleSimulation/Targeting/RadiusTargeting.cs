@@ -7,15 +7,11 @@ namespace BattleSimulation.Targeting
         [Header("References")]
         [SerializeField] CapsuleCollider radiusTrigger;
         [SerializeField] BoxCollider heightTrigger;
-        [Header("Stats")]
-        public float currentRange;
+        [Header("Settings")]
         public bool canTargetDownwards;
         public bool canTargetUpwards;
-
-        protected override TargetingPriority[] Priorities => new[]
-        {
-            TargetingPriority.FIRST, TargetingPriority.LAST, TargetingPriority.CLOSEST, TargetingPriority.FARTHEST, TargetingPriority.STRONGEST, TargetingPriority.WEAKEST
-        };
+        [Header("Settings - auto-assigned")]
+        public float currentRange;
 
         protected override void InitComponents()
         {

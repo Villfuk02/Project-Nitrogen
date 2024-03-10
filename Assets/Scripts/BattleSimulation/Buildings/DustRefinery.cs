@@ -4,8 +4,8 @@ namespace BattleSimulation.Buildings
     {
         protected override void OnPlaced()
         {
-            OriginalBlueprint.materialCost += OriginalBlueprint.magic1;
             base.OnPlaced();
+            OriginalBlueprint.materialCost += OriginalBlueprint.magic1;
         }
     }
 }

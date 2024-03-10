@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Utils;
 
 namespace BattleSimulation.Targeting
 {
@@ -12,7 +13,7 @@ namespace BattleSimulation.Targeting
     }
     public interface ITargetingChild
     {
-        void InitParent(ITargetingParent targetingParent);
+        void SetParent(ITargetingParent targetingParent);
         bool IsInBounds(Vector3 pos);
     }
     internal abstract class CompositeTargetingComponent : ITargetingChild, ITargetingParent
@@ -21,9 +22,9 @@ namespace BattleSimulation.Targeting
         protected Dictionary<Attacker, int> inRange = new();
 
 
-        public virtual void InitParent(ITargetingParent targetingParent)
+        public virtual void SetParent(ITargetingParent targetingParent)
         {
-            this.parent = targetingParent;
+            parent = targetingParent;
         }
 
         public abstract bool IsInBounds(Vector3 pos);
@@ -40,24 +41,24 @@ namespace BattleSimulation.Targeting
             parts_ = parts;
         }
 
-        public override void InitParent(ITargetingParent targetingParent)
+        public override void SetParent(ITargetingParent targetingParent)
         {
-            base.InitParent(targetingParent);
+            base.SetParent(targetingParent);
             foreach (var part in parts_)
             {
-                part.InitParent(this);
+                part.SetParent(this);
             }
         }
         public override void TargetFound(Attacker target)
         {
-            if (inRange.ContainsKey(target))
-            {
-                inRange[target]++;
-            }
-            else
+            if (!inRange.ContainsKey(target))
             {
                 inRange.Add(target, 1);
                 parent.TargetFound(target);
+            }
+            else
+            {
+                inRange[target]++;
             }
         }
 
@@ -80,21 +81,18 @@ namespace BattleSimulation.Targeting
             parts_ = parts;
         }
 
-        public override void InitParent(ITargetingParent targetingParent)
+        public override void SetParent(ITargetingParent targetingParent)
         {
-            base.InitParent(targetingParent);
+            base.SetParent(targetingParent);
             foreach (var part in parts_)
             {
-                part.InitParent(this);
+                part.SetParent(this);
             }
         }
 
         public override void TargetFound(Attacker target)
         {
-            if (inRange.ContainsKey(target))
-                inRange[target]++;
-            else
-                inRange.Add(target, 1);
+            inRange.Increment(target);
 
             if (inRange[target] == parts_.Length)
                 parent.TargetFound(target);
@@ -110,65 +108,44 @@ namespace BattleSimulation.Targeting
         }
         public override bool IsInBounds(Vector3 pos) => parts_.All(p => p.IsInBounds(pos));
     }
-    internal class SubtractionTargetingComponent : CompositeTargetingComponent
+
+    internal class DifferenceTargetingComponent : ITargetingChild, ITargetingParent
     {
-        readonly ITargetingChild mainPart_;
-        readonly ITargetingChild[] subtractParts_;
-        public SubtractionTargetingComponent(ITargetingChild mainPart, params ITargetingChild[] subtractParts)
+        ITargetingParent parent_;
+        readonly ITargetingChild component1_;
+        readonly ITargetingChild component2_;
+        readonly HashSet<Attacker> inRange_ = new();
+
+        public DifferenceTargetingComponent(ITargetingChild component1, ITargetingChild component2)
         {
-            mainPart_ = mainPart;
-            subtractParts_ = subtractParts;
+            component1_ = component1;
+            component2_ = component2;
         }
 
-        public override void InitParent(ITargetingParent targetingParent)
+        public void SetParent(ITargetingParent targetingParent)
         {
-            base.InitParent(targetingParent);
-            mainPart_.InitParent(new MainInterface(this));
-            foreach (var part in subtractParts_)
+            parent_ = targetingParent;
+            component1_.SetParent(this);
+            component2_.SetParent(this);
+        }
+
+        public void TargetFound(Attacker target) => Flip(target);
+        public void TargetLost(Attacker target) => Flip(target);
+
+        void Flip(Attacker target)
+        {
+            if (!inRange_.Contains(target))
             {
-                part.InitParent(this);
-            }
-        }
-
-        class MainInterface : ITargetingParent
-        {
-            readonly SubtractionTargetingComponent o;
-            public MainInterface(SubtractionTargetingComponent o) => this.o = o;
-            public void TargetFound(Attacker target) => o.TargetLost(target);
-            public void TargetLost(Attacker target) => o.TargetFound(target);
-        }
-
-        public override void TargetFound(Attacker target)
-        {
-            if (inRange.ContainsKey(target))
-            {
-                int count = --inRange[target];
-                if (count == 0)
-                {
-                    inRange.Remove(target);
-                    parent.TargetLost(target);
-                }
+                inRange_.Add(target);
+                parent_.TargetFound(target);
             }
             else
             {
-                inRange.Add(target, -1);
+                inRange_.Remove(target);
+                parent_.TargetLost(target);
             }
         }
 
-        public override void TargetLost(Attacker target)
-        {
-            if (inRange.ContainsKey(target))
-            {
-                int count = ++inRange[target];
-                if (count == 0)
-                    inRange.Remove(target);
-            }
-            else
-            {
-                inRange.Add(target, 1);
-                parent.TargetFound(target);
-            }
-        }
-        public override bool IsInBounds(Vector3 pos) => mainPart_.IsInBounds(pos) && !subtractParts_.Any(p => p.IsInBounds(pos));
+        public bool IsInBounds(Vector3 pos) => component1_.IsInBounds(pos) ^ component2_.IsInBounds(pos);
     }
 }

@@ -406,7 +406,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   ability: {fileID: 2616844260447618044}
-  deadZone: 0.01
+  minMovement: 0.01
 --- !u!1 &7968616451989447347
 GameObject:
   m_ObjectHideFlags: 0

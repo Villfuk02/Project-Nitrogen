@@ -27,10 +27,12 @@ namespace Game.InfoPanel
             { "BRK", "<line-height=150%>\n<line-height=100%>" },
 
             // ICONS
-            { "FUE", TextUtils.Icon.Fuel.Sprite() },
-            { "MAT", TextUtils.Icon.Materials.Sprite() },
-            { "ENE", TextUtils.Icon.Energy.Sprite() },
-            { "HUL", TextUtils.Icon.Hull.Sprite() },
+            { "#FUE", TextUtils.Icon.Fuel.Sprite() },
+            { "#MAT", TextUtils.Icon.Materials.Sprite() },
+            { "#ENE", TextUtils.Icon.Energy.Sprite() },
+            { "#HUL", TextUtils.Icon.Hull.Sprite() },
+            { "#DMG", TextUtils.Icon.Damage.Sprite() },
+            { "#DUR", TextUtils.Icon.Duration.Sprite() }
         };
 
         static readonly Dictionary<string, BlueprintDescriptionFormatter.HandleTag> BlueprintTags = new()

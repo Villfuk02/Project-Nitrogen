@@ -43,7 +43,7 @@ namespace Utils
         public float EvaluateAt(Vector2 pos)
         {
             if (offsets_ is null || offsets_.Length != octaves)
-                throw new InvalidOperationException("Noise has not been initialized.");
+                throw new InvalidOperationException("Noise has not been initialized");
 
             float ret = bias;
             float a = baseAmplitude;
@@ -56,7 +56,7 @@ namespace Utils
             }
             return ret;
         }
-        //Modifies the Perlin noise values to be in the range [-1..1] instead of [0..1]
+        // Modifies the Perlin noise values to be in the range [-1..1] instead of [0..1]
         static float GetNormalizedNoiseAt(Vector2 pos)
         {
             return Mathf.PerlinNoise(pos.x, pos.y) * 2 - 1;

@@ -24,7 +24,11 @@ MonoBehaviour:
   range: -1
   damage: -1
   damageType: 0
-  shotInterval: -1
+  interval: -1
+  radius: -1
+  delay: -1
+  durationTicks: -1
+  durationWaves: -1
   fuelProduction: -1
   materialProduction: 5
   energyProduction: -1
@@ -32,4 +36,4 @@ MonoBehaviour:
   descriptions:
   - Produces [PRO] every round.
   - Cannot be built adjacent to another [NAM].
-  - Increases cost by [MAT][M1-] when built.
+  - Increases cost by [#MAT][M1-] when built.

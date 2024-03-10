@@ -58,7 +58,7 @@ namespace WorldGen
             else
                 throw new("There can be only one instance of WorldGenerator");
 
-            GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunPersistence>().SetupLevel();
+            GameObject.FindGameObjectWithTag(TagNames.RUN_PERSISTENCE).GetComponent<RunPersistence>().SetupLevel();
             Random = new(worldSettings.seed);
             Tiles = null;
         }
@@ -107,7 +107,7 @@ namespace WorldGen
             while (true)
             {
                 if (tries <= 0)
-                    throw new("Failed to generate a world.");
+                    throw new("Failed to generate a world");
                 tries--;
 
                 starts = await Task.Run(() => pathStartPicker.PickStarts(worldSettings.pathLengths));

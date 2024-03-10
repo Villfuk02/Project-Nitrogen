@@ -11,29 +11,28 @@ namespace BattleSimulation.Attackers
 {
     public class Attacker : MonoBehaviour, IHighlightable
     {
-        public static ModifiableCommand<(Attacker target, Damage damage)> hit = new();
-        public static ModifiableCommand<(Attacker target, Damage damage)> damage = new();
-        public static ModifiableCommand<(Attacker target, Damage cause)> die = new();
+        public const float SMALL_TARGET_HEIGHT = 0.15f;
+        public const float LARGE_TARGET_HEIGHT = 0.3f;
+        public static readonly ModifiableCommand<(Attacker target, Damage damage)> HIT = new();
+        public static readonly ModifiableCommand<(Attacker target, Damage damage)> DAMAGE = new();
+        public static readonly ModifiableCommand<(Attacker target, Damage cause)> DIE = new();
         static Attacker()
         {
-            damage.RegisterHandler(DamageHandler);
-            die.RegisterHandler(DeathHandler);
+            DAMAGE.RegisterHandler(DamageHandler);
+            DIE.RegisterHandler(DeathHandler);
         }
         [Header("References")]
         [SerializeField] Rigidbody rb;
+        [SerializeField] Image highlight;
+        [SerializeField] Animator highlightAnim;
+        public Transform target;
+        [Header("Settings")]
         [SerializeField] UnityEvent<Damage> onDamage;
         [SerializeField] UnityEvent<Damage> onDeath;
         public UnityEvent onRemoved;
         public UnityEvent<Attacker> onReachedHub;
-        [SerializeField] Image highlight;
-        [SerializeField] Animator highlightAnim;
-        [Header("Constants")]
-        public const float SMALL_TARGET_HEIGHT = 0.15f;
-        public const float LARGE_TARGET_HEIGHT = 0.3f;
+        [Header("Runtime variables")]
         public AttackerStats originalStats;
-        [Header("Runtime References")]
-        public Transform target;
-        [Header("Runtime values")]
         public AttackerStats stats;
         [SerializeField] float pathSegmentProgress;
         [SerializeField] Vector2Int pathSegmentTarget;
@@ -41,9 +40,8 @@ namespace BattleSimulation.Attackers
         [SerializeField] uint pathSplitIndex;
         [SerializeField] int segmentsToCenter;
         public int health;
-        [SerializeField] int deadTime;
         bool removed_;
-        public bool IsDead => deadTime > 0;
+        public bool IsDead { get; private set; }
 
         void Awake()
         {
@@ -54,41 +52,48 @@ namespace BattleSimulation.Attackers
         void FixedUpdate()
         {
             if (IsDead)
-            {
-                deadTime++;
-                if (deadTime > 200)
-                    Destroy(gameObject);
                 return;
-            }
 
             pathSegmentProgress += Time.fixedDeltaTime * stats.speed;
 
             while (pathSegmentProgress >= 1)
-            {
-                pathSegmentProgress--;
-                segmentsToCenter--;
-                lastTarget = pathSegmentTarget;
-                uint paths = (uint)World.WorldData.World.data.tiles[pathSegmentTarget].pathNext.Count;
-                if (paths == 0)
-                {
-                    if (!removed_)
-                    {
-                        removed_ = true;
-                        onRemoved.Invoke();
-                    }
-                    if (!IsDead)
-                    {
-                        onReachedHub.Invoke(this);
-                    }
-                    Destroy(gameObject);
+                if (!TryAdvanceSegment())
                     return;
-                }
-                uint chosen = pathSplitIndex % paths;
-                pathSplitIndex /= paths;
-                pathSegmentTarget = World.WorldData.World.data.tiles[pathSegmentTarget].pathNext[(int)chosen].pos;
-            }
 
             UpdateWorldPosition();
+        }
+
+        bool TryAdvanceSegment()
+        {
+            pathSegmentProgress--;
+            segmentsToCenter--;
+            lastTarget = pathSegmentTarget;
+            uint ways = (uint)World.WorldData.World.data.tiles[pathSegmentTarget].pathNext.Count;
+            if (ways == 0)
+            {
+                ReachedHub();
+                return false;
+            }
+
+            uint chosen = pathSplitIndex % ways;
+            pathSplitIndex /= ways;
+            pathSegmentTarget = World.WorldData.World.data.tiles[pathSegmentTarget].pathNext[(int)chosen].pos;
+            return true;
+        }
+
+        void ReachedHub()
+        {
+            if (!IsDead)
+                onReachedHub.Invoke(this);
+
+            if (!removed_)
+            {
+                removed_ = true;
+                onRemoved.Invoke();
+            }
+
+            IsDead = true;
+            Destroy(gameObject);
         }
 
         void UpdateWorldPosition()
@@ -107,7 +112,6 @@ namespace BattleSimulation.Attackers
             pathSegmentProgress = 0;
             pathSplitIndex = index;
             segmentsToCenter = World.WorldData.World.data.tiles[firstNode].dist + 1;
-            transform.localPosition = Vector3.up * 200;
             UpdateWorldPosition();
         }
 
@@ -131,12 +135,12 @@ namespace BattleSimulation.Attackers
         void TakeDamage(Damage dmg)
         {
             if (IsDead)
-                throw new InvalidOperationException("dead attackers cannot be damaged!");
+                throw new InvalidOperationException("Dead attackers cannot be damaged");
             if (dmg.amount < 0)
-                throw new ArgumentException("damage cannot be negative!");
+                throw new ArgumentException("Damage cannot be negative");
 
             dmg.amount = Mathf.Floor(dmg.amount);
-            if (dmg.amount <= 0)
+            if (dmg.amount == 0)
                 return;
 
             onDamage.Invoke(dmg);
@@ -145,24 +149,24 @@ namespace BattleSimulation.Attackers
             if (health <= 0)
             {
                 (Attacker, Damage) param = (this, dmg);
-                die.Invoke(param);
+                DIE.Invoke(param);
             }
         }
 
         void Die(Damage cause)
         {
             if (IsDead)
-                throw new InvalidOperationException("dead attackers cannot die!");
+                throw new InvalidOperationException("Dead attackers cannot die");
 
-            deadTime = 1;
+            IsDead = true;
+            Destroy(gameObject, 5f);
             rb.detectCollisions = false;
 
             onDeath.Invoke(cause);
-            if (!removed_)
-            {
-                removed_ = true;
-                onRemoved.Invoke();
-            }
+            if (removed_)
+                return;
+            removed_ = true;
+            onRemoved.Invoke();
         }
 
         void OnDrawGizmosSelected()

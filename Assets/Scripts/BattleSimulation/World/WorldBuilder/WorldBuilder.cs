@@ -22,23 +22,20 @@ namespace BattleSimulation.World.WorldBuilder
         [SerializeField] GameObject slotPrefab;
         [SerializeField] GameObject tilePrefab;
         [SerializeField] Blueprint hubBlueprint;
-        [Header("Runtime")]
+        [Header("Runtime variables")]
         [SerializeField] int done;
         [SerializeField] Tile centerTile;
+        [SerializeField] int millisPerFrame = 12;
         readonly Stopwatch frameTimer_ = new();
-        int millisPerFrame_ = 12;
 
         void Awake()
         {
-            foreach (var (index, _) in Tiles.TILES.IndexedEnumerable)
-            {
-                Tiles.TILES[index] = null;
-            }
+            Tiles.TILES.Fill((Tile)null);
         }
 
         void Update()
         {
-            millisPerFrame_ = Mathf.Clamp(500 / Application.targetFrameRate, 5, 50);
+            millisPerFrame = Mathf.Clamp(1000 / Application.targetFrameRate, 10, 100) / 2;
             frameTimer_.Restart();
             if (done < 5)
                 return;
@@ -61,7 +58,7 @@ namespace BattleSimulation.World.WorldBuilder
             foreach (var pos in WorldUtils.WORLD_SIZE)
             {
                 PlaceTile(pos);
-                if (frameTimer_.ElapsedMilliseconds >= millisPerFrame_)
+                if (frameTimer_.ElapsedMilliseconds >= millisPerFrame)
                     yield return null;
             }
             centerTile = Tiles.TILES[WorldUtils.WORLD_CENTER];
@@ -72,7 +69,7 @@ namespace BattleSimulation.World.WorldBuilder
             foreach (var pos in WorldUtils.WORLD_SIZE + Vector2Int.one)
             {
                 PlaceModule(pos);
-                if (frameTimer_.ElapsedMilliseconds >= millisPerFrame_)
+                if (frameTimer_.ElapsedMilliseconds >= millisPerFrame)
                     yield return null;
             }
             done++;
@@ -86,7 +83,7 @@ namespace BattleSimulation.World.WorldBuilder
                 foreach (var decoration in tile.decorations)
                 {
                     PlaceDecoration(decoration, Tiles.TILES[tile.pos].decorationHolder);
-                    if (frameTimer_.ElapsedMilliseconds >= millisPerFrame_)
+                    if (frameTimer_.ElapsedMilliseconds >= millisPerFrame)
                         yield return null;
                 }
             }
@@ -102,13 +99,13 @@ namespace BattleSimulation.World.WorldBuilder
 
         void PlaceModule(Vector2Int pos)
         {
-            (var module, int height) = worldData.terrain[pos];
+            var slot = worldData.terrain[pos];
             Transform t = Instantiate(slotPrefab, terrain).transform;
-            t.position = WorldUtils.SlotPosToWorldPos(pos.x, pos.y, height + module.HeightOffset);
-            t.localScale = new Vector3(module.Flipped ? -1 : 1, 1, 1) * 1.01f;
-            t.localRotation = Quaternion.Euler(0, 90 * module.Rotated, 0);
-            t.GetComponent<MeshFilter>().mesh = module.CollisionMesh;
-            t.GetComponent<MeshCollider>().sharedMesh = module.CollisionMesh;
+            t.position = WorldUtils.SlotPosToWorldPos(pos.x, pos.y, slot.height + slot.module.HeightOffset);
+            t.localScale = new Vector3(slot.module.Flipped ? -1 : 1, 1, 1) * 1.01f;
+            t.localRotation = Quaternion.Euler(0, 90 * slot.module.Rotated, 0);
+            t.GetComponent<MeshFilter>().mesh = slot.module.CollisionMesh;
+            t.GetComponent<MeshCollider>().sharedMesh = slot.module.CollisionMesh;
         }
         void PlaceDecoration(DecorationInstance decoration, Transform parent)
         {

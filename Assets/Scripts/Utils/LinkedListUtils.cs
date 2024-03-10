@@ -25,13 +25,13 @@ namespace Utils
             if (from == to)
                 return;
 
-            //find start of region to reverse
+            // find start of region to reverse
             // > > > [from] > > > to > > >
             var current = list.First!;
             while (current != from)
                 current = current.Next ?? throw new ArgumentException("From was not found in List");
 
-            //insert reversed region before 'from'
+            // insert reversed region before 'from'
             // > > > to < < < [from] > > > to > > >
             var currentReversed = to;
             while (currentReversed != from)
@@ -40,11 +40,11 @@ namespace Utils
                 currentReversed = currentReversed.Previous ?? throw new ArgumentException("From was not before To");
             }
 
-            //skip 'from'
+            // skip 'from'
             // > > > to < < < from [>] > > to > > >
             current = current.Next!;
 
-            //remove unreversed region
+            // remove unreversed region
             // > > > to < < < from [to] > > >
             while (current != to)
             {
@@ -53,7 +53,7 @@ namespace Utils
                 current = next;
             }
 
-            //remove 'to'
+            // remove 'to'
             // > > > to < < < from > > >
             list.Remove(current!);
         }

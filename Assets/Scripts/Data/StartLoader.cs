@@ -15,7 +15,7 @@ namespace Data
 
         void Start()
         {
-            loaders_ = new ILoader[] { new TerrainTypeLoader(Path.Combine(Application.dataPath, "TerrainTypes")) };
+            loaders_ = new ILoader[] { new TerrainTypeLoader(Path.Combine(Application.streamingAssetsPath, "TerrainTypes")) };
             StartCoroutine(LoadAll());
         }
 

@@ -1,5 +1,4 @@
 using Data.WorldGen;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Utils;
@@ -8,6 +7,15 @@ namespace BattleSimulation.World.WorldData
 {
     public class TilesData
     {
+        public struct CollapsedSlot
+        {
+            public Module module;
+            public int height;
+            public static readonly CollapsedSlot NONE = new() { module = null, height = -1 };
+        }
+
+        public delegate bool IsPassable(Vector2Int tile, int direction);
+
         readonly Array2D<TileData> tiles_;
         /// <summary>
         /// Creates an instance of <see cref="TilesData"/>, pre-filled with some base data.
@@ -15,7 +23,7 @@ namespace BattleSimulation.World.WorldData
         /// <param name="slots">Generated terrain <see cref="Module"/>s and their heights.</param>
         /// <param name="isPassable">Oracle that accepts a tile position and direction and returns if there is a passage from the tile in the given direction.</param>
         /// <param name="paths">The generated paths, each an array of the tile positions it visits.</param>
-        public TilesData(IReadOnlyArray2D<(Module module, int height)> slots, Func<Vector2Int, int, bool> isPassable, IEnumerable<Vector2Int[]> paths)
+        public TilesData(IReadOnlyArray2D<CollapsedSlot> slots, IsPassable isPassable, IEnumerable<Vector2Int[]> paths)
         {
             tiles_ = new(WorldUtils.WORLD_SIZE);
             tiles_.Fill(() => new());
@@ -27,7 +35,7 @@ namespace BattleSimulation.World.WorldData
                     tiles_[path[i]].dist = path.Length - i;
         }
 
-        void InitTile(IReadOnlyArray2D<(Module module, int height)> slots, Func<Vector2Int, int, bool> isPassable, Vector2Int pos)
+        void InitTile(IReadOnlyArray2D<CollapsedSlot> slots, IsPassable isPassable, Vector2Int pos)
         {
             TileData t = this[pos];
             CardinalDirs<TileData> connections = new();
@@ -65,7 +73,7 @@ namespace BattleSimulation.World.WorldData
             Queue<TileData> queue = new();
             queue.Enqueue(tiles_[WorldUtils.WORLD_CENTER]);
 
-            //BFS
+            // BFS
             while (queue.Count > 0)
             {
                 var node = queue.Dequeue();

@@ -8,6 +8,7 @@ namespace BattleSimulation.Selection
 {
     public class SpacedBuildingPlacement : BuildingPlacement
     {
+        [Header("Settings")]
         [SerializeField] bool onSlants;
 
         public override bool IsTileValid(Tile tile)

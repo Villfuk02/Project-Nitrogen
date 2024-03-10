@@ -5357,6 +5357,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 4374977906458368141}
+  highlight: {fileID: 5150071765153014635}
+  highlightAnim: {fileID: 1861407652524293487}
+  target: {fileID: 719971657807235023}
   onDamage:
     m_PersistentCalls:
       m_Calls:
@@ -5417,10 +5420,7 @@ MonoBehaviour:
   onReachedHub:
     m_PersistentCalls:
       m_Calls: []
-  highlight: {fileID: 5150071765153014635}
-  highlightAnim: {fileID: 1861407652524293487}
   originalStats: {fileID: 11400000, guid: c01c38eed1b43144daccc153aecedef9, type: 2}
-  target: {fileID: 719971657807235023}
   stats: {fileID: 0}
   pathSegmentProgress: 0
   pathSegmentTarget: {x: 0, y: 0}
@@ -5428,7 +5428,6 @@ MonoBehaviour:
   pathSplitIndex: 0
   segmentsToCenter: 0
   health: 0
-  deadTime: 0
 --- !u!135 &5845349189104484813
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5440,8 +5439,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
-  m_Center: {x: 0, y: 0.125, z: 0}
+  m_Radius: 0.2
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!54 &4374977906458368141
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5457,7 +5456,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &6848800921535965218
 MonoBehaviour:
   m_ObjectHideFlags: 0

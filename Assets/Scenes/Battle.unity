@@ -259,6 +259,7 @@ MonoBehaviour:
   hubBlueprint: {fileID: 11400000, guid: d8c120b9b6f017843aa635bbbb54b549, type: 2}
   done: 0
   centerTile: {fileID: 0}
+  millisPerFrame: 12
 --- !u!1 &43607243
 GameObject:
   m_ObjectHideFlags: 0
@@ -826,15 +827,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waveGenerator: {fileID: 789092908}
-  spawnTimer: 0
-  currentIndex: 0
-  wave: 0
-  attackersLeft: 0
-  startNextWave: 0
-  spawning: 0
-  waveStarted: 0
-  currentWave:
-    batches: []
   onSpawnedOnce:
     m_PersistentCalls:
       m_Calls:
@@ -850,6 +842,15 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  spawnTimer: 0
+  currentIndex: 0
+  wave: 0
+  attackersLeft: 0
+  startNextWave: 0
+  spawning: 0
+  waveStarted: 0
+  currentWave:
+    batches: []
 --- !u!114 &125072572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2781,7 +2782,7 @@ MonoBehaviour:
   energyIncomeText: {fileID: 803329320}
   materialIncomeText: {fileID: 2122991749}
   energyFill: {fileID: 1301885693}
-  animationDivisor: 20
+  convergenceDivisor: 20
   energyDisplay: 0
   materialDisplay: 0
 --- !u!114 &568931858
@@ -2803,7 +2804,7 @@ MonoBehaviour:
   incomeText: {fileID: 635154928}
   goalText: {fileID: 289512043}
   predictionArrowHolder: {fileID: 1263618878}
-  animationDivisor: 20
+  convergenceDivisor: 20
   emptyWidth: 100
   minWidth: 120
   maxWidth: 600
@@ -2829,7 +2830,7 @@ MonoBehaviour:
   hullText: {fileID: 504519588}
   maxHullText: {fileID: 1691845708}
   dmgTakenText: {fileID: 62492777}
-  animationDivisor: 20
+  convergenceDivisor: 20
   emptyWidth: 100
   minWidth: 150
   maxWidth: 580
@@ -3285,6 +3286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4da18d910c2c349a0006955864b588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overrideRunSettings: 0
   availableAttackers:
   - {fileID: 11400000, guid: 22f92218b7c337547a1d8507674d0330, type: 2}
   - {fileID: 11400000, guid: c01c38eed1b43144daccc153aecedef9, type: 2}
@@ -3293,14 +3295,13 @@ MonoBehaviour:
   pathDropChance: 0.4
   maxBatchCount: 3
   parallelMinCount: 3
-  overrideRun: 0
-  paths: 4
   baseValueRate: 5
   baseEffectiveValueBuffer: 25
   linearScaling: 1
   quadraticScaling: 0
   cubicScaling: 0
   exponentialScalingBase: 1
+  paths: 4
   bufferLeft: 0
   waves: []
 --- !u!1 &793714036
