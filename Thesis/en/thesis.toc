@@ -1,110 +1,73 @@
-\contentsline {chapter}{\numberline {1}Introduction}{4}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Original vision}{4}{section.1.1}%
-\contentsline {subsection}{\numberline {1.1.1}Rogue-like}{4}{subsection.1.1.1}%
-\contentsline {subsection}{\numberline {1.1.2}Tower Defense}{4}{subsection.1.1.2}%
-\contentsline {section}{\numberline {1.2}Influences}{4}{section.1.2}%
-\contentsline {subsection}{\numberline {1.2.1}Tower Defense Browser Games}{4}{subsection.1.2.1}%
-\contentsline {subsection}{\numberline {1.2.2}Slay the Spire}{4}{subsection.1.2.2}%
-\contentsline {subsection}{\numberline {1.2.3}Plants vs. Zombies}{4}{subsection.1.2.3}%
-\contentsline {subsection}{\numberline {1.2.4}Bloons TD 6}{4}{subsection.1.2.4}%
-\contentsline {section}{\numberline {1.3}Current scope and goals}{4}{section.1.3}%
-\contentsline {chapter}{\numberline {2}Game Design}{5}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Overview}{5}{section.2.1}%
-\contentsline {subsection}{\numberline {2.1.1}Theme}{5}{subsection.2.1.1}%
-\contentsline {section}{\numberline {2.2}Campaign}{5}{section.2.2}%
+\contentsline {chapter}{\numberline {1}Introduction}{3}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Original vision}{3}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Current scope and goals}{3}{section.1.2}%
+\contentsline {chapter}{\numberline {2}Game Design}{4}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Design goals}{4}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Slay the Spire}{4}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Plants vs. Zombies}{4}{subsection.2.1.2}%
+\contentsline {section}{\numberline {2.2}Overview}{5}{section.2.2}%
 \contentsline {section}{\numberline {2.3}Battle}{5}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}World}{5}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}Resources}{5}{subsection.2.3.2}%
-\contentsline {subsection}{\numberline {2.3.3}Blueprints and placement}{5}{subsection.2.3.3}%
-\contentsline {subsection}{\numberline {2.3.4}Economic buildings}{5}{subsection.2.3.4}%
-\contentsline {subsection}{\numberline {2.3.5}Attackers}{5}{subsection.2.3.5}%
-\contentsline {subsection}{\numberline {2.3.6}Towers}{5}{subsection.2.3.6}%
-\contentsline {subsection}{\numberline {2.3.7}Abilities}{5}{subsection.2.3.7}%
-\contentsline {subsection}{\numberline {2.3.8}User interface}{5}{subsection.2.3.8}%
-\contentsline {subsection}{\numberline {2.3.9}Camera controls}{5}{subsection.2.3.9}%
-\contentsline {section}{\numberline {2.4}Events and shops}{5}{section.2.4}%
-\contentsline {section}{\numberline {2.5}Meta-progression}{5}{section.2.5}%
-\contentsline {section}{\numberline {2.6}Visual style}{5}{section.2.6}%
+\contentsline {section}{\numberline {2.4}World}{5}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Resources}{5}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Blueprints and placement}{5}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Economic buildings}{5}{section.2.7}%
+\contentsline {section}{\numberline {2.8}Attackers}{5}{section.2.8}%
+\contentsline {section}{\numberline {2.9}Towers}{5}{section.2.9}%
+\contentsline {section}{\numberline {2.10}Abilities}{5}{section.2.10}%
+\contentsline {section}{\numberline {2.11}Graphical user interface}{5}{section.2.11}%
+\contentsline {section}{\numberline {2.12}Camera controls}{5}{section.2.12}%
+\contentsline {section}{\numberline {2.13}Events and shops}{5}{section.2.13}%
+\contentsline {section}{\numberline {2.14}Campaign}{5}{section.2.14}%
+\contentsline {section}{\numberline {2.15}Meta-progression}{5}{section.2.15}%
+\contentsline {section}{\numberline {2.16}Visual style}{5}{section.2.16}%
 \contentsline {chapter}{\numberline {3}Analysis}{6}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Game Engine}{6}{section.3.1}%
 \contentsline {section}{\numberline {3.2}Attacker movement}{6}{section.3.2}%
 \contentsline {section}{\numberline {3.3}World}{6}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Tiles}{6}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}3D}{6}{subsection.3.3.2}%
 \contentsline {section}{\numberline {3.4}Procedural level generation}{6}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Random number generation}{6}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Paths}{6}{subsection.3.4.2}%
-\contentsline {subsection}{\numberline {3.4.3}Terrain}{7}{subsection.3.4.3}%
-\contentsline {subsection}{\numberline {3.4.4}Resources and obstacles}{7}{subsection.3.4.4}%
-\contentsline {subsection}{\numberline {3.4.5}Terrain type definition}{7}{subsection.3.4.5}%
-\contentsline {subsection}{\numberline {3.4.6}World builder}{7}{subsection.3.4.6}%
-\contentsline {subsection}{\numberline {3.4.7}Terrain types}{7}{subsection.3.4.7}%
-\contentsline {subsection}{\numberline {3.4.8}Attacker waves}{7}{subsection.3.4.8}%
-\contentsline {section}{\numberline {3.5}Simulation}{7}{section.3.5}%
-\contentsline {subsection}{\numberline {3.5.1}Visuals and interpolation}{7}{subsection.3.5.1}%
-\contentsline {section}{\numberline {3.6}Attacker targeting}{7}{section.3.6}%
-\contentsline {section}{\numberline {3.7}Game events}{7}{section.3.7}%
-\contentsline {section}{\numberline {3.8}Range visualization}{7}{section.3.8}%
-\contentsline {section}{\numberline {3.9}Selection}{7}{section.3.9}%
-\contentsline {section}{\numberline {3.10}Blueprints}{7}{section.3.10}%
-\contentsline {subsection}{\numberline {3.10.1}Dynamic descriptions}{7}{subsection.3.10.1}%
-\contentsline {subsection}{\numberline {3.10.2}Attacker stats}{7}{subsection.3.10.2}%
+\contentsline {section}{\numberline {3.5}Random number generation}{6}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Path generation}{6}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Path visualization}{6}{subsection.3.6.1}%
+\contentsline {section}{\numberline {3.7}Terrain generation}{7}{section.3.7}%
+\contentsline {section}{\numberline {3.8}Resources and obstacles}{7}{section.3.8}%
+\contentsline {section}{\numberline {3.9}Terrain types}{7}{section.3.9}%
+\contentsline {section}{\numberline {3.10}World builder}{7}{section.3.10}%
+\contentsline {section}{\numberline {3.11}Attacker wave generation}{7}{section.3.11}%
+\contentsline {section}{\numberline {3.12}Simulation}{7}{section.3.12}%
+\contentsline {section}{\numberline {3.13}Visuals and interpolation}{7}{section.3.13}%
+\contentsline {section}{\numberline {3.14}Attacker targeting}{7}{section.3.14}%
+\contentsline {section}{\numberline {3.15}Game events}{7}{section.3.15}%
+\contentsline {section}{\numberline {3.16}Range visualization}{7}{section.3.16}%
+\contentsline {section}{\numberline {3.17}Selection}{7}{section.3.17}%
+\contentsline {section}{\numberline {3.18}Blueprints}{7}{section.3.18}%
+\contentsline {subsection}{\numberline {3.18.1}Dynamic descriptions}{7}{subsection.3.18.1}%
+\contentsline {subsection}{\numberline {3.18.2}Attacker stats}{7}{subsection.3.18.2}%
 \contentsline {chapter}{\numberline {4}Developer Documentation}{8}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Unity}{9}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Scenes}{9}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Loading}{9}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Main Menu}{9}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Battle}{9}{subsection.4.2.3}%
-\contentsline {section}{\numberline {4.3}Assembly \texttt {Utils}}{9}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Assembly \texttt {Utils.Random}}{9}{subsection.4.3.1}%
-\contentsline {section}{\numberline {4.4}Assembly \texttt {Data}}{9}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}Assembly \texttt {Data.Parsers}}{9}{subsection.4.4.1}%
-\contentsline {subsection}{\numberline {4.4.2}Assembly \texttt {Data.WorldGen}}{9}{subsection.4.4.2}%
-\contentsline {section}{\numberline {4.5}Assembly \texttt {Game}}{9}{section.4.5}%
-\contentsline {subsection}{\numberline {4.5.1}Assembly \texttt {Game.Run}}{9}{subsection.4.5.1}%
-\contentsline {subsection}{\numberline {4.5.2}Assembly \texttt {Game.Damage}}{9}{subsection.4.5.2}%
-\contentsline {subsection}{\numberline {4.5.3}Assembly \texttt {Game.Blueprint}}{9}{subsection.4.5.3}%
-\contentsline {subsection}{\numberline {4.5.4}Assembly \texttt {Game.AttackerStats}}{9}{subsection.4.5.4}%
-\contentsline {subsection}{\numberline {4.5.5}Assembly \texttt {Game.InfoPanel}}{9}{subsection.4.5.5}%
-\contentsline {section}{\numberline {4.6}Assembly \texttt {WorldGen}}{9}{section.4.6}%
-\contentsline {section}{\numberline {4.7}Assembly \texttt {BattleSim}}{9}{section.4.7}%
-\contentsline {subsection}{\numberline {4.7.1}Assembly \texttt {BattleSim.World}}{9}{subsection.4.7.1}%
-\contentsline {subsection}{\numberline {4.7.2}Assembly \texttt {BattleSim.Control}}{9}{subsection.4.7.2}%
-\contentsline {subsection}{\numberline {4.7.3}Assembly \texttt {BattleSim.Selection}}{9}{subsection.4.7.3}%
-\contentsline {subsection}{\numberline {4.7.4}Assembly \texttt {BattleSim.Attackers}}{9}{subsection.4.7.4}%
-\contentsline {subsection}{\numberline {4.7.5}Assembly \texttt {BattleSim.Buildings}}{9}{subsection.4.7.5}%
-\contentsline {subsection}{\numberline {4.7.6}Assembly \texttt {BattleSim.Towers}}{9}{subsection.4.7.6}%
-\contentsline {subsection}{\numberline {4.7.7}Assembly \texttt {BattleSim.Targeting}}{9}{subsection.4.7.7}%
-\contentsline {subsection}{\numberline {4.7.8}Assembly \texttt {BattleSim.Projectiles}}{9}{subsection.4.7.8}%
-\contentsline {subsection}{\numberline {4.7.9}Assembly \texttt {BattleSim.Abilities}}{9}{subsection.4.7.9}%
-\contentsline {section}{\numberline {4.8}Assembly \texttt {BattleVis}}{9}{section.4.8}%
-\contentsline {subsection}{\numberline {4.8.1}Assembly \texttt {BattleVis.World}}{9}{subsection.4.8.1}%
-\contentsline {subsection}{\numberline {4.8.2}Assembly \texttt {BattleVis.Selection}}{9}{subsection.4.8.2}%
-\contentsline {subsection}{\numberline {4.8.3}Assembly \texttt {BattleVis.Effects}}{9}{subsection.4.8.3}%
-\contentsline {subsection}{\numberline {4.8.4}Assembly \texttt {BattleVis.Attackers}}{9}{subsection.4.8.4}%
-\contentsline {subsection}{\numberline {4.8.5}Assembly \texttt {BattleVis.Towers}}{9}{subsection.4.8.5}%
-\contentsline {subsection}{\numberline {4.8.6}Assembly \texttt {BattleVis.Projectiles}}{9}{subsection.4.8.6}%
-\contentsline {subsection}{\numberline {4.8.7}Assembly \texttt {BattleVis.Abilities}}{9}{subsection.4.8.7}%
-\contentsline {subsection}{\numberline {4.8.8}Assembly \texttt {BattleVis.UI}}{9}{subsection.4.8.8}%
-\contentsline {subsection}{\numberline {4.8.9}Assembly \texttt {BattleVis.Camera}}{9}{subsection.4.8.9}%
-\contentsline {chapter}{\numberline {5}User Documentation --- Designer}{10}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Terrain Types}{10}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Blueprints}{10}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Buildings}{10}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Towers}{10}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Abilities}{10}{subsection.5.2.3}%
-\contentsline {section}{\numberline {5.3}Attackers}{10}{section.5.3}%
-\contentsline {chapter}{\numberline {6}User Documentation --- Player}{11}{chapter.6}%
-\contentsline {section}{\numberline {6.1}?Introduction}{11}{section.6.1}%
-\contentsline {section}{\numberline {6.2}?Controls}{11}{section.6.2}%
-\contentsline {section}{\numberline {6.3}?Mechanics}{11}{section.6.3}%
-\contentsline {chapter}{\numberline {7}?Playtesting}{12}{chapter.7}%
-\contentsline {chapter}{Conclusion}{13}{chapter*.2}%
-\contentsline {section}{\numberline {7.1}Goals}{13}{section.7.1}%
-\contentsline {section}{\numberline {7.2}Future Work}{13}{section.7.2}%
-\contentsline {chapter}{Bibliography}{14}{chapter*.3}%
-\contentsline {chapter}{List of Figures}{15}{chapter*.4}%
-\contentsline {chapter}{List of Tables}{16}{chapter*.5}%
-\contentsline {chapter}{List of Abbreviations}{17}{chapter*.6}%
-\contentsline {chapter}{\numberline {A}Attachments}{18}{appendix.A}%
-\contentsline {section}{\numberline {A.1}First Attachment}{18}{section.A.1}%
+\contentsline {section}{\numberline {4.1}Unity}{8}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Scenes}{8}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Battle}{8}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Loading}{8}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Main Menu}{8}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}???}{8}{section.4.3}%
+\contentsline {chapter}{\numberline {5}User Documentation --- Designer}{9}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Terrain Types}{9}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Blueprints}{9}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Buildings}{9}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Towers}{9}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Abilities}{9}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Attackers}{9}{section.5.3}%
+\contentsline {section}{\numberline {5.4}???}{9}{section.5.4}%
+\contentsline {chapter}{\numberline {6}User Documentation --- Player}{10}{chapter.6}%
+\contentsline {section}{\numberline {6.1}?Introduction}{10}{section.6.1}%
+\contentsline {section}{\numberline {6.2}?Controls}{10}{section.6.2}%
+\contentsline {section}{\numberline {6.3}?Mechanics}{10}{section.6.3}%
+\contentsline {chapter}{\numberline {7}?Playtesting}{11}{chapter.7}%
+\contentsline {chapter}{Conclusion}{12}{chapter*.2}%
+\contentsline {section}{\numberline {7.1}Goals}{12}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Future Work}{12}{section.7.2}%
+\contentsline {chapter}{Bibliography}{13}{chapter*.3}%
+\contentsline {chapter}{List of Figures}{14}{chapter*.4}%
+\contentsline {chapter}{List of Tables}{15}{chapter*.5}%
+\contentsline {chapter}{List of Abbreviations}{16}{chapter*.6}%
+\contentsline {chapter}{\numberline {A}Attachments}{17}{appendix.A}%
+\contentsline {section}{\numberline {A.1}First Attachment}{17}{section.A.1}%

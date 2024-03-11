@@ -971,11 +971,6 @@ INPUT D:\MiKTeX\fonts\tfm\public\lm\lmmib7.tfm
 INPUT D:\MiKTeX\fonts\tfm\public\lm\lmbsy10.tfm
 INPUT D:\MiKTeX\fonts\tfm\public\lm\lmbsy10.tfm
 INPUT D:\MiKTeX\fonts\tfm\public\lm\lmbsy7.tfm
-INPUT D:\MiKTeX\tex\latex\lm\ot1lmtt.fd
-INPUT D:\MiKTeX\tex\latex\lm\ot1lmtt.fd
-INPUT D:\MiKTeX\tex\latex\lm\ot1lmtt.fd
-INPUT D:\MiKTeX\tex\latex\lm\ot1lmtt.fd
-INPUT D:\MiKTeX\fonts\tfm\public\lm\rm-lmtt12.tfm
 OUTPUT thesis.toc
 INPUT .\chap01.tex
 INPUT .\chap01.tex
@@ -988,8 +983,6 @@ INPUT chap01.tex
 INPUT .\chap01.tex
 INPUT chap01.tex
 INPUT D:\MiKTeX\fonts\tfm\public\lm\rm-lmr17.tfm
-INPUT D:\MiKTeX\fonts\tfm\public\lm\rm-lmr12.tfm
-INPUT D:\MiKTeX\fonts\tfm\public\lm\rm-lmbx12.tfm
 INPUT .\chap02.tex
 INPUT .\chap02.tex
 INPUT .\chap02.tex
@@ -1000,6 +993,8 @@ INPUT .\chap02.tex
 INPUT chap02.tex
 INPUT .\chap02.tex
 INPUT chap02.tex
+INPUT D:\MiKTeX\fonts\tfm\public\lm\rm-lmr12.tfm
+INPUT D:\MiKTeX\fonts\tfm\public\lm\rm-lmbx12.tfm
 INPUT .\chap03.tex
 INPUT .\chap03.tex
 INPUT .\chap03.tex
@@ -1020,8 +1015,6 @@ INPUT .\chap04.tex
 INPUT chap04.tex
 INPUT .\chap04.tex
 INPUT chap04.tex
-INPUT D:\MiKTeX\fonts\tfm\public\lm\rm-lmtk10.tfm
-INPUT D:\MiKTeX\fonts\tfm\public\lm\rm-lmtk10.tfm
 INPUT .\chap05.tex
 INPUT .\chap05.tex
 INPUT .\chap05.tex
@@ -1117,7 +1110,6 @@ INPUT bibliography.aux
 INPUT bibliography.aux
 INPUT .\thesis.out
 INPUT .\thesis.out
-INPUT D:\MiKTeX\fonts\enc\dvips\lm\lm-rmtt.enc
 INPUT D:\MiKTeX\fonts\enc\dvips\lm\lm-rm.enc
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbx12.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbx12.pfb
@@ -1125,7 +1117,5 @@ INPUT D:\MiKTeX\fonts\type1\public\lm\lmr12.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr12.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr17.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr17.pfb
-INPUT D:\MiKTeX\fonts\type1\public\lm\lmtk10.pfb
-INPUT D:\MiKTeX\fonts\type1\public\lm\lmtk10.pfb
-INPUT D:\MiKTeX\fonts\type1\public\lm\lmtt12.pfb
-INPUT D:\MiKTeX\fonts\type1\public\lm\lmtt12.pfb
+INPUT D:\MiKTeX\fonts\type1\public\amsfonts\symbols\msam10.pfb
+INPUT D:\MiKTeX\fonts\type1\public\amsfonts\symbols\msam10.pfb

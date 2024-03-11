@@ -1,27 +1,14 @@
 ## questions
 - used packages
 - separate get and set access?
+- game desgn - only describe what's in the prototype?
+- where do I describe algorithms
+
 ## text
-- [ ] reorder sections and subsections
-- [ ] sections and subsections
-    - [x] úvod (cíle / účel)
-    - [x] game design
-    - [x] anylýza
-    - [x] vývojová dokumentace (scény, assemblies, důležitější třídy)
-    - [ ] uživatelská dokumentace (designér)
-    - [ ] uživatelská dokumentace (hráč)
-    - [ ] playtest?
-    - [x] závěr (+future work)
-- [ ] summarize each paragraph
-    - [ ] úvod (cíle / účel)
-    - [ ] game design
-    - [ ] anylýza
-    - [ ] vývojová dokumentace (scény, assemblies, důležitější třídy)
-    - [ ] uživatelská dokumentace (designér)
-    - [ ] uživatelská dokumentace (hráč)
-    - [ ] playtest?
-    - [ ] závěr (+future work)
+- [ ] bullet points chapter 2
+- [ ] bullet points chapter 3
 ## implementation
+- [ ] separate wave and not wave phase
 - [ ] menu (seed select)
 - [ ] level progression
 - [ ] sound effects
@@ -55,17 +42,16 @@
     - [ ] info panel text style tweaks
     - [ ] increase shadow resolution
     - [ ] redo building look to make them more visible
-    - [ ] low hull effects
     - [ ] damage taken effects
+    - [ ] low hull effects
     - [ ] level start
     - [ ] level end
-    - [ ] juice it or lose it
 - [ ] +tutorial
 - [ ] +playtest
 - [ ] +polish
 - [ ] +polish
-- [ ] +tower effects
 - [ ] +attacker effects
+- [ ] +tower effects
 - [ ] +more terrain types
 - [ ] +more towers and attackers
 - [ ] +time controls
