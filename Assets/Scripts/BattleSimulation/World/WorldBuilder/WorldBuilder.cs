@@ -5,6 +5,7 @@ using Game.Blueprint;
 using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.Events;
 using Utils;
 
 namespace BattleSimulation.World.WorldBuilder
@@ -13,17 +14,19 @@ namespace BattleSimulation.World.WorldBuilder
     {
         [Header("References")]
         [SerializeField] WorldData.WorldData worldData;
-        [SerializeField] WorldData.World world;
         [SerializeField] Transform tileHolder;
         [SerializeField] Transform terrain;
         [SerializeField] PathRenderer pathRenderer;
+        [Header("Settings")]
         [SerializeField] GameObject[] enableWhenReady;
+        [SerializeField] UnityEvent onReady;
         [Header("Setup")]
         [SerializeField] GameObject slotPrefab;
         [SerializeField] GameObject tilePrefab;
         [SerializeField] Blueprint hubBlueprint;
         [Header("Runtime variables")]
         [SerializeField] int done;
+        [SerializeField] bool ready;
         [SerializeField] Tile centerTile;
         [SerializeField] int millisPerFrame = 12;
         readonly Stopwatch frameTimer_ = new();
@@ -37,14 +40,16 @@ namespace BattleSimulation.World.WorldBuilder
         {
             millisPerFrame = Mathf.Clamp(1000 / Application.targetFrameRate, 10, 100) / 2;
             frameTimer_.Restart();
-            if (done < 5)
-                return;
+            if (done >= 5 && !ready)
+                Ready();
+        }
 
-            world.SetReady();
+        void Ready()
+        {
+            ready = true;
             foreach (var o in enableWhenReady)
-            {
                 o.SetActive(true);
-            }
+            onReady.Invoke();
         }
 
         public void PlaceTilesTrigger() => StartCoroutine(PlaceTiles());

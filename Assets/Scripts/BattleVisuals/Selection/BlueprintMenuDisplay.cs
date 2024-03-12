@@ -1,5 +1,7 @@
 using BattleSimulation.Selection;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BattleVisuals.Selection
 {
@@ -9,9 +11,15 @@ namespace BattleVisuals.Selection
         [SerializeField] GameObject blueprintMenuItemPrefab;
         [SerializeField] BlueprintMenu menu;
         [SerializeField] SelectionController selectionController;
-        [SerializeField] Transform hotbar;
+        [SerializeField] RectTransform abilityHotbar;
+        [SerializeField] RectTransform buildingHotbar;
+        [SerializeField] LayoutElement hotbarContainer;
+        [Header("Settings")]
+        [SerializeField] float hiddenDisplacement;
+        [SerializeField] float switchSpeed;
         [Header("Runtime variables")]
-        [SerializeField] BlueprintMenuItem[] menuItems;
+        [SerializeField] List<BlueprintMenuItem> menuItems;
+        [SerializeField] float hotbarState;
 
         void Start()
         {
@@ -21,26 +29,41 @@ namespace BattleVisuals.Selection
 
         void InitItems()
         {
-            menuItems = new BlueprintMenuItem[menu.blueprints.Length];
-            for (int i = 0; i < menuItems.Length; i++)
-            {
-                menuItems[i] = Instantiate(blueprintMenuItemPrefab, hotbar).GetComponent<BlueprintMenuItem>();
-                menuItems[i].display.InitBlueprint(menu.blueprints[i]);
-                int index = i;
-                menuItems[i].display.onClick.AddListener(() => selectionController.SelectFromMenu(index));
-            }
+            foreach (var entry in menu.abilities)
+                InitItem(entry, abilityHotbar);
+            foreach (var entry in menu.buildings)
+                InitItem(entry, buildingHotbar);
+        }
+
+        void InitItem(BlueprintMenu.MenuEntry entry, Transform parent)
+        {
+            var item = Instantiate(blueprintMenuItemPrefab, parent).GetComponent<BlueprintMenuItem>();
+            item.Init(entry);
+            item.display.onClick.AddListener(() => selectionController.SelectFromMenu(entry.index));
+            menuItems.Add(item);
         }
 
         void Update()
         {
             UpdateItems();
+            UpdateHotbarPositions();
         }
 
         public void UpdateItems()
         {
-            for (int i = 0; i < menuItems.Length; i++)
+            foreach (var item in menuItems)
+                item.UpdateItem(menu.selected);
+        }
+
+        void UpdateHotbarPositions()
+        {
+            hotbarState = Mathf.Lerp(hotbarState, menu.waveStarted ? 1 : 0, Time.deltaTime * switchSpeed);
+            abilityHotbar.anchoredPosition = hiddenDisplacement * (1 - hotbarState) * Vector2.down;
+            buildingHotbar.anchoredPosition = hiddenDisplacement * hotbarState * Vector2.down;
+            if (hotbarContainer.minWidth == 0)
             {
-                menuItems[i].UpdateItem(menu.cooldowns[i], menu.waveStarted, menu.selected == i);
+                hotbarContainer.minWidth = Mathf.Max(abilityHotbar.rect.width, buildingHotbar.rect.width);
+                LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)hotbarContainer.transform.parent);
             }
         }
     }

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.8) (preloaded format=pdflatex 2021.9.29)  11 MAR 2024 14:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.8) (preloaded format=pdflatex 2021.9.29)  12 MAR 2024 09:49
 entering extended mode
 **"d:/Unity Projects/Nitrogen/Thesis/en/thesis.tex"
 (d:/Unity Projects/Nitrogen/Thesis/en/thesis.tex
@@ -644,15 +644,15 @@ Package rerunfilecheck Info: File `thesis.out' has not changed.
 (rerunfilecheck)             Checksum: C75DF96DFBE9D096401EC52B5E58AB89;9024.
  ) 
 Here is how much of TeX's memory you used:
- 14419 strings out of 478927
- 202938 string characters out of 2869020
- 511120 words of memory out of 3000000
- 31839 multiletter control sequences out of 15000+600000
+ 14420 strings out of 478927
+ 202942 string characters out of 2869020
+ 511132 words of memory out of 3000000
+ 31840 multiletter control sequences out of 15000+600000
  450411 words of font info for 61 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  77i,6n,82p,543b,2367s stack positions out of 5000i,500n,10000p,200000b,80000s
 {D:/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}<D:/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><D:/MiKTeX/fonts/type1/public/lm/lmr12.pfb><D:/MiKTeX/fonts/type1/public/lm/lmr17.pfb><D:/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on thesis.pdf (21 pages, 476401 bytes).
+Output written on thesis.pdf (21 pages, 476452 bytes).
 PDF statistics:
  518 PDF objects out of 1000 (max. 8388607)
  95 named destinations out of 1000 (max. 500000)

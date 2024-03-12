@@ -786,6 +786,7 @@ INPUT .\macros.tex
 INPUT macros.tex
 INPUT .\macros.tex
 INPUT macros.tex
+INPUT D:\MiKTeX\tex\latex\xcolor\xcolor.sty
 INPUT D:\MiKTeX\tex\latex\lm\ot1lmr.fd
 INPUT D:\MiKTeX\tex\latex\lm\ot1lmr.fd
 INPUT D:\MiKTeX\tex\latex\lm\ot1lmr.fd

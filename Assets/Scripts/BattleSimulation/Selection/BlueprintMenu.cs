@@ -7,18 +7,36 @@ namespace BattleSimulation.Selection
 {
     public class BlueprintMenu : MonoBehaviour
     {
+        public class MenuEntry
+        {
+            public readonly Blueprint original;
+            public readonly Blueprint current;
+            public readonly int index;
+            public int cooldown;
+
+            public MenuEntry(Blueprint original, int index)
+            {
+                this.original = original;
+                current = original.Clone();
+                cooldown = current.startingCooldown;
+                this.index = index;
+            }
+        }
+        [Header("References")]
+        [SerializeField] SelectionController selectionController;
         [Header("Settings")]
         public Blueprint[] originalBlueprints;
         [Header("Runtime variables")]
-        public Blueprint[] blueprints;
-        public int[] cooldowns;
+        public MenuEntry[] abilities;
+        public MenuEntry[] buildings;
         public int selected;
         public bool waveStarted;
+        MenuEntry[] CurrentEntries => waveStarted ? abilities : buildings;
 
         void Awake()
         {
-            blueprints = originalBlueprints.Select(b => b.Clone()).ToArray();
-            cooldowns = blueprints.Select(b => b.startingCooldown).ToArray();
+            abilities = originalBlueprints.Where(b => b.type == Blueprint.Type.Ability).Select((b, i) => new MenuEntry(b, i)).ToArray();
+            buildings = originalBlueprints.Where(b => b.type != Blueprint.Type.Ability).Select((b, i) => new MenuEntry(b, i)).ToArray();
 
             WaveController.onWaveFinished.RegisterReaction(OnWaveFinished, 10);
             WaveController.startWave.RegisterReaction(OnWaveStarted, 10);
@@ -45,49 +63,51 @@ namespace BattleSimulation.Selection
         {
             blueprint = null;
             original = null;
-            if (index < 0 || index >= blueprints.Length)
+
+            if (index < 0 || index >= CurrentEntries.Length)
                 return false;
 
-            blueprint = blueprints[index];
-            original = originalBlueprints[index];
+            blueprint = CurrentEntries[index].current;
+            original = CurrentEntries[index].original;
             selected = index;
             return true;
         }
 
         public bool TryPlace()
         {
-            if (blueprints[selected].type == Blueprint.Type.Ability != waveStarted)
+            if (CurrentEntries[selected].cooldown > 0)
                 return false;
-            if (cooldowns[selected] > 0)
+            var blueprint = CurrentEntries[selected].current;
+            if (!BattleController.AdjustAndTrySpend(blueprint.energyCost, blueprint.materialCost))
                 return false;
-            if (!BattleController.AdjustAndTrySpend(blueprints[selected].energyCost, blueprints[selected].materialCost))
-                return false;
-            cooldowns[selected] = blueprints[selected].cooldown;
+            CurrentEntries[selected].cooldown = blueprint.cooldown;
             return true;
         }
 
         public void OnWaveStarted()
         {
             waveStarted = true;
+            selectionController.DeselectFromMenu();
         }
 
         public void OnWaveFinished()
         {
             waveStarted = false;
+            selectionController.DeselectFromMenu();
             ReduceCooldowns();
         }
 
         public void ReduceCooldowns()
         {
-            for (int i = 0; i < cooldowns.Length; i++)
-                if (cooldowns[i] > 0)
-                    cooldowns[i]--;
+            foreach (var entry in abilities.Concat(buildings))
+                if (entry.cooldown > 0)
+                    entry.cooldown--;
         }
 
         void FinishCooldowns()
         {
-            for (int i = 0; i < cooldowns.Length; i++)
-                cooldowns[i] = 0;
+            foreach (var entry in abilities.Concat(buildings))
+                entry.cooldown = 0;
         }
     }
 }

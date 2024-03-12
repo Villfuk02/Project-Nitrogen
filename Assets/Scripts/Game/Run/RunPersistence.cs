@@ -67,7 +67,7 @@ namespace Game.Run
 
         bool NextLevelCommand()
         {
-            NextLevel();
+            Invoke(nameof(NextLevel), 0.5f);
             return true;
         }
         public void NextLevel()

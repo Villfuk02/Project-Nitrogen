@@ -1,4 +1,5 @@
 using BattleSimulation.Control;
+using BattleSimulation.Selection;
 using Game.Blueprint;
 using System;
 using UnityEngine;
@@ -18,19 +19,28 @@ namespace BattleVisuals.Selection
         [SerializeField] Color cantAffordTextColor;
         [SerializeField] Color useMaterialsTextColor;
         [SerializeField] Color onCooldownTextColor;
+        [Header("Runtime variables")]
+        [SerializeField] BlueprintMenu.MenuEntry entry;
 
-        public void UpdateItem(int cooldown, bool waveStarted, bool selected)
+        public void Init(BlueprintMenu.MenuEntry entry)
         {
+            display.InitBlueprint(entry.current);
+            this.entry = entry;
+        }
+
+        public void UpdateItem(int selectedIndex)
+        {
+            bool selected = entry.index == selectedIndex;
+
             display.selected = selected;
 
-            display.targetCooldownFill = cooldown / (float)Mathf.Max(display.blueprint.cooldown, 1);
+            display.targetCooldownFill = entry.cooldown / (float)Mathf.Max(display.blueprint.cooldown, 1);
 
             var (affordable, _, _) = BattleController.canAfford.Query((display.blueprint.energyCost, display.blueprint.materialCost));
 
-            display.UpdateText(display.blueprint.energyCost, display.blueprint.materialCost, GetTextColor(cooldown > 0, affordable));
+            display.UpdateText(display.blueprint.energyCost, display.blueprint.materialCost, GetTextColor(entry.cooldown > 0, affordable));
 
-            bool availableAtThisTime = (display.blueprint.type == Blueprint.Type.Ability) == waveStarted;
-            bool ready = cooldown == 0 && affordable != BattleController.Affordable.No && availableAtThisTime;
+            bool ready = entry.cooldown == 0 && affordable != BattleController.Affordable.No;
             display.highlight.color = GetHighlightColor(ready, selected);
         }
 

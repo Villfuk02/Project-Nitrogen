@@ -1,17 +1,33 @@
 ## questions
 - used packages
-- separate get and set access?
-- game desgn - only describe what's in the prototype?
-- where do I describe algorithms
 
-## text
+## till next metting
+- [x] separate wave and not wave phase
+- [x] level fade
+- [ ] tiles separate vis and sim
+- [ ] paragraphs chapter 1
+    - [ ] vision focus on gameplay
+    - [ ] current scope and goals
+        - [ ] we don't have time for everything
+        - [ ] explain the most important aspects of the prototype
+        - [ ] explain what won't be there
+        - [ ] summarize goals
 - [ ] bullet points chapter 2
+    - [ ] mention non-prototype parts briefly
 - [ ] bullet points chapter 3
-## implementation
-- [ ] separate wave and not wave phase
+    - [ ] path generation 2 subsections
+- [ ] refactor highlight controller
+    - [ ] make the data flow clear
+    - [ ] make method names more specific
+    - [ ] consider comments
+    - [ ] placement can change hover type
+## implementation 
 - [ ] menu (seed select)
 - [ ] level progression
 - [ ] sound effects
+- [ ] tutorial
+    - extra levels before the first, each with one more blueprint
+        - [ ] 
 - [ ] content
     - [ ] abilities
         - [x] meteor
@@ -44,9 +60,6 @@
     - [ ] redo building look to make them more visible
     - [ ] damage taken effects
     - [ ] low hull effects
-    - [ ] level start
-    - [ ] level end
-- [ ] +tutorial
 - [ ] +playtest
 - [ ] +polish
 - [ ] +polish
