@@ -1,6 +1,7 @@
 using BattleSimulation.Control;
 using Game.Run.Events;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils;
@@ -14,6 +15,7 @@ namespace BattleVisuals.UI
         [SerializeField] GameObject victoryOverlay;
         [SerializeField] GameObject defeatOverlay;
         [SerializeField] Image fade;
+        [SerializeField] TextMeshProUGUI loadingText;
 
         void Awake()
         {
@@ -74,7 +76,8 @@ namespace BattleVisuals.UI
             do
             {
                 alpha += Time.deltaTime * speed;
-                fade.color = new(1, 1, 1, alpha);
+                fade.color = new(0, 0, 0, alpha);
+                loadingText.color = new(1, 1, 1, 2 * alpha - 1);
                 yield return null;
             } while (alpha is > 0 and < 1);
 

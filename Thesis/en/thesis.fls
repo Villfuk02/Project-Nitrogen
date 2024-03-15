@@ -984,6 +984,8 @@ INPUT chap01.tex
 INPUT .\chap01.tex
 INPUT chap01.tex
 INPUT D:\MiKTeX\fonts\tfm\public\lm\rm-lmr17.tfm
+INPUT D:\MiKTeX\fonts\tfm\public\lm\rm-lmr12.tfm
+INPUT D:\MiKTeX\fonts\tfm\public\lm\rm-lmbx12.tfm
 INPUT .\chap02.tex
 INPUT .\chap02.tex
 INPUT .\chap02.tex
@@ -994,8 +996,6 @@ INPUT .\chap02.tex
 INPUT chap02.tex
 INPUT .\chap02.tex
 INPUT chap02.tex
-INPUT D:\MiKTeX\fonts\tfm\public\lm\rm-lmr12.tfm
-INPUT D:\MiKTeX\fonts\tfm\public\lm\rm-lmbx12.tfm
 INPUT .\chap03.tex
 INPUT .\chap03.tex
 INPUT .\chap03.tex

@@ -1,10 +1,8 @@
 ## questions
 - used packages
+- formatting - emphasis
 
 ## till next metting
-- [x] separate wave and not wave phase
-- [x] level fade
-- [ ] tiles separate vis and sim
 - [ ] paragraphs chapter 1
     - [ ] vision focus on gameplay
     - [ ] current scope and goals
@@ -27,7 +25,7 @@
 - [ ] sound effects
 - [ ] tutorial
     - extra levels before the first, each with one more blueprint
-        - [ ] 
+    - slowly introduce concepts
 - [ ] content
     - [ ] abilities
         - [x] meteor
