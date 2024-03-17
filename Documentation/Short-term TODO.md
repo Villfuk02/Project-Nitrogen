@@ -1,17 +1,14 @@
 ## questions
 - used packages
 - formatting - emphasis
+- you vs the player
+- do I mention the engine in introduction?
 
 ## till next metting
 - [ ] paragraphs chapter 1
-    - [ ] vision focus on gameplay
-    - [ ] current scope and goals
-        - [ ] we don't have time for everything
-        - [ ] explain the most important aspects of the prototype
-        - [ ] explain what won't be there
-        - [ ] summarize goals
-- [ ] bullet points chapter 2
-    - [ ] mention non-prototype parts briefly
+    - [ ] fill in first paragraph
+- [x] bullet points chapter 2
+    - mention non-prototype parts briefly
 - [ ] bullet points chapter 3
     - [ ] path generation 2 subsections
 - [ ] refactor highlight controller
