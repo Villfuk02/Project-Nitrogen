@@ -3571,6 +3571,7 @@ MonoBehaviour:
   selection: {fileID: 793714038}
   rangeVisualization: {fileID: 793714040}
   highlightColors:
+  - {r: 1, g: 0, b: 1, a: 1}
   - {r: 0, g: 0.5647059, b: 1, a: 1}
   - {r: 1, g: 0, b: 0.39316654, a: 1}
   - {r: 1, g: 0.77254903, b: 0, a: 1}

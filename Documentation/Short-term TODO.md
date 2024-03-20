@@ -1,22 +1,17 @@
 ## questions
-- used packages
-- formatting - emphasis
+- how do I cite Rogue? (https://docs-archive.freebsd.org/44doc/usd/30.rogue/paper.pdf)
 - you vs the player
-- do I mention the engine in introduction?
+- where should I use emphasis
+- used packages
+- should I explain the engine more in introduction?
+- abstract when
+- non-breaking spaces now or at the end?
 
 ## till next metting
-- [ ] paragraphs chapter 1
-    - [ ] fill in first paragraph
-- [x] bullet points chapter 2
-    - mention non-prototype parts briefly
-- [ ] bullet points chapter 3
-    - [ ] path generation 2 subsections
-- [ ] refactor highlight controller
-    - [ ] make the data flow clear
-    - [ ] make method names more specific
-    - [ ] consider comments
-    - [ ] placement can change hover type
+
 ## implementation 
+- [ ] point hover
+- [ ] redo enable when ready?
 - [ ] menu (seed select)
 - [ ] level progression
 - [ ] sound effects

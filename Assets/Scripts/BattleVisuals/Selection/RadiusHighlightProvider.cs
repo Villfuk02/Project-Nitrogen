@@ -12,9 +12,11 @@ namespace BattleVisuals.Selection
         {
             float dist = (transform.localPosition.XZ() - baseWorldPos.XZ()).magnitude;
             float radius = ((RadiusTargeting)t).currentRange;
-            if (dist > radius)
-                return (HighlightType.Selected, dist - radius);
-            return (HighlightType.Special, radius - dist);
+            if (!(dist > radius))
+                return (HighlightType.Special, radius - dist);
+
+            var (placementHighlight, placementHighlightRadius) = placementHighlightProvider.GetAffectedArea(baseWorldPos);
+            return (placementHighlight, Mathf.Min(dist - radius, placementHighlightRadius));
         }
     }
 }

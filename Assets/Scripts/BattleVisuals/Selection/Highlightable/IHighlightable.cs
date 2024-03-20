@@ -13,5 +13,5 @@ namespace BattleVisuals.Selection.Highlightable
         public void Unhighlight();
     }
 
-    public enum HighlightType { Selected, Negative, Affected, Special, Hovered }
+    public enum HighlightType { Clear, Selected, Negative, Affected, Special, Hovered }
 }

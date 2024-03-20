@@ -3,7 +3,6 @@ using BattleSimulation.Towers;
 using BattleSimulation.World;
 using BattleVisuals.Selection.Highlightable;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace BattleVisuals.Selection
@@ -12,30 +11,27 @@ namespace BattleVisuals.Selection
     {
         [Header("References")]
         [SerializeField] Tower t;
+        [SerializeField] HighlightProvider placementHighlightProvider;
         public override int AreaSamplesPerFrame => 128;
-        public override IEnumerable<(HighlightType, IHighlightable)> GetHighlights()
+        public override IEnumerable<(IHighlightable, HighlightType)> GetHighlights()
         {
             if (!transform.parent.TryGetComponent<Tile>(out var tile))
                 yield break;
 
-            yield return (HighlightType.Selected, tile);
+            yield return (tile, HighlightType.Selected);
 
-            foreach (var a in t.targeting.GetValidTargets().Select(attacker => (HighlightType.Affected, (IHighlightable)attacker)))
-            {
-                yield return a;
-            }
+            foreach (var a in t.targeting.GetValidTargets())
+                yield return (a, HighlightType.Affected);
         }
 
         public override (HighlightType highlight, float radius) GetAffectedArea(Vector3 baseWorldPos)
         {
             if (!transform.parent.TryGetComponent<Tile>(out _))
-                return (HighlightType.Selected, float.PositiveInfinity);
+                return placementHighlightProvider.GetAffectedArea(baseWorldPos);
             Vector3 smallPos = baseWorldPos + Vector3.up * Attacker.SMALL_TARGET_HEIGHT;
             Vector3 largePos = baseWorldPos + Vector3.up * Attacker.LARGE_TARGET_HEIGHT;
-            if (!t.targeting.IsInBounds(largePos))
-                return (HighlightType.Selected, 0);
-            if (!t.targeting.IsValidTargetPosition(largePos))
-                return (HighlightType.Negative, 0);
+            if (!t.targeting.IsInBounds(largePos) || !t.targeting.IsValidTargetPosition(largePos))
+                return (placementHighlightProvider.GetAffectedArea(baseWorldPos).highlight, 0);
             if (!t.targeting.IsValidTargetPosition(smallPos))
                 return (HighlightType.Affected, 0);
             return (HighlightType.Special, 0);

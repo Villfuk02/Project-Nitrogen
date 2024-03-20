@@ -7,7 +7,7 @@ namespace BattleVisuals.Selection
     public abstract class HighlightProvider : MonoBehaviour
     {
         public abstract int AreaSamplesPerFrame { get; }
-        public abstract IEnumerable<(HighlightType, IHighlightable)> GetHighlights();
+        public abstract IEnumerable<(IHighlightable, HighlightType)> GetHighlights();
         public abstract (HighlightType highlight, float radius) GetAffectedArea(Vector3 baseWorldPos);
     }
 }

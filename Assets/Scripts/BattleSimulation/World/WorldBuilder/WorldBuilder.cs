@@ -47,9 +47,9 @@ namespace BattleSimulation.World.WorldBuilder
         void Ready()
         {
             ready = true;
+            onReady.Invoke();
             foreach (var o in enableWhenReady)
                 o.SetActive(true);
-            onReady.Invoke();
         }
 
         public void PlaceTilesTrigger() => StartCoroutine(PlaceTiles());

@@ -1,0 +1,376 @@
+\chapter{Analysis}
+
+\section{Game Engine}
+
+- unity because of familiarity
+
+- mention the features we will use
+
+\section{Procedural Level Generation}
+
+- make each level unique
+
+- one random seed dictates whole run
+
+- in background thread
+
+- debug visualizations (images)
+
+\section{Random Number Generation}
+
+- unity random X
+
+- system random X
+
+- custom random \checkmark
+
+- why LCG
+
+\section{Path Generation}
+
+- how to make paths with the required qualities?
+
+\subsection{Initial Paths}
+
+- generate fixed number of paths with given lengths
+
+- these are just plans to ensure paths of required length exist
+
+- first pick *start points* from along the edges of the level (all paths end in the center of the level)
+
+- choose randomly from positions with the correct parity (even / odd path length)
+
+- spread them out by removing all positions near already chosen one
+
+- then generate paths
+
+- first trace it randomly, with bias away from the start and from path tiles
+
+- simulated annealing
+
+- there are just plans to make sure the paths exist and the terrain in a way that ensures that the paths are not blocked
+
+\subsection{Final Paths}
+
+- after terrain generation, the paths are traced for real
+
+- guaranteed shortest length
+
+- DFS, find all branches, but continue from bottom of the stack when a paths is found
+
+\subsection{Path Visualization}
+
+- line renderer \checkmark
+
+- why does it look this way
+
+\section{Terrain Generation}
+
+- fractal noise X
+
+- WFC \checkmark
+
+\xxx{this is gonna be multiple subsections}
+
+\xxx{illustrate with images (from the videos I made)}
+
+- *slots* offset compared to *tiles*
+
+- less distinct variants
+
+- more control over transitions
+
+- prepare *modules*
+
+- generate grid of *slots*, mark them as *uncollapsed*
+
+- each *slot* can become one of many *modules*
+
+- the *modules* that can be placed in a given slot are its *domain*
+
+- at the start each *slot* has all *modules* in its *domain*
+
+- from the *domain*, compute all possible *boundary conditions*
+
+- for example - there is a *module* in the *domain* with a cliff on its east boundary, so mark cliff to the east as possible
+
+- mark all *slots* as *dirty*
+
+- then repeat:
+
+- propagate constraints
+
+- for each *dirty slot*, until there are none:
+
+- mark as *not dirty*
+
+- find out which *modules* from its *domain* can be placed here and remove the rest from its *domain*
+
+- decide only by neighbors' (orthogonal and diagonal) *boundary conditions*
+
+- update *boundary conditions*
+
+- if *boundary conditions* changed, mark all *uncollapsed* neighbors as *dirty*
+
+- *collapse* a slot
+
+- save the current *state* of all *slots* on a stack
+
+- pick a *slot*
+
+- pick one *module* from its *domain* at random
+
+- weighted - provides control
+
+- remove each other *module* from its *domain*
+
+- update *boundary conditions*
+
+- mark *uncollapsed* neighbors as *dirty*
+
+- if a *slot* ends up with 0 *modules* in its *domain*, backtrack
+
+- pop a prevoiusly saved *state* from the stack and revert to it
+
+- remove the previously chosen *module* from the *domain* of the previously *collapsed slot*
+
+
+- Which slot to collapse?
+
+- fail fast approach
+
+- prioritize slot with least options
+
+- changed to slot with least entropy, because that's more accurate
+
+- slots near most constraining modules were prioritized, making them more common and leading to repetitive terrain features
+
+- better to just collapse a random slot
+
+- in the end still weighted by entropy
+
+- at first I tried to prefer slots with more entropy
+
+- define overall structure first by sparsely covering the world, then fill in details
+
+- often led to deep dead-ends with a lot of backtracking
+
+- in the end, tiles with less entropy are preferred
+
+- Limited backtracking depth
+
+- usually when more backtracking is required, the search would take too long and it's faster to restart the algorithm
+
+\section{Resources and Obstacles}
+
+- after terrain generation, place blockers on tiles
+
+- materials for the player to mine
+
+- just rocks for variety - the player cant build on these
+
+- set up as a few stages
+
+- each stage has:
+
+- one type of blocker (e.g. ore, small rocks, big rocks)
+
+- *min* and *max* amounts
+
+- *base chance* to place
+
+- whether they can be placed on slanted tiles
+
+- which Terrain Types they can be on (currently there is only one)
+
+- *forces* - effect on chance based on already placed blockers
+
+- for example: negative force with magnitude *m* from stage *s* means the chance to place a blocker on a given tile is decreased by *m/d*  for each blocker placed in stage *s*, where *d* is its distance from the considered tile
+
+- for each stage:
+
+- repeat until at least min blockers have been placed (in this stage)
+
+- for each tile without a path or blocker (in random order):
+
+- if random number between 0 and 1 < modified chance:
+
+- place the blocker of the given type
+
+- if there are max blockers (placed in this stage), end the stage
+
+- scattering
+
+- unity physics engine X
+
+- parallel
+
+For the blockers, I didn't want repetitive obstacle models, so they are generated proceduraly by scattering many simpler models (decorations) on each tile
+
+- first compute weights based on various factors (images!!!)
+
+- distance to path
+
+- height
+
+- distance to other blockers
+
+- customizable thanks to modular approach
+
+- then scatter decorations in stages, each stage again having one type of decoration and many parameters
+
+- for each tile in random order repeat x (specified for this stage) times:
+
+- pick a random position within it
+
+- calcualte the weight at this position (based on settings)
+
+- check that it is greater than some threshold (based on settings)
+
+- calculate the minimum distance to other decorations (from weight, based on settings)
+
+- check that the position is far enough from other decorations
+
+- calculate the decoration size (from weight, based on settings)
+
+- place the decoration on this position, with the given size
+
+\section{Terrain Types}
+
+- what information is tied to the type
+
+- why txt (inspector was not as legible)
+
+\section{World Builder}
+
+- builds the world from the generated data, it needs to be done in the main thread
+
+\section{Attacker Wave Generation}
+
+- creates a randomized plan of waves
+
+- two types of waves
+
+- combine different attackers in sequence
+
+- combine different attackers in parallel (only possible with multiple paths, rarer)
+
+- each wave gets some throughput budget and buffer
+
+- each attacker has a given cost
+
+- when planning a wave, select attackers and spacing, such that the througput budget is exceeded
+
+- for each attacker subtract the throughput overshoot from buffer
+
+- fit such that as much of buffer gets used without going over
+
+\section{Simulation}
+
+- use fixed updates for game logic
+
+- why?
+
+- 20Hz = fixed time step 0.05s
+
+- options to speed up or possibly pause - changing fixed update rate - not yet implemented
+
+\section{Visuals and Interpolation}
+
+- interpolate positions and visuals on Update
+
+- many visuals are game-speed agnostic     - TODO: use unscaledDeltaTime
+
+- I thought about some custom mini-framework for this, but many of the simulated variables the visuals are based on should be handled on case-by-case basis
+
+\section{Attacker Targeting}
+
+- Towers use it to acquire targets
+
+- handles which Attackers are in range and which one is chosen as the current target
+
+- can require line of sight to the enemy
+
+- different targeting types
+
+- rotation
+
+- heights
+
+- possibly ensure a trajectory
+
+- preferred target (configurable)
+
+\section{Range Visualization}
+
+- IMAGES!!
+
+- Draw the range on the terrain mesh
+
+- Draw on which parts of paths will Attackers be targeted
+
+- green - all sizes
+
+- yellow - only large
+
+- Terrain shader uses compressed texture format instead of raw texture
+
+- Options:
+
+- quadrant compression format, 2bytes per node
+
+- less CPU time, because the data is already in this format
+
+- up to 48KiB per frame
+
+- more GPU time
+
+- 256x256 texture, 1byte per pixel
+
+- more CPU time
+
+- 64KiB per frame
+
+- fast on GPU
+
+- only 1 channel - cannot interpolate
+
+- mipmaps -> one additional state
+
+- less CPU time
+
+- 33\% more data
+
+- more pixels per byte
+
+- possible future optimization
+
+- less data
+
+- more difficult indexing and stuff both on CPU and GPU
+
+- interpolation could work with more than one channel and without mipmaps
+
+\section{Game Commnds}
+
+- we want various components to modify how other components function
+
+- examples
+
+- also react to events as a bonus
+
+\section{Blueprints}
+
+- why are they implemented this way
+
+\subsection{Attacker Stats}
+
+- blueprints for attackers
+
+\subsection{Dynamic Descriptions}
+
+- explain what things do and their stats
+
+- attackers and blueprints
+
+- dynamically reflect the changes made by other components

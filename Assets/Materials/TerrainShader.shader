@@ -7,9 +7,11 @@ Shader"Custom/TerrainShader"
         _LowColor ("Lowest Base Color", Color) = (1, 1, 1, 1)
         _HighColor ("Highest Base Color", Color) = (1, 1, 1, 1)
         _MaxHeight ("Maximum Height", float) = 2
-        _NegativeColor ("Negative Color", Color) = (1, 1, 1, 1)
-        _LargeColor ("Large Color", Color) = (1, 1, 1, 1)
-        _SmallColor ("Small Color", Color) = (1, 1, 1, 1)
+        _Color1 ("Selected Color", Color) = (1, 1, 1, 1)
+        _Color2 ("Negative Color", Color) = (1, 1, 1, 1)
+        _Color3 ("Affected Color", Color) = (1, 1, 1, 1)
+        _Color4 ("Special Color", Color) = (1, 1, 1, 1)
+        _Color5 ("Hovered Color", Color) = (1, 1, 1, 1)
         [ShowAsVector2] _Offset ("World Position Offset", Vector) = (0, 0, 0, 0)
         [ShowAsVector2] _WorldSize ("World Size", Vector) = (16, 16, 0, 0)
         _OutlineRadius ("Outline radius", float) = 0.1
@@ -39,9 +41,11 @@ half _Glossiness;
 half _Metallic;
 fixed4 _LowColor;
 fixed4 _HighColor;
-fixed4 _NegativeColor;
-fixed4 _LargeColor;
-fixed4 _SmallColor;
+fixed4 _Color1;
+fixed4 _Color2;
+fixed4 _Color3;
+fixed4 _Color4;
+fixed4 _Color5;
 float2 _Offset;
 float2 _WorldSize;
 float _OutlineRadius;
@@ -49,37 +53,37 @@ float _BaseAlphaMultiplier;
 sampler2D _HighlightMap;
 float _MaxHeight;
 
-bool2 dataAt(float2 pos)
+uint dataAt(float2 pos)
 {
     uint mip = 0;
-    uint r = 4;
-    while (r >= 4)
+    uint r = 255;
+    while (r >= 200)
     {
         r = tex2Dlod(_HighlightMap, float4(pos / _WorldSize, 0, mip)).r * 255;
         mip++;
         if (mip > 10)
         {
-            return bool2(false, false);
+            return 0;
         }
     }
-    return bool2(r & 1, r >> 1);    
+    return r;    
 }
 
-bool consistent(float2 pos, float size, bool2 data)
+bool consistent(float2 pos, float size, uint data)
 {
-    if (any(dataAt(pos + float2(size, 0)) != data))
+    if (dataAt(pos + float2(size, 0)) != data)
     {
         return false;
     }
-    if (any(dataAt(pos + float2(-size, 0)) != data))
+    if (dataAt(pos + float2(-size, 0)) != data)
     {
         return false;
     }
-    if (any(dataAt(pos + float2(0, size)) != data))
+    if (dataAt(pos + float2(0, size)) != data)
     {
         return false;
     }
-    if (any(dataAt(pos + float2(0, -size)) != data))
+    if (dataAt(pos + float2(0, -size)) != data)
     {
         return false;
     }
@@ -88,12 +92,13 @@ bool consistent(float2 pos, float size, bool2 data)
 
 void surf(Input IN, inout SurfaceOutputStandard o)
 {
+    static const fixed4 colors[6] = { fixed4(0, 0, 0, 0), _Color1, _Color2, _Color3, _Color4, _Color5 };
     float2 pos = IN.worldPos.xz + _Offset.xy;
-    bool2 data = dataAt(pos);
+    uint data = dataAt(pos);
     bool notOutline = consistent(pos, _OutlineRadius, data);
     float h = IN.worldPos.y / _MaxHeight;
     fixed3 b = _LowColor.rgb * (1 - h) + _HighColor.rgb * h;
-    fixed4 m = data.y ? (data.x ? _SmallColor : _LargeColor) : (data.x ? _NegativeColor : fixed4(0, 0, 0, 0));
+    fixed4 m = colors[data];
     m.a *= notOutline ? _BaseAlphaMultiplier : 1;
     o.Albedo = b * (1 - m.a) + m.rgb * m.a;
             
