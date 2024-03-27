@@ -14,12 +14,8 @@ different targeting types
     - above
     - below
     - only level
-- possibly ensure trajectory
-    - straight line 
-        - blocked by terrian
-    - other  
-        - ballistic
-        - ...
+- check line of sight
+    - blocked by terrian
     - or don't
 - preferred target (configurable)
     - closest to [[Hub]]

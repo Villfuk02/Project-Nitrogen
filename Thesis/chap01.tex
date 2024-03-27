@@ -1,156 +1,134 @@
 \chapter{Introduction}
 
 Video games are a popular form of entertainment.
-There are a plethora of games to choose from, each offering a different experience.
+There is a plethora of games to choose from, each offering a different experience.
 Still, it is always possible to create something new that players might enjoy.
-The author of this thesis enjoys both \emph{tower defense} games and \emph{rogue-like} games.
-There are not many games that combine these two genres.
-In this thesis, we will design and implement a video game, that uniquely blends these two genres, and discuss the decisions behind it.
+The author of this thesis enjoys both \emph{tower defense} games and \emph{roguelike} games and there are not many games that combine these two genres.
+In this thesis, we will design and implement a video game, that uniquely blends them, and discuss the decisions behind it.
+So, what do we mean by a \emph{roguelike tower~defense} game?
 
-\section{Game Genres}
+\section{Tower Defense}
 
-One of the ways to categorize games is by their genre.
-Each game is unique, but labeling it with genres highlights how it's similar to other games.
-A genre can encompass many characteristics of a game, most often its mechanics, but also its theme, art style, and more.
-Genres have no exact definitions or strict boundaries and similarly, any individual game is usually a mix of different genres.
+\textbf{Tower defense} is a subgenre of \emph{real-time strategy}.
+This means the game focuses on long-term planning, but also quick thinking.
+In \emph{tower defense} games, the player has to defend against waves of attackers by building defensive towers.
+As an example we'll look at \emph{Plants vs.\ Zombies}\cite{PvZWiki}, released in~2009.
 
-\subsection{Strategy}
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.8\textwidth]{img/Plants-vs-Zombies-Fight.png}
+    \caption{A level in \emph{Plants vs.\ Zombies}. On the left there are some \emph{Sunflowers} and two \emph{Repeaters}, one of them shooting at a zombie to the right.}
+    \label{fig:pvz-fight}
+\end{center}
 
-One major genre is \emph{strategy} games.
-\textbf{Strategy games} focus on tactics and long-term planning.
-They require a lot of thinking.
-There are various kinds of \emph{strategy} games, but most often, players compete against each other to reach some goal.
-These players can be real humans or artificial intelligence agents.
-Strategy games often utilize hidden information or rely on the unpredictability of other players' actions to create an environment where there is no single best way to reach the goal.
-This means that players have to have a good understanding of the game and be able to adapt to the situation at hand.
+In \emph{Plants vs.\ Zombies}, the player defends their house from zombies.
+The goal of each level is to survive all the incoming waves by placing plants that fire projectiles or otherwise impede the zombies.
+The zombies come from the right side of the screen and advance left, each moving only along its lane.
+If any zombie reaches the far left edge of the screen, the player loses the level.
+Placing plants costs~\emph{sun}, and the player can plant \emph{Sunflowers} to produce more.
+In our game, the player will also build towers, to defend from waves of attackers, and economic buildings that produce materials.
 
-There are many qualities players enjoy in \emph{strategy} games.
-Of course, it feels great to outsmart your opponent or conquer a challenge.
-But \emph{strategy} games also provide a sense of progression and accomplishment because of their depth.
-They are often very replayable because of the different situations that can arise from the game's mechanics.
+Though, it will differ a lot from \emph{Plants vs.\ Zombies} in the overall structure of the game.
+The main game mode of \emph{Plants vs.\ Zombies} is a campaign consisting of~50 individual levels.
+If the player loses a level, they can try again and~again until they succeed in beating it.
+After most levels, the player unlocks a new plant, which they can use in upcoming levels, slowly building up their arsenal.
+In our game, however, once the player loses, they lose all their progress and must start from the very beginning.
+This and some other mechanics are taken directly from the \emph{roguelike} genre.
 
-One way to categorize a \emph{strategy} game is whether is it \emph{real-time} or \emph{turn-based}.
-In a \textbf{turn-based strategy}, players take turns to make their moves.
-This allows for a slower pace and more time to think about the best move.
-In \textbf{real-time strategy} games, however, the environment evolves continuously and players have to react and make decisions quickly.
+\section{Roguelike}
 
-\subsection{Tower Defense}
-
-\textbf{Tower defense} is a subgenre of \emph{real-time strategy} where the player has to defend against waves of enemies.
-The player has to build towers, which attack the enemies as they approach, to defend their base.
-The attackers are very predictable and usually follow a set path.
-The player has to build their towers in a way that maximizes their effectiveness against the attackers.
-\?{do I want images and examples}
-
-The game usually consists of multiple levels, each presenting a different challenge.
-The player has to adapt to various attackers and level layouts.
-Sometimes the levels make up a campaign, where the player has to progress through harder and harder levels to reach the end.
-Other times, the levels are standalone and the player can choose which level to play, where the goal can be to survive as long as possible.
-This can take a few hours and may become very repetitive.
-
-The attackers can have unique abilities or be resistant to certain types of towers.
-The composition of each wave can be predetermined or randomized to a varying degree.
-In this way, the game can force the player to adapt and use different strategies.
-To make their decisions interesting, the player has various towers and upgrades at their disposal, each with different abilities, often complimenting each other.
-
-Players can get resources to build their defense passively, but some \emph{tower defense} games also include an economy system.
-Here, the player has to build economic buildings to generate the resources.
-This adds another layer of strategy to the game, as the player has to balance their economy with their defense.
-
-\subsection{Rogue-like}
-
-\emph{Rogue-like} is a subgenre of \emph{role-playing games}.
-In \textbf{role-playing games}, the player takes on the role of a character and goes on an adventure.
-The character can grow stronger by acquiring new abilities, items, or experiences.
+\textbf{Roguelike} is a subgenre of \emph{role-playing games}.
+In \emph{role-playing games}, the player takes on the role of a character and goes on an adventure.
+The character can grow stronger by acquiring new abilities, items, or~experiences.
 The player has to make decisions about how to upgrade their characters to overcome the challenges they might face.
-This high level of customization and the sense of progression makes \emph{role-playing games} very engaging.
 
-\textbf{Rogue-like} is named after the game \emph{Rogue}, released in 1980\?{how do I cite a game}.
-The game was known for its high difficulty and the fact that the player had to start from the beginning if they died.
-The \emph{rogue-like} game is usually procedurally generated, meaning that the levels are created by an algorithm and are not set in stone.
-This is important because the player can't memorize the levels and has to rely on their skill and knowledge of the game's mechanics to progress.
-Since all in-game progress is lost when the player dies, the player has to learn from their mistakes and improve their skill to advance further.
-These are defining characteristics of \emph{rogue-likes} that separate them from other \emph{role-playing games}.
+\emph{Roguelike} is named after the game \emph{Rogue}\cite{RogueWiki}, released in~1980.
+In this single-player turn-based game, the player explores a grid-based dungeon and fights monsters that inhabit~it.
+Along the way, they collect various weapons, armor and other magical items that improve their abilities.
+It features \emph{permadeath}, which means that when the character dies, the player loses all progress and must start from the very beginning.
+The dungeon is randomized---it is different in every run, so the player can't just memorize the layout.
 
-In most \emph{rogue-like} games, you explore a dungeon, where you have to fight enemies and avoid traps.
-You are then rewarded with items and other resources to improve your character.
-The game is usually turn-based, making it more strategic.
+A more recent game that's a good example of this genre is \emph{Slay the Spire}\cite{StSWiki}, published in~2019.
+In \emph{Slay the Spire}, the player ascends a spire and fights various enemies.
+The fights are also turn-based, and when the player's character dies, they have to start from scratch.
+However, it is not a traditional \emph{roguelike}.
+The game is not played on a grid, instead the spire the player navigates is~a graph of separate rooms, where they move from bottom up.
+There are different kinds of rooms, but the most important are enemy encounters.
+In these the player fights using a deck of cards.
 
-Many games break the traditional \emph{rogue-like} formula but still share many of its characteristics.
-They might have a different theme, where you don't even fight monsters but instead compete in another task.
-They might include a \emph{meta-progression} system, where you unlock new items or upgrades for your future runs.
-Real-time gameplay is also common, where more skills are tested than just the player's ability to think strategically.
-These games are often called \emph{rogue-lites}, however, we will not make such a distinction since all genres can be bent and blended in many ways.
-\?{do I include more examples here}
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.8\textwidth]{img/Slay-the-Spire-Map.png}
+    \caption{The map screen in \emph{Slay the Spire}. Each icon is a room. The player has been to the circled ones and can choose where to go next based on the dashed lines connecting the rooms.}
+    \label{fig:sts-map}
+\end{center}
 
-\subsection{Combining the Two}
+At the start of each turn, the player draws five cards from the deck.
+Each card has an \emph{energy}~cost, and it has some effect that's written on it.
+Most cards deal damage to the enemies or provide \emph{block} to defend from enemy attacks, but some have more unique effects.
+The player can only spend three \emph{energy} per turn, so they can only play a limited amount of the cards they drew.
+It is important to play the right cards in order to kill the enemy without taking a lot of damage.
 
-\emph{Tower defense} games and \emph{rogue-like} games have some similarities.
-They both create complex systems for the player to master.
-This makes them both very strategic, and they appeal to more hardcore players.
-However, these genres also differ in some ways.
-We think that taking some mechanics from each will create a game that is fun to play for the right audience.
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.8\textwidth]{img/Slay-the-Spire-Fight.png}
+    \caption{A fight in \emph{Slay the Spire}. The player character on the left is facing a \emph{Jaw worm} on the right of the screen. On the bottom, there are cards that the player can play to fight the enemy.}
+    \label{fig:sts-fight}
+\end{center}
 
-Of course, there is more than one way to combine these two genres, so we have to decide which mechanics might work well together.
-The main characteristics of a \emph{rogue-like} define more the overall structure of the game, rather than the core gameplay loop.
-That core gameplay loop will be \emph{tower defense}.
-\emph{Tower defense} can get a bit stale if you find a strategy that can be used every time.
-This is how some \emph{rogue-like} elements can help.
-As they progress, the player will be rewarded with new towers and abilities, selected randomly.
-This means that the player can't rely on the same equipment every time and will likely use a different strategy in each run.
+Even though the player never knows exactly what cards they'll draw, they can shape the deck they draw from.
+The player starts each run with a predefined deck of starter cards, and as they progress, they add new cards into their deck.
+For example, after every fight, they get presented with three randomly selected cards, and they can choose one of them.
+The player can also get new cards from events or shops and sometimes remove the cards they don't want.
 
-A run could consist of one very long level and the player would receive rewards throughout it.
-We think this would discourage the player from using the newly acquired items because their strategy already counts on their old equipment.
-This is why every run should be composed of many short levels.
-This way, they get to start each level with a new strategy based on the arsenal at their disposal.
-Additionally, each level will be procedurally generated featuring different terrain and attackers.
+Some cards are rarer than others, and they are often more powerful.
+However, being lucky ang getting the most powerful cards is not what the game's about.
+The player must learn which cards work together well and which don't, and understand the weaknesses of their deck and how to fix them.
+
+Many games take the \emph{roguelike} mechanic of \emph{permadeath} and randomized procedural generation, but fill in different game mechanics.
+\emph{Slay the Spire} has the player build their own deck of cards to play with, but they still play as a character that fights enemies.
+Some, however, deviate much more.
+In our game, the battles will be in the style of \emph{tower defense}, and the player will collect blueprints for defensive towers and other buildings instead of weapons and armor.
+
+Games that deviate more from the \emph{roguelike} formula are sometimes called \emph{roguelite} games.
+However, there is no agreement on when a game stops being \emph{roguelike} and starts being \emph{roguelite}.
+We will not make this distinction, since game genres have no precise boundaries and can be freely blended with others.
 
 \section{Original Vision} \label{sec:original-vision}
 
-The game will be for the PC.
-This is because it is going to be pretty complex and PCs usually have screens large enough to display all the information the player needs.
-The mouse and keyboard allow for precise control and a lot of buttons to be used.
-PC players are also more likely to enjoy challenging \emph{strategy} games, which is what this game aims to be.
-
-It will be a single-player game.
-As stated, the small-scale gameplay will be a \emph{tower defense}, but on a larger scale, the game will be \emph{rogue-like}.
-This means that it will consist of individual runs, where the player will start from scratch every time.
+The game will be single-player.
+As stated, the moment to moment gameplay will be a \emph{tower defense}, but on a larger scale, the game will be \emph{roguelike}.
+This means that it will consist of individual procedurally generated runs, where the player will start from scratch every time.
+During each run, the player will defend against attackers in many battles and improve their arsenal to grow stronger.
 Their goal is to get as far as possible, trying to reach the final level and beat the game.
 
-The game should have some story to motivate the player on their journey.
-The details of this story are not yet decided, but the game will likely be set in space.
-The player will travel forward through an unexplored galaxy trying to reach a destination specified by the story.
-The levels will take place on different planets, each with its own theme and unique terrain.
-This sci-fi theme allows for a lot of freedom in the designs of the levels, buildings, and attackers.
-It also works well with the mechanics of the individual levels or, as we will call them "battles".
-
-The goal of a single battle is to gather enough fuel to continue to the next planet.
-The faster the player gathers the fuel, the sooner they win the battle.
-Fuel is gathered passively, but additional buildings can be built to speed up the process.
+The goal of each battle is to gather enough \emph{fuel} to continue.
+The faster the player gathers the \emph{fuel}, the sooner they win the battle.
+The \emph{fuel} is generated passively, but additional buildings can be built to speed up the process.
 In the meantime, the player has to defend against waves of attackers by building towers and using abilities.
-All of this costs materials and energy --- resources, which are generated by economic buildings.
-Thus, the player will have to balance their use of resources among defense, economy, and gathering fuel.
+All of this costs \emph{materials} and \emph{energy}---resources, which are generated by economic buildings.
 
-On their way, the player will encounter various events, shops, and other anomalies.
-They can present additional choices and provide the player with opportunities to gain various rewards or punishments.
-Some information about the upcoming battles will be revealed to the player --- for example, the attacker types and general difficulty of the battle.
-Harder battles will provide better rewards.
+On their way, the player will choose from randomly selected \emph{blueprints} to add to their collection.
+These \emph{blueprints} will be for new abilities, towers or other buildings.
+The player will have to choose blueprints which work together well in order to use their full potential.
+
+The player will also encounter various shops and events.
+These can present additional choices and provide the player with opportunities to gain various rewards or punishments.
 The path the player takes will not be linear, allowing them to decide which battles to fight and what to interact with.
-This way they can choose to take a bigger risk for a potentially bigger reward or to play it safe.
+This is important, because some battles will be harder, but provide better rewards.
 
-\xxx{I probably forgot to mention something}
+The game will be for personal computers.
+Unlike mobile phones, PCs usually have a screen large enough to let us clearly convey all the information the player needs.
+It won't be for game consoles either because we think a mouse will be the best way to control the game.
+The mouse allows the player to select a precise position in the world quickly.
+The player will also control certain aspects of the game using the keyboard.
 
 \section{Current Scope and Goals}
 
 The scale of the full game is quite large, too much for the scope of a bachelor's thesis.
-Furthermore, we will not consider the story, art, or sound design as that is not our area of expertise.
-Instead, the goal will be to create a functional prototype, which can be used to playtest the core gameplay.
-It will require some base content --- several attackers and blueprints --- so the game can be properly tested.
+Our goal will be to create a functional prototype, which can be used to playtest the core gameplay.
+It will require some base content, so the game can be properly tested.
 The prototype will be prepared for future development so that more content can be added later.
-
-Playtesting is very important because it can provide valuable feedback about the game's mechanics.
-This prototype will allow for testing the game to better adjust its design, tweak the mechanics, or make things more clear to the player.
-It is important to start with playtesting as soon as possible to avoid wasting time on content that relies on mechanics that will change.
 
 The prototype will consist of all systems and mechanics necessary to play through a battle.
 This includes attackers, towers, abilities, and the economy.
@@ -159,10 +137,4 @@ The player will be able to progress through battles and collect blueprints.
 However, there will be no map view to choose their path because for now, the progression will be linear.
 There will also be no events or shops, only battles.
 All the art and sound assets will be placeholders, but care will be taken to make everything as clear as possible to the player.
-
-\xxx{(this might be false)}
-Additionally, the prototype will include a very rudimentary tutorial to explain the game's mechanics to the player.
-This is important because the game will be complex, and the player needs to understand how the game works to be able to play it properly.
-
-The main goal of this thesis is to design and implement this prototype of the game, so it can be playtested.
-It will be implemented in the \emph{Unity} game engine, using \emph{C\#} as the programming language.
+Additionally, the prototype will include a very rudimentary tutorial to explain the game's mechanics to the player \xxx{(this might be false)}.

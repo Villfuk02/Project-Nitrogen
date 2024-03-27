@@ -17,7 +17,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 2cc27b3a43549f34cb9f476133317b1f, type: 3}
   rarity: 2
   type: 3
-  energyCost: 25
+  energyCost: 10
   materialCost: 0
   startingCooldown: 0
   cooldown: 1

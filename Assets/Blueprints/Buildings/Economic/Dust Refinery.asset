@@ -18,7 +18,7 @@ MonoBehaviour:
   rarity: 0
   type: 1
   energyCost: 0
-  materialCost: 10
+  materialCost: 5
   startingCooldown: 0
   cooldown: 0
   range: -1

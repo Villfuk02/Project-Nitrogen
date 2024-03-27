@@ -12,6 +12,7 @@ namespace BattleVisuals.Selection
         [Header("References")]
         [SerializeField] SelectionController selection;
         [SerializeField] RangeVisualization rangeVisualization;
+        [SerializeField] PointHighlight pointHighlight;
         [Header("Settings")]
         public Color[] highlightColors;
         [Header("Runtime variables")]
@@ -53,11 +54,21 @@ namespace BattleVisuals.Selection
 
         void ApplyHover()
         {
+            HighlightType highlightType = selection.placing == null || selection.placing.IsValid() ? HighlightType.Hovered : HighlightType.Negative;
+
             var hovered = GetHovered();
             if (hovered == null)
-                return;
-
-            currentlyHighlighted_[hovered] = selection.placing == null || selection.placing.IsValid() ? HighlightType.Hovered : HighlightType.Negative;
+            {
+                if (selection.placing != null)
+                    currentlyHighlighted_[pointHighlight] = highlightType;
+            }
+            else
+            {
+                if (selection.placing != null && !selection.placing.IsCorrectTypeSelected())
+                    currentlyHighlighted_[pointHighlight] = highlightType;
+                else
+                    currentlyHighlighted_[hovered] = highlightType;
+            }
         }
 
         IHighlightable GetHovered()

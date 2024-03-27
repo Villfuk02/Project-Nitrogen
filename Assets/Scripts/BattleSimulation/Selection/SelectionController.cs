@@ -15,6 +15,7 @@ namespace BattleSimulation.Selection
         [SerializeField] Camera mainCamera;
         [SerializeField] BlueprintMenu blueprintMenu;
         [SerializeField] InfoPanel infoPanel;
+        [SerializeField] PointHighlight pointHighlight;
         [Header("Settings")]
         [SerializeField] float rotationHoldDelay;
         [SerializeField] float rotationInterval;
@@ -150,6 +151,9 @@ namespace BattleSimulation.Selection
                 hoverTilePosition = WorldUtils.WorldPosToTilePos(terrainHit.point);
             else
                 hoverTilePosition = hovered == null ? null : hovered.transform.position;
+
+            if (hoverTilePosition != null)
+                pointHighlight.transform.localPosition = WorldUtils.TilePosToWorldPos(hoverTilePosition.Value);
         }
 
         public void SelectInWorld(Selectable select)

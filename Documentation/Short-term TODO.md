@@ -1,23 +1,26 @@
 ## questions
-- how do I cite Rogue? (https://docs-archive.freebsd.org/44doc/usd/30.rogue/paper.pdf)
-- you vs the player
-- where should I use emphasis
-- used packages
-- should I explain the engine more in introduction?
-- abstract when
-- non-breaking spaces now or at the end?
-
+- single-`\\`player
+- isn't 2.1 too long? but it is probably one of the more important / interesting parts
 ## till next metting
+- [x] recording
+- [x] writing video
+- [x] rewrite chap 1
+- [x] write chap 2 part 1
+- [ ] some implementations
+
+## remember
+- coherence - one paragraph, one point
+- flow - old to new
+- name your baby
+- information just in time
+- short subjects
+- nbsp
 
 ## implementation 
 - [ ] point hover
-- [ ] redo enable when ready?
+    - [ ] placement returns placement target, be it tile, attacker or position
 - [ ] menu (seed select)
 - [ ] level progression
-- [ ] sound effects
-- [ ] tutorial
-    - extra levels before the first, each with one more blueprint
-    - slowly introduce concepts
 - [ ] content
     - [ ] abilities
         - [x] meteor
@@ -32,6 +35,7 @@
         - [ ] upgrade blueprint stats
     - [ ] more attackers (see [[Attacker#ideas]])
     - [ ] more towers (see [[Tower#tower ideas]])
+        - [ ] basic tower - 10 mat, no targeting restrictions
     - [ ] more economic buildings
         - [ ] energy maker
         - [ ] produces material per kill in radius
@@ -42,6 +46,11 @@
         - [ ] speeds up towers
         - [ ] pushes back attackers
         - [ ] makes material producers generate extra energy
+- [ ] a few more simple terrain types - change up minerals, obstacles, terrain color, difficulty
+- [ ] sound effects
+- [ ] tutorial
+    - extra levels before the first, each with one more blueprint
+    - slowly introduce concepts
 - [ ] +polish
     - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)
     - [ ] non-keyboard camera controls

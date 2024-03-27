@@ -32,6 +32,8 @@ namespace BattleSimulation.Selection
 
         public override bool IsValid() => selectedPos is not null;
 
+        public override bool IsCorrectTypeSelected() => false;
+
         public override void Place()
         {
             ability.Placed();

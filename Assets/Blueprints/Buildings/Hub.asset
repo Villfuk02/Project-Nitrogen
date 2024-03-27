@@ -29,9 +29,9 @@ MonoBehaviour:
   delay: -1
   durationTicks: -1
   durationWaves: -1
-  fuelProduction: 10
-  materialProduction: 20
-  energyProduction: 20
+  fuelProduction: 5
+  materialProduction: 10
+  energyProduction: 10
   magic1: -1
   descriptions:
   - Produces [PRO] every round.

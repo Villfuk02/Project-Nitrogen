@@ -31,6 +31,7 @@ namespace BattleSimulation.Selection
         }
 
         public override bool IsValid() => IsTileValid(selectedTile);
+        public override bool IsCorrectTypeSelected() => selectedTile != null;
 
         public abstract bool IsTileValid(Tile tile);
     }
