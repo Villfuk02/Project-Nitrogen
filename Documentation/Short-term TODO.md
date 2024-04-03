@@ -1,26 +1,19 @@
 ## questions
-- single-`\\`player
-- isn't 2.1 too long? but it is probably one of the more important / interesting parts
+- can I assume the reader read ch1?
+- what if I don't run a playtest?
 ## till next metting
-- [x] recording
-- [x] writing video
-- [x] rewrite chap 1
-- [x] write chap 2 part 1
-- [ ] some implementations
-
-## remember
-- coherence - one paragraph, one point
-- flow - old to new
-- name your baby
-- information just in time
-- short subjects
-- nbsp
+- [ ] finish 2.1
+- [ ] start with ch3
+- [ ] implement menu and level progression
+- [ ] prepare for code review
 
 ## implementation 
-- [ ] point hover
-    - [ ] placement returns placement target, be it tile, attacker or position
+- [x] mouse controls for camera 
+- [x] and waves
+- [x] recheck right-clicks and left-clicks
 - [ ] menu (seed select)
 - [ ] level progression
+- [ ] display seed
 - [ ] content
     - [ ] abilities
         - [x] meteor

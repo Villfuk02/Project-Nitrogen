@@ -9,7 +9,7 @@ namespace Utils
         public void RegisterReaction(TReaction reaction, int priority)
         {
             if (priority <= 0)
-                throw new ArgumentException("Priority must be positive");
+                throw new ArgumentOutOfRangeException(nameof(priority), priority, "Priority must be positive");
             reactions.Add(priority, reaction);
         }
 

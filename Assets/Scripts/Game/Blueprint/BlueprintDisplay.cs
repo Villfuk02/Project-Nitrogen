@@ -86,7 +86,7 @@ namespace Game.Blueprint
             Blueprint.Type.Ability => abilityColor,
             Blueprint.Type.Upgrade => upgradeColor,
             Blueprint.Type.SpecialBuilding => economicBuildingColor,
-            _ => throw new ArgumentOutOfRangeException(nameof(type))
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
 
         static string GetTextFromCost(int energy, int materials, out bool useSmallerFont)

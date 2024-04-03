@@ -33,6 +33,9 @@ namespace BattleSimulation.Selection
         public bool waveStarted;
         MenuEntry[] CurrentEntries => waveStarted ? abilities : buildings;
 
+        [Header("Cheats")]
+        [SerializeField] bool cheatFinishCooldowns;
+
         void Awake()
         {
             abilities = originalBlueprints.Where(b => b.type == Blueprint.Type.Ability).Select((b, i) => new MenuEntry(b, i)).ToArray();
@@ -50,8 +53,11 @@ namespace BattleSimulation.Selection
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F))
+            if (cheatFinishCooldowns)
+            {
+                cheatFinishCooldowns = false;
                 FinishCooldowns();
+            }
         }
 
         public void Deselect()

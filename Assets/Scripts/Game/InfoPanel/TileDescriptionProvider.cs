@@ -32,7 +32,7 @@ namespace Game.InfoPanel
                 Tile.Obstacle.Large => "Contains a large obstacle",
                 Tile.Obstacle.Fuel => "Rich in [#FUE]Fuel",
                 Tile.Obstacle.Minerals => "Rich in [#MAT]Minerals",
-                _ => throw new ArgumentOutOfRangeException()
+                _ => throw new ArgumentOutOfRangeException(nameof(tile_.obstacle), tile_.obstacle, null)
             });
 
             return string.Join("[BRK]", texts);

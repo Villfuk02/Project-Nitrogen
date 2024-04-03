@@ -31,6 +31,8 @@ namespace BattleSimulation.Control
         public bool Won { get; private set; }
         public bool Lost { get; private set; }
 
+        [Header("Cheats")]
+        [SerializeField] bool cheatAddMaterialsAndEnergy;
 
         void Awake()
         {
@@ -80,8 +82,9 @@ namespace BattleSimulation.Control
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.C))
+            if (cheatAddMaterialsAndEnergy)
             {
+                cheatAddMaterialsAndEnergy = false;
                 Material += 100;
                 Energy += 100;
             }
@@ -170,7 +173,7 @@ namespace BattleSimulation.Control
                 Game.AttackerStats.AttackerStats.Size.Small => 1,
                 Game.AttackerStats.AttackerStats.Size.Large => 2,
                 Game.AttackerStats.AttackerStats.Size.Boss => 1000,
-                _ => throw new ArgumentOutOfRangeException()
+                _ => throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null)
             });
         }
 

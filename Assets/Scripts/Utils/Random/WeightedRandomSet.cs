@@ -73,7 +73,7 @@ namespace Utils.Random
             if (positions_.ContainsKey(item))
                 return;
             if (weight <= 0)
-                throw new ArgumentException("Weight must be positive");
+                throw new ArgumentOutOfRangeException(nameof(weight), weight, "Weight must be positive");
             positions_.Add(item, list_.Count);
             list_.Add((item, weight));
             totalWeight_ += weight;
@@ -129,7 +129,7 @@ namespace Utils.Random
         public void UpdateWeight(T item, float newWeight)
         {
             if (newWeight <= 0)
-                throw new ArgumentException("Weight must be positive");
+                throw new ArgumentOutOfRangeException(nameof(newWeight), newWeight, "Weight must be positive");
             if (!positions_.ContainsKey(item))
                 throw new InvalidOperationException($"Item {item} was not present in the set");
             int pos = positions_[item];

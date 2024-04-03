@@ -8,29 +8,44 @@ using static WorldGen.WorldGenerator;
 
 namespace WorldGen.Decorations
 {
-    public class Scatterer : MonoBehaviour
+    public class ObstacleModelScatterer : MonoBehaviour
     {
         Decoration[] decorations_;
         List<Vector2Int> allTiles_;
         Array2D<List<Vector3>> colliders_;
 
+        /// <summary>
+        /// Scatters models that represent obstacles on the tiles that should have obstacles.
+        /// </summary>
         public void Scatter()
         {
+            // debug
             WaitForStep(StepType.Phase);
             print("Scattering");
+            // end debug
 
             Initialize();
 
             foreach (var d in decorations_)
             {
+                // debug
                 WaitForStep(StepType.Step);
+                // draw the colliders of already scattered models
                 RegisterGizmos(StepType.Step, () => colliders_.SelectMany(list => list, (_, v) => new GizmoManager.Sphere(Color.green, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
+                // end debug
+
                 ScatterStep(d);
             }
+            // debug
             print("Scattered");
+            // draw the colliders of all scattered models
             RegisterGizmos(StepType.Phase, () => colliders_.SelectMany(list => list, (_, v) => new GizmoManager.Sphere(Color.yellow, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
+            // end debug
         }
 
+        /// <summary>
+        /// Prepare fields and initialize noise nodes.
+        /// </summary>
         void Initialize()
         {
             decorations_ = WorldGenerator.TerrainType.ScattererData.decorations;
@@ -53,7 +68,9 @@ namespace WorldGen.Decorations
             colliders_.Fill(() => new());
         }
 
-
+        /// <summary>
+        /// Scatter one type of decoration.
+        /// </summary>
         void ScatterStep(Decoration decoration)
         {
             print($"Scattering {decoration.Name}");
@@ -84,10 +101,17 @@ namespace WorldGen.Decorations
             }
         }
 
+        /// <summary>
+        /// Scatter one type of decoration on a given tile, taking into account the colliders already there.
+        /// Fills in the colliders of the generated decorations into currentColliders and futureColliders.
+        /// </summary>
         void ScatterTile(Decoration decoration, Vector2Int tile, Array2D<List<Vector3>> currentColliders, Array2D<List<Vector3>> futureColliders, ulong randomSeed)
         {
+            // debug
             WaitForStep(StepType.MicroStep);
+            // draw the current tile and adjacent tiles
             RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.red, WorldUtils.TilePosToWorldPos(tile), new Vector3(2, 0.1f, 2)), tile);
+            // end debug
 
             var relevantColliders = MergeColliderLists(tile, currentColliders);
             List<Vector3> generatedCurrent = new();
@@ -100,7 +124,9 @@ namespace WorldGen.Decorations
                 TryPosition(tile + new Vector2(rand.Float(-0.5f, 0.5f), rand.Float(-0.5f, 0.5f)));
             }
 
+            // debug
             WaitForStep(StepType.MicroStep);
+            // draw the generated colliders, both current and future
             RegisterGizmos(StepType.Step, () =>
             {
                 List<GizmoManager.GizmoObject> gizmos = new();
@@ -108,6 +134,7 @@ namespace WorldGen.Decorations
                 gizmos.AddRange(generatedCurrent.Select(v => new GizmoManager.Sphere(Color.cyan, WorldUtils.TilePosToWorldPos(new Vector3(v.x, v.y)), v.z)));
                 return gizmos;
             });
+            // end debug
 
             futureColliders[tile] ??= new();
             futureColliders[tile].AddRange(generatedFuture);
@@ -141,7 +168,9 @@ namespace WorldGen.Decorations
                 Tiles[tile].decorations.Add(new() { decoration = decoration, position = pos, size = decoration.GetScale(v), eulerRotation = rotation });
             }
         }
-
+        /// <summary>
+        /// Merges the colliders of decorations from the given tile and adjacent tiles into one list.
+        /// </summary>
         Vector3[] MergeColliderLists(Vector2Int tile, Array2D<List<Vector3>> currentColliders)
         {
             Dictionary<Vector2, Vector3> merging = new();

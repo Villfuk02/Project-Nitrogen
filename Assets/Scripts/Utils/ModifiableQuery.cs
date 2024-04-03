@@ -11,7 +11,7 @@ namespace Utils
 
         public void RegisterModifier(Modifier modifier, int priority)
         {
-            if (priority >= 0) throw new ArgumentException("Priority must be negative");
+            if (priority >= 0) throw new ArgumentOutOfRangeException(nameof(priority), priority, "Priority must be negative");
             modifiers_.Add(priority, modifier);
         }
 

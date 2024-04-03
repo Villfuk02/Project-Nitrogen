@@ -21,6 +21,9 @@ namespace Game.Run
         public int Hull { get; private set; }
         Random random_;
 
+        [Header("Cheats")]
+        [SerializeField] bool cheatAddHull;
+
         void Awake()
         {
             DontDestroyOnLoad(gameObject);
@@ -38,8 +41,9 @@ namespace Game.Run
         }
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.H))
+            if (cheatAddHull)
             {
+                cheatAddHull = false;
                 MaxHull += 1000;
                 Hull += 1000;
             }

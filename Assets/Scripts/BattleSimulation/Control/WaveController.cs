@@ -1,9 +1,11 @@
 using BattleSimulation.Attackers;
 using Game.AttackerStats;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using Utils;
 
 namespace BattleSimulation.Control
@@ -15,6 +17,7 @@ namespace BattleSimulation.Control
         public static EventReactionChain onWaveFinished = new();
         [Header("References")]
         public WaveGenerator waveGenerator;
+        public Button nextWaveButton;
         [Header("Settings")]
         [SerializeField] UnityEvent onSpawnedOnce;
         [Header("Runtime variables")]
@@ -52,8 +55,8 @@ namespace BattleSimulation.Control
 
         void Update()
         {
-            if (attackersLeft == 0 && !spawning && spawnQueue_.Count == 0 && Input.GetKeyUp(KeyCode.Return))
-                startNextWave = true;
+            if (Input.GetKeyUp(KeyCode.Return))
+                RequestWaveStart();
         }
 
         void FixedUpdate()
@@ -77,6 +80,7 @@ namespace BattleSimulation.Control
             if (attackersLeft == 0 && !spawning && waveStarted)
             {
                 waveStarted = false;
+                nextWaveButton.interactable = true;
                 onWaveFinished.Broadcast();
             }
         }
@@ -92,7 +96,7 @@ namespace BattleSimulation.Control
 
             WaveGenerator.Batch batch = currentWave.batches[0];
             if (batch.count <= 0)
-                throw new("Batch cannot be empty");
+                throw new InvalidOperationException("Cannot spawn an empty batch of attackers");
             batch.count--;
             if (batch.count == 0)
             {
@@ -151,12 +155,19 @@ namespace BattleSimulation.Control
             spawning = true;
             waveStarted = true;
             currentWave = waveGenerator.GetWave(wave);
+            nextWaveButton.interactable = false;
             return true;
         }
 
         public void AttackerRemoved()
         {
             attackersLeft--;
+        }
+
+        public void RequestWaveStart()
+        {
+            if (attackersLeft == 0 && !spawning && spawnQueue_.Count == 0)
+                startNextWave = true;
         }
     }
 }

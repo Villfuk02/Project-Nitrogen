@@ -19,12 +19,14 @@ namespace WorldGen.WFC
         int steps_;
 
         /// <summary>
-        /// Generate the terrain using the wave function collapse algorithm.
+        /// Generate terrain using the wave function collapse algorithm.
         /// </summary>
         public WFCState Generate(Vector2Int[][] paths)
         {
+            // debug
             WaitForStep(StepType.Phase);
             print("Starting WFC");
+            // end debug
 
             InitWFC(paths);
 
@@ -37,8 +39,10 @@ namespace WorldGen.WFC
                 }
             }
 
-            RegisterGizmos(StepType.Phase, DrawMesh);
+            // debug
+            RegisterGizmos(StepType.Phase, MakeMeshGizmos);
             print($"WFC Done in {steps_} steps");
+            // end debug
             return state_;
         }
 
@@ -47,12 +51,19 @@ namespace WorldGen.WFC
             if (!TryPropagateConstraints())
                 return false;
 
+            // debug
             WaitForStep(StepType.Step);
+            // end debug
+
             stateStack_.Push(new(state_));
             state_.CollapseRandom(this);
             steps_++;
-            RegisterGizmosIfExactly(StepType.Step, DrawEntropy);
-            RegisterGizmos(StepType.Step, DrawMesh);
+
+            // debug
+            RegisterGizmosIfExactly(StepType.Step, MakeEntropyGizmos);
+            RegisterGizmos(StepType.Step, MakeMeshGizmos);
+            // end debug
+
             return true;
         }
 
@@ -64,7 +75,7 @@ namespace WorldGen.WFC
                 if (!TryUpdateNext())
                     return false;
 
-                RegisterGizmos(StepType.MicroStep, DrawEntropy);
+                RegisterGizmos(StepType.MicroStep, MakeEntropyGizmos);
             }
 
             return true;
@@ -72,8 +83,8 @@ namespace WorldGen.WFC
 
         void InitWFC(Vector2Int[][] paths)
         {
-            int heightCount = WorldGenerator.TerrainType.MaxHeight + 1;
-            MaxEntropy = CalculateEntropy(WorldGenerator.TerrainType.Modules.GroupBy(m => m.Weight).ToDictionary(g => g.Key, g => g.Count() * heightCount));
+            int heightCount = TerrainType.MaxHeight + 1;
+            MaxEntropy = CalculateEntropy(TerrainType.Modules.GroupBy(m => m.Weight).ToDictionary(g => g.Key, g => g.Count() * heightCount));
 
             state_ = new();
             dirty_ = new(WorldGenerator.Random.NewSeed());
@@ -94,6 +105,11 @@ namespace WorldGen.WFC
             steps_ = 0;
         }
 
+        /// <summary>
+        /// Assigns which passages can or cannot be passable based on the planned paths.
+        /// A passage must exist from a tile on the edge of the world over the edge.
+        /// A passage can't exist between two tiles that both have a path going through them, but the paths' distances to center differ by more than one.
+        /// </summary>
         void InitPassages(Vector2Int[][] paths)
         {
             var pathDistances = new Array2D<int>(WorldUtils.WORLD_SIZE);
@@ -115,14 +131,17 @@ namespace WorldGen.WFC
             {
                 Vector2Int neighbor = pos + WorldUtils.CARDINAL_DIRS[direction];
                 bool hasNeighbor = pathDistances.TryGet(neighbor, out int neighborDistance);
-                ForcedPassages(distance, hasNeighbor, neighborDistance, out bool passable, out bool impassable);
+                GetForcedPassages(distance, hasNeighbor, neighborDistance, out bool passable, out bool impassable);
                 state_.SetValidPassageAtTile(pos, direction, (passable, impassable));
                 if (passable != impassable)
-                    RegisterGizmos(StepType.Step, () => DrawPassage(pos, direction, (passable, impassable)));
+                    RegisterGizmos(StepType.Step, () => MakePassageGizmos(pos, direction, (passable, impassable)));
             }
         }
 
-        static void ForcedPassages(int distance, bool hasNeighbor, int neighborDistance, out bool passable, out bool impassable)
+        /// <summary>
+        /// Calculates whether a passage from a tile to its neighbor can be passable or impassable.
+        /// </summary>
+        static void GetForcedPassages(int distance, bool hasNeighbor, int neighborDistance, out bool passable, out bool impassable)
         {
             passable = true;
             impassable = true;
@@ -198,7 +217,7 @@ namespace WorldGen.WFC
             return totalEntropy;
         }
 
-        IEnumerable<GizmoManager.GizmoObject> DrawEntropy()
+        IEnumerable<GizmoManager.GizmoObject> MakeEntropyGizmos()
         {
             var gizmos = new List<GizmoManager.GizmoObject>();
             foreach ((Vector2Int pos, float weight) in state_.entropyQueue)
@@ -225,7 +244,7 @@ namespace WorldGen.WFC
             return gizmos;
         }
 
-        IEnumerable<GizmoManager.GizmoObject> DrawMesh()
+        IEnumerable<GizmoManager.GizmoObject> MakeMeshGizmos()
         {
             return state_.slots.Where(s => s.Collapsed.module is not null)
                 .Select(s => new { s, m = s.Collapsed })
@@ -234,7 +253,7 @@ namespace WorldGen.WFC
                     new(t.m.module.Flipped ? -1 : 1, 1, 1), Quaternion.Euler(0, 90 * t.m.module.Rotated, 0))).ToList();
         }
 
-        static GizmoManager.Cube DrawPassage(Vector2Int tilePos, int direction, (bool passable, bool impassable) p)
+        static GizmoManager.Cube MakePassageGizmos(Vector2Int tilePos, int direction, (bool passable, bool impassable) p)
         {
             Color c = p switch
             {

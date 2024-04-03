@@ -33,7 +33,7 @@ namespace WorldGen
         [SerializeField] WFCGenerator wfc;
         [SerializeField] ObstacleGenerator obstacleGenerator;
         [SerializeField] PathFinalizer pathFinalizer;
-        [SerializeField] Scatterer scatterer;
+        [SerializeField] ObstacleModelScatterer obstacleModelScatterer;
         [Header("Settings")]
         [SerializeField] int tries;
         [SerializeField] UnityEvent onGeneratedTerrain;
@@ -53,10 +53,7 @@ namespace WorldGen
 
         void Awake()
         {
-            if (instance_ == null)
-                instance_ = this;
-            else
-                throw new("There can be only one instance of WorldGenerator");
+            instance_ = this;
 
             GameObject.FindGameObjectWithTag(TagNames.RUN_PERSISTENCE).GetComponent<RunPersistence>().SetupLevel();
             Random = new(worldSettings.seed);
@@ -69,6 +66,12 @@ namespace WorldGen
 
         void Update()
         {
+            HandleDebugStepping();
+        }
+
+        void HandleDebugStepping()
+        {
+            // T for tap, H for hold
             if (Input.GetKeyDown(KeyCode.T) || Input.GetKey(KeyCode.H))
                 Step();
 
@@ -87,59 +90,63 @@ namespace WorldGen
 
         IEnumerator Generate()
         {
-            Task generating = GenerateAsync();
-            yield return new WaitUntil(() => generating.IsCompleted);
-            // make sure we don't miss any exceptions
-            generating.Wait();
-        }
-
-        async Task GenerateAsync()
-        {
             worldData.Clear();
             worldData.seed = worldSettings.seed;
 
+            Task generatingTerrain = Task.Run(GenerateTerrain);
+            yield return new WaitUntil(() => generatingTerrain.IsCompleted);
+            generatingTerrain.Wait();
+
+            onGeneratedTerrain.Invoke();
+
+            Task placingObstacles = Task.Run(() => obstacleGenerator.PlaceObstacles(worldData.firstPathTiles, worldSettings.pathLengths));
+            yield return new WaitUntil(() => placingObstacles.IsCompleted);
+            placingObstacles.Wait();
+            Task finalizingPaths = Task.Run(() => pathFinalizer.FinalizePaths(worldData.firstPathTiles, worldSettings.maxExtraPaths));
+            yield return new WaitUntil(() => finalizingPaths.IsCompleted);
+            finalizingPaths.Wait();
+
+            onFinalizedPaths.Invoke();
+
+            Task scattering = Task.Run(obstacleModelScatterer.Scatter);
+            yield return new WaitUntil(() => scattering.IsCompleted);
+            scattering.Wait();
+
+            onScatteredDecorations.Invoke();
+
+            print("SUCCESSFULLY GENERATED");
+        }
+
+        void GenerateTerrain()
+        {
             TerrainType = TerrainTypes.GetTerrainType(worldSettings.terrainType);
 
-            await Task.Yield();
-
-            Vector2Int[] starts;
+            Vector2Int[] pathStarts;
             WFCState terrain;
             while (true)
             {
                 if (tries <= 0)
-                    throw new("Failed to generate a world");
+                    throw new WorldGeneratorException("Failed to generate terrain");
                 tries--;
 
-                starts = await Task.Run(() => pathStartPicker.PickStarts(worldSettings.pathLengths));
+                pathStarts = pathStartPicker.PickStarts(worldSettings.pathLengths);
 
-                var paths = await Task.Run(() => pathPlanner.PlanPaths(starts, worldSettings.pathLengths));
+                var paths = pathPlanner.PlanPaths(pathStarts, worldSettings.pathLengths);
                 if (paths is null)
                     continue;
 
-                terrain = await Task.Run(() => wfc.Generate(paths));
+                terrain = wfc.Generate(paths);
                 if (terrain is null)
                     continue;
 
                 Tiles = new(terrain.GetCollapsedSlots(), terrain.GetPassageAtTile, paths);
                 break;
             }
-            worldData.firstPathTiles = starts;
-            worldData.pathStarts = starts.Select(s => s + WorldUtils.GetMainDir(WorldUtils.WORLD_CENTER, s, Random)).ToArray();
+
+            worldData.firstPathTiles = pathStarts;
+            worldData.pathStarts = pathStarts.Select(s => s + WorldUtils.GetMainDir(WorldUtils.WORLD_CENTER, s, Random)).ToArray();
             worldData.terrain = terrain.GetCollapsedSlots();
             worldData.tiles = Tiles;
-
-            onGeneratedTerrain.Invoke();
-
-            await Task.Run(() => obstacleGenerator.PlaceObstacles(starts, worldSettings.pathLengths));
-            await Task.Run(() => pathFinalizer.FinalizePaths(starts, worldSettings.maxExtraPaths));
-
-            onFinalizedPaths.Invoke();
-
-            await Task.Run(() => scatterer.Scatter());
-
-            onScatteredDecorations.Invoke();
-
-            print("SUCCESSFULLY GENERATED");
         }
 
         void Step()
@@ -218,6 +225,11 @@ namespace WorldGen
         {
             if (StepType.None < instance_.stepType)
                 instance_.gizmos.Expire(duration);
+        }
+
+        public class WorldGeneratorException : Exception
+        {
+            public WorldGeneratorException(string message) : base(message) { }
         }
     }
 }

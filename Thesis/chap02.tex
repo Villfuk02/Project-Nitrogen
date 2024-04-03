@@ -1,21 +1,25 @@
 \chapter{Game Design}
 
 Before we start implementing the game, we should design its individual parts.
+An overall design was described in section~\ref{sec:original-vision}.
+In this chapter, we will go into more detail and flesh out the design.
 We need to decide which mechanics will be in the game and how will the player interact with them.
 The game needs to react to the player's actions and communicate the information the player should know.
 This all depends on what exactly are we trying to achieve.
-Thus, we should set some design goals.
+Thus, we will start by setting some design goals.
 
 \section{Design goals}
 
 We aim to make the game's mechanics clear, and controls intuitive and responsive.
-This is a necessity for every game because without this, the players can't even properly play the game you want them to play.
-We won't make a subsection specifically for this goal, but it will inform many of our decisions throughout the design.
+This is a necessity for every game because without this, the players can't even properly play the game we want them to play.
+This is an important goal that will inform many of our decisions throughout the design.
 
-The following are the goals specific for our game.
-We will look at other games for inspiration how these goals could be reached.
-The prototype won't achieve any of them well, but they still inform the design of the mechanics we will implement.
-
+We have analyzed several games of similar genres to our game, that we find enjoyable, and we tried to identify what makes them fun.
+We identified five features, which we think make the games very intriguing and replayable, that we think would work for our game too.
+Thus, we intend to design the game, so it exhibits these features, making them our game-specific design goals.
+We will explain each in a separate subsection, and we will use other games as inspiration for how to reach them.
+The demo version of our game won't achieve any of them well, but the goals still inform the design of the mechanics we will implement.
+The goals are:
 \begin{enumerate}
     \item \nameref{sec:goal-depth-battle}
     \item \nameref{sec:goal-depth-run}
@@ -26,7 +30,7 @@ The prototype won't achieve any of them well, but they still inform the design o
 
 \subsection{Strategic Depth in Every Battle} \label{sec:goal-depth-battle}
 
-The player should make meaningful strategic decisions throughout every battle.
+One of the design goals we identified is that the game should let the player make meaningful strategic decisions throughout every battle.
 Each battle should be different enough to require the player to adapt to the current situation.
 This is where the action will happen, but we want the player to make tactical decisions, not test their reflexes.
 With this constraint, battles would be boring if every one played out the same.
@@ -39,19 +43,12 @@ What makes this even more complicated are cheap single-use plants like the \emph
 It costs only 25\,\emph{sun} and can kill almost any zombie, where, for example, a \emph{Peashooter} costs 100\,\emph{sun}, but is permanent and able to kill tens of zombies over the course of a level.
 This means the player always has to consider if it's better to place a plant that's the best now or a plant that will be the best in the future.
 
-\begin{center}
-    \captionsetup{type=figure}
-    \includegraphics[width=0.8\textwidth]{img/Plants-vs-Zombies-Mines.png}
-    \caption{\emph{Sunflowers} and \emph{Potato Mines} in \emph{Plants vs.\ Zombies}. \emph{Sunflowers} are necessary to fuel your economy, while \emph{Potato Mines} are a cheap way to deal with the first few zombies.}
-    \label{fig:pvz-mines}
-\end{center}
-
-In \emph{Slay the Spire}, the player has to make a similar kind of decision, but even more often.
+In \emph{Slay the Spire}, the player has to make a similar decision, but even more often.
 Almost every enemy grows stronger over time, or makes the player character weaker as they fight.
 This means that the player always has to consider when it's the best to defend and when it's better to attack.
 The player can choose to not block some damage now in order to kill the enemy sooner and prevent bigger attacks in the future.
 The player also has to plan several turns in advance because many cards have longer lasting effects.
-\enquote{Is it better to play a card that makes me stronger in the future or a card that helps me now?}
+They often have to decide whether it's better to play a card that makes them stronger in future turns, or a card that helps them now.
 
 Every fight is different because every enemy has distinctive behavior.
 Some enemies get much more powerful over time, so it is important to kill them quickly.
@@ -68,7 +65,9 @@ This might seem like too much, but we want to playtest all these options and pos
 
 \subsection{Strategic Depth in Every Run} \label{sec:goal-depth-run}
 
-The player should make meaningful strategic decisions throughout every run and there should be no clear path to victory.
+Another of the design goals is that our game should let the player make meaningful strategic decisions throughout every run and there should be no clear path to victory.
+In our game, when the player makes a decision when fighting in a battle, its consequences should be contained mostly within the battle.
+This goal refers to the decisions the player will make outside a battle, which affect all future battles.
 
 In \emph{Slay the Spire}, the player needs to improve many aspects of their deck in tandem.
 They need to have great defensive cards, cards that can deal with enemies that have a lot of health, cards that can attack multiple enemies at once and more.
@@ -85,44 +84,42 @@ They should also have some cheaper towers to build in the first few waves and mo
 In \emph{Slay the Spire}, the player come across an interesting trade-off between short-term and long-term power, even in building their deck.
 The player wants cards which will have a great potential to be strong in the future, having great synergy with other cards.
 But these cards aren't strong right now and the player needs to survive the next few fights, making them choose cards that are useful immediately, but might not be as powerful later in the run.
-As an example we can look at \emph{Iron Wave} and \emph{Double Tap}.
+As an example we can look at the cards \emph{Iron Wave} and \emph{Double Tap}.
+
+The player starts each run with several copies cards \emph{Defend} and \emph{Strike} in their deck.
+Compared to them, \emph{Iron Wave} is a very cost-efficient card.
+We can see in figure \ref{fig:sts-iron-wave-and-double-tap}, it costs 1\,\emph{energy} (displayed in the top right corner of the card), the same as \emph{Defend} or \emph{Strike}.
+However, it does almost the same thing as \emph{Defend} \textbf{and} \emph{Strike} combined~--- it deals damage and gives you \emph{block} too.
+Picking this card can help a lot in the early fights, but it doesn't really grow stronger later in the run.
+The card \emph{Double Tap}, on the other hand, is not great at the start.
+In essence, it acts like another \emph{Strike} most of the time, and is useful only when the player draws another attack alongside it.
+It is however very strong when your deck contains many attacks that cost a lot of energy but deal much more damage.
+Then it allows the player to play a powerful attack twice at the cost of only one more energy.
 
 \begin{center}
     \captionsetup{type=figure}
     \begin{minipage}{.25\textwidth}
         \centering
         \includegraphics[width=0.95\textwidth]{img/Slay-the-Spire-Defend.png}
-        \label{fig:sts-defend}
     \end{minipage}%
     \begin{minipage}{.25\textwidth}
         \centering
-        \captionsetup{justification=centering}
         \includegraphics[width=0.95\textwidth]{img/Slay-the-Spire-Strike.png}
-        \label{fig:sts-strike}
     \end{minipage}%
     \begin{minipage}{.25\textwidth}
         \centering
         \includegraphics[width=0.95\textwidth]{img/Slay-the-Spire-Iron-Wave.png}
-        \label{fig:sts-iron-wave}
     \end{minipage}%
     \begin{minipage}{.25\textwidth}
         \centering
         \includegraphics[width=0.95\textwidth]{img/Slay-the-Spire-Double-Tap.png}
-        \label{fig:sts-double-tap}
     \end{minipage}
-    \caption{\emph{Defend}, \emph{Strike}, \emph{Iron Wave} and \emph{Double Tap}---cards from \emph{Slay the Spire.}}
+    \caption{\emph{Defend}, \emph{Strike}, \emph{Iron Wave} and \emph{Double Tap} cards from \emph{Slay the Spire.}}
+    \label{fig:sts-iron-wave-and-double-tap}
 \end{center}
 
-\?{Should I transcribe the cards}
-The player starts each run with several copies of \emph{Defend} and \emph{Strike} in their deck.
-Compared to them, \emph{Iron Wave} is very cost-efficient.
-It does almost the same thing as \emph{Defend} \textbf{and} \emph{Strike} combined, but for the cost of 1\,\emph{energy}, the same as \emph{Defend} \textbf{or} \emph{Strike}.
-Picking this card can help a lot in the early fights, however, it doesn't really grow stronger later in the run.
-\emph{Double Tap}, on the other hand, is not great at the start.
-In essence, it acts like another \emph{Strike} most of the time, and is useful only when the player draws another attack alongside it.
-It is however very strong when your deck contains many attacks that cost a lot of energy but deal much more damage.
-Then it allows the player to play a powerful attack twice at the cost of only one more energy.
 We can design the blueprints in our game similarly, making some useful early in the run and some powerful later.
+This will let the player decide if they need to take a blueprint that will help them now, or a blueprint that can potentially be strong later.
 
 \subsection{Make Various Builds Viable} \label{sec:goal-various-builds}
 

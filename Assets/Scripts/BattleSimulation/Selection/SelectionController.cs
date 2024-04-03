@@ -1,5 +1,6 @@
 using Game.Blueprint;
 using Game.InfoPanel;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -86,11 +87,11 @@ namespace BattleSimulation.Selection
 
         void HandleDeselect()
         {
-            if (!Input.GetMouseButtonUp(1) && !Input.GetKeyDown(KeyCode.Escape))
-                return;
-
-            DeselectFromMenu();
-            DeselectInWorld();
+            if (Input.GetKeyUp(KeyCode.Escape))
+            {
+                DeselectFromMenu();
+                DeselectInWorld();
+            }
         }
 
         void HandleRotation()
@@ -153,7 +154,12 @@ namespace BattleSimulation.Selection
                 hoverTilePosition = hovered == null ? null : hovered.transform.position;
 
             if (hoverTilePosition != null)
-                pointHighlight.transform.localPosition = WorldUtils.TilePosToWorldPos(hoverTilePosition.Value);
+            {
+                Vector3 pointHighlightPos = hoverTilePosition.Value;
+                float maxHeightInArea = WorldUtils.CARDINAL_DIRS.Select(d => World.WorldData.World.data.tiles.GetHeightAt((Vector2)pointHighlightPos + 0.2f * (Vector2)d)).Max();
+                pointHighlightPos.z = maxHeightInArea;
+                pointHighlight.transform.localPosition = WorldUtils.TilePosToWorldPos(pointHighlightPos);
+            }
         }
 
         public void SelectInWorld(Selectable select)
@@ -184,8 +190,13 @@ namespace BattleSimulation.Selection
 
         public void SelectFromMenu(int index)
         {
+            bool onlyDeselect = blueprintMenu.selected == index;
+
             DeselectInWorld();
             DeselectFromMenu();
+
+            if (onlyDeselect)
+                return;
 
             if (!blueprintMenu.TrySelect(index, out var blueprint, out var originalBlueprint))
                 return;

@@ -137,7 +137,7 @@ namespace Utils
                 1 => E,
                 2 => S,
                 3 => W,
-                _ => throw new IndexOutOfRangeException()
+                _ => throw new IndexOutOfRangeException() // this will never happen
             };
             set
             {
@@ -209,7 +209,7 @@ namespace Utils
                 1 => NE,
                 2 => SE,
                 3 => SW,
-                _ => throw new IndexOutOfRangeException()
+                _ => throw new IndexOutOfRangeException() // this will never happen
             };
             set
             {

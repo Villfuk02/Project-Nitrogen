@@ -17,13 +17,12 @@ namespace WorldGen.Path
         /// <summary>
         /// Makes the final paths, taking into account terrain and obstacles. Then stores them directly in <see cref="Tiles"/>.
         /// </summary>
-        /// <param name="starts">Start tile of each path.</param>
-        /// <param name="maxExtraPaths">Maximum number of extra branches.</param>
-        public void FinalizePaths(Vector2Int[] starts, int maxExtraPaths)
+        public void FinalizePaths(Vector2Int[] starts, int maxExtraBranches)
         {
+            // debug
             WaitForStep(StepType.Phase);
             print("Finalizing Paths");
-
+            // draw all impassable tiles and passages
             RegisterGizmos(StepType.Phase, () =>
             {
                 List<GizmoManager.GizmoObject> gizmos = new();
@@ -41,8 +40,9 @@ namespace WorldGen.Path
 
                 return gizmos;
             });
+            // end debug
 
-            extraPaths_ = maxExtraPaths;
+            extraPaths_ = maxExtraBranches;
             int targetCount = starts.Length;
             var paths = new TileData[targetCount];
             for (int i = 0; i < targetCount; i++)
@@ -70,11 +70,15 @@ namespace WorldGen.Path
         }
 
         /// <summary>
-        /// Draw paths from one start tile.
+        /// Trace a path from one start tile.
         /// </summary>
         void TracePath(TileData start)
         {
+            // debug
+            // draw start position
             RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TilePosToWorldPos(start.pos), 0.3f));
+            //end debug
+
             bool foundAny = false;
             LinkedList<(TileData tile, Vector2Int[] path)> stack = new();
             stack.AddFirst((start, new[] { start.pos }));
@@ -96,11 +100,13 @@ namespace WorldGen.Path
         }
 
         /// <summary>
-        /// joins a path to an existing one if possible and returns true
-        /// otherwise finds all valid one-tile continuations, ordered by how good they are and appends them to the stack
+        /// Joins a path to an existing one if possible and returns true.
+        /// Otherwise finds all valid one-tile continuations, ordered by how good they are and appends them to the stack
         /// </summary>
         bool PathStep(TileData tile, Vector2Int[] path, bool foundAny, LinkedList<(TileData tile, Vector2Int[] path)> stack)
         {
+            // debug
+            // draw the current position and all the path segments leading up to it
             RegisterGizmos(StepType.MicroStep, () =>
             {
                 List<GizmoManager.GizmoObject> gizmos = new()
@@ -121,10 +127,11 @@ namespace WorldGen.Path
 
                 return gizmos;
             });
+            // end debug
 
             // if this tile already has a path, check if the path can join to it
             if (hasPath_[tile.pos])
-                return TryJoinPath(path, foundAny);
+                return TryJoinPath(path, !foundAny);
 
             // add valid neighbors to the stack
             foreach (var neighbor in FindValidContinuations(tile, path))
@@ -137,9 +144,11 @@ namespace WorldGen.Path
             return false;
         }
 
+        /// <summary>
+        /// Find all valid continuations of the path, ordered by how preferable they are.
+        /// </summary>
         List<TileData> FindValidContinuations(TileData tile, Vector2Int[] path)
         {
-            // find all valid continuations
             // the next tile must be one closer to the center
             var validNeighborsTemp = tile.neighbors.Where(n => n is not null && n.dist == tile.dist - 1);
             // order them by ascending repulsion (trying to avoid other paths)
@@ -159,12 +168,14 @@ namespace WorldGen.Path
 
             return validNeighbors;
         }
-
-        bool TryJoinPath(Vector2Int[] path, bool foundAny)
+        /// <summary>
+        /// Check whether a path can be joined to a previous path and connect it. The first paths can always connect to the center tile.
+        /// </summary>
+        bool TryJoinPath(Vector2Int[] path, bool isFirst)
         {
             // reject the branch if it doesn't go through a tile that's not a neighbor of any other path
             // but only when we've already found a path
-            if (foundAny && path.All(p => outlined_[p]))
+            if (!isFirst && path.All(p => outlined_[p]))
                 return false;
 
             // otherwise accept it
@@ -181,7 +192,11 @@ namespace WorldGen.Path
                 {
                     if (!prev.pathNext.Contains(current))
                         prev.pathNext.Add(current);
+
+                    // debug
+                    // draw the finished path in cyan for the rest of the phase
                     RegisterGizmos(StepType.Phase, () => new GizmoManager.Line(Color.cyan, WorldUtils.TilePosToWorldPos(pos), WorldUtils.TilePosToWorldPos(prev.pos)));
+                    // end debug
                 }
 
                 prev = current;
@@ -195,7 +210,7 @@ namespace WorldGen.Path
         }
 
         /// <summary>
-        /// Adds values to the repulsion field, bigger values closer to the pathNode provided.
+        /// Increases the strength of the repulsion field at tiles close to the provided tile, bigger values closer to the pathNode provided with quadratic falloff.
         /// </summary>
         void UpdateRepulsionField(Vector2Int pathNode)
         {

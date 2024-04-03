@@ -20,6 +20,7 @@ namespace BattleVisuals.Camera
         [SerializeField] float interpolationSpeed;
         [SerializeField] float rotAcceleration;
         [SerializeField] float rotInertia;
+        [SerializeField] float rotThreshold;
         [Header("Runtime variables")]
         [SerializeField] float rotation;
         [SerializeField] float rotationVelocity;
@@ -27,10 +28,18 @@ namespace BattleVisuals.Camera
         [SerializeField] Vector3 camSpacePos;
         [SerializeField] Vector3 camSpacePosTarget;
         [SerializeField] float pitchAngle;
+        [SerializeField] Vector3 cursorWorldPos;
+        [SerializeField] Vector3 lastZoomCursorPos;
+        [SerializeField] Vector3 lastZoomWorldPos;
+        [SerializeField] bool dragging;
+        [SerializeField] bool rotDragging;
+        [SerializeField] float rotDragStartPos;
 
         void Start()
         {
             distBounds = (Vector2)WorldUtils.WORLD_SIZE * 0.5f;
+            camSpacePos.y = maxZoom;
+            camSpacePosTarget.y = maxZoom;
         }
 
         void Update()
@@ -69,11 +78,25 @@ namespace BattleVisuals.Camera
 
         void HandleInputs()
         {
-            if (Input.GetKeyUp(KeyCode.Q))
-                rotationTarget += 90;
-            if (Input.GetKeyUp(KeyCode.E))
-                rotationTarget -= 90;
+            HandleDragging();
+            HandleKeyboardMovement();
+            HandleRotation();
+            HandleZoom();
+        }
 
+        void HandleDragging()
+        {
+            var currentCursorWorldPos = ScreenToWorldPos(Input.mousePosition);
+            if (dragging && Input.GetMouseButton(1))
+                camSpacePosTarget -= 10 * (currentCursorWorldPos - cursorWorldPos);
+            else
+                dragging = Input.GetMouseButtonDown(1) && !EventSystem.current.IsPointerOverGameObject();
+
+            cursorWorldPos = currentCursorWorldPos;
+        }
+
+        void HandleKeyboardMovement()
+        {
             float realMove = moveSpeed * Time.deltaTime * camSpacePos.y;
             Vector2Int inputDirection = Vector2Int.zero;
             if (Input.GetKey(KeyCode.W))
@@ -85,9 +108,57 @@ namespace BattleVisuals.Camera
             if (Input.GetKey(KeyCode.D))
                 inputDirection += Vector2Int.right;
             camSpacePosTarget += realMove * (Quaternion.Euler(0, rotation, 0) * new Vector3(inputDirection.x, 0, inputDirection.y));
+        }
 
+        void HandleRotation()
+        {
+            var currentCursorXPos = Input.mousePosition.x;
+            if (rotDragging && Input.GetMouseButton(2))
+            {
+                var offset = (currentCursorXPos - rotDragStartPos) / Screen.width;
+                if (offset > rotThreshold)
+                {
+                    rotDragStartPos = currentCursorXPos;
+                    rotationTarget += 90;
+                }
+                else if (offset < -rotThreshold)
+                {
+                    rotDragStartPos = currentCursorXPos;
+                    rotationTarget -= 90;
+                }
+            }
+            else
+            {
+                rotDragging = Input.GetMouseButtonDown(2) && !EventSystem.current.IsPointerOverGameObject();
+                rotDragStartPos = currentCursorXPos;
+            }
+
+            if (Input.GetKeyUp(KeyCode.Q))
+                rotationTarget += 90;
+            if (Input.GetKeyUp(KeyCode.E))
+                rotationTarget -= 90;
+        }
+
+        void HandleZoom()
+        {
+            var zoomWorldPos = ScreenToWorldPos(lastZoomCursorPos);
+            camSpacePosTarget -= 3 * Mathf.Abs(camSpacePos.y - camSpacePosTarget.y) * (zoomWorldPos - lastZoomWorldPos);
+            lastZoomWorldPos = zoomWorldPos;
             if (!EventSystem.current.IsPointerOverGameObject())
+            {
                 camSpacePosTarget += Input.mouseScrollDelta.y * zoomSpeed * Vector3.up;
+                if (Input.mouseScrollDelta.y > 0.01f)
+                {
+                    lastZoomWorldPos = ScreenToWorldPos(Input.mousePosition);
+                    lastZoomCursorPos = Input.mousePosition;
+                }
+            }
+        }
+
+        Vector3 ScreenToWorldPos(Vector3 screenPos)
+        {
+            var ray = cam.ScreenPointToRay(screenPos);
+            return ray.origin - ray.direction * ray.origin.y / ray.direction.y;
         }
     }
 }

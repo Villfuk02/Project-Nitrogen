@@ -57,7 +57,7 @@ namespace Data.Parsers
         public void ReturnLast()
         {
             if (current_ is not char c)
-                throw new();
+                throw new InvalidOperationException("Trying to return last character when at the start of the stream.");
             ProcessReturning(c);
             buffer_ = c;
             current_ = null;

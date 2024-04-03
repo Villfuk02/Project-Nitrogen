@@ -14,12 +14,17 @@ namespace WorldGen.Obstacles
         RandomSet<Vector2Int> tilesLeft_;
         Array2D<float>[] weightFields_;
         List<Vector2Int> emptyTiles_;
+        /// <summary>
+        /// Places all the various obstacles on tiles according to their parameters and ensuring the shortest path from each path start is the specified length.
+        /// </summary>
         public void PlaceObstacles(Vector2Int[] pathStarts, int[] pathLengths)
         {
+            // debug
             WaitForStep(StepType.Phase);
             print("Picking Obstacles");
-
+            // draw paths starts and center of the world
             RegisterGizmos(StepType.Phase, () => new List<Vector2Int>(pathStarts) { WorldUtils.WORLD_CENTER }.Select(p => new GizmoManager.Cube(Color.yellow, WorldUtils.TilePosToWorldPos(p), 0.5f)));
+            // end debug
 
             var layers = WorldGenerator.TerrainType.Obstacles.Layers;
             var fillers = WorldGenerator.TerrainType.Obstacles.Fillers;
@@ -35,44 +40,32 @@ namespace WorldGen.Obstacles
             // first generate obstacles on random tiles that don't have a planned path going through them
             for (var layer = 0; layer < layers.Length; layer++)
             {
+                // debug
                 DrawGizmos(StepType.Step);
                 WaitForStep(StepType.Step);
+                // end debug
+
                 GenerateLayer(layers[layer], layer);
             }
+            // debug
             DrawGizmos(StepType.Step);
             WaitForStep(StepType.Step);
+            // end debug
 
             // then fill all tiles with the filler obstacle and remove them in a random order, keeping only those that would allow for a shorter path than intended from any start
             EnsurePathLengths(pathStarts, pathLengths, fillers);
 
             Tiles.RecalculateDistances();
+
+            // debug
             DrawGizmos(StepType.Phase);
             print("Obstacles Picked");
+            // end debug
         }
 
-        void EnsurePathLengths(Vector2Int[] pathStarts, int[] pathLengths, ObstacleData[] fillers)
-        {
-            tilesLeft_ = new(emptyTiles_, WorldGenerator.Random.NewSeed());
-            foreach (var pos in tilesLeft_)
-                Tiles[pos].passable = false;
-
-            while (tilesLeft_.Count > 0)
-            {
-                DrawGizmos(StepType.MicroStep);
-                WaitForStep(StepType.MicroStep);
-                Vector2Int pos = tilesLeft_.PopRandom();
-                Tiles[pos].passable = true;
-                Tiles.RecalculateDistances();
-                bool mustKeep = Enumerable.Range(0, pathStarts.Length).Any(i => Tiles[pathStarts[i]].dist != pathLengths[i]);
-                if (!mustKeep)
-                    continue;
-
-                var placeable = TryPlaceAll(pos, fillers, true);
-                var obstacle = placeable.PopRandom();
-                Place(pos, obstacle);
-            }
-        }
-
+        /// <summary>
+        /// Places all obstacles of the given layer, ensuring a valid path still exists from each start.
+        /// </summary>
         void GenerateLayer(IEnumerable<ObstacleData> layer, int index)
         {
             var obstacleCounts = layer.Where(o => o.Max > 0).ToDictionary(o => o, _ => 0);
@@ -81,8 +74,11 @@ namespace WorldGen.Obstacles
                 tilesLeft_ = new(emptyTiles_, WorldGenerator.Random.NewSeed());
                 while (tilesLeft_.Count > 0)
                 {
+                    // debug
                     DrawGizmos(StepType.MicroStep);
                     WaitForStep(StepType.MicroStep);
+                    // end debug
+
                     Vector2Int tile = tilesLeft_.PopRandom();
                     TryPlace(tile, obstacleCounts, index);
                 }
@@ -92,9 +88,12 @@ namespace WorldGen.Obstacles
             }
         }
 
+        /// <summary>
+        /// Tries to place an obstacle at the given tile.
+        /// </summary>
         void TryPlace(Vector2Int pos, Dictionary<ObstacleData, int> available, int layer)
         {
-            var placeable = TryPlaceAll(pos, available.Keys, false);
+            var placeable = GetValidPlacements(pos, available.Keys, false);
             if (placeable.Count == 0)
                 return;
 
@@ -104,7 +103,40 @@ namespace WorldGen.Obstacles
             Place(pos, obstacle, layer);
         }
 
-        WeightedRandomSet<ObstacleData> TryPlaceAll(Vector2Int pos, IEnumerable<ObstacleData> available, bool forcePlace)
+        /// <summary>
+        /// Fills all tiles with the given filler obstacles and one by one removes each, unless it would allow for a shorter path than specified.
+        /// </summary>
+        void EnsurePathLengths(Vector2Int[] pathStarts, int[] pathLengths, ObstacleData[] fillers)
+        {
+            tilesLeft_ = new(emptyTiles_, WorldGenerator.Random.NewSeed());
+            foreach (var pos in tilesLeft_)
+                Tiles[pos].passable = false;
+
+            while (tilesLeft_.Count > 0)
+            {
+                // debug
+                DrawGizmos(StepType.MicroStep);
+                WaitForStep(StepType.MicroStep);
+                // end debug
+
+                Vector2Int pos = tilesLeft_.PopRandom();
+                Tiles[pos].passable = true;
+                Tiles.RecalculateDistances();
+                bool mustKeep = Enumerable.Range(0, pathStarts.Length).Any(i => Tiles[pathStarts[i]].dist != pathLengths[i]);
+                if (!mustKeep)
+                    continue;
+
+                var placeable = GetValidPlacements(pos, fillers, true);
+                var obstacle = placeable.PopRandom();
+                Place(pos, obstacle);
+            }
+        }
+
+        /// <summary>
+        /// Checks whether each obstacle can be placed on this tile and returns the set along with their probabilities.
+        /// If forcePlace is true, all valid obstacles can be placed regardless of their chance.
+        /// </summary>
+        WeightedRandomSet<ObstacleData> GetValidPlacements(Vector2Int pos, IEnumerable<ObstacleData> available, bool forcePlace)
         {
             WeightedRandomSet<ObstacleData> placeable = new(WorldGenerator.Random.NewSeed());
             foreach (var o in available)
@@ -128,6 +160,9 @@ namespace WorldGen.Obstacles
             return placeable;
         }
 
+        /// <summary>
+        /// Actually place the obstacle at the given tile and update all the relevant fields.
+        /// </summary>
         void Place(Vector2Int pos, ObstacleData obstacle, int layer = -1)
         {
             emptyTiles_.Remove(pos);
