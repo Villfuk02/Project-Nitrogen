@@ -13,18 +13,31 @@ namespace Game.InfoPanel
     {
         [Header("References")]
         [SerializeField] RectTransform root;
+        [SerializeField] Image backgroundPanel;
         [SerializeField] TextMeshProUGUI title;
         [SerializeField] Image icon;
         [SerializeField] TextMeshProUGUI description;
         [SerializeField] RectTransform deleteButton;
         [SerializeField] RectTransform targetingSection;
         [SerializeField] TextMeshProUGUI targetingText;
+        [SerializeField] Graphic[] raycastTargets;
         [Header("Settings")]
         [SerializeField] Sprite tileIcon;
+        [SerializeField] Color lowPriorityBackgroundColor;
         [Header("Runtime variables")]
         [SerializeField] bool visible;
-        DescriptionProvider? descriptionProvider_;
-        Building? building_;
+        [SerializeField] bool allowInteraction;
+        [SerializeField] bool priority;
+        [SerializeField] bool rebuildLayout;
+        Data? current_;
+        Data? fallback_;
+        class Data
+        {
+            public string title;
+            public Sprite sprite;
+            public DescriptionProvider descriptionProvider;
+            public Building building;
+        }
 
         void Start()
         {
@@ -33,17 +46,60 @@ namespace Game.InfoPanel
 
         void Update()
         {
-            if (!visible || descriptionProvider_ == null || !descriptionProvider_.HasDescriptionChanged(out var desc))
+            if (rebuildLayout)
+            {
+                rebuildLayout = false;
+                LayoutRebuilder.ForceRebuildLayoutImmediate(root);
+            }
+            if (!visible || current_?.descriptionProvider == null || !current_.descriptionProvider.HasDescriptionChanged(out var desc))
                 return;
             UpdateDescription(desc);
         }
 
-        public void Hide()
+        public void Hide(bool highPriority, bool clearFallback)
         {
+            if (priority && !highPriority)
+                return;
+            if (clearFallback)
+                fallback_ = null;
+            if (fallback_ != null)
+                DisplayData(fallback_, highPriority, true);
+            else
+                Hide();
+        }
+
+        void Hide()
+        {
+            priority = false;
+            current_ = null;
             if (!visible)
                 return;
             visible = false;
+            UpdateDescription("");
             root.gameObject.SetActive(false);
+        }
+
+        void DisplayData(Data data, bool highPriority, bool fallback)
+        {
+            if (priority && !highPriority)
+                return;
+
+            if (fallback)
+                fallback_ = data;
+            allowInteraction = fallback;
+            priority = highPriority;
+
+            if (data == null)
+            {
+                Hide();
+                return;
+            }
+            current_ = data;
+            title.text = data.title;
+            icon.sprite = data.sprite;
+            current_.descriptionProvider.HasDescriptionChanged(out var desc);
+            UpdateDescription(desc);
+            Show();
         }
 
         void Show()
@@ -52,20 +108,23 @@ namespace Game.InfoPanel
                 return;
             visible = true;
             root.gameObject.SetActive(true);
+            foreach (var target in raycastTargets)
+                target.raycastTarget = priority;
+            backgroundPanel.color = priority ? Color.white : lowPriorityBackgroundColor;
             UpdateTargeting();
         }
 
         void UpdateDescription(string desc)
         {
-            deleteButton.gameObject.SetActive(building_ != null && !building_.permanent);
+            deleteButton.gameObject.SetActive(current_?.building != null && !current_.building.permanent && allowInteraction);
             UpdateTargeting();
             description.text = desc;
-            LayoutRebuilder.ForceRebuildLayoutImmediate(root);
+            rebuildLayout = true;
         }
 
         void UpdateTargeting()
         {
-            if (building_ is Tower t)
+            if (current_ != null && current_.building != null && current_.building is Tower t)
             {
                 Targeting targeting = t.targeting;
                 targetingSection.gameObject.SetActive(targeting.CanChangePriority);
@@ -79,83 +138,93 @@ namespace Game.InfoPanel
 
         public void NextPriority()
         {
-            if (building_ is Tower t)
-                t.targeting.NextPriority();
+            if (!allowInteraction || current_?.building is not Tower t)
+                return;
+
+            t.targeting.NextPriority();
             UpdateTargeting();
         }
 
         public void PrevPriority()
         {
-            if (building_ is Tower t)
-                t.targeting.PrevPriority();
+            if (!allowInteraction || current_?.building is not Tower t)
+                return;
+
+            t.targeting.PrevPriority();
             UpdateTargeting();
         }
 
         public void DeleteBuilding()
         {
-            if (building_ == null || building_.permanent)
+            if (!allowInteraction || current_?.building == null || current_.building.permanent)
                 return;
 
-            building_!.Delete();
-            if (visible && descriptionProvider_ != null)
+            current_.building!.Delete();
+            if (visible && current_.descriptionProvider != null)
             {
-                descriptionProvider_.HasDescriptionChanged(out string desc);
+                current_.descriptionProvider.HasDescriptionChanged(out string desc);
                 UpdateDescription(desc);
             }
         }
 
-        public void ShowBlueprint(Blueprint.Blueprint blueprint, Blueprint.Blueprint original)
+        public void ShowBlueprint(Blueprint.Blueprint blueprint, Blueprint.Blueprint original, bool highPriority, bool fallback)
         {
-            building_ = null;
-            title.text = blueprint.name;
-            icon.sprite = blueprint.icon;
-            descriptionProvider_ = new BlueprintDescriptionProvider(blueprint, original);
-            descriptionProvider_.HasDescriptionChanged(out var desc);
-            UpdateDescription(desc);
-            Show();
+            Data d = new()
+            {
+                building = null,
+                descriptionProvider = new BlueprintDescriptionProvider(blueprint, original),
+                sprite = blueprint.icon,
+                title = blueprint.name
+            };
+            DisplayData(d, highPriority, fallback);
         }
 
-        public void ShowAttacker(Attacker attacker)
+        public void ShowAttacker(Attacker attacker, bool highPriority, bool fallback)
         {
-            building_ = null;
-            title.text = attacker.stats.name;
-            icon.sprite = attacker.stats.icon;
-            descriptionProvider_ = new AttackerDescriptionProvider(attacker);
-            descriptionProvider_.HasDescriptionChanged(out var desc);
-            UpdateDescription(desc);
-            Show();
-        }
-        public void ShowAttacker(AttackerStats.AttackerStats stats, AttackerStats.AttackerStats original)
-        {
-            building_ = null;
-            title.text = stats.name;
-            icon.sprite = stats.icon;
-            descriptionProvider_ = new AttackerDescriptionProvider(stats, original);
-            descriptionProvider_.HasDescriptionChanged(out var desc);
-            UpdateDescription(desc);
-            Show();
+            Data d = new()
+            {
+                building = null,
+                descriptionProvider = new AttackerDescriptionProvider(attacker),
+                sprite = attacker.stats.icon,
+                title = attacker.name
+            };
+            DisplayData(d, highPriority, fallback);
         }
 
-        public void ShowTile(Tile tile)
+        public void ShowAttacker(AttackerStats.AttackerStats stats, AttackerStats.AttackerStats original, bool highPriority, bool fallback)
         {
-            building_ = null;
-            title.text = "Tile";
-            icon.sprite = tileIcon;
-            descriptionProvider_ = new TileDescriptionProvider(tile);
-            descriptionProvider_.HasDescriptionChanged(out var desc);
-            UpdateDescription(desc);
-            Show();
+            Data d = new()
+            {
+                building = null,
+                descriptionProvider = new AttackerDescriptionProvider(stats, original),
+                title = stats.name,
+                sprite = stats.icon
+            };
+            DisplayData(d, highPriority, fallback);
         }
 
-        public void ShowBuilding(Building building)
+        public void ShowTile(Tile tile, bool highPriority, bool fallback)
         {
-            building_ = building;
-            title.text = building.Blueprint.name;
-            icon.sprite = building.Blueprint.icon;
-            descriptionProvider_ = new BlueprintDescriptionProvider(building);
-            descriptionProvider_.HasDescriptionChanged(out var desc);
-            UpdateDescription(desc);
-            Show();
+            Data d = new()
+            {
+                building = null,
+                descriptionProvider = new TileDescriptionProvider(tile),
+                title = "Tile",
+                sprite = tileIcon
+            };
+            DisplayData(d, highPriority, fallback);
+        }
+
+        public void ShowBuilding(Building building, bool highPriority, bool fallback)
+        {
+            Data d = new()
+            {
+                building = building,
+                descriptionProvider = new BlueprintDescriptionProvider(building),
+                title = building.Blueprint.name,
+                sprite = building.Blueprint.icon
+            };
+            DisplayData(d, highPriority, fallback);
         }
     }
 }

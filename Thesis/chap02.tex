@@ -18,7 +18,6 @@ We have analyzed several games of similar genres to our game, that we find enjoy
 We identified five features, which we think make the games very intriguing and replayable, that we think would work for our game too.
 Thus, we intend to design the game, so it exhibits these features, making them our game-specific design goals.
 We will explain each in a separate subsection, and we will use other games as inspiration for how to reach them.
-The demo version of our game won't achieve any of them well, but the goals still inform the design of the mechanics we will implement.
 The goals are:
 \begin{enumerate}
     \item \nameref{sec:goal-depth-battle}
@@ -40,7 +39,7 @@ The more they build their economy, the more plants they can afford in the future
 However, these plants can't kill zombies, so the goal is to spend the bare minimum on defense.
 This is a hard problem to solve, since when and where zombies will appear is not completely predictable.
 What makes this even more complicated are cheap single-use plants like the \emph{Potato Mine}.
-It costs only 25\,\emph{sun} and can kill almost any zombie, where, for example, a \emph{Peashooter} costs 100\,\emph{sun}, but is permanent and able to kill tens of zombies over the course of a level.
+It costs only 25\,\emph{sun} and can kill almost any zombie, where, for example, a \emph{Peashooter} costs 100\,\emph{sun}, but is permanent and able to kill many zombies over the course of a level.
 This means the player always has to consider if it's better to place a plant that's the best now or a plant that will be the best in the future.
 
 In \emph{Slay the Spire}, the player has to make a similar decision, but even more often.
@@ -81,14 +80,14 @@ We want to balance the battles in a way, which requires the player to have stron
 The players should need good economic buildings, fuel-producing buildings, abilities and towers good at dealing with various kinds of attackers.
 They should also have some cheaper towers to build in the first few waves and more expensive towers to build once they produce a lot of material.
 
-In \emph{Slay the Spire}, the player come across an interesting trade-off between short-term and long-term power, even in building their deck.
+In \emph{Slay the Spire}, the player comes across the interesting trade-off between short-term and long-term power even in building their deck.
 The player wants cards which will have a great potential to be strong in the future, having great synergy with other cards.
 But these cards aren't strong right now and the player needs to survive the next few fights, making them choose cards that are useful immediately, but might not be as powerful later in the run.
 As an example we can look at the cards \emph{Iron Wave} and \emph{Double Tap}.
 
-The player starts each run with several copies cards \emph{Defend} and \emph{Strike} in their deck.
+The player starts each run with several copies of cards \emph{Defend} and \emph{Strike} in their deck.
 Compared to them, \emph{Iron Wave} is a very cost-efficient card.
-We can see in figure \ref{fig:sts-iron-wave-and-double-tap}, it costs 1\,\emph{energy} (displayed in the top right corner of the card), the same as \emph{Defend} or \emph{Strike}.
+As shown in figure \ref{fig:sts-iron-wave-and-double-tap}, it costs 1\,\emph{energy} (displayed in the top right corner of the card), the same as \emph{Defend} or \emph{Strike}.
 However, it does almost the same thing as \emph{Defend} \textbf{and} \emph{Strike} combined~--- it deals damage and gives you \emph{block} too.
 Picking this card can help a lot in the early fights, but it doesn't really grow stronger later in the run.
 The card \emph{Double Tap}, on the other hand, is not great at the start.
@@ -114,7 +113,7 @@ Then it allows the player to play a powerful attack twice at the cost of only on
         \centering
         \includegraphics[width=0.95\textwidth]{img/Slay-the-Spire-Double-Tap.png}
     \end{minipage}
-    \caption{\emph{Defend}, \emph{Strike}, \emph{Iron Wave} and \emph{Double Tap} cards from \emph{Slay the Spire.}}
+    \caption{\emph{Defend}, \emph{Strike}, \emph{Iron Wave} and \emph{Double Tap} cards from \emph{Slay the Spire}.}
     \label{fig:sts-iron-wave-and-double-tap}
 \end{center}
 
@@ -123,75 +122,98 @@ This will let the player decide if they need to take a blueprint that will help 
 
 \subsection{Make Various Builds Viable} \label{sec:goal-various-builds}
 
-The player should be able to beat the game with a lot of different combinations of blueprints.
-We want the player to experiment with different builds, but that will never happen if only few of them are good enough.
+One of the goals of our game is that the player should be able to beat the game with a lot of different combinations of blueprints.
+We will call these combinations \emph{builds}, as is often done for unique combinations of skills, attributes and items a player's character can have in a role-playing game.
+Builds are distinguished mainly by what they feel like to play with.
+If two blueprints are used in the same way, then exchanging one for the other doesn't make a new build.
+To allow the player to choose from various builds, there has to be enough blueprints that feel distinct and better yet, they should interact with other blueprints in unique ways.
 
-- StS --- some cards interact in interesting ways that make them stronger ; there are cards and relics which fundamentally change the way your deck works (ex. barricade and entrench) nerfing some builds is important
+In figure \ref{fig:pvz-almanac} are shown all the plants from \emph{Plants vs.\ Zombies}.
+As we can see, there is a lot of them, and various combinations that work well are possible.
+The plants usually don't interact with each other strongly, so the player mostly has to combine the plants such that they have no weak spots.
+For example, longer levels require both cheap and expensive defensive plants.
+The cheap plants are used at the start of the level, and later they are replaced by the more expensive ones to fit more firepower on the limited lawn.
+Some plants can struggle against certain zombie types, so the player also wants to choose plants to cover for all their weaknesses.
 
-\begin{figure}[htb]
-    \centering
-    \includegraphics[width=0.8\textwidth]{img/Slay-the-Spire-Compendium.png}
-    \caption{A small portion of the many interesting cards in Slay the Spire, viewed in the in-game compendium.}
-    \label{fig:slay-the-spire-compendium}
-\end{figure}
-
-- PvZ --- the interactions are not so strong, but you have to combine the plants such that you have no weak spots --- cheap and expensive, for specific zombie types
-
-\begin{figure}[htb]
-    \centering
+\begin{center}
+    \captionsetup{type=figure}
     \includegraphics[width=0.8\textwidth]{img/Plants-vs-Zombies-Almanac.png}
-    \caption{All the plants of Plants vs.\ Zombies in the in-game almanac.}
-    \label{fig:plants-vs-zombies-almanac}
-\end{figure}
+    \caption{All the plants of \emph{Plants vs.\ Zombies} in the in-game almanac.}
+    \label{fig:pvz-almanac}
+\end{center}
 
-- make blueprints that have unique effects that change the way you play
+We can also look at a few examples from \emph{Slay the Spire}.
+Here, builds are often defined by cards that interact in ways that make them stronger.
+One of the most blatant examples are cards that apply \emph{poison} to the enemy.
+A poisoned enemy takes damage every turn based on the amount of \emph{poison} they have, and the amount decreases by one every turn.
+This means an enemy with 2\,\emph{poison} takes $2 + 1 = 3$ damage in total, whereas an enemy with 4\,\emph{poison} takes $4 + 3 + 2 + 1 = 10$ damage in total.
+It's easy to see that every card that applies \emph{poison} makes other \emph{poison} cards stronger.
+
+There are also rare cards the player can find, which change how the game works.
+For example, defensive cards provide \emph{block} only for one turn because the player character loses all \emph{block} at the start of every turn.
+However, once the player plays the card \emph{Barricade}, they don't lose block at the start of their turns for the rest of the fight.
+Cards like this can determine the player's strategy for the rest of the game on their own.
+
+We want the players of our game to try lots of different builds and for that, the builds need to be strong enough to beat the game when the player executes them well.
+We can tweak the strength of individual blueprints, but we can also design enemies that punish specific builds that would otherwise be too good.
+For example, in \emph{Slay the Spire}, many enemies shuffle unplayable cards into the players deck for the duration of the fight.
+This punishes decks with fewer cards way more than decks with many cards, keeping small deck builds from being too powerful.
 
 \subsection{Force Exploration} \label{sec:goal-force-exploration}
 
-The player will have to use a different build every run.
 We don't want the player to just find a single build that works and never explore anything new.
 When the player is familiar with a build, it becomes stronger, since they know how to use it effectively.
 This discourages them from trying other builds, because they can't use them so well, making them weaker.
-Thus, we need to force the player to explore and make them put effort into learning other strategies.
+Thus, one of our goals is to force the player to explore and make them learn other strategies.
 
-- StS --- you have to explore different strategies because you get different cards every time, some enemies ensure you are prepared for everything and intentionally break some strategies
+The main way to get cards in \emph{Slay the Spire} are the rewards after every battle, where the player can choose one of three cards to add to their deck, as shown in figure \ref{fig:sts-card-reward}.
+All the ways to acquire cards are randomized, so the player can't just hope to always get the card they want.
+They have to adapt their build to the cards on offer, so they have to explore different strategies in order to win consistently.
+In our game, the player will also pick a blueprint to add to their collection from a randomized offer after each battle.
 
-- characters
-
-\begin{figure}[htb]
-    \centering
+\begin{center}
+    \captionsetup{type=figure}
     \includegraphics[width=0.8\textwidth]{img/Slay-the-Spire-Reward.png}
-    \caption{Card reward screen in Slay the Spire. Here the player can choose on of three randomly selected cards to add to their deck.}
-    \label{fig:slay-the-spire-reward}
-\end{figure}
+    \caption{Card reward screen in \emph{Slay the Spire}.}
+    \label{fig:sts-card-reward}
+\end{center}
 
-- PvZ --- you have to explore different strategies because you have to adapt to different zombies and level environments, not too deep; after the campaign, three seed slots are selected for you.
+In \emph{Plants vs.\ Zombies}, the player has to adapt to different zombies and level environments.
+This can be illustrated with figure \ref{fig:pvz-roof}, which shows a seed select screen.
+Here, the player selects which plants they want use to play this level from the selection on the left side.
+On the right the player can see that this level takes place on the roof and the zombie types that will appear in this level.
+In rooftop levels, the player has to place a \emph{Flower Pot}, which costs 25\,\emph{sun}, on a tile before they can place a plant there.
+Furthermore, all plants that shoot in a straight line are of little use here because the roof slopes up, so their projectiles can't travel very far.
+An experienced player will also notice that \emph{Bungee Zombies} will appear.
+These zombies swing from above to take the player's plants instead of coming from the right.
+The player should consider all these factors when choosing the build to play this level with.
 
-\begin{figure}[htb]
-    \centering
+\begin{center}
+    \captionsetup{type=figure}
     \includegraphics[width=0.8\textwidth]{img/Plants-vs-Zombies-Rooftop.png}
-    \caption{Seed select screen in a rooftop level. Here, plants must be planted in flower pots, and most plants cannot shoot uphill.}
-    \label{fig:plants-vs-zombies-roof}
-\end{figure}
+    \caption{Seed select screen in a rooftop level in \emph{Plants vs.\ Zombies}.}
+    \label{fig:pvz-roof}
+\end{center}
 
-- choose from random blueprints, various attackers with abilities and terrain types
+In our game, the player could select which blueprints to play with before every battle based on the level's features and attackers.
+Instead, we chose an approach more similar to \emph{Slay the Spire}~--- the player will keep the blueprints they collect for the rest of the run, and they won't know the specifics of a battle before selecting it.
+However, they will be allowed to have only a limited amount of blueprints at once, so they still cannot just keep all the blueprints they encounter.
 
 \subsection{Provide a Challenge} \label{sec:goal-challenge}
 
 The player should always have some goal to work towards, just out of their reach.
 If the game is too easy, the players will have no reason to think strategically or learn.
-Always having a harder challenge to overcome will motivate the player to improve.
+Always having a harder challenge to overcome will motivate the player to improve and keep playing.
 
-- StS --- not easy to beat; after you beat the game, you can play on a higher ascension
+\emph{Slay the Spire} is not easy to beat, but the player can still improve so much even after beating the game.
+After beating the game, the player unlocks so-called \emph{ascension}.
+Before embarking on another run, the player can select the \emph{ascension} level they want to play on.
+Each level introduces a small change that makes the game slightly more difficult.
+Each \emph{ascension} level is unlocked only after the previous level is beaten, and each difficulty increase is small, so it doesn't discourage the player.
+These changes are cumulative, so in the end it takes serious effort and luck to beat the game on \emph{ascension} level 20 even for the most skilled players.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\textwidth]{img/Slay-the-Spire-Ascension.png}
-    \caption{Character select screen in Slay the Spire. Here the player can also choose their ascension level, making the game harder.}
-    \label{fig:slay-the-spire-ascension}
-\end{figure}
-
-- we will have something similar to StS
+This system is simple, yet effective, so we might as well use it too.
+We will also want to balance the base game, so that most players that try are able to beat it, but it still takes some effort and several attempts, so the players feel like they've accomplished something.
 
 \section{Battle}
 
@@ -323,6 +345,8 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 
 - free placement, global placement, tile placement, use on a building
 
+\xxx{modifying and reactions to stuff}
+
 \section{Camera controls}
 
 - zoom to look closely, rotate so the terrain doesn't hide stuff
@@ -335,6 +359,8 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 
 - events and shops
 
-- difficulty levels
+- saving the game
 
 - unlocks
+
+- difficulty levels

@@ -8,16 +8,22 @@ namespace Game.Run
         [Header("References")]
         [SerializeField] RunPersistence rp;
         [SerializeField] TextMeshProUGUI txt;
+        [SerializeField] TextMeshProUGUI seedText;
         [Header("Runtime variables")]
         [SerializeField] int displayed;
 
         void Update()
         {
-            if (rp.level == displayed)
-                return;
+            if (string.IsNullOrEmpty(seedText.text))
+            {
+                seedText.text = $"Seed: {rp.seedString}";
+            }
 
-            displayed = rp.level;
-            txt.text = $"Level {displayed}";
+            if (rp.level != displayed)
+            {
+                displayed = rp.level;
+                txt.text = $"Level {displayed}";
+            }
         }
     }
 }

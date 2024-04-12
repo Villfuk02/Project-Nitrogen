@@ -40,6 +40,8 @@ namespace BattleVisuals.Selection
             var item = Instantiate(blueprintMenuItemPrefab, parent).GetComponent<BlueprintMenuItem>();
             item.Init(entry);
             item.display.onClick.AddListener(() => selectionController.SelectFromMenu(entry.index));
+            item.display.onHover.AddListener(() => selectionController.HoverFromMenu(entry.index));
+            item.display.onUnhover.AddListener(selectionController.UnhoverFromMenu);
             menuItems.Add(item);
         }
 

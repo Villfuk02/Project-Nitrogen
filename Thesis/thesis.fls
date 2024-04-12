@@ -1324,6 +1324,7 @@ INPUT .\img\Slay-the-Spire-Fight.png
 INPUT .\img\Slay-the-Spire-Fight.png
 INPUT .\img\Slay-the-Spire-Fight.png
 INPUT .\img\Slay-the-Spire-Fight.png
+INPUT D:\MiKTeX\fonts\tfm\public\lm\ec-lmbxi10.tfm
 INPUT .\chap02.tex
 INPUT .\chap02.tex
 INPUT .\chap02.tex
@@ -1364,13 +1365,6 @@ INPUT .\img\Slay-the-Spire-Double-Tap.png
 INPUT .\img\Slay-the-Spire-Double-Tap.png
 INPUT .\img\Slay-the-Spire-Double-Tap.png
 INPUT .\img\Slay-the-Spire-Double-Tap.png
-INPUT .\img\Slay-the-Spire-Compendium.png
-INPUT .\img\Slay-the-Spire-Compendium.png
-INPUT img\Slay-the-Spire-Compendium.png
-INPUT .\img\Slay-the-Spire-Compendium.png
-INPUT .\img\Slay-the-Spire-Compendium.png
-INPUT .\img\Slay-the-Spire-Compendium.png
-INPUT .\img\Slay-the-Spire-Compendium.png
 INPUT .\img\Plants-vs-Zombies-Almanac.png
 INPUT .\img\Plants-vs-Zombies-Almanac.png
 INPUT img\Plants-vs-Zombies-Almanac.png
@@ -1392,13 +1386,6 @@ INPUT .\img\Plants-vs-Zombies-Rooftop.png
 INPUT .\img\Plants-vs-Zombies-Rooftop.png
 INPUT .\img\Plants-vs-Zombies-Rooftop.png
 INPUT .\img\Plants-vs-Zombies-Rooftop.png
-INPUT .\img\Slay-the-Spire-Ascension.png
-INPUT .\img\Slay-the-Spire-Ascension.png
-INPUT img\Slay-the-Spire-Ascension.png
-INPUT .\img\Slay-the-Spire-Ascension.png
-INPUT .\img\Slay-the-Spire-Ascension.png
-INPUT .\img\Slay-the-Spire-Ascension.png
-INPUT .\img\Slay-the-Spire-Ascension.png
 INPUT .\chap03.tex
 INPUT .\chap03.tex
 INPUT .\chap03.tex
@@ -1409,6 +1396,11 @@ INPUT .\chap03.tex
 INPUT chap03.tex
 INPUT .\chap03.tex
 INPUT chap03.tex
+INPUT D:\MiKTeX\tex\latex\lm\t1lmtt.fd
+INPUT D:\MiKTeX\tex\latex\lm\t1lmtt.fd
+INPUT D:\MiKTeX\tex\latex\lm\t1lmtt.fd
+INPUT D:\MiKTeX\tex\latex\lm\t1lmtt.fd
+INPUT D:\MiKTeX\fonts\tfm\public\lm\ec-lmtt12.tfm
 INPUT .\chap04.tex
 INPUT .\chap04.tex
 INPUT .\chap04.tex
@@ -1469,11 +1461,7 @@ INPUT .\bibliography.tex
 INPUT bibliography.tex
 INPUT .\bibliography.tex
 INPUT bibliography.tex
-INPUT D:\MiKTeX\tex\latex\lm\t1lmtt.fd
-INPUT D:\MiKTeX\tex\latex\lm\t1lmtt.fd
-INPUT D:\MiKTeX\tex\latex\lm\t1lmtt.fd
-INPUT D:\MiKTeX\tex\latex\lm\t1lmtt.fd
-INPUT D:\MiKTeX\fonts\tfm\public\lm\ec-lmtt12.tfm
+INPUT D:\MiKTeX\fonts\tfm\public\lm\ec-lmcsc10.tfm
 INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.lof
 INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.lof
 INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.lof
@@ -1518,16 +1506,28 @@ INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.out
 INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.run.xml
 OUTPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.run.xml
 INPUT D:\MiKTeX\fonts\enc\dvips\lm\lm-ec.enc
+INPUT D:\MiKTeX\fonts\enc\dvips\lm\lm-mathit.enc
+INPUT D:\MiKTeX\fonts\enc\dvips\lm\lm-rm.enc
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbx10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbx10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbx12.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbx12.pfb
+INPUT D:\MiKTeX\fonts\type1\public\lm\lmbxi10.pfb
+INPUT D:\MiKTeX\fonts\type1\public\lm\lmbxi10.pfb
+INPUT D:\MiKTeX\fonts\type1\public\lm\lmcsc10.pfb
+INPUT D:\MiKTeX\fonts\type1\public\lm\lmcsc10.pfb
+INPUT D:\MiKTeX\fonts\type1\public\lm\lmmi12.pfb
+INPUT D:\MiKTeX\fonts\type1\public\lm\lmmi12.pfb
+INPUT D:\MiKTeX\fonts\type1\public\lm\lmmi8.pfb
+INPUT D:\MiKTeX\fonts\type1\public\lm\lmmi8.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr12.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr12.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr17.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr17.pfb
+INPUT D:\MiKTeX\fonts\type1\public\lm\lmr8.pfb
+INPUT D:\MiKTeX\fonts\type1\public\lm\lmr8.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmri10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmri10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmri12.pfb

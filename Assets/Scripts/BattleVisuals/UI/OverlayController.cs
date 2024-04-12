@@ -49,14 +49,9 @@ namespace BattleVisuals.UI
             defeatOverlay.SetActive(false);
         }
 
-        public void Restart()
+        public void Quit()
         {
-            runEvents.restart.Invoke();
-        }
-
-        public void Exit()
-        {
-            Application.Quit();
+            runEvents.quit.Invoke();
         }
 
         public void FadeIn(float time)

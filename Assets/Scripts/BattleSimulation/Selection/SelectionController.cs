@@ -29,6 +29,7 @@ namespace BattleSimulation.Selection
         public Vector3? hoverTilePosition;
         float rotationHoldTime_;
         float lastRotationTime_;
+        bool isSelectedBuilding_;
 
         void Awake()
         {
@@ -51,8 +52,10 @@ namespace BattleSimulation.Selection
 
         void HandleDelete()
         {
-            if (Input.GetKeyDown(KeyCode.Delete) && selected != null && selected.tile != null && selected.tile.Building is { permanent: false } b)
+            if (Input.GetKeyDown(KeyCode.Delete) && selected != null && selected.tile != null && selected.tile.Building != null && selected.tile.Building is { permanent: false } b)
                 b.Delete();
+            if (isSelectedBuilding_ && selected != null && selected.tile != null && selected.tile.Building == null)
+                DeselectInWorld();
         }
 
         void HandleSelectOrPlace()
@@ -143,10 +146,20 @@ namespace BattleSimulation.Selection
         void UpdateHover()
         {
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            Selectable newHover;
             if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out RaycastHit selectionHit, 100, selectionMask_))
-                hovered = selectionHit.transform.GetComponent<Selectable>();
+                newHover = selectionHit.transform.GetComponent<Selectable>();
             else
-                hovered = null;
+                newHover = null;
+
+            if (newHover != hovered)
+            {
+                hovered = newHover;
+                if (hovered == null)
+                    infoPanel.Hide(false, false);
+                else
+                    DisplayInfoSelectedInWorld(hovered, true);
+            }
 
             if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out RaycastHit terrainHit, 100, coarseTerrainMask_))
                 hoverTilePosition = WorldUtils.WorldPosToTilePos(terrainHit.point);
@@ -167,25 +180,43 @@ namespace BattleSimulation.Selection
             DeselectFromMenu();
             selected = select;
             resetVisuals.Invoke();
+            isSelectedBuilding_ = select.tile != null && select.tile.Building != null;
 
+            DisplayInfoSelectedInWorld(select, false);
+        }
+
+        void DisplayInfoSelectedInWorld(Selectable select, bool hover)
+        {
             if (select.tile != null)
             {
                 if (select.tile.Building != null)
-                    infoPanel.ShowBuilding(select.tile.Building);
+                    infoPanel.ShowBuilding(select.tile.Building, !hover, !hover);
                 else
-                    infoPanel.ShowTile(select.tile);
+                    infoPanel.ShowTile(select.tile, !hover, !hover);
             }
             else if (select.attacker != null)
             {
-                infoPanel.ShowAttacker(select.attacker);
+                infoPanel.ShowAttacker(select.attacker, !hover, !hover);
             }
         }
 
         public void DeselectInWorld()
         {
             selected = null;
+            isSelectedBuilding_ = false;
             resetVisuals.Invoke();
-            infoPanel.Hide();
+            infoPanel.Hide(true, true);
+        }
+
+        public void HoverFromMenu(int index)
+        {
+            blueprintMenu.GetBlueprints(index, out var blueprint, out var original);
+            infoPanel.ShowBlueprint(blueprint, original, true, false);
+        }
+
+        public void UnhoverFromMenu()
+        {
+            infoPanel.Hide(true, false);
         }
 
         public void SelectFromMenu(int index)
@@ -205,7 +236,7 @@ namespace BattleSimulation.Selection
             placing.GetComponent<IBlueprinted>().InitBlueprint(blueprint);
             placing.Setup(hovered, rotation, hoverTilePosition, transform);
             resetVisuals.Invoke();
-            infoPanel.ShowBlueprint(blueprint, originalBlueprint);
+            infoPanel.ShowBlueprint(blueprint, originalBlueprint, true, true);
         }
 
         public void DeselectFromMenu()
@@ -215,7 +246,7 @@ namespace BattleSimulation.Selection
             placing = null;
             blueprintMenu.Deselect();
             resetVisuals.Invoke();
-            infoPanel.Hide();
+            infoPanel.Hide(true, true);
         }
     }
 }

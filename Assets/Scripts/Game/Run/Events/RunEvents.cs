@@ -8,7 +8,7 @@ namespace Game.Run.Events
         public ModifiableCommand<int> damageHull = new();
         public ModifiableCommand<int> repairHull = new();
         public ModifiableCommand defeat = new();
-        public ModifiableCommand nextLevel = new();
-        public ModifiableCommand restart = new();
+        public ModifiableCommand finishLevel = new();
+        public ModifiableCommand quit = new();
     }
 }

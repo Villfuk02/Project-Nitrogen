@@ -24,8 +24,8 @@ namespace Game.Blueprint
         [SerializeField] Color upgradeColor;
         [SerializeField] float hoveredIconScale;
         [SerializeField] float highlightPeriod;
-        [SerializeField] float highlightScale;
-        [SerializeField] float selectedHighlightScale;
+        public float highlightScale;
+        public float selectedHighlightScale;
         [SerializeField] float largeFont;
         [SerializeField] float smallFont;
 
@@ -36,12 +36,15 @@ namespace Game.Blueprint
         public float targetCooldownFill;
         float timer_;
         public UnityEvent onClick;
+        public UnityEvent onHover;
+        public UnityEvent onUnhover;
 
         public void InitBlueprint(Blueprint b)
         {
             blueprint = b;
             blueprintBackground.color = GetColorFromType(blueprint.type);
             icon.sprite = blueprint.icon;
+            UpdateText(blueprint.energyCost, blueprint.materialCost, Color.white);
         }
 
         void Update()
@@ -60,11 +63,13 @@ namespace Game.Blueprint
         public void OnPointerEnter(PointerEventData eventData)
         {
             hovered = true;
+            onHover.Invoke();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             hovered = false;
+            onUnhover.Invoke();
         }
         public void OnPointerClick(PointerEventData eventData)
         {

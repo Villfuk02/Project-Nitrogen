@@ -1,19 +1,22 @@
 ## questions
-- can I assume the reader read ch1?
-- what if I don't run a playtest?
+- sources
+    - wiki
+    - (usenet comments)
+    - https://gamicus.fandom.com/wiki/Tower_defense_video_games
+    - some random article http://julian.togelius.com/Avery2011Computational.pdf
+    - https://store.steampowered.com/category/tower_defense/
+- c# version specific documentation?
+- showcase camera drag and roatate - intention: mouse only controls
+- showcase tasks in WorldGenerator
+- showcase info panel hover
+- showcase blueprint selection
+
 ## till next metting
-- [ ] finish 2.1
-- [ ] start with ch3
-- [ ] implement menu and level progression
+- [ ] read everything to check for typos
+- [ ] comment new parts
 - [ ] prepare for code review
 
 ## implementation 
-- [x] mouse controls for camera 
-- [x] and waves
-- [x] recheck right-clicks and left-clicks
-- [ ] menu (seed select)
-- [ ] level progression
-- [ ] display seed
 - [ ] content
     - [ ] abilities
         - [x] meteor
@@ -40,10 +43,15 @@
         - [ ] pushes back attackers
         - [ ] makes material producers generate extra energy
 - [ ] a few more simple terrain types - change up minerals, obstacles, terrain color, difficulty
-- [ ] sound effects
 - [ ] tutorial
     - extra levels before the first, each with one more blueprint
     - slowly introduce concepts
+    - fixed seed
+    - [ ] remember if finished
+    - [ ] option to play tutorial anyway
+- [ ] ready up for sharing
+    - [ ] global fade
+- [ ] sound effects
 - [ ] +polish
     - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)
     - [ ] non-keyboard camera controls

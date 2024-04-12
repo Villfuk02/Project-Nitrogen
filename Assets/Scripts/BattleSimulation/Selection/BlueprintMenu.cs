@@ -1,7 +1,9 @@
 using BattleSimulation.Control;
 using Game.Blueprint;
+using Game.Run;
 using System.Linq;
 using UnityEngine;
+using Utils;
 
 namespace BattleSimulation.Selection
 {
@@ -24,8 +26,6 @@ namespace BattleSimulation.Selection
         }
         [Header("References")]
         [SerializeField] SelectionController selectionController;
-        [Header("Settings")]
-        public Blueprint[] originalBlueprints;
         [Header("Runtime variables")]
         public MenuEntry[] abilities;
         public MenuEntry[] buildings;
@@ -38,8 +38,9 @@ namespace BattleSimulation.Selection
 
         void Awake()
         {
-            abilities = originalBlueprints.Where(b => b.type == Blueprint.Type.Ability).Select((b, i) => new MenuEntry(b, i)).ToArray();
-            buildings = originalBlueprints.Where(b => b.type != Blueprint.Type.Ability).Select((b, i) => new MenuEntry(b, i)).ToArray();
+            RunPersistence rp = GameObject.FindGameObjectWithTag(TagNames.RUN_PERSISTENCE).GetComponent<RunPersistence>();
+            abilities = rp.blueprints.Where(b => b.type == Blueprint.Type.Ability).Select((b, i) => new MenuEntry(b, i)).ToArray();
+            buildings = rp.blueprints.Where(b => b.type != Blueprint.Type.Ability).Select((b, i) => new MenuEntry(b, i)).ToArray();
 
             WaveController.onWaveFinished.RegisterReaction(OnWaveFinished, 10);
             WaveController.startWave.RegisterReaction(OnWaveStarted, 10);
@@ -65,6 +66,12 @@ namespace BattleSimulation.Selection
             selected = -1;
         }
 
+        public void GetBlueprints(int index, out Blueprint blueprint, out Blueprint original)
+        {
+            blueprint = CurrentEntries[index].current;
+            original = CurrentEntries[index].original;
+        }
+
         public bool TrySelect(int index, out Blueprint blueprint, out Blueprint original)
         {
             blueprint = null;
@@ -73,8 +80,7 @@ namespace BattleSimulation.Selection
             if (index < 0 || index >= CurrentEntries.Length)
                 return false;
 
-            blueprint = CurrentEntries[index].current;
-            original = CurrentEntries[index].original;
+            GetBlueprints(index, out blueprint, out original);
             selected = index;
             return true;
         }

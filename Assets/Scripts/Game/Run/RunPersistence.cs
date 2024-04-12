@@ -1,8 +1,8 @@
 using Game.Run.Events;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = Utils.Random.Random;
-using UnityRandom = UnityEngine.Random;
 
 namespace Game.Run
 {
@@ -11,10 +11,12 @@ namespace Game.Run
         [Header("References")]
         [SerializeField] LevelSetter worldSetter;
         [SerializeField] RunEvents runEvents;
+        [SerializeField] BlueprintRewardController blueprintRewards;
         [Header("Settings")]
-        [SerializeField] ulong runSeed;
-        [SerializeField] bool randomSeed;
+        public ulong runSeed;
+        public string seedString;
         [SerializeField] int startMaxHull;
+        public List<Blueprint.Blueprint> blueprints;
         [Header("Runtime variables")]
         public int level;
         public int MaxHull { get; private set; }
@@ -27,18 +29,21 @@ namespace Game.Run
         void Awake()
         {
             DontDestroyOnLoad(gameObject);
-            if (randomSeed)
-                runSeed = (ulong)UnityRandom.Range(int.MinValue, int.MaxValue) + ((ulong)UnityRandom.Range(int.MinValue, int.MaxValue) << 32);
-            random_ = new(runSeed);
-
-            MaxHull = startMaxHull;
-            Hull = MaxHull;
 
             runEvents.damageHull.RegisterHandler(DamageHull);
             runEvents.repairHull.RegisterHandler(RepairHull);
-            runEvents.nextLevel.RegisterHandler(NextLevelCommand);
-            runEvents.restart.RegisterHandler(Restart);
+            runEvents.finishLevel.RegisterHandler(FinishLevelCommand);
+            runEvents.quit.RegisterHandler(Quit);
         }
+
+        public void Init()
+        {
+            random_ = new(runSeed);
+            MaxHull = startMaxHull;
+            Hull = MaxHull;
+            blueprintRewards.Init(random_.NewSeed());
+        }
+
         void Update()
         {
             if (cheatAddHull)
@@ -69,11 +74,16 @@ namespace Game.Run
             return true;
         }
 
-        bool NextLevelCommand()
+        bool FinishLevelCommand()
         {
-            Invoke(nameof(NextLevel), 0.5f);
+            Invoke(nameof(FinishLevel), 0.5f);
             return true;
         }
+        public void FinishLevel()
+        {
+            blueprintRewards.MakeBlueprintReward();
+        }
+
         public void NextLevel()
         {
             level++;
@@ -85,7 +95,7 @@ namespace Game.Run
             worldSetter.SetupLevel(random_.NewSeed(), level);
         }
 
-        public bool Restart()
+        public bool Quit()
         {
             SceneManager.LoadScene("Loading");
             Destroy(gameObject);

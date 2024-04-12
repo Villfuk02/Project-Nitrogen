@@ -33,6 +33,7 @@ namespace BattleSimulation.Control
 
         [Header("Cheats")]
         [SerializeField] bool cheatAddMaterialsAndEnergy;
+        [SerializeField] bool cheatWin;
 
         void Awake()
         {
@@ -43,7 +44,7 @@ namespace BattleSimulation.Control
             spend.RegisterHandler(Spend);
             winLevel.RegisterHandler(Win);
 
-            runEvents = GameObject.FindGameObjectWithTag("RunPersistence").GetComponent<RunEvents>();
+            runEvents = GameObject.FindGameObjectWithTag(TagNames.RUN_PERSISTENCE).GetComponent<RunEvents>();
             runEvents.damageHull.RegisterReaction(OnHullDmgTaken, 1000);
             runEvents.repairHull.RegisterReaction(OnHullRepaired, 1000);
 
@@ -87,6 +88,12 @@ namespace BattleSimulation.Control
                 cheatAddMaterialsAndEnergy = false;
                 Material += 100;
                 Energy += 100;
+            }
+
+            if (cheatWin)
+            {
+                cheatWin = false;
+                winLevel.Invoke();
             }
         }
 
@@ -205,9 +212,9 @@ namespace BattleSimulation.Control
             Won = false;
         }
 
-        public void NextLevel()
+        public void FinishLevel()
         {
-            runEvents.nextLevel.Invoke();
+            runEvents.finishLevel.Invoke();
         }
 
         void Lose()

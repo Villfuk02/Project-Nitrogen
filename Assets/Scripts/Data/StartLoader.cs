@@ -3,7 +3,7 @@ using Data.WorldGen;
 using System.Collections;
 using System.IO;
 using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace Data
 {
@@ -11,7 +11,6 @@ namespace Data
     {
         bool finishedLoading_;
         ILoader[] loaders_;
-        [SerializeField] UnityEvent onLoaded;
 
         void Start()
         {
@@ -36,7 +35,7 @@ namespace Data
 
             finishedLoading_ = false;
             print("Finished loading");
-            onLoaded.Invoke();
+            SceneManager.LoadScene("Menu");
         }
     }
 }
