@@ -221,7 +221,7 @@ namespace BattleSimulation.Control
             foreach (int p in pathSelection)
             {
                 var selected = selection.PopRandom();
-                selection.Add(selected, selected.weight);
+                selection.AddOrUpdate(selected, selected.weight);
                 var newMockStats = UpdateMockStats(mockStats, selected);
                 if (newMockStats.GetEffectiveValue(Spacing.Max, 1, valueRate) * parallelMinCount > bufferLeft)
                     return;

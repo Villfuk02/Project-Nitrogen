@@ -9,7 +9,10 @@ So, what do we mean by a \emph{roguelike tower~defense} game?
 
 \section{Tower Defense}
 
-\textbf{Tower defense}~\cite{TDWiki} \xxx{source???} is a subgenre of \emph{real-time strategy}.
+A game genre can encompass many characteristics, most often its mechanics, but also its theme, art style or the medium it is played on.
+Genres have no exact definitions or strict boundaries, they are characterized by how people use them to describe games.
+
+\textbf{Tower defense} is often described~\cite{TDWiki}\cite{CITD} as a subgenre of \emph{real-time strategy}.
 This means the game focuses on long-term planning, but also quick thinking.
 In \emph{tower defense} games, the player has to defend against waves of attackers by building defensive towers.
 As an example we'll look at \emph{Plants vs.\ Zombies}~\cite{PvZWiki}, released in~2009.
@@ -39,16 +42,19 @@ This and some other mechanics are taken directly from the \emph{roguelike} genre
 
 \section{Roguelike}
 
-\textbf{Roguelike}~\cite{RoguelikeWiki} is a subgenre of \emph{role-playing games}.
+\textbf{Roguelike} is a subgenre of \emph{role-playing games}.
 In \emph{role-playing games}, the player takes on the role of a character and goes on an adventure.
 The character can grow stronger by acquiring new abilities, items, or~experiences.
 The player has to make decisions about how to upgrade their characters to overcome the challenges they might face.
+\emph{Role-playing games} are a very broad genre with a long history, for more information we recommend the book \citetitle{rpgBycer}~\cite{rpgBycer} by J.~Bycer.
 
-\emph{Roguelike} is named after the game \emph{Rogue}~\cite{RogueWiki}, released in~1980.
+The \emph{roguelike} genre is named after the game \emph{Rogue}~\cite{RogueWiki}, released in~1980.
 In this single-player turn-based game, the player explores a grid-based dungeon and fights monsters that inhabit~it.
 Along the way, they collect various weapons, armor and other magical items that improve their abilities.
 It features a mechanic nicknamed \emph{permadeath}, which means that when the character dies, the player loses all progress and must start from the very beginning.
 The dungeon is randomized~--- it is different in every run, so the player can't just memorize the layout.
+These are the most defining features of \emph{roguelikes}, but games of this genre aren't just clones of the original \emph{Rogue}.
+The breadth of \emph{roguelike} games is well explored and explained by J.~Bycer~\cite{roguelikeBycer}.
 
 A more recent game that's a good example of this genre is \emph{Slay the Spire}~\cite{StSWiki}, published in~2019.
 In \emph{Slay the Spire}, the player ascends a spire and fights various enemies.
@@ -148,7 +154,7 @@ Instead of creating a full-featured polished game, in this thesis we will focus 
 The demo will contain some base content in order to be playable, and it must be prepared for future development so that more content can be added later.
 
 The demo version will allow the player to progress through battles and collect blueprints.
-However, there will be no map screen to let them choose their path as described in paragraph \nameref{ov-par:run-progression} of the previous section.
+However, there will be no map screen to let them choose their path as described in the paragraph \nameref{ov-par:run-progression} of the previous section.
 For now, the progression will be linear and there will be no events or shops, only battles.
 All the art and sound assets will be placeholders, but care will be taken to make everything as clear as possible to the player.
 
@@ -157,6 +163,6 @@ The main goals of the thesis are:
 \begin{enumerate}
     \item Design the game's mechanics and features.
     \item Implement all the systems and mechanics described in paragraphs \nameref{ov-par:battles}, \nameref{ov-par:procedural-generation} and \nameref{ov-par:blueprints}.
-    \item Include tutorial to explain the game's mechanics to the player \xxx{(might not happen)}.
+    \item Include a tutorial to explain the game's mechanics to the player \xxx{(might not happen)}.
     \item Run a playtest.
 \end{enumerate}

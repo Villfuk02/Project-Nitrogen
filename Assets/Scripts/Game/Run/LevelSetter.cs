@@ -17,7 +17,7 @@ namespace Game.Run
             if (!ws.overrideRun)
             {
                 ws.seed = rand.NewSeed();
-                paths = rand.Int(1, Mathf.Clamp(1 + level / 2, 2, 6));
+                paths = rand.Int(1, Mathf.Clamp(1 + level / 2, 2, 6)) + 2;
                 int minPathLength = Mathf.Max(27 - 3 * level, 9);
                 List<int> pathLengths = new();
                 for (int i = 0; i < paths; i++)

@@ -9,34 +9,15 @@ namespace Game.Run
         static readonly char[] CharFromCode = { 'A', 'C', 'D', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'Y' };
         // translation table for chars 'A' to 'Z'
         static readonly ulong[] CodeFromChar = { 0, 16, 1, 2, 3, 4, 17, 18, 5, 19, 20, 6, 7, 8, 9, 10, 21, 11, 12, 13, 14, 22, 23, 24, 15, 25 };
-        static readonly ulong BaseSeed = 0xBA5E_5EED_BA5E_5EED;
-        static readonly int RotationStep = 20;
-        public static string EncodeSeed(ulong seed)
-        {
-            seed ^= BaseSeed;
-            StringBuilder sb = new(19);
-            int rotation = 0;
-            for (int i = 0; i < 16; i++)
-            {
-                sb.Append(CharFromCode[(seed >> rotation) & 0xF]);
-                rotation = (rotation + RotationStep) % 64;
-                if (i % 4 == 3 && i != 15)
-                    sb.Append(' ');
-            }
-            return sb.ToString();
-        }
+        static readonly ulong BaseSeed = 0xBA5E_5EED_1234_5678;
+        static readonly int RotationStep = 36;
 
         public static ulong GetSeedFromString(ref string seedString)
         {
             seedString = seedString?.Trim();
-            ulong seed;
             if (string.IsNullOrEmpty(seedString))
-            {
-                seed = GetRandomSeed();
-                seedString = EncodeSeed(seed);
-                return seed;
-            }
-            if (ulong.TryParse(seedString, out seed))
+                seedString = GetRandomSeed();
+            if (ulong.TryParse(seedString, out ulong seed))
                 return seed;
             return DecodeSeed(seedString);
         }
@@ -61,15 +42,16 @@ namespace Game.Run
 
         static ulong DecodeChar(char c) => char.IsLetter(c) ? CodeFromChar[c - 'A'] : c;
 
-        static ulong GetRandomSeed()
+        static string GetRandomSeed()
         {
-            ulong seed = 0;
-            for (int i = 0; i < 4; i++)
+            StringBuilder sb = new(9);
+            for (int i = 0; i < 8; i++)
             {
-                seed <<= 16;
-                seed |= (ulong)(long)Random.Range(0, (1 << 16) + 1);
+                sb.Append(CharFromCode[Random.Range(0, 16)]);
+                if (i == 3)
+                    sb.Append(' ');
             }
-            return seed;
+            return sb.ToString();
         }
     }
 }

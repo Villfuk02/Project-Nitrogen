@@ -13,53 +13,66 @@ More information is available in the official documentation~\cite{UnityDocs}.
 
 \section{Procedural Generation}
 
-We want the battles and individual runs to be unique, and we will accomplish this using randomized procedural generation.
-Each run, including everything that gets generated within it, will be determined from a single seed.
+As explained in the previous chapter, a lot of the game will be procedurally generated including the map of a run and each battle along the way.
+From the player's perspective, all this and the rewards they receive will be randomized and unpredictable.
+However, each run will have a single seed that deterministically decides all the \enquote{random decisions} the game makes.
+Two runs with the same seed will look identical and if the player makes the same decisions and choices, the outcomes will be the same.
 This allows the players to share seeds of the runs they found interesting and compare their skill without the influence of luck.
 Furthermore, this is helpful for debugging, because it lets us easily reproduce any issue with the generation just by running it with the same seed.
-We want the game to save progress between battles, and deterministic procedural generation allows us to save just the seed for all the components the player has no control over, instead of serializing them whole.
-This leads to simpler and smaller save files, however, we might still want to serialize some of these components because the procedural generation algorithms take longer than just reading the serialized data.
-Most importantly, we can save all the things the player will encounter in the future, without generating them first.
 
-The value a deterministic random number generator returns is dependent on the number of our previous requests, since each changes the generator's state.
-We will utilize a simple trick we call \emph{seed branching} all throughout the procedural generation.
-For example, the run map will be generated from one seed, and each level on the map will get a new random number generator with a seed based on the run seed.
-These random number generators are now independent, so we can generate the levels on demand in any order without affecting the other levels.
-This trick allows us to avoid race conditions, so it can even be used to generate more things in parallel.
+We want to allow the player to save the game between battles.
+Here, determinism is also useful, because it allows us to save just the seed of something that was generated, instead of saving it whole.
+This leads to simpler and smaller save files, but we might still want to save some of these components whole when the procedural generation takes significantly longer than just reading the serialized data.
 
-\subsection{Random Number Generator}
+\subsection{Random Number Generators}
 
-We need to carefully consider which random number generator, or \emph{RNG}, we are going to use.
+Randomized algorithms, like the ones we will use for procedural generation, depend on a \emph{random number generator} as their source of randomness.
+A \textbf{random number generator} (or \emph{RNG}) produces a sequence of numbers that looks random and is unpredictable.
+They are well explained in \citetitle{johnston2018random}~\cite{johnston2018random} by David Johnston.
+Some RNGs use specialized hardware to generate truly random data using an external source of entropy, these are called \emph{true random number generators}.
+However, we want a \emph{deterministic RNG}, also known as a \emph{pseudorandom number generator} (\emph{PRNG}).
+These produce the random data using a completely deterministic algorithm, but unless we know the current internal state of the generator, the outputs still can't be predicted.
+The initial state of a PRNG is called the \emph{seed}, and a generator will always generate the same sequence of outputs when \emph{seeded} with the same value.
 
-Since we are using Unity, the first RNG that comes to mind is Unity's class \texttt{Random}~\cite{UnityRandom}.
+Each query advances the generator's state, so the value a deterministic random number generator returns depends on the number of previous requests.
+If we used one generator for generating everything, the outcomes of different systems would depend on the order they were generated in.
+For example, when a player triggers some effect that uses randomness \emph{before} generating a level, the level would be different than if the player triggered the randomized effect \emph{after} the level was generated.
+To remedy this, we will utilize a simple trick we call \emph{seed branching} all throughout the procedural generation.
+Whenever we want more systems to be independent of each other, we create a new RNG instance for each system, and we seed them with each with a seed generated from the old RNG in advance.
+For example, we will have a master RNG seeded with the seed of the run, from which we will generate the seeds for the map generator, reward systems, etc.
+The map generator itself will generate the run map and then assign a new seed to each of the levels planned on the map, and so on.
+
+We can determine what properties are required of the RNG we are going to use from our use-case.
+First, obviously, the numbers generated by the generator should be random enough.
+However, the RNG doesn't have to be cryptographically secure or pass strict statistical tests, since we aren't going to use them for cryptography or scientific simulations.
+Since we will create many instances of the RNG, it should be lightweight and fast to initialize.
+Some of them, for example the ones used by the reward system, will persist throughout the whole run, so we need an easy way to save the RNG's current state.
+So, what options do we have?
+
+Since we are using Unity, the first RNG that comes to mind is Unity class \texttt{Random}~\cite{UnityRandom}.
 It is designed to be easy to use, but it is very limited~--- for example, you have access to only one instance of the class and the same instance is used for other systems within the game engine.
-This is a dealbreaker for us, because we want to create more instances to use seed branching, and we want to have complete control over them to ensure determinism.
+This is a dealbreaker for us, because we want to create more instances, and we want to have complete control over them to ensure determinism.
 
-Another option that's on-hand is C\#'s \texttt{System.Random}~\cite{SystemRandom}.
-However, it can only be seeded using its constructor with a 32-bit integer.
+Another option that's on-hand is .NET \texttt{System.Random}~\cite{SystemRandom}.
+According to the documentation, instantiating a random number generator is fairly expensive.
+Furthermore, there are no methods to read and set the internal state of the generator.
 This becomes a problem when we want to save the state of an instance to restore it later, for example when loading a save file.
 We would have to serialize and deserialize the instance, which isn't a big problem, but it feels inelegant and inefficient.
-Even though the internal state of the default implementation of \texttt{System.Random} is 256\,bits large, according to the source code~\cite{SystemRandomSource}, we would be effectively limited to only 32-bit seeds.
-Although, $2^{32}$ seeds is still a lot and there are ways to set the internal state of the RNG, we chose to go with a more straight-forward option~--- making our own RNG.
 
+Instead, we chose to go with a more straight-forward option~--- making our own RNG.
 This way, we can make the generator have all the features we need.
-The most important property our generator should have is that it should be simple.
-It doesn't have to be cryptographically secure, it just needs to generate values that are deterministic, but seem random.
-That's why we chose a linear congruential generator (\emph{LCG}).
+There are many algorithms a PRNG can use.
+Johnston describes in their book~\cite{johnston2018random} some most commonly used non-cryptographic PRNGs, namely:
+\begin{itemize}
+    \item Linear congruential generators (LCG),
+    \item Multiply with carry (MWC),
+    \item XORSHIFT,
+    \item Permuted congruential generators (PCG).
+\end{itemize}
+All of these are random enough for our use-case, given we use the right parameter values, so we chose an LCG, because it seemed the most simple to implement.
+In the article \citetitle{LCGTables}~\cite{LCGTables}, the author explains the statistical tests they used to measure the randomness of the LCGs and tabulates the best-performing parameter combinations.
+From here we took the parameters for our LCG implementation.
 
-A LCG generates its next state $x_{n+1}$ using the recurrence $x_{n+1} = (ax_n + c) \mod{m}$, where $x_n$ is the current state and $a$, $c$ and $m$ are the generator's parameters.
-We need to choose the parameters carefully for our RNG to have good properties.
-For example, when $a = 1$ and $c = m/2$, the generator will get stuck in a loop of only two different states.
-One good property of a generator is that it has a loop of length $m$, though, this still doesn't guarantee the RNG will seem random.
-For example, when $a$ and $c$ are both 1, the generator will just return each number one by one in ascending order.
-There are many more properties one could consider desirable, but we won't go into more detail here.
-These are described in the article \emph{Tables of Linear Congruential Generators of Different Sizes and Good Lattice Structure}~\cite{LCGTables}.
-\?{where should I mention the paper for the first time}
-
-We would like $m$ to be $2^{64}$, since this allows us to store the state of the generator in one 64-bit integer, making the implementation really simple because we get the modulo operation for free.
-This is because in C\# (and natively in all CPUs), when an unsigned integer of any given size exceeds the maximum value representable for its size, it gets automatically truncated to the value modulo $2^k$ where $k$ is its size in bits.
-We can find for which $a$ and $c$ do LCGs with $m = 2^{64}$ exhibit good properties in the tables mentioned above.
-Specifically in table 4 we can see that one of our options is $a = 3935559000370003845$ with any $c$ that is odd, which is the parameters we chose.
 
 \section{Path Generation}
 

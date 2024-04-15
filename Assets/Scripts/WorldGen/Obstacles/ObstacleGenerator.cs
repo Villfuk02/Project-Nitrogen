@@ -27,7 +27,6 @@ namespace WorldGen.Obstacles
             // end debug
 
             var layers = WorldGenerator.TerrainType.Obstacles.Layers;
-            var fillers = WorldGenerator.TerrainType.Obstacles.Fillers;
             weightFields_ = new Array2D<float>[layers.Length];
             weightFields_.Fill(() => new(WorldUtils.WORLD_SIZE));
 
@@ -52,8 +51,8 @@ namespace WorldGen.Obstacles
             WaitForStep(StepType.Step);
             // end debug
 
-            // then fill all tiles with the filler obstacle and remove them in a random order, keeping only those that would allow for a shorter path than intended from any start
-            EnsurePathLengths(pathStarts, pathLengths, fillers);
+            // then mark all tiles as impassable and remove them in a random order, keeping only those that would allow for a shorter path than intended from any start
+            EnsurePathLengths(pathStarts, pathLengths);
 
             Tiles.RecalculateDistances();
 
@@ -106,7 +105,7 @@ namespace WorldGen.Obstacles
         /// <summary>
         /// Fills all tiles with the given filler obstacles and one by one removes each, unless it would allow for a shorter path than specified.
         /// </summary>
-        void EnsurePathLengths(Vector2Int[] pathStarts, int[] pathLengths, ObstacleData[] fillers)
+        void EnsurePathLengths(Vector2Int[] pathStarts, int[] pathLengths)
         {
             tilesLeft_ = new(emptyTiles_, WorldGenerator.Random.NewSeed());
             foreach (var pos in tilesLeft_)
@@ -126,9 +125,7 @@ namespace WorldGen.Obstacles
                 if (!mustKeep)
                     continue;
 
-                var placeable = GetValidPlacements(pos, fillers, true);
-                var obstacle = placeable.PopRandom();
-                Place(pos, obstacle);
+                Place(pos, null);
             }
         }
 
@@ -152,9 +149,9 @@ namespace WorldGen.Obstacles
 
                 probability = Mathf.Clamp01(probability);
                 if (forcePlace)
-                    placeable.Add(o, probability + 0.01f);
+                    placeable.AddOrUpdate(o, probability + 0.01f);
                 else if (WorldGenerator.Random.Bool(probability))
-                    placeable.Add(o, probability);
+                    placeable.AddOrUpdate(o, probability);
             }
 
             return placeable;
@@ -163,7 +160,7 @@ namespace WorldGen.Obstacles
         /// <summary>
         /// Actually place the obstacle at the given tile and update all the relevant fields.
         /// </summary>
-        void Place(Vector2Int pos, ObstacleData obstacle, int layer = -1)
+        void Place(Vector2Int pos, ObstacleData? obstacle, int layer = -1)
         {
             emptyTiles_.Remove(pos);
             Tiles[pos].passable = false;

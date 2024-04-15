@@ -21,11 +21,8 @@ namespace WorldGen.WFC
         TilesData.CollapsedSlot invalidModule_ = TilesData.CollapsedSlot.NONE;
 
         public TilesData.CollapsedSlot Collapsed { get; private set; } = TilesData.CollapsedSlot.NONE;
-        public float TotalEntropy { get; private set; }
-
-        public WFCSlot(Vector2Int pos, ref WFCState state)
+        public WFCSlot(Vector2Int pos, ref WFCState state, int? limitHeight = null)
         {
-            var weights = new Dictionary<float, int>();
             int moduleCount = WorldGenerator.TerrainType.Modules.Length;
             validModules_ = new(moduleCount);
             validHeights_ = new(moduleCount);
@@ -33,14 +30,14 @@ namespace WorldGen.WFC
             {
                 Module m = WorldGenerator.TerrainType.Modules[i];
                 validModules_.Add(m);
-                validHeights_[m] = Enumerable.Range(0, WorldGenerator.TerrainType.MaxHeight + 1).ToHashSet();
-                float w = m.Weight;
-                weights.Increment(w, WorldGenerator.TerrainType.MaxHeight + 1);
+                if (limitHeight is int limit)
+                    validHeights_[m] = new() { limit };
+                else
+                    validHeights_[m] = Enumerable.Range(0, WorldGenerator.TerrainType.MaxHeight + 1).ToHashSet();
             }
             this.pos = pos;
-            TotalEntropy = WFCGenerator.CalculateEntropy(weights);
             state.uncollapsed++;
-            state.entropyQueue.Add(pos, 0.001f);
+            state.uncollapsedSlots.AddOrUpdate(pos, 1);
         }
         public WFCSlot(Vector2Int pos)
         {
@@ -57,7 +54,7 @@ namespace WorldGen.WFC
 
             foreach (var m in validModules_)
                 foreach (int h in validHeights_[m])
-                    possibilities.Add(new() { module = m, height = h }, m.Weight);
+                    possibilities.AddOrUpdate(new() { module = m, height = h }, m.Weight);
 
             var slot = possibilities.PopRandom();
             n.Collapsed = slot;
@@ -83,7 +80,6 @@ namespace WorldGen.WFC
 
             bool changed = false;
             WFCSlot n = new(pos);
-            var weights = new Dictionary<float, int>();
 
             foreach (var module in validModules_)
             {
@@ -99,7 +95,6 @@ namespace WorldGen.WFC
                 if (newHeights.Count == 0)
                     continue;
 
-                weights.Increment(module.Weight, newHeights.Count);
                 n.validModules_.Add(module);
                 n.validHeights_[module] = newHeights;
             }
@@ -108,8 +103,6 @@ namespace WorldGen.WFC
             if (n.validModules_.Count == 0)
                 return (null, true);
 
-            n.TotalEntropy = WFCGenerator.CalculateEntropy(weights);
-            state.entropyQueue.UpdateWeight(pos, WFCGenerator.MaxEntropy - n.TotalEntropy + 0.001f);
             return (n, false);
         }
 
@@ -212,6 +205,21 @@ namespace WorldGen.WFC
                     }
                 }
             }
+        }
+
+        public float CalculateEntropy()
+        {
+            var weights = new Dictionary<float, int>();
+            foreach (var module in validModules_)
+                weights.Increment(module.Weight, validHeights_[module].Count);
+
+            return WFCGenerator.CalculateEntropy(weights);
+        }
+
+        public float CalculateWeight()
+        {
+            float invalidModules = WorldGenerator.TerrainType.Modules.Length - validModules_.Count;
+            return invalidModules + 1;
         }
     }
 }

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using Utils;
-using Utils.Random;
 using static WorldGen.WorldGenerator;
 
 namespace WorldGen.WFC
@@ -12,7 +12,8 @@ namespace WorldGen.WFC
         [Header("Settings")]
         [SerializeField] int backtrackingDepth;
         [Header("Runtime variables")]
-        RandomSet<WFCSlot> dirty_;
+        Array2D<bool> dirtySlots_;
+        bool anythingDirty_;
         WFCState state_;
         FixedCapacityStack<WFCState> stateStack_;
         public static float MaxEntropy { get; private set; }
@@ -46,53 +47,26 @@ namespace WorldGen.WFC
             return state_;
         }
 
-        bool TryStep()
-        {
-            if (!TryPropagateConstraints())
-                return false;
-
-            // debug
-            WaitForStep(StepType.Step);
-            // end debug
-
-            stateStack_.Push(new(state_));
-            state_.CollapseRandom(this);
-            steps_++;
-
-            // debug
-            RegisterGizmosIfExactly(StepType.Step, MakeEntropyGizmos);
-            RegisterGizmos(StepType.Step, MakeMeshGizmos);
-            // end debug
-
-            return true;
-        }
-
-        bool TryPropagateConstraints()
-        {
-            while (dirty_.Count > 0)
-            {
-                WaitForStep(StepType.MicroStep);
-                if (!TryUpdateNext())
-                    return false;
-
-                RegisterGizmos(StepType.MicroStep, MakeEntropyGizmos);
-            }
-
-            return true;
-        }
-
         void InitWFC(Vector2Int[][] paths)
         {
             int heightCount = TerrainType.MaxHeight + 1;
             MaxEntropy = CalculateEntropy(TerrainType.Modules.GroupBy(m => m.Weight).ToDictionary(g => g.Key, g => g.Count() * heightCount));
 
             state_ = new();
-            dirty_ = new(WorldGenerator.Random.NewSeed());
+            dirtySlots_ = new(WorldUtils.WORLD_SIZE + Vector2Int.one);
+            Vector2Int minHeightSlot = new(WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.x + 1), WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.y + 1));
+            Vector2Int maxHeightSlot = new(WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.x + 1), WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.y + 1));
             foreach (var pos in WorldUtils.WORLD_SIZE + Vector2Int.one)
             {
-                WFCSlot s = new(pos, ref state_);
+                WFCSlot s;
+                if (minHeightSlot == pos)
+                    s = new(pos, ref state_, 0);
+                else if (maxHeightSlot == pos)
+                    s = new(pos, ref state_, TerrainType.MaxHeight);
+                else
+                    s = new(pos, ref state_);
                 state_.slots[pos] = s;
-                dirty_.Add(s);
+                MarkDirty(pos);
             }
 
             WFCTile centerTile = state_.GetTileAt(WorldUtils.WORLD_CENTER);
@@ -104,6 +78,7 @@ namespace WorldGen.WFC
             stateStack_ = new(backtrackingDepth);
             steps_ = 0;
         }
+
 
         /// <summary>
         /// Assigns which passages can or cannot be passable based on the planned paths.
@@ -131,52 +106,101 @@ namespace WorldGen.WFC
             {
                 Vector2Int neighbor = pos + WorldUtils.CARDINAL_DIRS[direction];
                 bool hasNeighbor = pathDistances.TryGet(neighbor, out int neighborDistance);
-                GetForcedPassages(distance, hasNeighbor, neighborDistance, out bool passable, out bool impassable);
-                state_.SetValidPassageAtTile(pos, direction, (passable, impassable));
-                if (passable != impassable)
-                    RegisterGizmos(StepType.Step, () => MakePassageGizmos(pos, direction, (passable, impassable)));
+                bool passable = MustBePassable(distance, hasNeighbor, neighborDistance);
+                state_.SetValidPassageAtTile(pos, direction, (true, !passable));
+                if (passable)
+                    RegisterGizmos(StepType.Step, () => MakePassageGizmos(pos, direction, (true, false)));
             }
         }
 
         /// <summary>
         /// Calculates whether a passage from a tile to its neighbor can be passable or impassable.
         /// </summary>
-        static void GetForcedPassages(int distance, bool hasNeighbor, int neighborDistance, out bool passable, out bool impassable)
+        static bool MustBePassable(int distance, bool hasNeighbor, int neighborDistance)
         {
-            passable = true;
-            impassable = true;
             if (!hasNeighbor)
-            {
-                impassable = false;
-                return;
-            }
+                return true;
 
             if (neighborDistance == int.MaxValue)
-                return;
+                return false;
 
             if (Mathf.Abs(neighborDistance - distance) == 1)
-                impassable = false;
-            else
-                passable = false;
+                return true;
+            return false;
         }
 
-        bool TryUpdateNext()
+        bool TryStep()
         {
-            WFCSlot s = dirty_.PopRandom();
+            if (!TryPropagateConstraints())
+                return false;
+
+            // debug
+            WaitForStep(StepType.Step);
+            // end debug
+
+            stateStack_.Push(new(state_));
+            state_.CollapseRandom(this);
+            steps_++;
+
+            // debug
+            RegisterGizmosIfExactly(StepType.Step, MakeEntropyGizmos);
+            RegisterGizmos(StepType.Step, MakeMeshGizmos);
+            // end debug
+
+            return true;
+        }
+
+        bool TryPropagateConstraints()
+        {
+            while (anythingDirty_)
+            {
+                anythingDirty_ = false;
+                for (int x = 0; x < 2; x++)
+                    for (int y = 0; y < 2; y++)
+                    {
+                        RegisterGizmos(StepType.MicroStep, MakeEntropyGizmos);
+                        WaitForStep(StepType.MicroStep);
+                        if (!TryUpdateConstraintsGroup(x, y))
+                        {
+                            if (!TryBacktrack())
+                                return false;
+                            // break out of the for loops
+                            x = y = 2;
+                        }
+                    }
+            }
+
+            RegisterGizmos(StepType.MicroStep, MakeEntropyGizmos);
+            return true;
+        }
+
+        bool TryUpdateConstraintsGroup(int x, int y)
+        {
+            var tasks = dirtySlots_.IndexedEnumerable.Where(p => p.index.x % 2 == x && p.index.y % 2 == y && p.value).Select(p => Task.Run(() => TryUpdateSlot(p.index))).ToArray();
+            Task.WaitAll(tasks);
+            return tasks.All(t => t.Result);
+        }
+
+        bool TryUpdateSlot(Vector2Int pos)
+        {
+            dirtySlots_[pos] = false;
+            WFCSlot s = state_.slots[pos];
             (WFCSlot n, bool backtrack) = s.UpdateValidModules(state_);
             if (backtrack)
-                return TryBacktrack();
+                return false;
 
             if (n is not null)
             {
-                MarkNeighborsDirty(n.pos, n.UpdateConstraints(state_));
-                state_.slots[n.pos] = n;
+                MarkNeighborsDirty(pos, n.UpdateConstraints(state_));
+                state_.slots[pos] = n;
+                state_.changedSlots[pos] = true;
             }
             return true;
         }
+
         bool TryBacktrack()
         {
-            dirty_.Clear();
+            dirtySlots_.Fill(false);
             Vector2Int lastCollapsedSlot = state_.lastCollapsedSlot;
             var lastCollapsedTo = state_.lastCollapsedTo;
             if (stateStack_.Count == 0)
@@ -197,7 +221,8 @@ namespace WorldGen.WFC
         {
             if (!state_.slots.TryGet(pos, out var s) || s.Collapsed.module is not null)
                 return;
-            dirty_.Add(s);
+            anythingDirty_ = true;
+            dirtySlots_[s.pos] = true;
         }
 
         /// <summary>
@@ -220,10 +245,10 @@ namespace WorldGen.WFC
         IEnumerable<GizmoManager.GizmoObject> MakeEntropyGizmos()
         {
             var gizmos = new List<GizmoManager.GizmoObject>();
-            foreach ((Vector2Int pos, float weight) in state_.entropyQueue)
+            foreach ((Vector2Int pos, _) in state_.uncollapsedSlots)
             {
-                Color c = dirty_.Contains(state_.slots[pos]) ? Color.red : Color.black;
-                float entropy = MaxEntropy - weight;
+                Color c = dirtySlots_[pos] ? Color.red : Color.black;
+                float entropy = state_.slots[pos].CalculateEntropy();
                 float size;
                 if (entropy <= MaxEntropy * 0.2f)
                 {

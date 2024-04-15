@@ -9,7 +9,6 @@ enforce path lengths, counts and branching
 
 [[World Generation]] based on randomly selected [[Terrain Type]]
 
-- [ ] optimize it some day
 
 potential additions
 - [ ] portals on paths

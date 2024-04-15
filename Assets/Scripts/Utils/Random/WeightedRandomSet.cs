@@ -14,7 +14,6 @@ namespace Utils.Random
         // maps items to their position in list_
         readonly Dictionary<T, int> positions_;
         readonly Random random_;
-        float totalWeight_;
         public int Count { get => list_.Count; }
         public bool IsReadOnly => false;
         /// <summary>
@@ -26,7 +25,6 @@ namespace Utils.Random
             list_ = new();
             positions_ = new();
             random_ = new(randomSeed);
-            totalWeight_ = 0;
         }
         /// <summary>
         /// Creates a copy of another <see cref="WeightedRandomSet{T}"/>, copying both its contents and random number generator to provide items in the same order.
@@ -37,7 +35,6 @@ namespace Utils.Random
             list_ = new(original.list_);
             positions_ = new(original.positions_);
             random_ = new(original.random_.CurrentState);
-            totalWeight_ = original.totalWeight_;
         }
         /// <summary>
         /// Creates a new instance of <see cref="WeightedRandomSet{T}"/>, filled with the item-weight pairs from the provided container.
@@ -48,7 +45,7 @@ namespace Utils.Random
         {
             foreach ((T item, float weight) in items)
             {
-                Add(item, weight);
+                AddOrUpdate(item, weight);
             }
         }
         /// <summary>
@@ -61,22 +58,23 @@ namespace Utils.Random
             list_ = new(original.list_);
             positions_ = new(original.positions_);
             random_ = new(randomSeed);
-            totalWeight_ = original.totalWeight_;
         }
         /// <summary>
-        /// Adds a new item to the set, if not present.
+        /// Adds a new item to the set if not present, otherwise updates the item's weight.
         /// </summary>
         /// <param name="item">The item to add.</param>
         /// <param name="weight">Positive weight. The greater weight, the greater chance to be selected.</param>
-        public void Add(T item, float weight)
+        public void AddOrUpdate(T item, float weight)
         {
-            if (positions_.ContainsKey(item))
-                return;
             if (weight <= 0)
                 throw new ArgumentOutOfRangeException(nameof(weight), weight, "Weight must be positive");
+            if (positions_.ContainsKey(item))
+            {
+                UpdateWeight(item, weight);
+                return;
+            }
             positions_.Add(item, list_.Count);
             list_.Add((item, weight));
-            totalWeight_ += weight;
         }
         /// <summary>
         /// Removes an item from the set, if present.
@@ -87,7 +85,6 @@ namespace Utils.Random
             if (!positions_.ContainsKey(item))
                 return false;
             int pos = positions_[item];
-            totalWeight_ -= list_[pos].weight;
             positions_.Remove(item);
             if (pos != list_.Count - 1)
             {
@@ -103,11 +100,14 @@ namespace Utils.Random
         /// <exception cref="InvalidOperationException"></exception>
         public T PopRandom()
         {
-            if (totalWeight_ <= 0)
+            if (Count == 0)
                 throw new InvalidOperationException("Cannot pop from an empty set");
-            float r = random_.Float(0, totalWeight_);
+            float totalWeight = 0;
+            for (int i = 0; i < Count; i++)
+                totalWeight += list_[i].weight;
+            float r = random_.Float(0, totalWeight);
             int pos = 0;
-            for (int i = 0; i < list_.Count; i++)
+            for (int i = 0; i < Count; i++)
             {
                 r -= list_[i].weight;
                 if (r >= 0)
@@ -133,8 +133,6 @@ namespace Utils.Random
             if (!positions_.ContainsKey(item))
                 throw new InvalidOperationException($"Item {item} was not present in the set");
             int pos = positions_[item];
-            totalWeight_ -= list_[pos].weight;
-            totalWeight_ += newWeight;
             list_[pos] = (item, newWeight);
         }
         /// <summary>
@@ -148,7 +146,6 @@ namespace Utils.Random
         {
             list_.Clear();
             positions_.Clear();
-            totalWeight_ = 0;
         }
         public IEnumerator<(T item, float weight)> GetEnumerator() => list_.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

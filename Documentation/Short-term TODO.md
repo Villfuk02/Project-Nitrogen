@@ -1,20 +1,12 @@
 ## questions
-- sources
-    - wiki
-    - (usenet comments)
-    - https://gamicus.fandom.com/wiki/Tower_defense_video_games
-    - some random article http://julian.togelius.com/Avery2011Computational.pdf
-    - https://store.steampowered.com/category/tower_defense/
-- c# version specific documentation?
-- showcase camera drag and roatate - intention: mouse only controls
-- showcase tasks in WorldGenerator
-- showcase info panel hover
-- showcase blueprint selection
+
 
 ## till next metting
+- [ ] continue chap 2
 - [ ] read everything to check for typos
 - [ ] comment new parts
 - [ ] prepare for code review
+    - [ ] comment and name generation
 
 ## implementation 
 - [ ] content

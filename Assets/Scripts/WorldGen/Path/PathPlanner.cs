@@ -18,10 +18,12 @@ namespace WorldGen.Path
         [SerializeField] float alignmentBonus;
         [SerializeField] float startTemperature;
         [SerializeField] float endTemperature;
-        [SerializeField] float stepsPerUnitLengthSquared;
+        [SerializeField] float stepsPerLengthSquared;
+        [SerializeField] float untanglingStepsPerLengthSquared;
 
         [Header("Runtime variables")]
         [SerializeField] int stepsLeft;
+        [SerializeField] int untanglingStepsLeft;
         [SerializeField] float temperature;
         Array2D<int> crowdingPenaltyKernel_;
         static readonly Vector2Int CrowdingPenaltyMaskOffset = -Vector2Int.one;
@@ -47,8 +49,10 @@ namespace WorldGen.Path
                 return Array.Empty<Vector2Int[]>();
 
             int totalLength = pathLengths.Sum();
-            int totalSteps = Mathf.FloorToInt(stepsPerUnitLengthSquared * totalLength * totalLength);
-            stepsLeft = totalSteps;
+            int mainPhaseSteps = Mathf.FloorToInt(stepsPerLengthSquared * totalLength * totalLength);
+            int untanglingSteps = Mathf.FloorToInt(untanglingStepsPerLengthSquared * totalLength * totalLength);
+            untanglingStepsLeft = untanglingSteps;
+            stepsLeft = mainPhaseSteps + untanglingSteps;
             temperature = startTemperature;
 
             crowdingPenaltyKernel_ = new(new(3, 3));
@@ -87,6 +91,10 @@ namespace WorldGen.Path
                 if (!DoRelaxationStep())
                     break;
 
+                // check if untangling was successful - any valid paths have been found. If not, fail early
+                if (untanglingStepsLeft == 0 && lastValidPaths == null)
+                    break;
+
                 // if any path intersects with itself, check for any crossings and try to untwist them
                 // relaxing is unlikely to fix a path crossing itself
                 if (paths_.Any(p => !p.AllDistinct()))
@@ -99,8 +107,15 @@ namespace WorldGen.Path
                     foreach (var path in paths_)
                         UntwistCrossingIfExists(path);
                 }
+                else if (CheckInvalidIntersections())
+                {
+                    // debug
+                    // draw paths
+                    RegisterGizmos(StepType.MicroStep, () => paths_.SelectMany(p => MakePathGizmos(p, Color.yellow)), RelaxPathGizmosDuration);
+                    // end debug
+                }
                 // if there are no invalid crossings, save the paths
-                else if (!AreThereInvalidCrossings())
+                else
                 {
                     // debug
                     // draw paths
@@ -109,16 +124,10 @@ namespace WorldGen.Path
 
                     lastValidPaths = paths_.Select(p => p.ToArray()).ToArray();
                 }
-                else
-                {
-                    // debug
-                    // draw paths
-                    RegisterGizmos(StepType.MicroStep, () => paths_.SelectMany(p => MakePathGizmos(p, Color.yellow)), RelaxPathGizmosDuration);
-                    // end debug
-                }
 
-                temperature = Mathf.Lerp(startTemperature, endTemperature, 1 - stepsLeft / (float)totalSteps);
+                temperature = Mathf.Lerp(endTemperature, startTemperature, untanglingStepsLeft > 0 ? untanglingStepsLeft / (float)untanglingSteps : stepsLeft / (float)mainPhaseSteps);
                 stepsLeft--;
+                untanglingStepsLeft--;
 
                 // debug
                 WaitForStep(StepType.MicroStep);
@@ -164,11 +173,11 @@ namespace WorldGen.Path
                     var dir = WorldUtils.CARDINAL_DIRS[d];
                     Vector2Int neighbor = current + dir;
                     // skip the tiles that would be too far from the center to get there in time
-                    if (distances_.TryGet(neighbor, out int dist) && dist <= length)
-                    {
-                        float weight = 1f / crowding_[neighbor] + alignmentBonus * alignment[d];
-                        validNeighbors.Add(neighbor, weight);
-                    }
+                    if (!distances_.TryGet(neighbor, out int dist) || dist > length)
+                        continue;
+
+                    float weight = 1f / crowding_[neighbor] + alignmentBonus * alignment[d];
+                    validNeighbors.AddOrUpdate(neighbor, weight);
                 }
 
                 Vector2Int next = validNeighbors.PopRandom();
@@ -212,12 +221,14 @@ namespace WorldGen.Path
                         if (newPos.ManhattanDistance(prev.Value) != 1 || newPos.ManhattanDistance(next.Value) != 1)
                             continue;
 
-                        // only consider switching it when the new position is less crowded, the better the improvement the better the weight
+                        // only consider switching it when the new position is less crowded
+                        // the better the improvement the better the weight
                         // but temperature is added, so with high temperature, even very bad switches are likely - this allows for more exploration
                         // when the temperature eventually gets low, only the highest quality switches happen and the path doesn't change much
-                        float improvement = crowding_.GetOrDefault(pos, int.MaxValue) - crowding_.GetOrDefault(newPos, int.MaxValue) + temperature;
+                        float improvement = crowding_.GetOrDefault(pos, int.MaxValue) - crowding_.GetOrDefault(newPos, int.MaxValue);
+                        improvement += temperature;
                         if (improvement > 0)
-                            possibleChanges.Add((current, newPos), improvement);
+                            possibleChanges.AddOrUpdate((current, newPos), improvement);
                     }
                     prev = current;
                     current = next;
@@ -306,23 +317,25 @@ namespace WorldGen.Path
         /// Are there any invalid crossings?
         /// An invalid crossing is when two path nodes on the same tile each have a different distance to the center.
         /// </summary>
-        bool AreThereInvalidCrossings()
+        bool CheckInvalidIntersections()
         {
             var distances = new Dictionary<Vector2Int, int>();
             foreach (var path in paths_)
             {
-                int distance = 0;
-                var current = path.Last;
+                int distance = path.Count;
+                var current = path.First;
                 while (current != null)
                 {
-                    if (distances.TryGetValue(current.Value, out int otherDistance) && otherDistance != distance)
+
+                    bool invalid = distances.TryGetValue(current.Value, out var otherDistance) && otherDistance != distance;
+                    if (invalid)
                         return true;
+
                     distances[current.Value] = distance;
-                    distance++;
-                    current = current.Previous;
+                    distance--;
+                    current = current.Next;
                 }
             }
-
             return false;
         }
 

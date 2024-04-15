@@ -5,13 +5,12 @@ using static Data.Parsers.Parsers;
 
 namespace Data.WorldGen
 {
-    public record ObstaclesData(ObstacleData[][] Layers, ObstacleData[] Fillers, Dictionary<string, ObstacleData> Obstacles)
+    public record ObstaclesData(ObstacleData[][] Layers, Dictionary<string, ObstacleData> Obstacles)
     {
         public static ObstaclesData Parse(ParseStream stream, IEnumerable<char> allSurfaces)
         {
             var pp = new PropertyParserWithNamedExtra<ObstacleData>();
             var getLayers = pp.Register("layers", Chain(ParseBlock, ParseList, ParseLine, ParseList, ParseWord));
-            var getFillers = pp.Register("fillers", Chain(ParseLine, ParseList, ParseWord));
             pp.RegisterExtraParser((n, s) => ObstacleData.Parse(n, s, getLayers().Count, allSurfaces.ToArray()));
 
             pp.Parse(stream);
@@ -39,18 +38,7 @@ namespace Data.WorldGen
                 }
             }
 
-            var parsedFillers = getFillers();
-            if (parsedFillers.Count == 0)
-                throw new ParseException(stream, "No fillers specified.");
-            var fillers = new ObstacleData[parsedFillers.Count];
-            for (int j = 0; j < parsedFillers.Count; j++)
-            {
-                if (!obstacles.TryGetValue(parsedFillers[j], out var b))
-                    throw new ParseException(stream, $"Obstacle \"{parsedFillers[j]}\" was not defined.");
-                fillers[j] = b;
-            }
-
-            return new(layers, fillers, obstacles);
+            return new(layers, obstacles);
         }
     }
 

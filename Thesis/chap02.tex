@@ -123,7 +123,7 @@ This will let the player decide if they need to take a blueprint that will help 
 \subsection{Make Various Builds Viable} \label{sec:goal-various-builds}
 
 One of the goals of our game is that the player should be able to beat the game with a lot of different combinations of blueprints.
-We will call these combinations \emph{builds}, as is often done for unique combinations of skills, attributes and items a player's character can have in a role-playing game.
+We will call these combinations \emph{builds}, as is often done~\cite{buildDict} for unique combinations of skills, attributes and items a player's character can have in a role-playing game.
 Builds are distinguished mainly by what they feel like to play with.
 If two blueprints are used in the same way, then exchanging one for the other doesn't make a new build.
 To allow the player to choose from various builds, there has to be enough blueprints that feel distinct and better yet, they should interact with other blueprints in unique ways.
@@ -180,7 +180,7 @@ In our game, the player will also pick a blueprint to add to their collection fr
 
 In \emph{Plants vs.\ Zombies}, the player has to adapt to different zombies and level environments.
 This can be illustrated with figure \ref{fig:pvz-roof}, which shows a seed select screen.
-Here, the player selects which plants they want use to play this level from the selection on the left side.
+Here, the player selects which plants they want to use in this level from the selection on the left side.
 On the right the player can see that this level takes place on the roof and the zombie types that will appear in this level.
 In rooftop levels, the player has to place a \emph{Flower Pot}, which costs 25\,\emph{sun}, on a tile before they can place a plant there.
 Furthermore, all plants that shoot in a straight line are of little use here because the roof slopes up, so their projectiles can't travel very far.
@@ -210,16 +210,21 @@ After beating the game, the player unlocks so-called \emph{ascension}.
 Before embarking on another run, the player can select the \emph{ascension} level they want to play on.
 Each level introduces a small change that makes the game slightly more difficult.
 Each \emph{ascension} level is unlocked only after the previous level is beaten, and each difficulty increase is small, so it doesn't discourage the player.
-These changes are cumulative, so in the end it takes serious effort and luck to beat the game on \emph{ascension} level 20 even for the most skilled players.
+These changes are cumulative, so in the end it takes serious effort and luck to beat the game on \emph{ascension} level~20 even for the most skilled players.
 
 This system is simple, yet effective, so we might as well use it too.
 We will also want to balance the base game, so that most players that try are able to beat it, but it still takes some effort and several attempts, so the players feel like they've accomplished something.
 
 \section{Battle}
 
-- build stuff, send waves, use abilities
+As stated before (see section~\ref{sec:original-vision}), in our game, the player will fight in battles throughout each run, and these battles will have tower defense gameplay.
+In this section, we will go into more detail and why we decided thing should be this way.
 
-\section{Attacker Movement}
+\subsection{Attacker Behavior}
+
+- !!!use other TDs as examples!!!
+
+- continuous vs automatic waves vs manual waves
 
 - free movement with individual pathfinding X
 
@@ -238,7 +243,7 @@ We will also want to balance the base game, so that most players that try are ab
 
 - other qualities
 
-\section{World}
+\subsection{World}
 
 - free placement X
 
@@ -257,19 +262,50 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 
 - Obstacles
 
-\section{Resources}
+\section{Buildings}
 
-\xxx{for each subsection: what is it, why is it, how to acquire it, what are the constraints}
+- how and when to build, one per tile
+- only between waves
 
-\subsection{Materials}
+- special building have special abilities
 
-\subsection{Energy}
+- main types:
 
-\subsection{Hull}
 
-\section{Graphical User Interface}
+\subsection{Towers}
 
-\xxx{specify controls}
+- attack attackers
+
+- range
+
+- targeting
+
+- projectile types
+
+- damage types
+
+\subsection{Economic buildings}
+
+-provide resources
+
+- materials - what, why, consequences and constraints
+
+- fuel?
+
+\section{Abilities}
+
+- used mid-wave
+
+- usually instant effects
+
+- free placement, global placement, tile placement, use on a building
+
+- energy - what, why, consequences and constraints
+
+
+\section{Battle Graphical User Interface}
+
+\xxx{specify controls, use images}
 
 \subsection{Waves Left and Fuel}
 
@@ -278,6 +314,33 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 \subsection{Wave Preview}
 
 \subsection{Materials and Energy}
+
+
+\section{Procedural Generation}
+
+- roguelike -> procedural generation
+
+- to what degree?
+
+- map will be random
+
+- we want to procedurally generate levels
+
+- terrain types
+
+- balance levels - cannot feel unfair
+
+- in sts, encounters are handcrafted, but picked randomly
+
+- still has variety
+
+- easy to balance
+
+- generated waves
+
+- attacker types
+
+- hard to balance - must be described by a formula
 
 \subsection{Blueprints}
 
@@ -313,45 +376,13 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 
 - special abilities - passive, repeating, reactive
 
-\section{Buildings}
-
-- how and when to build, one per tile
-
-- special building have special abilities
-
-- main types:
-
-\subsection{Economic buildings}
-
--provide resources
-
-\subsection{Towers}
-
-- attack attackers
-
-- range
-
-- targeting
-
-- projectile types
-
-- damage types
-
-\section{Abilities}
-
-- used mid-wave
-
-- usually instant effects
-
-- free placement, global placement, tile placement, use on a building
-
-\xxx{modifying and reactions to stuff}
-
 \section{Camera controls}
 
 - zoom to look closely, rotate so the terrain doesn't hide stuff
 
 \section{Future Features}
+
+- setting
 
 - run structure
 

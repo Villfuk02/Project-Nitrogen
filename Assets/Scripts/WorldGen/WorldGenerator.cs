@@ -4,6 +4,7 @@ using Game.Run;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using WorldGen.Decorations;
 using WorldGen.Obstacles;
 using WorldGen.Path;
 using WorldGen.WFC;
+using Debug = UnityEngine.Debug;
 using Random = Utils.Random.Random;
 
 namespace WorldGen
@@ -39,8 +41,11 @@ namespace WorldGen
         [SerializeField] UnityEvent onGeneratedTerrain;
         [SerializeField] UnityEvent onFinalizedPaths;
         [SerializeField] UnityEvent onScatteredDecorations;
-
+        [Header("Benchmarking settings")]
+        [SerializeField] bool benchmarkingMode;
+        [SerializeField] int repeats;
         [Header("Runtime variables")]
+        int wfcFails_;
         readonly object steppedLock_ = new();
         public static Random Random { get; private set; }
         public static TerrainType TerrainType { get; private set; }
@@ -61,7 +66,10 @@ namespace WorldGen
         }
         void Start()
         {
-            StartCoroutine(Generate());
+            if (benchmarkingMode)
+                StartCoroutine(Benchmark());
+            else
+                StartCoroutine(Generate());
         }
 
         void Update()
@@ -93,10 +101,12 @@ namespace WorldGen
             worldData.Clear();
             worldData.seed = worldSettings.seed;
 
+            // we prefer generation algorithms running on a background thread
             Task generatingTerrain = Task.Run(GenerateTerrain);
             yield return new WaitUntil(() => generatingTerrain.IsCompleted);
             generatingTerrain.Wait();
 
+            // but some actions still have to run on the main thread
             onGeneratedTerrain.Invoke();
 
             Task placingObstacles = Task.Run(() => obstacleGenerator.PlaceObstacles(worldData.firstPathTiles, worldSettings.pathLengths));
@@ -117,6 +127,25 @@ namespace WorldGen
             print("SUCCESSFULLY GENERATED");
         }
 
+        IEnumerator Benchmark()
+        {
+            if (!worldSettings.overrideRun)
+                Debug.LogError("World settings have to be be constant for benchmarking!");
+            tries = 0;
+            Stopwatch s = new();
+            s.Start();
+            for (int i = 0; i < repeats; i++)
+            {
+                worldData.Clear();
+                worldData.seed = worldSettings.seed;
+                Task generatingTerrain = Task.Run(GenerateTerrain);
+                yield return new WaitUntil(() => generatingTerrain.IsCompleted);
+                generatingTerrain.Wait();
+                Debug.Log($"generated world #{i + 1}");
+            }
+            Debug.LogError($"BENCHMARK COMPLETE!  worlds: {repeats}, attempts: {-tries}, WFC fails: {wfcFails_}, milliseconds: {s.ElapsedMilliseconds}");
+        }
+
         void GenerateTerrain()
         {
             TerrainType = TerrainTypes.GetTerrainType(worldSettings.terrainType);
@@ -125,7 +154,7 @@ namespace WorldGen
             WFCState terrain;
             while (true)
             {
-                if (tries <= 0)
+                if (!benchmarkingMode && tries <= 0)
                     throw new WorldGeneratorException("Failed to generate terrain");
                 tries--;
 
@@ -137,7 +166,10 @@ namespace WorldGen
 
                 terrain = wfc.Generate(paths);
                 if (terrain is null)
+                {
+                    wfcFails_++;
                     continue;
+                }
 
                 Tiles = new(terrain.GetCollapsedSlots(), terrain.GetPassageAtTile, paths);
                 break;

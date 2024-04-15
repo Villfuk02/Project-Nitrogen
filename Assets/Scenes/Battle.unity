@@ -1005,7 +1005,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc540d5f1b9c79546b71136ca82b94df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backtrackingDepth: 6
+  backtrackingDepth: 2
 --- !u!1 &147639396
 GameObject:
   m_ObjectHideFlags: 0
@@ -4491,10 +4491,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 697fa3911599b2643b6eaefbb22d3023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  overrideRun: 0
+  overrideRun: 1
   terrainType: Test
-  seed: 1
-  pathLengths: 100000001300000016000000
+  seed: 10128203286823490475
+  pathLengths: 180000001c00000021000000
   maxExtraPaths: 4
 --- !u!4 &815966620
 Transform:
@@ -5581,10 +5581,12 @@ MonoBehaviour:
   crowdingPenaltyByDistance: 0a0000000200000001000000
   startCrowdingPenalty: 20
   alignmentBonus: 0.15
-  startTemperature: 4
+  startTemperature: 3
   endTemperature: -5
-  stepsPerUnitLengthSquared: 0.5
+  stepsPerLengthSquared: 0.45
+  untanglingStepsPerLengthSquared: 0.05
   stepsLeft: 0
+  untanglingStepsLeft: 0
   temperature: 0
 --- !u!4 &1087793669
 Transform:
@@ -8148,7 +8150,7 @@ MonoBehaviour:
   obstacleGenerator: {fileID: 987874899}
   pathFinalizer: {fileID: 1087793671}
   obstacleModelScatterer: {fileID: 449949343}
-  tries: 20
+  tries: 50
   onGeneratedTerrain:
     m_PersistentCalls:
       m_Calls:
@@ -8219,6 +8221,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  benchmarkingMode: 0
+  repeats: 100
 --- !u!114 &1838770610
 MonoBehaviour:
   m_ObjectHideFlags: 0

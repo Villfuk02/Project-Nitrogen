@@ -17,7 +17,8 @@ namespace WorldGen.WFC
         public readonly Array2D<WFCSlot> slots;
         readonly Array2D<WFCTile> tiles_;
         readonly BitArray passages_;
-        public readonly WeightedRandomSet<Vector2Int> entropyQueue;
+        public readonly WeightedRandomSet<Vector2Int> uncollapsedSlots;
+        public readonly Array2D<bool> changedSlots;
 
         public Vector2Int lastCollapsedSlot;
         public TilesData.CollapsedSlot lastCollapsedTo;
@@ -31,7 +32,8 @@ namespace WorldGen.WFC
             foreach (var (index, _) in tiles_.IndexedEnumerable)
                 tiles_[index] = new(true);
             passages_ = new(slotWorldSize.x * slotWorldSize.y * 4, true);
-            entropyQueue = new(WorldGenerator.Random.NewSeed());
+            uncollapsedSlots = new(WorldGenerator.Random.NewSeed());
+            changedSlots = new(slotWorldSize);
             id_ = 0;
         }
         public WFCState(WFCState original)
@@ -40,14 +42,22 @@ namespace WorldGen.WFC
             slots = original.slots.Clone();
             tiles_ = original.tiles_.Clone();
             passages_ = new(original.passages_);
-            entropyQueue = new(original.entropyQueue, WorldGenerator.Random.NewSeed());
+            uncollapsedSlots = new(original.uncollapsedSlots, WorldGenerator.Random.NewSeed());
+            changedSlots = new(original.changedSlots.Size);
             id_ = original.id_ + 1000000;
         }
 
         public void CollapseRandom(WFCGenerator wfc)
         {
             id_++;
-            Vector2Int pos = entropyQueue.PopRandom();
+            foreach (var (slot, hasChanged) in changedSlots.IndexedEnumerable)
+            {
+                if (!hasChanged)
+                    continue;
+                uncollapsedSlots.UpdateWeight(slot, slots[slot].CalculateWeight());
+                changedSlots[slot] = false;
+            }
+            Vector2Int pos = uncollapsedSlots.PopRandom();
             WFCSlot s = slots[pos];
             lastCollapsedSlot = pos;
             s = s.CollapseRandom(this);

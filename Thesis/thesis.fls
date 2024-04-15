@@ -1401,6 +1401,11 @@ INPUT D:\MiKTeX\tex\latex\lm\t1lmtt.fd
 INPUT D:\MiKTeX\tex\latex\lm\t1lmtt.fd
 INPUT D:\MiKTeX\tex\latex\lm\t1lmtt.fd
 INPUT D:\MiKTeX\fonts\tfm\public\lm\ec-lmtt12.tfm
+INPUT D:\MiKTeX\tex\latex\lm\ts1lmr.fd
+INPUT D:\MiKTeX\tex\latex\lm\ts1lmr.fd
+INPUT D:\MiKTeX\tex\latex\lm\ts1lmr.fd
+INPUT D:\MiKTeX\tex\latex\lm\ts1lmr.fd
+INPUT D:\MiKTeX\fonts\tfm\public\lm\ts1-lmr12.tfm
 INPUT .\chap04.tex
 INPUT .\chap04.tex
 INPUT .\chap04.tex
@@ -1506,7 +1511,7 @@ INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.out
 INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.run.xml
 OUTPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.run.xml
 INPUT D:\MiKTeX\fonts\enc\dvips\lm\lm-ec.enc
-INPUT D:\MiKTeX\fonts\enc\dvips\lm\lm-mathit.enc
+INPUT D:\MiKTeX\fonts\enc\dvips\lm\lm-ts1.enc
 INPUT D:\MiKTeX\fonts\enc\dvips\lm\lm-rm.enc
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbx10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbx10.pfb
@@ -1516,18 +1521,12 @@ INPUT D:\MiKTeX\fonts\type1\public\lm\lmbxi10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbxi10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmcsc10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmcsc10.pfb
-INPUT D:\MiKTeX\fonts\type1\public\lm\lmmi12.pfb
-INPUT D:\MiKTeX\fonts\type1\public\lm\lmmi12.pfb
-INPUT D:\MiKTeX\fonts\type1\public\lm\lmmi8.pfb
-INPUT D:\MiKTeX\fonts\type1\public\lm\lmmi8.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr12.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr12.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr17.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr17.pfb
-INPUT D:\MiKTeX\fonts\type1\public\lm\lmr8.pfb
-INPUT D:\MiKTeX\fonts\type1\public\lm\lmr8.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmri10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmri10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmri12.pfb
