@@ -30,7 +30,7 @@ namespace WorldGen
         [SerializeField] WorldData worldData;
         [SerializeField] WorldSettings.WorldSettings worldSettings;
         [SerializeField] GizmoManager gizmos;
-        [SerializeField] PathStartPicker pathStartPicker;
+        [SerializeField] PathEndPointPicker pathEndPointPicker;
         [SerializeField] PathPlanner pathPlanner;
         [SerializeField] WFCGenerator wfc;
         [SerializeField] ObstacleGenerator obstacleGenerator;
@@ -109,10 +109,10 @@ namespace WorldGen
             // but some actions still have to run on the main thread
             onGeneratedTerrain.Invoke();
 
-            Task placingObstacles = Task.Run(() => obstacleGenerator.PlaceObstacles(worldData.firstPathTiles, worldSettings.pathLengths));
+            Task placingObstacles = Task.Run(() => obstacleGenerator.PlaceObstacles(worldData.firstPathTiles, worldSettings.pathLengths, worldData.hubPosition));
             yield return new WaitUntil(() => placingObstacles.IsCompleted);
             placingObstacles.Wait();
-            Task finalizingPaths = Task.Run(() => pathFinalizer.FinalizePaths(worldData.firstPathTiles, worldSettings.maxExtraPaths));
+            Task finalizingPaths = Task.Run(() => pathFinalizer.FinalizePaths(worldData.firstPathTiles, worldSettings.maxExtraPaths, worldData.hubPosition));
             yield return new WaitUntil(() => finalizingPaths.IsCompleted);
             finalizingPaths.Wait();
 
@@ -151,6 +151,7 @@ namespace WorldGen
             TerrainType = TerrainTypes.GetTerrainType(worldSettings.terrainType);
 
             Vector2Int[] pathStarts;
+            Vector2Int hubPosition;
             WFCState terrain;
             while (true)
             {
@@ -158,13 +159,13 @@ namespace WorldGen
                     throw new WorldGeneratorException("Failed to generate terrain");
                 tries--;
 
-                pathStarts = pathStartPicker.PickStarts(worldSettings.pathLengths);
+                pathEndPointPicker.PickEndPoints(worldSettings.maxHubDistFromCenter, worldSettings.pathLengths, out hubPosition, out pathStarts);
 
-                var paths = pathPlanner.PlanPaths(pathStarts, worldSettings.pathLengths);
+                var paths = pathPlanner.PlanPaths(pathStarts, worldSettings.pathLengths, hubPosition);
                 if (paths is null)
                     continue;
 
-                terrain = wfc.Generate(paths);
+                terrain = wfc.Generate(paths, hubPosition);
                 if (terrain is null)
                 {
                     wfcFails_++;
@@ -175,6 +176,7 @@ namespace WorldGen
                 break;
             }
 
+            worldData.hubPosition = hubPosition;
             worldData.firstPathTiles = pathStarts;
             worldData.pathStarts = pathStarts.Select(s => s + WorldUtils.GetMainDir(WorldUtils.WORLD_CENTER, s, Random)).ToArray();
             worldData.terrain = terrain.GetCollapsedSlots();

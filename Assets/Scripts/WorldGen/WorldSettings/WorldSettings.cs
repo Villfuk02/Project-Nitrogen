@@ -10,5 +10,6 @@ namespace WorldGen.WorldSettings
         // always keep these in ascending order
         public int[] pathLengths;
         public int maxExtraPaths;
+        public float maxHubDistFromCenter;
     }
 }

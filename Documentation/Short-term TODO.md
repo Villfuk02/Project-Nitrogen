@@ -1,5 +1,6 @@
 ## questions
-
+- hub is now off-center
+- show optimizations
 
 ## till next metting
 - [ ] continue chap 2

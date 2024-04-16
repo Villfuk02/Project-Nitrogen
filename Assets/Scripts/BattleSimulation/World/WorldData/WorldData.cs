@@ -19,6 +19,10 @@ namespace BattleSimulation.World.WorldData
         /// </summary>
         public Vector2Int[] firstPathTiles;
         /// <summary>
+        /// The hub position.
+        /// </summary>
+        public Vector2Int hubPosition;
+        /// <summary>
         /// The generated terrain <see cref="Module"/>s and their heights.
         /// </summary>
         public Array2D<TilesData.CollapsedSlot> terrain;

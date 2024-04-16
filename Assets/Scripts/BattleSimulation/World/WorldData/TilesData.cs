@@ -62,16 +62,16 @@ namespace BattleSimulation.World.WorldData
         public IEnumerator<TileData> GetEnumerator() => tiles_.GetEnumerator();
 
         /// <summary>
-        /// Recalculates the distance of each tile to the center, using only valid passages and passable tiles. Unreachable tiles have the distance <see cref="int.MaxValue"/>.
+        /// Recalculates the distance of each tile to the hub, using only valid passages and passable tiles. Unreachable tiles have the distance <see cref="int.MaxValue"/>.
         /// </summary>
-        public void RecalculateDistances()
+        public void RecalculateDistances(Vector2Int hubPosition)
         {
             foreach (var node in tiles_)
                 node.dist = int.MaxValue;
 
-            tiles_[WorldUtils.WORLD_CENTER].dist = 0;
+            tiles_[hubPosition].dist = 0;
             Queue<TileData> queue = new();
-            queue.Enqueue(tiles_[WorldUtils.WORLD_CENTER]);
+            queue.Enqueue(tiles_[hubPosition]);
 
             // BFS
             while (queue.Count > 0)

@@ -285,7 +285,7 @@ MonoBehaviour:
   hubBlueprint: {fileID: 11400000, guid: d8c120b9b6f017843aa635bbbb54b549, type: 2}
   done: 0
   ready: 0
-  centerTile: {fileID: 0}
+  hubTile: {fileID: 0}
   millisPerFrame: 12
 --- !u!1 &43607243
 GameObject:
@@ -776,6 +776,7 @@ MonoBehaviour:
   seed: 0
   pathStarts: []
   firstPathTiles: []
+  hubPosition: {x: 0, y: 0}
 --- !u!4 &94511821
 Transform:
   m_ObjectHideFlags: 0
@@ -4491,11 +4492,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 697fa3911599b2643b6eaefbb22d3023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  overrideRun: 1
+  overrideRun: 0
   terrainType: Test
-  seed: 10128203286823490475
-  pathLengths: 180000001c00000021000000
+  seed: 10128203286823490472
+  pathLengths: 09000000100000001800000021000000
   maxExtraPaths: 4
+  maxHubDistFromCenter: 7
 --- !u!4 &815966620
 Transform:
   m_ObjectHideFlags: 0
@@ -8144,7 +8146,7 @@ MonoBehaviour:
   worldData: {fileID: 94511820}
   worldSettings: {fileID: 815966619}
   gizmos: {fileID: 1838770610}
-  pathStartPicker: {fileID: 1087793670}
+  pathEndPointPicker: {fileID: 1087793670}
   pathPlanner: {fileID: 1087793668}
   wfc: {fileID: 134019243}
   obstacleGenerator: {fileID: 987874899}

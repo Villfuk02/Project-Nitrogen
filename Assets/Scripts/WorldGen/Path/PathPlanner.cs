@@ -34,14 +34,14 @@ namespace WorldGen.Path
         /// <summary>
         /// Plan the paths, only as a guide for next generation steps.
         /// </summary>
-        public Vector2Int[][] PlanPaths(Vector2Int[] starts, int[] pathLengths)
+        public Vector2Int[][] PlanPaths(Vector2Int[] starts, int[] pathLengths, Vector2Int hubPosition)
         {
             // debug
             // step
             WaitForStep(StepType.Phase);
             print("Planning paths");
-            // gizmos - path starts
-            RegisterGizmos(StepType.Phase, () => new List<Vector2Int>(starts) { WorldUtils.WORLD_CENTER }.Select(p => new GizmoManager.Cube(Color.magenta, WorldUtils.TilePosToWorldPos(p), 0.4f)));
+            // gizmos - path starts and hub position
+            RegisterGizmos(StepType.Phase, () => new List<Vector2Int>(starts) { hubPosition }.Select(p => new GizmoManager.Cube(Color.magenta, WorldUtils.TilePosToWorldPos(p), 0.4f)));
             // end debug
 
             int pathCount = pathLengths.Length;
@@ -63,7 +63,7 @@ namespace WorldGen.Path
 
             distances_ = new(WorldUtils.WORLD_SIZE);
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
-                distances_[v] = v.ManhattanDistance(WorldUtils.WORLD_CENTER);
+                distances_[v] = v.ManhattanDistance(hubPosition);
 
             paths_ = new LinkedList<Vector2Int>[pathCount];
             for (int i = 0; i < pathCount; i++)
@@ -150,7 +150,7 @@ namespace WorldGen.Path
             return lastValidPaths;
         }
         /// <summary>
-        /// Make a random path of the correct length form start to center, allowing for all kinds of intersections.
+        /// Make a random path of the correct length form start to the hub, allowing for all kinds of intersections.
         /// </summary>
         LinkedList<Vector2Int> MakePathPrototype(Vector2Int start, int length)
         {
@@ -172,7 +172,7 @@ namespace WorldGen.Path
                 {
                     var dir = WorldUtils.CARDINAL_DIRS[d];
                     Vector2Int neighbor = current + dir;
-                    // skip the tiles that would be too far from the center to get there in time
+                    // skip the tiles that would be too far from the hub to get there in time
                     if (!distances_.TryGet(neighbor, out int dist) || dist > length)
                         continue;
 
@@ -315,7 +315,7 @@ namespace WorldGen.Path
 
         /// <summary>
         /// Are there any invalid crossings?
-        /// An invalid crossing is when two path nodes on the same tile each have a different distance to the center.
+        /// An invalid crossing is when two path nodes on the same tile each have a different distance to the hub.
         /// </summary>
         bool CheckInvalidIntersections()
         {

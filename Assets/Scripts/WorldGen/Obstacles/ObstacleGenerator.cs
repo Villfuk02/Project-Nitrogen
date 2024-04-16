@@ -17,13 +17,13 @@ namespace WorldGen.Obstacles
         /// <summary>
         /// Places all the various obstacles on tiles according to their parameters and ensuring the shortest path from each path start is the specified length.
         /// </summary>
-        public void PlaceObstacles(Vector2Int[] pathStarts, int[] pathLengths)
+        public void PlaceObstacles(Vector2Int[] pathStarts, int[] pathLengths, Vector2Int hubPosition)
         {
             // debug
             WaitForStep(StepType.Phase);
             print("Picking Obstacles");
-            // draw paths starts and center of the world
-            RegisterGizmos(StepType.Phase, () => new List<Vector2Int>(pathStarts) { WorldUtils.WORLD_CENTER }.Select(p => new GizmoManager.Cube(Color.yellow, WorldUtils.TilePosToWorldPos(p), 0.5f)));
+            // draw paths starts and hub position
+            RegisterGizmos(StepType.Phase, () => new List<Vector2Int>(pathStarts) { hubPosition }.Select(p => new GizmoManager.Cube(Color.yellow, WorldUtils.TilePosToWorldPos(p), 0.5f)));
             // end debug
 
             var layers = WorldGenerator.TerrainType.Obstacles.Layers;
@@ -52,9 +52,9 @@ namespace WorldGen.Obstacles
             // end debug
 
             // then mark all tiles as impassable and remove them in a random order, keeping only those that would allow for a shorter path than intended from any start
-            EnsurePathLengths(pathStarts, pathLengths);
+            EnsurePathLengths(pathStarts, pathLengths, hubPosition);
 
-            Tiles.RecalculateDistances();
+            Tiles.RecalculateDistances(hubPosition);
 
             // debug
             DrawGizmos(StepType.Phase);
@@ -105,7 +105,7 @@ namespace WorldGen.Obstacles
         /// <summary>
         /// Fills all tiles with the given filler obstacles and one by one removes each, unless it would allow for a shorter path than specified.
         /// </summary>
-        void EnsurePathLengths(Vector2Int[] pathStarts, int[] pathLengths)
+        void EnsurePathLengths(Vector2Int[] pathStarts, int[] pathLengths, Vector2Int hubPosition)
         {
             tilesLeft_ = new(emptyTiles_, WorldGenerator.Random.NewSeed());
             foreach (var pos in tilesLeft_)
@@ -120,7 +120,7 @@ namespace WorldGen.Obstacles
 
                 Vector2Int pos = tilesLeft_.PopRandom();
                 Tiles[pos].passable = true;
-                Tiles.RecalculateDistances();
+                Tiles.RecalculateDistances(hubPosition);
                 bool mustKeep = Enumerable.Range(0, pathStarts.Length).Any(i => Tiles[pathStarts[i]].dist != pathLengths[i]);
                 if (!mustKeep)
                     continue;

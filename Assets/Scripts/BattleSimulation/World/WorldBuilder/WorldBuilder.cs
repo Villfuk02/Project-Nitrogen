@@ -27,7 +27,7 @@ namespace BattleSimulation.World.WorldBuilder
         [Header("Runtime variables")]
         [SerializeField] int done;
         [SerializeField] bool ready;
-        [SerializeField] Tile centerTile;
+        [SerializeField] Tile hubTile;
         [SerializeField] int millisPerFrame = 12;
         readonly Stopwatch frameTimer_ = new();
 
@@ -66,7 +66,7 @@ namespace BattleSimulation.World.WorldBuilder
                 if (frameTimer_.ElapsedMilliseconds >= millisPerFrame)
                     yield return null;
             }
-            centerTile = Tiles.TILES[WorldUtils.WORLD_CENTER];
+            hubTile = Tiles.TILES[worldData.hubPosition];
             done++;
         }
         IEnumerator BuildTerrain()
@@ -137,14 +137,14 @@ namespace BattleSimulation.World.WorldBuilder
 
         IEnumerator PlaceHub()
         {
-            while (centerTile == null)
+            while (hubTile == null)
                 yield return null;
             var hub = Instantiate(hubBlueprint.prefab, transform).GetComponent<Building>();
             hub.InitBlueprint(hubBlueprint);
             Transform myTransform = hub.transform;
-            myTransform.SetParent(centerTile.transform);
+            myTransform.SetParent(hubTile.transform);
             myTransform.localPosition = Vector3.zero;
-            centerTile.Building = hub;
+            hubTile.Building = hub;
             hub.Placed();
             hub.permanent = true;
             done++;

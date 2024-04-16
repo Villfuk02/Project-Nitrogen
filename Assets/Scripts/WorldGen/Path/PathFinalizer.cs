@@ -17,7 +17,7 @@ namespace WorldGen.Path
         /// <summary>
         /// Makes the final paths, taking into account terrain and obstacles. Then stores them directly in <see cref="Tiles"/>.
         /// </summary>
-        public void FinalizePaths(Vector2Int[] starts, int maxExtraBranches)
+        public void FinalizePaths(Vector2Int[] starts, int maxExtraBranches, Vector2Int hubPosition)
         {
             // debug
             WaitForStep(StepType.Phase);
@@ -52,8 +52,8 @@ namespace WorldGen.Path
 
             repulsion_ = new(WorldUtils.WORLD_SIZE);
             outlined_ = new(WorldUtils.WORLD_SIZE);
-            hasPath_ = new(WorldUtils.WORLD_SIZE) { [WorldUtils.WORLD_CENTER] = true };
-            UpdateRepulsionField(WorldUtils.WORLD_CENTER);
+            hasPath_ = new(WorldUtils.WORLD_SIZE) { [hubPosition] = true };
+            UpdateRepulsionField(hubPosition);
 
             for (int i = 0; i < targetCount; i++)
             {
@@ -149,7 +149,7 @@ namespace WorldGen.Path
         /// </summary>
         List<TileData> FindValidContinuations(TileData tile, Vector2Int[] path)
         {
-            // the next tile must be one closer to the center
+            // the next tile must be one closer to the hub
             var validNeighborsTemp = tile.neighbors.Where(n => n is not null && n.dist == tile.dist - 1);
             // order them by ascending repulsion (trying to avoid other paths)
             // however, order is reversed, because paths are added like to a stack
@@ -169,7 +169,7 @@ namespace WorldGen.Path
             return validNeighbors;
         }
         /// <summary>
-        /// Check whether a path can be joined to a previous path and connect it. The first paths can always connect to the center tile.
+        /// Check whether a path can be joined to a previous path and connect it. The first paths can always connect to the hub tile.
         /// </summary>
         bool TryJoinPath(Vector2Int[] path, bool isFirst)
         {

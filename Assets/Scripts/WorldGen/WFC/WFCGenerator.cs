@@ -22,14 +22,14 @@ namespace WorldGen.WFC
         /// <summary>
         /// Generate terrain using the wave function collapse algorithm.
         /// </summary>
-        public WFCState Generate(Vector2Int[][] paths)
+        public WFCState Generate(Vector2Int[][] paths, Vector2Int hubPosition)
         {
             // debug
             WaitForStep(StepType.Phase);
             print("Starting WFC");
             // end debug
 
-            InitWFC(paths);
+            InitWFC(paths, hubPosition);
 
             while (state_.uncollapsed > 0)
             {
@@ -47,7 +47,7 @@ namespace WorldGen.WFC
             return state_;
         }
 
-        void InitWFC(Vector2Int[][] paths)
+        void InitWFC(Vector2Int[][] paths, Vector2Int hubPosition)
         {
             int heightCount = TerrainType.MaxHeight + 1;
             MaxEntropy = CalculateEntropy(TerrainType.Modules.GroupBy(m => m.Weight).ToDictionary(g => g.Key, g => g.Count() * heightCount));
@@ -69,9 +69,9 @@ namespace WorldGen.WFC
                 MarkDirty(pos);
             }
 
-            WFCTile centerTile = state_.GetTileAt(WorldUtils.WORLD_CENTER);
-            centerTile.slants.Clear();
-            centerTile.slants.Add(WorldUtils.Slant.None);
+            WFCTile hubTile = state_.GetTileAt(hubPosition);
+            hubTile.slants.Clear();
+            hubTile.slants.Add(WorldUtils.Slant.None);
 
             InitPassages(paths);
 
@@ -83,7 +83,7 @@ namespace WorldGen.WFC
         /// <summary>
         /// Assigns which passages can or cannot be passable based on the planned paths.
         /// A passage must exist from a tile on the edge of the world over the edge.
-        /// A passage can't exist between two tiles that both have a path going through them, but the paths' distances to center differ by more than one.
+        /// A passage can't exist between two tiles that both have a path going through them, but the paths' distances to the hub differ by more than one.
         /// </summary>
         void InitPassages(Vector2Int[][] paths)
         {

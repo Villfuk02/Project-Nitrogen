@@ -215,44 +215,130 @@ These changes are cumulative, so in the end it takes serious effort and luck to 
 This system is simple, yet effective, so we might as well use it too.
 We will also want to balance the base game, so that most players that try are able to beat it, but it still takes some effort and several attempts, so the players feel like they've accomplished something.
 
+\section{Procedural Generation}
+
+- roguelike -> procedural generation
+
+- to what degree?
+
+- map will be random
+
+- we want to procedurally generate levels
+
+- terrain types
+
+- balance levels - cannot feel unfair
+
+- in sts, encounters are handcrafted, but picked randomly
+
+- still has variety
+
+- easy to balance
+
+- generated waves
+
+- attacker types
+
+- hard to balance - must be described by a formula
+
 \section{Battle}
 
 As stated before (see section~\ref{sec:original-vision}), in our game, the player will fight in battles throughout each run, and these battles will have tower defense gameplay.
-In this section, we will go into more detail and why we decided thing should be this way.
+In this section, we will describe the battles in more detail and explain our decisions.
 
 \subsection{Attacker Behavior}
 
-- !!!use other TDs as examples!!!
+In \emph{Plants vs.\ Zombies}, the zombies come continuously throughout a level, but only in small numbers.
+And then there is a few marked waves in which a lot of zombies come at once.
+In other games, the attackers come only in distinct waves, but the waves come right after each other based on a timer.
+One example of such a game is \emph{Kingdom Rush}~\cite{kingdomRush}.
+In figure~\ref{fig:kr-next-wave}, a skull icon in a circle is shown at the top of the screen with the text \enquote{INCOMING NEXT WAVE! CLICK TO CALL IT EARLY}.
+The ring around the skull fills with red color over time and once it is full, the next wave of attackers comes automatically.
+Both of these options make a game more action-packed.
+However, we will go with a third, also often used option, where the attackers come only in waves, but there is no timer.
+The player will have plenty of time to plan out their strategy, and they start the next wave of attackers when ready.
+We feel this fits our game more, making it more similar to the turn-based gameplay that is often featured in roguelike games.
 
-- continuous vs automatic waves vs manual waves
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.8\textwidth]{img/Kingdom-Rush-Next-Wave.png}
+    \caption{A screenshot from \emph{Kingdom Rush}, featuring a wave timer.}
+    \label{fig:kr-next-wave}
+\end{center}
 
-- free movement with individual pathfinding X
+Different tower defense games also use various types of attacker movement.
+In \emph{Plants vs.\ Zombies}, the zombies come from the right side of the screen and try to reach the left side, as we already mentioned.
+Each zombie is confined to its lane and most of the plants available to the player only affect the zombies in front of them in the same lane.
+The plants are planted directly in the way of the zombies and the zombies have to eat their way through the plants to reach their goal.
+This is, however very restrictive for the design of the towers in our game, and there is little depth to the tower placement.
+We can let the attackers move in two dimensions to allow for more interesting tower placement decisions.
 
-- too unpredictable for the player --- The player needs to plan in advance in order to maximize the possibility to take calculated risks
-- solution: visualize enemy paths --- Too many different paths - too much clutter; Still planning at most one wave in advance
+In \emph{Desktop Tower Defense}~\cite{DTDWiki}, for example, the attackers move from sides of the rectangular playing field to the sides that lie across.
+The playing field starts out empty, but as the player fills it with towers, the attackers have to adjust their path, because they cannot go through the towers, as shown in figure~\ref{fig:dtd-pathfinding}.
+Since the player decides the path of the attackers, they have to learn what kind of path works well, but then they can use it build it all the time.
+This is not ideal for us, because we want the player to adapt to the environment, not the other way around.
+Also, a path always has to exist through, so \emph{Desktop Tower Defense} doesn't let the player place a tower that would disconnect the attacker entrance from their goal.
+Some games allow the player to block off the path completely, and then the attackers attack the player's towers, similarly to \emph{Plants vs.\ Zombies}.
+But for our game that would be just more unnecessary complexity, since we want to focus more on the offensive abilities of the towers.
 
-- linear lanes (like in Plants vs.\ Zombies) X
-- not enough space for interesting building placement
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.8\textwidth]{img/Desktop-Tower-Defense-Pathfinding.png}
+    \caption{A screenshot from \emph{Desktop Tower Defense}.}
+    \label{fig:dtd-pathfinding}
+\end{center}
 
-- paths based on your buildings X
-- what if they block off the path?
+Instead, we chose an approach that is most common in tower defense games~--- the attacker paths are predetermined, and the player builds their towers around the paths.
+The paths are different in every level, so the player has to think about placement of their towers differently, and it makes different towers more useful than others in each level.
+This is illustrated well on figure~\ref{fig:btd6-maps}, where we can see two levels from \emph{Bloons TD 6}~\cite{BTD6}.
+The path in the first level shown has a lot of tight turns, perfect for close-range towers or towers which damage all attackers in an area.
+In the second level, the path is made up of few long straight segments, where are much more useful towers, which pierce through many attackers in a straight line.
 
-- predefined paths \checkmark
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/Bloons-TD6-Park-Path-Highlighted.png}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/Bloons-TD6-Another-Brick-Highlighted.png}
+    \end{minipage}
+    \caption{The levels \emph{Park Path} and \emph{Another Brick} from \emph{Bloons TD 6} with the attacker paths highlighted.}
+    \label{fig:btd6-maps}
+\end{center}
 
-- branching
+More variety can also be added by having multiple paths in a single level.
+We can even have different attackers on each path in some waves to further increase variety.
+The paths in our game will also be able to split into more paths and join together into one path.
+When a line of attackers comes to a split into multiple paths, they will alternate in which path they continue to, splitting between the paths evenly.
+This creates segments with lower attacker density, which makes certain towers less effective around this part of the path.
+On the other hand, this lets the player fit more towers near these two paths than they could fit around the path if it didn't split.
 
-- other qualities
+If we designed each level of our game by hand, we could create paths that just feel like they would be fun to play around.
+Since the paths will also be procedurally generated, we need to describe what qualities should the paths have, so the generation can later be implemented to produce such paths.
+
+- they'll be square, deal with it
+
+- from outside to center
+
+- fixed lengths?
+
+- paths near each other are undesirable
+
+- tight turns are undesirable
+
+- short splits are undesirable
 
 \subsection{World}
 
-- free placement X
-
 - grid of tiles \checkmark
+
 - more granularity, easier to develop intuition, same for attacker paths
 
-- hexagons X
+- free placement X
 
-- squares \checkmark
+- preset places
 
 - 3D \checkmark
 - Simple and intuitive way to make the level itself more interesting
@@ -262,7 +348,7 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 
 - Obstacles
 
-\section{Buildings}
+\subsection{Buildings}
 
 - how and when to build, one per tile
 - only between waves
@@ -292,7 +378,7 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 
 - fuel?
 
-\section{Abilities}
+\subsection{Abilities}
 
 - used mid-wave
 
@@ -314,33 +400,6 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 \subsection{Wave Preview}
 
 \subsection{Materials and Energy}
-
-
-\section{Procedural Generation}
-
-- roguelike -> procedural generation
-
-- to what degree?
-
-- map will be random
-
-- we want to procedurally generate levels
-
-- terrain types
-
-- balance levels - cannot feel unfair
-
-- in sts, encounters are handcrafted, but picked randomly
-
-- still has variety
-
-- easy to balance
-
-- generated waves
-
-- attacker types
-
-- hard to balance - must be described by a formula
 
 \subsection{Blueprints}
 

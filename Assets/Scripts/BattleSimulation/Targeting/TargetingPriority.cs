@@ -13,8 +13,8 @@ namespace BattleSimulation.Targeting
 
         public static readonly Dictionary<Set, TargetingPriority> ALL = new()
         {
-            {Set.First, new("First", (a, _) => -a.GetDistanceToCenter())},
-            {Set.Last,  new("Last", (a, _) => a.GetDistanceToCenter())},
+            {Set.First, new("First", (a, _) => -a.GetDistanceToHub())},
+            {Set.Last,  new("Last", (a, _) => a.GetDistanceToHub())},
             {Set.Closest,  new("Closest", (a, pos) => -(a.transform.position - pos).sqrMagnitude)},
             {Set.Farthest,  new("Farthest", (a, pos) => (a.transform.position - pos).sqrMagnitude)},
             {Set.Strongest,  new("Strongest", (a, _) => a.health)},

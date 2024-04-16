@@ -38,7 +38,7 @@ namespace BattleSimulation.Attackers
         [SerializeField] Vector2Int pathSegmentTarget;
         [SerializeField] Vector2Int lastTarget;
         [SerializeField] uint pathSplitIndex;
-        [SerializeField] int segmentsToCenter;
+        [SerializeField] int segmentsToHub;
         public int health;
         bool removed_;
         public bool IsDead { get; private set; }
@@ -66,7 +66,7 @@ namespace BattleSimulation.Attackers
         bool TryAdvanceSegment()
         {
             pathSegmentProgress--;
-            segmentsToCenter--;
+            segmentsToHub--;
             lastTarget = pathSegmentTarget;
             uint ways = (uint)World.WorldData.World.data.tiles[pathSegmentTarget].pathNext.Count;
             if (ways == 0)
@@ -111,13 +111,13 @@ namespace BattleSimulation.Attackers
             pathSegmentTarget = firstNode;
             pathSegmentProgress = 0;
             pathSplitIndex = index;
-            segmentsToCenter = World.WorldData.World.data.tiles[firstNode].dist + 1;
+            segmentsToHub = World.WorldData.World.data.tiles[firstNode].dist + 1;
             UpdateWorldPosition();
         }
 
-        public float GetDistanceToCenter()
+        public float GetDistanceToHub()
         {
-            return segmentsToCenter - pathSegmentProgress;
+            return segmentsToHub - pathSegmentProgress;
         }
 
         static bool DamageHandler(ref (Attacker target, Damage damage) param)
