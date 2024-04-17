@@ -238,23 +238,6 @@
       \verb https://www.kingdomrush.com/kingdom-rush
       \endverb
     \endentry
-    \entry{DTDWiki}{article}{}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labeltitlesource}{title}
-      \field{journaltitle}{Wikipedia}
-      \field{title}{Desktop Tower Defense}
-      \field{urlday}{16}
-      \field{urlmonth}{4}
-      \field{urlyear}{2024}
-      \field{urldateera}{ce}
-      \verb{urlraw}
-      \verb https://en.wikipedia.org/wiki/Desktop_Tower_Defense
-      \endverb
-      \verb{url}
-      \verb https://en.wikipedia.org/wiki/Desktop_Tower_Defense
-      \endverb
-    \endentry
     \entry{BTD6}{misc}{}
       \name{author}{1}{}{%
         {{hash=559c0cab98dab7824357ff1af6615eaf}{%
@@ -281,6 +264,23 @@
       \endverb
       \verb{url}
       \verb https://ninjakiwi.com/Games/Mobile/Bloons-TD-6.html
+      \endverb
+    \endentry
+    \entry{DTDWiki}{article}{}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Wikipedia}
+      \field{title}{Desktop Tower Defense}
+      \field{urlday}{16}
+      \field{urlmonth}{4}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Desktop_Tower_Defense
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Desktop_Tower_Defense
       \endverb
     \endentry
     \entry{UnityDocs}{manual}{}

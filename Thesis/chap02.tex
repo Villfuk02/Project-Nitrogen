@@ -243,56 +243,41 @@ We will also want to balance the base game, so that most players that try are ab
 
 \section{Battle}
 
-As stated before (see section~\ref{sec:original-vision}), in our game, the player will fight in battles throughout each run, and these battles will have tower defense gameplay.
+As stated in section~\ref{sec:original-vision}, in our game, the player will fight in battles throughout each run, and these battles will have tower defense gameplay.
 In this section, we will describe the battles in more detail and explain our decisions.
 
-\subsection{Attacker Behavior}
+\subsection{Attacker Waves}
 
-In \emph{Plants vs.\ Zombies}, the zombies come continuously throughout a level, but only in small numbers.
-And then there is a few marked waves in which a lot of zombies come at once.
-In other games, the attackers come only in distinct waves, but the waves come right after each other based on a timer.
+The attackers in various tower defense games often come in waves.
+However, in \emph{Plants vs.\ Zombies}, the zombies also come in continuously throughout a level in addition to the large waves, to keep the pressure up.
+Even in games where attackers come in distinct waves, the waves are usually on a timer and once the level starts, they keep coming.
 One example of such a game is \emph{Kingdom Rush}~\cite{kingdomRush}.
-In figure~\ref{fig:kr-next-wave}, a skull icon in a circle is shown at the top of the screen with the text \enquote{INCOMING NEXT WAVE! CLICK TO CALL IT EARLY}.
-The ring around the skull fills with red color over time and once it is full, the next wave of attackers comes automatically.
-Both of these options make a game more action-packed.
-However, we will go with a third, also often used option, where the attackers come only in waves, but there is no timer.
-The player will have plenty of time to plan out their strategy, and they start the next wave of attackers when ready.
-We feel this fits our game more, making it more similar to the turn-based gameplay that is often featured in roguelike games.
+In figure~\ref{fig:kr-next-wave} is shown the indicator which shows the time remaining to the next wave.
+This means the game is also full of action and requires the player to think quickly.
+Furthermore, this indicator lets the player call the next wave early.
+If they do, they get some coins as a reward, but this is risky, because the player's defense might get overwhelmed.
 
 \begin{center}
     \captionsetup{type=figure}
-    \includegraphics[width=0.8\textwidth]{img/Kingdom-Rush-Next-Wave.png}
-    \caption{A screenshot from \emph{Kingdom Rush}, featuring a wave timer.}
+    \includegraphics[width=0.6\textwidth]{img/Kingdom-Rush-Next-Wave-Detail.png}
+    \caption{Next wave indicator from \emph{Kingdom Rush}.}
     \label{fig:kr-next-wave}
 \end{center}
 
-Different tower defense games also use various types of attacker movement.
-In \emph{Plants vs.\ Zombies}, the zombies come from the right side of the screen and try to reach the left side, as we already mentioned.
-Each zombie is confined to its lane and most of the plants available to the player only affect the zombies in front of them in the same lane.
-The plants are planted directly in the way of the zombies and the zombies have to eat their way through the plants to reach their goal.
-This is, however very restrictive for the design of the towers in our game, and there is little depth to the tower placement.
-We can let the attackers move in two dimensions to allow for more interesting tower placement decisions.
+However, we want to emphasize the long-term strategy, so we will give the player plenty of time to plan out their next move.
+There won't be any timer, instead, they can start the next wave when they are ready.
+This is also common in tower defense games, used for example by \emph{Bloons TD 6}~\cite{BTD6}.
+This brings our game closer to the turn-based gameplay that is often featured in roguelike games.
+First it is the player's turn to build towers, and then the attackers' turn.
 
-In \emph{Desktop Tower Defense}~\cite{DTDWiki}, for example, the attackers move from sides of the rectangular playing field to the sides that lie across.
-The playing field starts out empty, but as the player fills it with towers, the attackers have to adjust their path, because they cannot go through the towers, as shown in figure~\ref{fig:dtd-pathfinding}.
-Since the player decides the path of the attackers, they have to learn what kind of path works well, but then they can use it build it all the time.
-This is not ideal for us, because we want the player to adapt to the environment, not the other way around.
-Also, a path always has to exist through, so \emph{Desktop Tower Defense} doesn't let the player place a tower that would disconnect the attacker entrance from their goal.
-Some games allow the player to block off the path completely, and then the attackers attack the player's towers, similarly to \emph{Plants vs.\ Zombies}.
-But for our game that would be just more unnecessary complexity, since we want to focus more on the offensive abilities of the towers.
-
-\begin{center}
-    \captionsetup{type=figure}
-    \includegraphics[width=0.8\textwidth]{img/Desktop-Tower-Defense-Pathfinding.png}
-    \caption{A screenshot from \emph{Desktop Tower Defense}.}
-    \label{fig:dtd-pathfinding}
-\end{center}
-
-Instead, we chose an approach that is most common in tower defense games~--- the attacker paths are predetermined, and the player builds their towers around the paths.
-The paths are different in every level, so the player has to think about placement of their towers differently, and it makes different towers more useful than others in each level.
-This is illustrated well on figure~\ref{fig:btd6-maps}, where we can see two levels from \emph{Bloons TD 6}~\cite{BTD6}.
+There are also many ways the attackers can move in different tower defense games.
+Most often, the attacker paths are predetermined, and the player builds their towers around them.
+The attackers go from the start of the path and try to reach the end of the path.
+This is especially great when there is multiple different levels in the game, each featuring different paths, because it makes different towers more useful than others in each level.
+In figure \ref{fig:btd6-maps} are shown two levels with distinct paths from \emph{Bloons TD 6}.
 The path in the first level shown has a lot of tight turns, perfect for close-range towers or towers which damage all attackers in an area.
-In the second level, the path is made up of few long straight segments, where are much more useful towers, which pierce through many attackers in a straight line.
+In the second level, the path is made up of few long straight segments, where are much more useful towers that pierce through many attackers in a straight line.
+Since we want to have various procedurally generated levels in our game, we will also have attackers come on predefined paths that will be different in each level.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -308,14 +293,61 @@ In the second level, the path is made up of few long straight segments, where ar
     \label{fig:btd6-maps}
 \end{center}
 
+There are other options used in other games.
+In \emph{Desktop Tower Defense}~\cite{DTDWiki}, for example, the attackers try to cross a rectangular playing field.
+It starts out empty, but as the player fills it with towers, the attackers have to adjust their path, because they cannot go through the towers.
+In figure~\ref{fig:dtd-pathfinding}, we can see the attackers funnel into a narrow passage between the defensive towers.
+Since the player decides the path of the attackers, they have to learn what kind of path works well, but then they can build it all the time.
+This is not ideal for us, because we want the player to adapt to the environment, not the other way around.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.6\textwidth]{img/Desktop-Tower-Defense-Playfield.png}
+    \caption{Attackers being funneled between towers in \emph{Desktop Tower Defense}.}
+    \label{fig:dtd-pathfinding}
+\end{center}
+
+In \emph{Plants vs.\ Zombies}, the zombies come from the right side of the screen and try to reach the left side, as we already mentioned.
+The plants are planted directly in the way of the zombies and the zombies have to eat their way through them to reach their goal.
+This is unique, and it greatly changes the gameplay.
+However, this is again not great for our game, because we would lose a lot of potential for the levels in our game to be distinct from each other.
+
+In \emph{Bloons TD 6}, the player receives very little information about what the upcoming waves look like.
+Here, the player selects the level they want to play on, but the same sequence of waves comes every time, so the player is expected to learn at least those waves that give them problems.
+In our game, however, the waves will be procedurally generated.
+We want the player to plan around the upcoming waves, so we need to communicate what the upcoming waves are going to be.
+This means that the waves should be simple enough to communicate effectively.
+\emph{Desktop Tower Defense} features a wave preview, shown in figure~\ref{fig:dtd-waves}, that only describes the type of attacker that will come.
+We want interesting behavior to emerge from the interaction of different attacker types, so we won't limit our waves to one attacker type, but instead three.
+We feel that any more would make the waves messy and unnecessarily hard to communicate.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.8\textwidth]{img/Desktop-Tower-Defense-Waves.png}
+    \caption{Wave preview from \emph{Desktop Tower Defense}.}
+    \label{fig:dtd-waves}
+\end{center}
+
+In fact, each wave will be composed of one to three \emph{batches}.
+Each batch will be composed of a number of attackers of only one type, spaced evenly.
+Some waves will be just one batch, but this batch will send a different attacker type on each path on levels with multiple paths.
+This should provide enough variety without being too hard to communicate to the player and too hard for a skilled player to predict the wave difficulty.
+
+The waves in a single battle will get progressively harder, forcing the player will to improve their defense.
+However, the wave difficulty should increase faster than the player's defense is expected to improve.
+This increase will need to be carefully balanced to allow for some strategies where the player invests more into \emph{fuel} production to end a battle quickly, but also strategies where the player invests heavily into defense to keep up with the later waves.
+
+
+\subsection{Attacker Paths}
+
+A
+
 More variety can also be added by having multiple paths in a single level.
 We can even have different attackers on each path in some waves to further increase variety.
 The paths in our game will also be able to split into more paths and join together into one path.
 When a line of attackers comes to a split into multiple paths, they will alternate in which path they continue to, splitting between the paths evenly.
 This creates segments with lower attacker density, which makes certain towers less effective around this part of the path.
 On the other hand, this lets the player fit more towers near these two paths than they could fit around the path if it didn't split.
-
-\subsection{Attacker Paths}
 
 If we designed each level of our game by hand, we could create paths that just feel like they would be fun to play around.
 Since the paths will also be procedurally generated, we need to describe what qualities should the paths have, so the generation can later be implemented to produce such paths.
@@ -441,6 +473,8 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 
 - damage types
 
+- upgrades :/
+
 \subsection{Economic buildings}
 
 -provide resources
@@ -465,6 +499,8 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 \xxx{specify controls, use images}
 
 \subsection{Waves Left and Fuel}
+
+- and time controls
 
 \subsection{Hull}
 

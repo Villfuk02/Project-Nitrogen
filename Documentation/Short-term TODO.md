@@ -1,14 +1,18 @@
 ## questions
-- hub is now off-center
-- show optimizations (and benchmark results)
+- smím jako ilustrační obrázky v game designu nebo analýze používat screenshoty z mé hry?
 
 ## till next metting
-- [ ] read everything to check for typos
+- [ ] recording (16:30)
+- [ ] sec 2.3
+- [ ] sec 2.2
+- [ ] implement content
+- [ ] read everything to check for typos and weird paragraphs
 - [ ] comment new parts
 - [ ] prepare for code review
     - [ ] comment and name generation
 
 ## implementation 
+- [ ] something simple I forgot
 - [ ] content
     - [ ] abilities
         - [x] meteor
@@ -29,7 +33,7 @@
         - [ ] produces material per kill in radius
         - [ ] reactor - increasing production, but expensive
         - [ ] alternative fuel source
-        - [ ] materializer - if you have enough energy, spends it to make materials
+        - [ ] materializer - energy that would go over limit bacomes materials
     - [ ] support building
         - [ ] speeds up towers
         - [ ] pushes back attackers
