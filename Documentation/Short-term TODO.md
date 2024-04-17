@@ -1,9 +1,8 @@
 ## questions
 - hub is now off-center
-- show optimizations
+- show optimizations (and benchmark results)
 
 ## till next metting
-- [ ] continue chap 2
 - [ ] read everything to check for typos
 - [ ] comment new parts
 - [ ] prepare for code review

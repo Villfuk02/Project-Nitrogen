@@ -1199,12 +1199,12 @@ INPUT D:\MiKTeX\tex\latex\l3packages\xparse\xparse.sty
 INPUT D:\MiKTeX\tex\latex\l3packages\xparse\xparse.sty
 INPUT D:\MiKTeX\tex\latex\l3kernel\expl3.sty
 OUTPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.bcf
-INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.bbl
-INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.bbl
-INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.bbl
-INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.bbl
-INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.bbl
-INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.bbl
+INPUT thesis.bbl
+INPUT .\thesis.bbl
+INPUT thesis.bbl
+INPUT .\thesis.bbl
+INPUT .\thesis.bbl
+INPUT thesis.bbl
 INPUT .\title.tex
 INPUT .\title.tex
 INPUT .\title.tex
@@ -1494,7 +1494,6 @@ INPUT .\bibliography.tex
 INPUT bibliography.tex
 INPUT .\bibliography.tex
 INPUT bibliography.tex
-INPUT D:\MiKTeX\fonts\tfm\public\lm\ec-lmcsc10.tfm
 INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.lof
 INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.lof
 INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.lof
@@ -1538,8 +1537,8 @@ INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.out
 INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.out
 INPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.run.xml
 OUTPUT d:\Unity Projects\Nitrogen\Thesis\aux\thesis.run.xml
-INPUT D:\MiKTeX\fonts\enc\dvips\lm\lm-ec.enc
 INPUT D:\MiKTeX\fonts\enc\dvips\lm\lm-ts1.enc
+INPUT D:\MiKTeX\fonts\enc\dvips\lm\lm-ec.enc
 INPUT D:\MiKTeX\fonts\enc\dvips\lm\lm-rm.enc
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbx10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbx10.pfb
@@ -1547,8 +1546,6 @@ INPUT D:\MiKTeX\fonts\type1\public\lm\lmbx12.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbx12.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbxi10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmbxi10.pfb
-INPUT D:\MiKTeX\fonts\type1\public\lm\lmcsc10.pfb
-INPUT D:\MiKTeX\fonts\type1\public\lm\lmcsc10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr10.pfb
 INPUT D:\MiKTeX\fonts\type1\public\lm\lmr12.pfb

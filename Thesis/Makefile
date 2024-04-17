@@ -1,4 +1,7 @@
-all: thesis.pdf abstract-cs.pdf abstract-en.pdf
+all: thesis abstract-cs.pdf abstract-en.pdf
+
+thesis:
+	pdflatex .\thesis.tex && biber thesis && pdflatex .\thesis.tex && pdflatex .\thesis.tex
 
 %.pdf: force
 	latexmk $*.tex

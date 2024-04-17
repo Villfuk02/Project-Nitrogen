@@ -88,11 +88,11 @@ As an example we can look at the cards \emph{Iron Wave} and \emph{Double Tap}.
 The player starts each run with several copies of cards \emph{Defend} and \emph{Strike} in their deck.
 Compared to them, \emph{Iron Wave} is a very cost-efficient card.
 As shown in figure \ref{fig:sts-iron-wave-and-double-tap}, it costs 1\,\emph{energy} (displayed in the top right corner of the card), the same as \emph{Defend} or \emph{Strike}.
-However, it does almost the same thing as \emph{Defend} \textbf{and} \emph{Strike} combined~--- it deals damage and gives you \emph{block} too.
+However, it does almost the same thing as \emph{Defend} \textbf{and} \emph{Strike} combined~--- it deals damage and gives \emph{block} too.
 Picking this card can help a lot in the early fights, but it doesn't really grow stronger later in the run.
 The card \emph{Double Tap}, on the other hand, is not great at the start.
 In essence, it acts like another \emph{Strike} most of the time, and is useful only when the player draws another attack alongside it.
-It is however very strong when your deck contains many attacks that cost a lot of energy but deal much more damage.
+It is however very strong when the deck contains many attacks that cost a lot of energy but deal much more damage.
 Then it allows the player to play a powerful attack twice at the cost of only one more energy.
 
 \begin{center}
@@ -315,20 +315,91 @@ When a line of attackers comes to a split into multiple paths, they will alterna
 This creates segments with lower attacker density, which makes certain towers less effective around this part of the path.
 On the other hand, this lets the player fit more towers near these two paths than they could fit around the path if it didn't split.
 
+\subsection{Attacker Paths}
+
 If we designed each level of our game by hand, we could create paths that just feel like they would be fun to play around.
 Since the paths will also be procedurally generated, we need to describe what qualities should the paths have, so the generation can later be implemented to produce such paths.
+For reasons that will be explained in the next subsection, the paths and towers will be confined to a square grid of tiles.
+Let's start with a few basic rules:
+\begin{itemize}
+    \item A level can have one or more paths, and paths can split apart or join together.
+    \item Each path will be composed of segments that go from the center of one tile to the center of an orthogonally adjacent one.
+    \item The paths will start just outside the world and end at the tile with the \emph{Hub}.
+\end{itemize}
+In figure~\ref{fig:valid-path-example} we can see an example of a valid path drawn in blue on a backdrop of the square tiles the world is composed of.
+The \emph{Hub} is represented by a black dot.
 
-- they'll be square, deal with it
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{tikzpicture}
+        \draw[step=1.0,black,thin] (0,0) grid (7,7);
+        \drawpath{-1,1}{right}{}{(3,1)--(3,2)--(1,2)--(1,5)--(3,5)--(3,4)--(5,4)}{0.5}
+        \filldraw[black] (5.5,4.5) circle (6pt);
+    \end{tikzpicture}
+    \caption{An example of a valid path in the game world.}
+    \label{fig:valid-path-example}
+\end{center}
 
-- from outside to center
+However, we need more rules, since right now, nothing forbids a path going back on itself.
+This is illustrated with path \textbf{A} in figure~\ref{fig:ambiguous-paths}, where we offset the endpoints of few segments to make it more readable.
+Paths segments have to start and end in the centers of the tiles, so in reality, it would look like path \textbf{B}, which is definitely unreadable.
 
-- fixed lengths?
+Furthermore, no path should cross itself or another path.
+We want this because the paths can split and join, and we would need a way to distinguish these splits and joins from crossings.
+This is done to make sure the paths are readable to the player.
+For example, the paths \textbf{C} and \textbf{D} in figure~\ref{fig:ambiguous-paths} could very much be crossing each other, but they could also join together and split in two on the same tile.
+Furthermore, path \textbf{E} is ambiguous, because it could cross itself, but it also looks almost as if it split and joined with itself on the same tile.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{tikzpicture}
+        \draw[step=1.0,black,thin] (0.6,0.6) grid (14.4,5.4);
+        \drawpath{1,5}{above}{A}{(1.2,2)--(0.8,3)--(1,0)}{0.51}
+        \drawpath{3,5}{above}{B}{(3,2)--(3,3)--(3,0)}{0.5}
+        \drawpath{5,5}{above}{C}{(5,3)--(8,3)--(8,0)}{0.5}
+        \drawpath{7,5}{above}{D}{(7,0)}{0.5}
+        \drawpath{12,5}{above}{E}{(12,1)--(10,1)--(10,3)--(14,3)}{0.5}
+    \end{tikzpicture}
+    \caption{Several paths that would be confusing or ambiguous if paths could cross.}
+    \label{fig:ambiguous-paths}
+\end{center}
+
+Path \textbf{F} in figure~\ref{fig:distance-to-hub-paths} is however also problematic.
+It does not cross over itself, but if we were to center all the segment endpoints, it would look almost like path \textbf{E}, which would be equally confusing.
+We will redefine make no-crossing rule stronger and define it as the following:
+\begin{itemize}
+    \item Each path segment makes a one-way connection from a tile to its neighbor.
+          The distance of each tile connected to the \emph{Hub} must be the same, no matter which path an attacker takes.
+\end{itemize}
+This makes path \textbf{F} also illegal, since it goes through a tile twice, and the second time it visits it, it is 8 segments closer to the \emph{Hub} than before.
+This also has implications for paths that split or join, for example path \textbf{G} is invalid, as demonstrated by the distances shown in red, while the path network \textbf{H, I} is valid.
+The new rule helps here, because we don't want the spacing between attackers to change only because some took a longer path before merging with the attackers that took a shorter path.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{tikzpicture}
+        \draw[step=1.0,black,thin] (1.6,0.6) grid (14.4,5.4);
+        \drawpath{12,5}{above}{F}{(11.9,3.1)--(10,3)--(10,1)--(12,1)--(12.1,2.9)--(14,3)}{0.485}
+        \drawpath{8,5}{above}{G}{(8,4) node[red]{$5 \neq 3$} --(8,3) --(8,2) node[red,right]{1} --(8,1)}{0.5}
+        \drawpath{8,3}{above,red}{$4 \neq 2$}{(7,3) node[left,red]{3}-- (7,2) node[left,red]{2}-- (8,2)}{0.5}
+        \filldraw[black] (8.5,1.5) circle (6pt);
+        \drawpath{5,5}{above}{H}{(5,4) node[right,red]{5} -- (5,3) node[right,red]{4} -- (5,2) node[right,red]{3} -- (5,1) node[below right,red]{2} -- (4,1) node[below,red]{1} --(3,1)}{0.5}
+        \drawpath{2,5}{above}{I}{(2,4) node[left,red]{4} -- (2,3) node[left,red]{3} -- (3,3) -- (3,2) node[left,red]{1} --(3,1)}{0.5}
+        \drawpath{5,3}{}{}{(4,3) node[above,red]{3} -- (3,3) node[above,red]{2}}{0.5}
+        \filldraw[black] (3.5,1.5) circle (6pt);
+    \end{tikzpicture}
+    \caption{Several paths illustrating the rule that each tile can only have one distance to the \emph{Hub}.}
+    \label{fig:distance-to-hub-paths}
+\end{center}
+
 
 - paths near each other are undesirable
 
 - tight turns are undesirable
 
-- short splits are undesirable
+- short splits are banned
+
+- fill the world as much as possible
 
 \subsection{World}
 

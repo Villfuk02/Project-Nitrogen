@@ -177,3 +177,15 @@
     \DeclareDelimFormat[textcite]{finalnamedelim}{\space and~}
 
 \fi
+
+% MY MACROS
+\newcommand{\drawpath}[5]{
+    \begin{scope}[blue,very thick,decoration={
+                    markings,
+                    mark=between positions 0.25cm and -0.15cm step #5cm with {\arrow{>}};}
+        ]
+        \draw[postaction={decorate},shift={(0.5,0.5)}] (#1) node[#2]{#3}
+        --#4
+        ;
+    \end{scope}
+}

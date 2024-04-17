@@ -1,0 +1,431 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{TDWiki}{article}{}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Wikipedia}
+      \field{title}{Tower defense}
+      \field{urlday}{5}
+      \field{urlmonth}{4}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Tower_defense
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Tower_defense
+      \endverb
+    \endentry
+    \entry{CITD}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=fea463944f2cf3a6a9551c1ffb45d1bc}{%
+           family={Avery},
+           familyi={A\bibinitperiod},
+           given={Phillipa},
+           giveni={P\bibinitperiod}}}%
+        {{hash=cbd110b21df9b90cd72ce148aa04de7f}{%
+           family={Togelius},
+           familyi={T\bibinitperiod},
+           given={Julian},
+           giveni={J\bibinitperiod}}}%
+        {{hash=7e069ce1792f64b3023388c1cd2e2100}{%
+           family={Alistar},
+           familyi={A\bibinitperiod},
+           given={Elvis},
+           giveni={E\bibinitperiod}}}%
+        {{hash=2d0000e0e82273fad36d7ecf46179922}{%
+           family={Leeuwen},
+           familyi={L\bibinitperiod},
+           given={Robert},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{9c381dfee1d034e6446081a85d9046e6}
+      \strng{fullhash}{cf871f3276d866b5ad1350b84d9269a4}
+      \strng{bibnamehash}{cf871f3276d866b5ad1350b84d9269a4}
+      \strng{authorbibnamehash}{cf871f3276d866b5ad1350b84d9269a4}
+      \strng{authornamehash}{9c381dfee1d034e6446081a85d9046e6}
+      \strng{authorfullhash}{cf871f3276d866b5ad1350b84d9269a4}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{07}
+      \field{series}{2011 IEEE Congress of Evolutionary Computation}
+      \field{title}{Computational Intelligence and Tower Defence Games}
+      \field{year}{2011}
+      \field{pages}{1084\bibrangedash 1091}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1109/CEC.2011.5949738
+      \endverb
+    \endentry
+    \entry{PvZWiki}{article}{}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Wikipedia}
+      \field{title}{Plants vs. Zombies (video game)}
+      \field{urlday}{24}
+      \field{urlmonth}{3}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Plants_vs._Zombies_(video_game)
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Plants_vs._Zombies_(video_game)
+      \endverb
+    \endentry
+    \entry{rpgBycer}{book}{}
+      \name{author}{1}{}{%
+        {{hash=73b102b13189174d616710f756240ed2}{%
+           family={Bycer},
+           familyi={B\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {CRC Press}%
+      }
+      \strng{namehash}{73b102b13189174d616710f756240ed2}
+      \strng{fullhash}{73b102b13189174d616710f756240ed2}
+      \strng{bibnamehash}{73b102b13189174d616710f756240ed2}
+      \strng{authorbibnamehash}{73b102b13189174d616710f756240ed2}
+      \strng{authornamehash}{73b102b13189174d616710f756240ed2}
+      \strng{authorfullhash}{73b102b13189174d616710f756240ed2}
+      \field{extraname}{1}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9781000966718}
+      \field{title}{Game Design Deep Dive: Role Playing Games}
+      \field{year}{2023}
+    \endentry
+    \entry{RogueWiki}{article}{}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Wikipedia}
+      \field{title}{Rogue (video game)}
+      \field{urlday}{24}
+      \field{urlmonth}{3}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Rogue_(video_game)
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Rogue_(video_game)
+      \endverb
+    \endentry
+    \entry{roguelikeBycer}{book}{}
+      \name{author}{1}{}{%
+        {{hash=73b102b13189174d616710f756240ed2}{%
+           family={Bycer},
+           familyi={B\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {CRC Press}%
+      }
+      \strng{namehash}{73b102b13189174d616710f756240ed2}
+      \strng{fullhash}{73b102b13189174d616710f756240ed2}
+      \strng{bibnamehash}{73b102b13189174d616710f756240ed2}
+      \strng{authorbibnamehash}{73b102b13189174d616710f756240ed2}
+      \strng{authornamehash}{73b102b13189174d616710f756240ed2}
+      \strng{authorfullhash}{73b102b13189174d616710f756240ed2}
+      \field{extraname}{2}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9781000362046}
+      \field{title}{Game Design Deep Dive: Roguelikes}
+      \field{year}{2021}
+    \endentry
+    \entry{StSWiki}{article}{}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Wikipedia}
+      \field{title}{Slay the Spire}
+      \field{urlday}{24}
+      \field{urlmonth}{3}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Slay_the_Spire
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Slay_the_Spire
+      \endverb
+    \endentry
+    \entry{buildDict}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=5dec900c2726c86f03a5e25ffdd3f081}{%
+           family={{Dictionary.com}},
+           familyi={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{5dec900c2726c86f03a5e25ffdd3f081}
+      \strng{fullhash}{5dec900c2726c86f03a5e25ffdd3f081}
+      \strng{bibnamehash}{5dec900c2726c86f03a5e25ffdd3f081}
+      \strng{authorbibnamehash}{5dec900c2726c86f03a5e25ffdd3f081}
+      \strng{authornamehash}{5dec900c2726c86f03a5e25ffdd3f081}
+      \strng{authorfullhash}{5dec900c2726c86f03a5e25ffdd3f081}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Build}
+      \field{urlday}{13}
+      \field{urlmonth}{4}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.dictionary.com/browse/build
+      \endverb
+      \verb{url}
+      \verb https://www.dictionary.com/browse/build
+      \endverb
+    \endentry
+    \entry{kingdomRush}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=33b887f8bdef0c15f6237d69566a6db3}{%
+           family={{Ironhide Game Studio}},
+           familyi={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{33b887f8bdef0c15f6237d69566a6db3}
+      \strng{fullhash}{33b887f8bdef0c15f6237d69566a6db3}
+      \strng{bibnamehash}{33b887f8bdef0c15f6237d69566a6db3}
+      \strng{authorbibnamehash}{33b887f8bdef0c15f6237d69566a6db3}
+      \strng{authornamehash}{33b887f8bdef0c15f6237d69566a6db3}
+      \strng{authorfullhash}{33b887f8bdef0c15f6237d69566a6db3}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Kingdom Rush}
+      \field{urlday}{16}
+      \field{urlmonth}{4}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.kingdomrush.com/kingdom-rush
+      \endverb
+      \verb{url}
+      \verb https://www.kingdomrush.com/kingdom-rush
+      \endverb
+    \endentry
+    \entry{DTDWiki}{article}{}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Wikipedia}
+      \field{title}{Desktop Tower Defense}
+      \field{urlday}{16}
+      \field{urlmonth}{4}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Desktop_Tower_Defense
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Desktop_Tower_Defense
+      \endverb
+    \endentry
+    \entry{BTD6}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=559c0cab98dab7824357ff1af6615eaf}{%
+           family={{Ninja Kiwi}},
+           familyi={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{559c0cab98dab7824357ff1af6615eaf}
+      \strng{fullhash}{559c0cab98dab7824357ff1af6615eaf}
+      \strng{bibnamehash}{559c0cab98dab7824357ff1af6615eaf}
+      \strng{authorbibnamehash}{559c0cab98dab7824357ff1af6615eaf}
+      \strng{authornamehash}{559c0cab98dab7824357ff1af6615eaf}
+      \strng{authorfullhash}{559c0cab98dab7824357ff1af6615eaf}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Bloons TD 6}
+      \field{urlday}{16}
+      \field{urlmonth}{4}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://ninjakiwi.com/Games/Mobile/Bloons-TD-6.html
+      \endverb
+      \verb{url}
+      \verb https://ninjakiwi.com/Games/Mobile/Bloons-TD-6.html
+      \endverb
+    \endentry
+    \entry{UnityDocs}{manual}{}
+      \name{author}{1}{}{%
+        {{hash=3f56ad8f8e05fcad24de3fcf878fb50b}{%
+           family={{Unity Technologies}},
+           familyi={U\bibinitperiod}}}%
+      }
+      \strng{namehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{fullhash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{bibnamehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{authorbibnamehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{authornamehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{authorfullhash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Unity Documentation}
+      \field{urlday}{7}
+      \field{urlmonth}{4}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://docs.unity.com
+      \endverb
+      \verb{url}
+      \verb https://docs.unity.com
+      \endverb
+    \endentry
+    \entry{johnston2018random}{book}{}
+      \name{author}{1}{}{%
+        {{hash=e92745ac08515aac577188dcdd2d523c}{%
+           family={Johnston},
+           familyi={J\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {De Gruyter, Incorporated}%
+      }
+      \strng{namehash}{e92745ac08515aac577188dcdd2d523c}
+      \strng{fullhash}{e92745ac08515aac577188dcdd2d523c}
+      \strng{bibnamehash}{e92745ac08515aac577188dcdd2d523c}
+      \strng{authorbibnamehash}{e92745ac08515aac577188dcdd2d523c}
+      \strng{authornamehash}{e92745ac08515aac577188dcdd2d523c}
+      \strng{authorfullhash}{e92745ac08515aac577188dcdd2d523c}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9781501506260}
+      \field{title}{Random Number Generators--Principles and Practices: A Guide for Engineers and Programmers}
+      \field{year}{2018}
+      \verb{urlraw}
+      \verb https://books.google.cz/books?id=yniVDwAAQBAJ
+      \endverb
+      \verb{url}
+      \verb https://books.google.cz/books?id=yniVDwAAQBAJ
+      \endverb
+    \endentry
+    \entry{UnityRandom}{manual}{}
+      \name{author}{1}{}{%
+        {{hash=3f56ad8f8e05fcad24de3fcf878fb50b}{%
+           family={{Unity Technologies}},
+           familyi={U\bibinitperiod}}}%
+      }
+      \strng{namehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{fullhash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{bibnamehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{authorbibnamehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{authornamehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{authorfullhash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \field{extraname}{2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Unity - Scripting API: Random}
+      \field{urlday}{7}
+      \field{urlmonth}{4}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://docs.unity3d.com/ScriptReference/Random.html
+      \endverb
+      \verb{url}
+      \verb https://docs.unity3d.com/ScriptReference/Random.html
+      \endverb
+    \endentry
+    \entry{SystemRandom}{manual}{}
+      \name{author}{1}{}{%
+        {{hash=140864078aeca1c7c35b4beb33c53c34}{%
+           family={{Microsoft}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Random Class (System) - Microsoft learn}
+      \field{urlday}{7}
+      \field{urlmonth}{4}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://learn.microsoft.com/en-us/dotnet/api/system.random
+      \endverb
+      \verb{url}
+      \verb https://learn.microsoft.com/en-us/dotnet/api/system.random
+      \endverb
+    \endentry
+    \entry{LCGTables}{article}{}
+      \name{author}{1}{}{%
+        {{hash=a1c93f9899ec4b90bbfd7591be21dba4}{%
+           family={l'Ecuyer},
+           familyi={l\bibinitperiod},
+           given={Pierre},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{a1c93f9899ec4b90bbfd7591be21dba4}
+      \strng{fullhash}{a1c93f9899ec4b90bbfd7591be21dba4}
+      \strng{bibnamehash}{a1c93f9899ec4b90bbfd7591be21dba4}
+      \strng{authorbibnamehash}{a1c93f9899ec4b90bbfd7591be21dba4}
+      \strng{authornamehash}{a1c93f9899ec4b90bbfd7591be21dba4}
+      \strng{authorfullhash}{a1c93f9899ec4b90bbfd7591be21dba4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Mathematics of Computation}
+      \field{month}{1}
+      \field{number}{225}
+      \field{title}{Tables of Linear Congruential Generators of Different Sizes and Good Lattice Structure}
+      \field{volume}{68}
+      \field{year}{1999}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

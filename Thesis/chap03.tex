@@ -50,7 +50,7 @@ Some of them, for example the ones used by the reward system, will persist throu
 So, what options do we have?
 
 Since we are using Unity, the first RNG that comes to mind is Unity class \texttt{Random}~\cite{UnityRandom}.
-It is designed to be easy to use, but it is very limited~--- for example, you have access to only one instance of the class and the same instance is used for other systems within the game engine.
+It is designed to be easy to use, but it is very limited~--- for example, we have access to only one instance of the class and the same instance is used for other systems within the game engine.
 This is a dealbreaker for us, because we want to create more instances, and we want to have complete control over them to ensure determinism.
 
 Another option that's on-hand is .NET \texttt{System.Random}~\cite{SystemRandom}.
