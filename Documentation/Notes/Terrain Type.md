@@ -7,7 +7,8 @@ use blocky models for collision and detailed(-ish) modles for [[Appearance]]
 
 ideas
 - [ ] rocky with canyons
-- [ ] flat, sandy with monoliths / spires
+- [ ] flat, sandy with monoliths / spires 
+    - we NEED a tile that has height 0 on one axis and 2 on another
 - [ ] pyramids
 - [ ] hilly, grassy with rivers
 - [ ] rocky with lava rivers

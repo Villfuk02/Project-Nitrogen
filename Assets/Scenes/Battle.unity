@@ -4122,8 +4122,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   overrideRunSettings: 0
   availableAttackers:
-  - {fileID: 11400000, guid: 22f92218b7c337547a1d8507674d0330, type: 2}
-  - {fileID: 11400000, guid: c01c38eed1b43144daccc153aecedef9, type: 2}
+  - {fileID: 11400000, guid: 4522003d97c1f7945a39066ff63e6c7f, type: 2}
+  - {fileID: 11400000, guid: 33286843814b5104f9e3c47f454c80b3, type: 2}
+  - {fileID: 11400000, guid: e488eb2be4419bb4689f3ff0efb6349d, type: 2}
+  - {fileID: 11400000, guid: cbda8fabeb0151e4b9ecd6b7b8370a8b, type: 2}
+  - {fileID: 11400000, guid: bd3c77440b034664197c2bbf55a16aac, type: 2}
+  - {fileID: 11400000, guid: 8df0332f68588e94ba7f7cda1c0c8060, type: 2}
+  - {fileID: 11400000, guid: 4bf67bdee33531741bb82b3fc252c246, type: 2}
+  - {fileID: 11400000, guid: 2473a38514bdce140824056455c842e6, type: 2}
+  - {fileID: 11400000, guid: 6918850e3231f804ebed589a9dd9b718, type: 2}
+  - {fileID: 11400000, guid: 49d6bf5bff53b14439dbb5f7bf896f43, type: 2}
+  - {fileID: 11400000, guid: 8e79bba428645e04ca99a30c5c776028, type: 2}
+  - {fileID: 11400000, guid: 085f9975adfda8042a7905b1a2fbec78, type: 2}
+  - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
+  - {fileID: 11400000, guid: 2bd72d87afda7f04baa5880867d83f90, type: 2}
+  - {fileID: 11400000, guid: cce42b626625438479a1c859190c2c3c, type: 2}
+  - {fileID: 11400000, guid: ee68b363347de484f943b7f415e3c1e3, type: 2}
+  - {fileID: 11400000, guid: 1111d25d47dc87549a99cec5c9b0d2b7, type: 2}
+  - {fileID: 11400000, guid: b76cc62ed61e1a34fb526b726e0751c4, type: 2}
+  - {fileID: 11400000, guid: 539f563853d069d4e86a08eb6082f046, type: 2}
+  - {fileID: 11400000, guid: f3107ba0393b9df4c9d2638f6091ad34, type: 2}
+  - {fileID: 11400000, guid: e1e6bd25a230ebe43a1bd459e95727ce, type: 2}
+  - {fileID: 11400000, guid: bf33175cf6b2d6e468f84a92b30cd45b, type: 2}
   maxWaveLengthTicks: 250
   parallelWaveChance: 0.25
   pathDropChance: 0.4
@@ -4494,10 +4514,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   overrideRun: 0
   terrainType: Test
-  seed: 10128203286823490472
-  pathLengths: 09000000100000001800000021000000
+  seed: 13204210896786092457
+  pathLengths: 18000000
   maxExtraPaths: 4
-  maxHubDistFromCenter: 7
+  maxHubDistFromCenter: 6.5
 --- !u!4 &815966620
 Transform:
   m_ObjectHideFlags: 0
@@ -6748,7 +6768,7 @@ MonoBehaviour:
   linePrefab: {fileID: 315257208492628400, guid: 6918aa5953bda704e8d611a0d7a7f1a6, type: 3}
   mat: {fileID: 2100000, guid: fc1ea633985178c4781bf2efc98cba6d, type: 2}
   pathLabelPrefab: {fileID: 1017458255275309035, guid: e48fb10fd6c71fc4ba83ad5968eaf4a5, type: 3}
-  heightAboveGround: 0.15
+  heightAboveGround: 0.13
   scrollSpeed: -1
   lineWidth: 0.4
   labelPos: {x: 0.5, y: 0.5}

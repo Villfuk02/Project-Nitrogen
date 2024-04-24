@@ -16,6 +16,8 @@ namespace BattleSimulation.Attackers
         public static readonly ModifiableCommand<(Attacker target, Damage damage)> HIT = new();
         public static readonly ModifiableCommand<(Attacker target, Damage damage)> DAMAGE = new();
         public static readonly ModifiableCommand<(Attacker target, Damage cause)> DIE = new();
+        public delegate void SpawnAttackersRelative(Attacker attacker, AttackerStats stats, int count, float offsetRadius);
+        public static SpawnAttackersRelative spawnAttackersRelative;
         static Attacker()
         {
             DAMAGE.RegisterHandler(DamageHandler);
@@ -34,22 +36,19 @@ namespace BattleSimulation.Attackers
         [Header("Runtime variables")]
         public AttackerStats originalStats;
         public AttackerStats stats;
-        [SerializeField] float pathSegmentProgress;
-        [SerializeField] Vector2Int pathSegmentTarget;
-        [SerializeField] Vector2Int lastTarget;
-        [SerializeField] uint pathSplitIndex;
-        [SerializeField] int segmentsToHub;
+        public float pathSegmentProgress;
+        public Vector2Int pathSegmentTarget;
+        public Vector2Int lastTarget;
+        public uint pathSplitIndex;
+        public Vector2Int firstNode;
+        public Vector2Int startPosition;
+        public uint startPathSplitIndex;
+        public int segmentsToHub;
         public int health;
         bool removed_;
         public bool IsDead { get; private set; }
 
-        void Awake()
-        {
-            stats = originalStats.Clone();
-            health = stats.maxHealth;
-        }
-
-        void FixedUpdate()
+        public virtual void FixedUpdate()
         {
             if (IsDead)
                 return;
@@ -105,13 +104,26 @@ namespace BattleSimulation.Attackers
             transform.position = worldPos;
         }
 
-        public void InitPath(Vector2Int start, Vector2Int firstNode, uint index)
+        public void Init(AttackerStats stats, Vector2Int start, Vector2Int firstNode, uint pathSplitIndex)
         {
-            lastTarget = start;
-            pathSegmentTarget = firstNode;
+            originalStats = stats;
+            this.stats = originalStats.Clone();
+            health = stats.maxHealth;
+
+            lastTarget = startPosition = start;
+            pathSegmentTarget = this.firstNode = firstNode;
             pathSegmentProgress = 0;
-            pathSplitIndex = index;
+            this.pathSplitIndex = startPathSplitIndex = pathSplitIndex;
             segmentsToHub = World.WorldData.World.data.tiles[firstNode].dist + 1;
+            UpdateWorldPosition();
+        }
+        public void AddPathProgress(float progress, uint newPathSplitIndex)
+        {
+            pathSegmentProgress += progress;
+            while (pathSegmentProgress >= 1)
+                if (!TryAdvanceSegment())
+                    return;
+            pathSplitIndex = newPathSplitIndex;
             UpdateWorldPosition();
         }
 

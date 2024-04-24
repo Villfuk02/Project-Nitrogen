@@ -46,6 +46,8 @@ namespace BattleSimulation.Control
             paths_ = World.WorldData.World.data.firstPathTiles.Length;
 
             startWave.RegisterHandler(StartNextWave);
+
+            Attacker.spawnAttackersRelative = SpawnRelative;
         }
 
         void OnDestroy()
@@ -143,9 +145,33 @@ namespace BattleSimulation.Control
             Attacker a = Instantiate(attacker.prefab, transform).GetComponent<Attacker>();
             Vector2Int startingPoint = World.WorldData.World.data.pathStarts[path];
             Vector2Int firstTile = World.WorldData.World.data.firstPathTiles[path];
-            a.InitPath(startingPoint, firstTile, ++currentIndex);
+            a.Init(attacker.Clone(), startingPoint, firstTile, ++currentIndex);
             a.onRemoved.AddListener(AttackerRemoved);
             a.onReachedHub.AddListener(BattleController.AttackerReachedHub);
+        }
+
+        public void SpawnRelative(Attacker attacker, AttackerStats stats, float progressOffset)
+        {
+            attackersLeft++;
+            Attacker a = Instantiate(stats.prefab, transform).GetComponent<Attacker>();
+            a.Init(stats.Clone(), attacker.startPosition, attacker.firstNode, attacker.startPathSplitIndex);
+            a.onRemoved.AddListener(AttackerRemoved);
+            a.onReachedHub.AddListener(BattleController.AttackerReachedHub);
+            float progress = World.WorldData.World.data.tiles[attacker.firstNode].dist + 1 - attacker.GetDistanceToHub();
+            a.AddPathProgress(progress + progressOffset, ++currentIndex);
+        }
+
+        public void SpawnRelative(Attacker attacker, AttackerStats stats, int count, float offsetRadius)
+        {
+            if (count == 1)
+            {
+                SpawnRelative(attacker, stats, 0);
+                return;
+            }
+            for (int i = 0; i < count; i++)
+            {
+                SpawnRelative(attacker, stats, Mathf.Lerp(-offsetRadius, offsetRadius, i / (float)(count - 1)));
+            }
         }
 
         bool StartNextWave()

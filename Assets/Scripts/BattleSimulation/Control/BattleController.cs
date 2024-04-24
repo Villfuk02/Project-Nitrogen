@@ -178,7 +178,7 @@ namespace BattleSimulation.Control
             runEvents.damageHull.Invoke(attacker.stats.size switch
             {
                 Game.AttackerStats.AttackerStats.Size.Small => 1,
-                Game.AttackerStats.AttackerStats.Size.Large => 2,
+                Game.AttackerStats.AttackerStats.Size.Large => 3,
                 Game.AttackerStats.AttackerStats.Size.Boss => 1000,
                 _ => throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null)
             });

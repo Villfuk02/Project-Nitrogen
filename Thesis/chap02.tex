@@ -217,36 +217,50 @@ We will also want to balance the base game, so that most players that try are ab
 
 \section{Procedural Generation}
 
-- roguelike -> procedural generation
+Randomized procedural generation is of the defining features of the roguelike genre.
+We want to use randomized procedural generation to make each run of the game unique.
+Since we design the procedural generation algorithms ourselves, we have great control over the results.
+However, procedurally generated parts of the game can be really hard to balance.
+We need to make sure the randomized parts of the game feel fair to the player.
+It doesn't feel good if the player loses the game because they were just unlucky and couldn't have done anything to prevent the loss.
+Another issue with randomized procedural generation is that things might start to feel very homogenous.
+For example, hand-crafted levels can have features that really stand out.
+We need to decide which parts of our game will be procedurally generated and to what degree.
 
-- to what degree?
+The overall structure of each run will be decided by what we call the \emph{map}.
+As stated before, it will be a graph, and the player will go from node to node along the edges.
+Each node will be a battle, shop or an event.
+We really want each run to be different enough, that the player doesn't develop a single strategy to use in every run.
+Since the player will decide where to go, it's not a problem when some paths through the map are more difficult than others.
 
-- map will be random
+Every battle will also be randomized to a large degree.
+The world a battle takes place on will be procedurally generated, making for a different environment every time.
+However, the combination of features that can appear in a given world will be decided by the world's \emph{terrain type}.
+There will be several hand-crafted terrain types to randomly select from, some appearing only early in the run and some only later.
+This is to create several cohesive styles of the worlds that look and play distinctly from each other.
+We feel this is better than if we just let the world generator mix all the features every time, because the results would be more homogenous.
+We will go into more detail about the world generation and these features in subsection~\ref{sec:design-world}.
 
-- we want to procedurally generate levels
+In \emph{Slay the Spire}, each encounter is chosen from a pool of hand-picked enemy combinations.
+Each of these pools contains encounters of similar difficulty.
+If the authors of \emph{Slay the Spire} decide one of the encounters is too difficult for its pool, they can tweak the encounter to make it less difficult, or move it to a different encounter pool.
 
-- terrain types
+In our game, however, the attacker waves in each level will also be procedurally generated.
+We want this, because each level in our game will consist of many waves, each with many attackers.
+We could design many sets of waves, but we feel that would make the levels too predictable, once a player learns these sets.
+So, the waves shouldn't be tied to the previous waves in a level.
+Each wave in a level will be harder and harder, so this would mean we would have to populate tens of pools with hand-crafted waves, which feels very inefficient.
 
-- balance levels - cannot feel unfair
-
-- in sts, encounters are handcrafted, but picked randomly
-
-- still has variety
-
-- easy to balance
-
-- generated waves
-
-- attacker types
-
-- hard to balance - must be described by a formula
+We could also procedurally generate the blueprints and attacker types.
+However, here we want to have greater control, because that will allow us to create designs that have powerful and unique abilities.
+Procedurally generating these would be very difficult, and it would often lead to abilities that are either uninteresting, or way too powerful.
 
 \section{Battle}
 
 As stated in section~\ref{sec:original-vision}, in our game, the player will fight in battles throughout each run, and these battles will have tower defense gameplay.
-In this section, we will describe the battles in more detail and explain our decisions.
+In this section, we will describe the battles in more detail and explain our intentions.
 
-\subsection{Attacker Waves}
+\subsection{Attacker Waves}\label{sec:design-attacker-waves}
 
 The attackers in various tower defense games often come in waves.
 However, in \emph{Plants vs.\ Zombies}, the zombies also come in continuously throughout a level in addition to the large waves, to keep the pressure up.
@@ -337,153 +351,302 @@ The waves in a single battle will get progressively harder, forcing the player w
 However, the wave difficulty should increase faster than the player's defense is expected to improve.
 This increase will need to be carefully balanced to allow for some strategies where the player invests more into \emph{fuel} production to end a battle quickly, but also strategies where the player invests heavily into defense to keep up with the later waves.
 
+\subsection{World}\label{sec:design-world}
+
+In some tower defense games, for example in \emph{Desktop Tower Defense}, the towers can only be placed in positions on a grid.
+In other games, for example \emph{Bloons TD 6}, the towers can be positioned freely, as long as they don't collide with each other, the attacker paths, or other obstacles.
+While the second option might allow for more interesting tower placement, we will go with grid placement, and the grid will be pretty coarse~--- only $15 \times 15$ tiles.
+In fact, the attacker paths will also be restricted to the grid.
+They will be formed by segments, each going from the center of one tile to the center of a neighboring tile.
+This is because we want the experience a player gains in one level to be transferrable to another level.
+For example, they might learn that \enquote{tower A} placed right next to a straight path can handle a wave of five \enquote{attackers B} on its own.
+They will then know this is true in any level whenever there is a sufficiently long straight path.
+Reducing the number of path shape and tower position combinations will make the player come across a combination they already know more often, letting them predict better if their defense can handle a wave or not.
+This is a really important skill to learn, because the player will have to decide before every wave, if they need to invest into defense or if they can invest into their economy.
+
+In some tower defense games, for example in \emph{Kingdom Rush}, there are only few places where the player can place a tower in each level.
+We feel this is too restrictive for our game, and it would take too much freedom away from the player.
+This option also really works only in hand-crafted levels, because it is important to select the places for the towers in a way that makes for fun and interesting levels.
+
+However, each level being just a big square of tiles with rectilinear paths on top wouldn't be very interesting.
+That's why some tiles will contain obstacles that block the player from building on these tiles.
+Some obstacles will be \emph{small} and some will be \emph{large}~--- they will also block the line-of-sight of towers that require a straight line between them and the attacker they want to shoot.
+
+Another great way to make the levels more interesting, that is also intuitive for the player, is having tiles at different heights.
+The heights will be in multiples of $0.5$ units, where one unit is the edge length of a tile.
+Towers that require line of sight won't be able to shoot over higher terrain or down from steep cliffs.
+We can also make some tower unable to shoot uphill or downhill for more variety.
+Some tiles will also be slanted, gradually going from one height to another.
+These tiles will allow the attacker paths to change their height, because it would be weird if the attackers had to jump up a cliff.
+Some buildings will be possible to build on slanted tiles and some won't, making slants also a kind of obstacle.
+
+As we already mentioned, each level will randomly select one of multiple \emph{terrain types}.
+A terrain type will dictate how a terrain should look~--- the colors used, which terrain feature will appear and how often, and which obstacles will appear.
+Each terrain type will have its distinct look, keeping the levels from being all the same.
+
+To summarize:
+\begin{itemize}
+    \item The world each level takes place on will be a grid of $15 \times 15$ square tiles.
+    \item There will be \emph{small} or \emph{large} obstacles on some tiles, large obstacles blocking certain towers' line of sight.
+    \item The tiles will be at different heights in multiples of $0.5$ units, and some tiles will be slanted, going between two heights.
+    \item Attacker paths will consist of segments going from the center of one tile to the center of a neighboring tile.
+    \item The player can build one building per tile, and only if the tile doesn't contain an obstacle or the attacker path.
+    \item Each world will be generated according to a randomly selected terrain type, which determines what the world will be like.
+\end{itemize}
 
 \subsection{Attacker Paths}
 
-A
-
-More variety can also be added by having multiple paths in a single level.
-We can even have different attackers on each path in some waves to further increase variety.
-The paths in our game will also be able to split into more paths and join together into one path.
-When a line of attackers comes to a split into multiple paths, they will alternate in which path they continue to, splitting between the paths evenly.
-This creates segments with lower attacker density, which makes certain towers less effective around this part of the path.
-On the other hand, this lets the player fit more towers near these two paths than they could fit around the path if it didn't split.
-
+In subsection~\ref{sec:design-attacker-waves} we decided that the attackers will travel on predefined paths generated with the world.
 If we designed each level of our game by hand, we could create paths that just feel like they would be fun to play around.
 Since the paths will also be procedurally generated, we need to describe what qualities should the paths have, so the generation can later be implemented to produce such paths.
-For reasons that will be explained in the next subsection, the paths and towers will be confined to a square grid of tiles.
-Let's start with a few basic rules:
-\begin{itemize}
-    \item A level can have one or more paths, and paths can split apart or join together.
-    \item Each path will be composed of segments that go from the center of one tile to the center of an orthogonally adjacent one.
-    \item The paths will start just outside the world and end at the tile with the \emph{Hub}.
-\end{itemize}
-In figure~\ref{fig:valid-path-example} we can see an example of a valid path drawn in blue on a backdrop of the square tiles the world is composed of.
-The \emph{Hub} is represented by a black dot.
+
+In the previous subsection we decided that the world will consist of a grid of tiles and the paths will be constrained to straight segments between the centers of the tiles.
+We can think of the paths segments as one-way passages between neighboring tiles.
+This means that a path cannot go twice through the same tile or cross itself, because a tile has the same path segments coming from it, no matter if it was visited for the first or second time.
+
+There can be multiple paths in a level, each with a different shape and in some waves a different set of attackers.
+This will add more variety and depth to tower placement.
+Any path will also be able to split into more paths, or join together with another path, creating new path geometry or sections with different attacker density.
+When a line of attackers comes to a split into multiple paths, they will alternate in which path they continue to, splitting between the paths evenly.
+
+The player will start each level with one building already built~--- the \emph{Hub}.
+It is the goal the attackers are trying to reach to destroy it.
+Hence, all attacker paths will converge to the tile the \emph{Hub} is on.
+The attackers will come from outside the world the battle takes place on.
+The worlds are bigger, but the playable area represents just a small safe neighborhood around the \emph{Hub}.
+It would be weird if the attackers just appeared on the edge tiles, so their paths will start on tiles just outside the playable world.
+
+In figure~\ref{fig:valid-path-example} we can see an example of a valid path network drawn in blue on a world of square tiles.
+The black point represents the \emph{Hub}.
 
 \begin{center}
     \captionsetup{type=figure}
     \begin{tikzpicture}
         \draw[step=1.0,black,thin] (0,0) grid (7,7);
-        \drawpath{-1,1}{right}{}{(3,1)--(3,2)--(1,2)--(1,5)--(3,5)--(3,4)--(5,4)}{0.5}
-        \filldraw[black] (5.5,4.5) circle (6pt);
+        \begin{scope}[blue,very thick,decoration={
+                        markings,
+                        mark=between positions 0.25cm and -0.15cm step 0.5cm with {\arrow{>}};
+                    }]
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (-1,1)--(1,1)--(1,5)--(3,5)--(3,4)--(5,4);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (1,2)--(3,2)--(3,1)--(5,1)--(5,4);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (3,-1)--(3,1);
+        \end{scope}
+        \filldraw[black] (5.5,4.5) circle (5pt);
     \end{tikzpicture}
-    \caption{An example of a valid path in the game world.}
+    \caption{An example of a valid path network in a $7 \times 7$ game world.}
     \label{fig:valid-path-example}
 \end{center}
 
-However, we need more rules, since right now, nothing forbids a path going back on itself.
-This is illustrated with path \textbf{A} in figure~\ref{fig:ambiguous-paths}, where we offset the endpoints of few segments to make it more readable.
-Paths segments have to start and end in the centers of the tiles, so in reality, it would look like path \textbf{B}, which is definitely unreadable.
-
-Furthermore, no path should cross itself or another path.
-We want this because the paths can split and join, and we would need a way to distinguish these splits and joins from crossings.
-This is done to make sure the paths are readable to the player.
-For example, the paths \textbf{C} and \textbf{D} in figure~\ref{fig:ambiguous-paths} could very much be crossing each other, but they could also join together and split in two on the same tile.
-Furthermore, path \textbf{E} is ambiguous, because it could cross itself, but it also looks almost as if it split and joined with itself on the same tile.
+The attackers from single wave batch will start out evenly spaced.
+If the path they are on splits into two, they will still be evenly spaced, but now the spacing is twice as large.
+This is illustrated in figure~\ref{fig:attackers-path-split}, where the attackers are represented by black dots on the path.
+We can also see, that after the paths join back into one, the attacker spacing is no longer even.
+We don't want this to happen for aesthetic reasons, but also because overlapping attackers could be hard to identify or distinguish by the player.
+This only happens when the branches of a path are of unequal length and the difference is not a multiple of the spacing between the attackers.
+We don't want to put more constraints on attacker spacing, so instead, we will constrain path branches to be of equal length.
+More precisely, each tile on a path has to be the same distance from the \emph{Hub}, no matter which path an attacker would take.
 
 \begin{center}
     \captionsetup{type=figure}
     \begin{tikzpicture}
-        \draw[step=1.0,black,thin] (0.6,0.6) grid (14.4,5.4);
-        \drawpath{1,5}{above}{A}{(1.2,2)--(0.8,3)--(1,0)}{0.51}
-        \drawpath{3,5}{above}{B}{(3,2)--(3,3)--(3,0)}{0.5}
-        \drawpath{5,5}{above}{C}{(5,3)--(8,3)--(8,0)}{0.5}
-        \drawpath{7,5}{above}{D}{(7,0)}{0.5}
-        \drawpath{12,5}{above}{E}{(12,1)--(10,1)--(10,3)--(14,3)}{0.5}
+        %\draw[step=1.0,black,thin] (-0.4,0.4) grid (8.4,3.4);
+        \begin{scope}[blue,very thick,decoration={
+                        markings,
+                        mark=between positions 0.25cm and -0.01cm step 0.5cm with {\arrow{>}};
+                    }]
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (-1,1)--(2,1)--(2,2)--(4,2)--(4,1)--(8,1);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (2,1)--(4,1);
+        \end{scope}
+        \filldraw (-0.3,1.5) circle (3pt);
+        \filldraw (0.9,1.5) circle (3pt);
+        \filldraw (2.1,1.5) circle (3pt);
+        \filldraw (3.3,1.5) circle (3pt);
+        \filldraw (4.5,1.5) circle (3pt);
+        \filldraw (5.7,1.5) circle (3pt);
+        \filldraw (6.9,1.5) circle (3pt);
+        \filldraw (8.1,1.5) circle (3pt);
+        \filldraw (0.3,1.5) circle (3pt);
+        \filldraw (1.5,1.5) circle (3pt);
+        \filldraw (2.5,1.7) circle (3pt);
+        \filldraw (2.9,2.5) circle (3pt);
+        \filldraw (4.1,2.5) circle (3pt);
+        \filldraw (4.5,1.7) circle (3pt);
+        \filldraw (5.5,1.5) circle (3pt);
+        \filldraw (6.7,1.5) circle (3pt);
+        \filldraw (7.9,1.5) circle (3pt);
     \end{tikzpicture}
-    \caption{Several paths that would be confusing or ambiguous if paths could cross.}
-    \label{fig:ambiguous-paths}
+    \caption{Attackers on a path that splits and joins.}
+    \label{fig:attackers-path-split}
 \end{center}
 
-Path \textbf{F} in figure~\ref{fig:distance-to-hub-paths} is however also problematic.
-It does not cross over itself, but if we were to center all the segment endpoints, it would look almost like path \textbf{E}, which would be equally confusing.
-We will redefine make no-crossing rule stronger and define it as the following:
+Most towers will have limited range, and they will be most effective near the attacker paths.
+We want the paths to be spread out throughout the game world in order to not have tiles that are just way too far from any paths to be useful.
+This is illustrated in figure~\ref{fig:path-spacing}, where we can see a path network with bad features on the left, and on the right, one with the same path lengths and starting positions, but nicer and more spread out.
+We have marked tiles whose center is 2 or more tiles from the nearest path with a small cross.
+In the right figure, we can also see a red point on one tile, marking a great spot for a tower.
+This spot allows even a tower with shorter range, illustrated by the red ring around it, to target attackers on a large portion of the path.
+On the left we have circled another U-turn in the path that is, however, undesirable.
+This is because it is usually a missed opportunity for a great spot for towers.
+We don't want many sharp turns like these, but they can occur from time to time for variety.
+Similarly, paths going right text to each other (marked in red) are bad.
+The player cannot place towers on paths, so these paths greatly limit the player's access to each other, making for an unpleasant experience.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{tikzpicture}
+        \draw[step=1.0,black,thin] (0,0) grid (6,6);
+        \draw[step=1.0,black,thin] (7,0) grid (13,6);
+        \begin{scope}[blue,very thick,decoration={
+                        markings,
+                        mark=between positions 0.25cm and -0.15cm step 0.5cm with {\arrow{>}};
+                    }]
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (2,6)--(2,5)--(1,5)--(1,4)--(4,4);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (5,6)--(5,4);
+            \draw[red,postaction={decorate},shift={(0.5,0.5)}] (4,4)--(4,1);
+            \draw[red,postaction={decorate},shift={(0.5,0.5)}] (5,4)--(5,1);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (5,1)--(3,1);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (9,6)--(9,4)--(7,4)--(7,2)--(9,2)--(9,1)--(10,1);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (12,6)--(12,3)--(11,3)--(11,1)--(10,1);
+        \end{scope}
+        \filldraw[black] (3.5,1.5) circle (5pt);
+        \filldraw[black] (10.5,1.5) circle (5pt);
+        \draw (0.5, 0.5) node[cross=2.5pt] {};
+        \draw (0.5, 1.5) node[cross=2.5pt] {};
+        \draw (0.5, 2.5) node[cross=2.5pt] {};
+        \draw (1.5, 0.5) node[cross=2.5pt] {};
+        \draw (1.5, 1.5) node[cross=2.5pt] {};
+        \draw (1.5, 2.5) node[cross=2.5pt] {};
+        \draw[red] (2,5) circle (0.8cm);
+        \filldraw[red] (8.5,3.5) circle (4pt);
+        \draw[red] (8.5,3.5) circle (1.6cm);
+    \end{tikzpicture}
+    \caption{A path network with undesirable properties and a path network with great properties.}
+    \label{fig:path-spacing}
+\end{center}
+
+In relation to this, we will also ban all path branches that join back to the original path after less than 4 path segments.
+They necessarily produce paths right next to each other, as illustrated on figure~\ref{fig:too-short-path-splits}, which don't express the properties that make path splits interesting, and just take up more space unnecessarily.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{tikzpicture}
+        \begin{scope}[blue,very thick,decoration={
+                        markings,
+                        mark=between positions 0.25cm and -0.01cm step 0.5cm with {\arrow{>}};
+                    }]
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (0,2)--(2,2)--(2,1)--(5,1)--(5,2)--(6,2)--(6,1)--(7,1)--(7,2)--(8,2);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (1,2)--(1,1)--(2,1);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (3,1)--(3,2)--(5,2);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (6,2)--(6,3)--(7,3)--(7,2);
+        \end{scope}
+        \draw[blue] (2,2) node{\textbf{2}};
+        \draw[blue] (4.5,2) node{\textbf{3}};
+        \draw[blue] (7,2.5) node{\textbf{3}};
+    \end{tikzpicture}
+    \caption{All the path splits which join back after less than 4 path segments.}
+    \label{fig:too-short-path-splits}
+\end{center}
+
+To summarize, these are the rules the paths should follow:
 \begin{itemize}
-    \item Each path segment makes a one-way connection from a tile to its neighbor.
-          The distance of each tile connected to the \emph{Hub} must be the same, no matter which path an attacker takes.
+    \item Paths are formed by one-way segments, each from one tile to its neighbor.
+    \item Paths start just outside the playable portion of the world, and there can be one or more path starts in each level.
+    \item Paths can split or join.
+    \item All paths must end on the tile with the \emph{Hub}, no other dead ends can exist.
+    \item Each tile on a path has to be the same distance from the \emph{Hub}, no matter which path an attacker would take.
+    \item Paths should be spread throughout the playable world, not bunched up.
+    \item Paths right next to each other and sharp U-turns (viz figure~\ref{fig:path-spacing}) should be rare.
+    \item No path branches can join back to the original path after less than 4 path segments.
 \end{itemize}
-This makes path \textbf{F} also illegal, since it goes through a tile twice, and the second time it visits it, it is 8 segments closer to the \emph{Hub} than before.
-This also has implications for paths that split or join, for example path \textbf{G} is invalid, as demonstrated by the distances shown in red, while the path network \textbf{H, I} is valid.
-The new rule helps here, because we don't want the spacing between attackers to change only because some took a longer path before merging with the attackers that took a shorter path.
 
-\begin{center}
-    \captionsetup{type=figure}
-    \begin{tikzpicture}
-        \draw[step=1.0,black,thin] (1.6,0.6) grid (14.4,5.4);
-        \drawpath{12,5}{above}{F}{(11.9,3.1)--(10,3)--(10,1)--(12,1)--(12.1,2.9)--(14,3)}{0.485}
-        \drawpath{8,5}{above}{G}{(8,4) node[red]{$5 \neq 3$} --(8,3) --(8,2) node[red,right]{1} --(8,1)}{0.5}
-        \drawpath{8,3}{above,red}{$4 \neq 2$}{(7,3) node[left,red]{3}-- (7,2) node[left,red]{2}-- (8,2)}{0.5}
-        \filldraw[black] (8.5,1.5) circle (6pt);
-        \drawpath{5,5}{above}{H}{(5,4) node[right,red]{5} -- (5,3) node[right,red]{4} -- (5,2) node[right,red]{3} -- (5,1) node[below right,red]{2} -- (4,1) node[below,red]{1} --(3,1)}{0.5}
-        \drawpath{2,5}{above}{I}{(2,4) node[left,red]{4} -- (2,3) node[left,red]{3} -- (3,3) -- (3,2) node[left,red]{1} --(3,1)}{0.5}
-        \drawpath{5,3}{}{}{(4,3) node[above,red]{3} -- (3,3) node[above,red]{2}}{0.5}
-        \filldraw[black] (3.5,1.5) circle (6pt);
-    \end{tikzpicture}
-    \caption{Several paths illustrating the rule that each tile can only have one distance to the \emph{Hub}.}
-    \label{fig:distance-to-hub-paths}
-\end{center}
+\section{Attacker Types}
 
+We have mentioned that there will be many attacker types in out game.
+Each will be designed on its own, but they will be randomly combined to make attacker waves.
+An attacker type defines the following properties of an attacker:
+\begin{itemize}
+    \item \textbf{Appearance}. Every attacker will be represented in a battle by its 3D model, corresponding animations and other visual effects. Every attacker type will also have an associated icon to display in the user interface.
+    \item \textbf{Hit Points} or \textbf{HP} determine how much damage can an attacker take from the towers before it dies.
+    \item \textbf{Movement speed} in tiles per second.
+    \item \textbf{Size}~--- either \emph{small}, \emph{large} or \emph{boss}~--- determines how much \emph{hull} (see section~\ref{sec:design-hull}) the player loses when this attacker reaches the \emph{Hub}. Also defines the height off the ground of the spot defensive towers target. More details below.
+    \item \textbf{Abilities}. These can be \emph{passive} (for example \enquote{Immune to fire.}), \emph{repeating} (\enquote{Heals 5\,HP every two seconds.}), or \emph{reactive} (\enquote{Spawns \emph{attacker A} when killed.}).
+\end{itemize}
 
-- paths near each other are undesirable
+The height of a target a tower shoots at is important~--- lower targets can easily hide behind a terrain feature or an obstacle.
+We want some attackers to look bigger than others, and it would be weird if the towers shot at a lower portion of their model.
+Larger attackers will have their targeting point higher.
+To make things simple for the player, there are only two heights of the targeting point~--- \emph{small} at $0.15$ units above the ground and \emph{large} at $0.3$.
 
-- tight turns are undesirable
+Whenever an attacker reaches the \emph{Hub}, the player will lose some \emph{hull}.
+The \emph{small} attackers will come in greater numbers than \emph{large} attackers.
+To make the stakes more equal, \emph{small} attackers cost the player only 1 hull, whereas the \emph{large} attackers cost 3 hull.
 
-- short splits are banned
-
-- fill the world as much as possible
-
-\subsection{World}
-
-- grid of tiles \checkmark
-
-- more granularity, easier to develop intuition, same for attacker paths
-
-- free placement X
-
-- preset places
-
-- 3D \checkmark
-- Simple and intuitive way to make the level itself more interesting
-Some towers won't be able to shoot uphill or downhill - more interesting decisions for the player
-
-- Terrain types (for now, just one)
-
-- Obstacles
+The player will encounter only few \emph{boss} attackers in every run.
+They will be the main attackers in special boss levels, which are spread throughout the run and cannot be avoided by the player.
+When a boss reaches the \emph{Hub}, the player immediately loses the game.
+Each boss will bend the rules of the game a bit as one of their abilities, but most of them will have the same target height as \emph{large} attackers.
 
 \subsection{Buildings}
 
-- how and when to build, one per tile
-- only between waves
+As stated, the player will be able to build buildings, but only between waves of attackers.
+They will be able to build one building per tile, if the tile has no obstacles and an attacker path is not going through it.
+Each building costs some amount of \emph{materials} to build.
+The player will be able to delete a building at any time, mainly to make way for other buildings.
 
-- special building have special abilities
+There are three building types defined by their primary function: \emph{towers}, \emph{economic} and \emph{special}.
+Towers kill or otherwise impede attackers, and economic buildings produce resources.
+Special buildings are the buildings that don't fit in either category.
+They usually have a unique ability, for example for increasing the effectiveness of other buildings.
+Economic buildings often produce resources at the end of every wave, just in time for the player to use them to build more buildings.
+However, some economic buildings produce resources at other times, often as a reaction to some other event, for example an attacker dying.
 
-- main types:
-
+One notable special building is the \emph{Hub}, since the player starts each level with one for free, and they cannot build more.
+The goal of the attackers is to reach the \emph{Hub}, and when they do, the player loses some \emph{hull} (viz section~\ref{sec:design-hull}).
+Additionally, the \emph{Hub} produces some amount of \emph{fuel}, \emph{materials} and \emph{energy} at the end of each wave.
+These resources are further described in their respective sections.
 
 \subsection{Towers}
 
-- attack attackers
+Towers are the buildings which kill or otherwise impede attackers.
+There are many properties that distinguish towers from each other.
+There is a lot of freedom to allow for many unique designs.
+Combining towers with different properties is supposed to be a fun and interesting part of the game.
 
-- range
+Towers usually shoot once per their \emph{shot interval}, but some towers can shoot multiple projectiles at once, others deal a certain amount of damage per second continuously.
+They can usually only target attackers in a circular range around them.
+However, some towers have an unlimited range, or their range is not circular.
+Most towers instantly aim at their target, some take time to rotate around and others cannot rotate at all.
+Some towers cannot aim upwards or downwards.
+Most towers require line of sight to their target, but some don't.
+Most towers fire projectiles in a straight line, but some don't fire projectiles, others fire projectiles that travel over obstacles along a ballistic arc.
+Some towers can even miss their target.
+With tower designs, the sky is the limit.
 
-- targeting
+Whenever a tower has more attackers in its range, it will decide which one to target based on the tower's targeting priority.
+The player will be able to select one of these priorities on most towers:
+\begin{itemize}
+    \item First~--- the attacker that's closest to the \emph{Hub}.
+    \item Last~--- the attacker that's farthest from the \emph{Hub}.
+    \item Closest~--- the attacker that's closest to this tower.
+    \item Farthest~--- the attacker that's farthest from this tower.
+    \item Strongest~--- the attacker with the greatest HP.
+    \item Weakest~--- the attacker with the least HP.
+\end{itemize}
+This will let the player have more control over their towers, allowing them to best use their unique properties.
 
-- projectile types
+The damage the towers deal come in many types.
+For example \emph{physical}, \emph{fire}, \emph{explosive}, \emph{electric}.
+Some towers will deal damage of multiple types at once.
+This distinction lets us make some towers explicitly weak against some attackers~--- those that are resistant to the given damage type.
+Or it lets us restrict some synergies, for example by making a building that makes attackers take more damage from \emph{electricity} only.
 
-- damage types
+It is worth mentioning, that in most tower defense games, the player can upgrade any tower during a battle by investing more resources into it.
+The upgrades often increase a tower's damage or fire rate, however some substantially change the tower's behavior.
+Some games take this to the extreme, for example in \emph{Bloons TD 6}, each tower has 15 different upgrades available, and each tower can be upgraded to two different upgrades at once.
+However, in our game, the player won't be able to upgrade their towers during a battle.
+Instead, they will have to have some towers that are useful at the start of a level, and others that are more powerful, but more expensive, to be used later.
 
-- upgrades :/
-
-\subsection{Economic buildings}
-
--provide resources
-
-- materials - what, why, consequences and constraints
-
-- fuel?
-
-\subsection{Abilities}
+\subsection{Abilities}\label{sec:design-abilities}
 
 - used mid-wave
 
@@ -491,8 +654,16 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 
 - free placement, global placement, tile placement, use on a building
 
-- energy - what, why, consequences and constraints
 
+\subsection{Materials and energy}\label{sec:design-materials-and-energy}
+
+- what, why, consequences and constraints
+
+- separation of materials and energy
+
+\subsection{Fuel}\label{sec:design-fuel}
+
+- win the game
 
 \section{Battle Graphical User Interface}
 
@@ -502,13 +673,15 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 
 - and time controls
 
-\subsection{Hull}
+\subsection{Hull}\label{sec:design-hull}
 
 \subsection{Wave Preview}
 
 \subsection{Materials and Energy}
 
 \subsection{Blueprints}
+
+- separate blueprint menu and blueprint design
 
 - what they represent
 
@@ -518,9 +691,15 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 
 - rarities
 
+- how are they obtained
+
 - make them unique
 
+- break the rules (build on paths, ability to make buildings ...)
+
 - lenticular design
+
+- blueprint upgrades
 
 \subsection{Info Panel and Selection}
 
@@ -532,15 +711,9 @@ Some towers won't be able to shoot uphill or downhill - more interesting decisio
 
 - select attackers
 
+- dynamic values
+
 \subsection{Highlights and Range Visualization}
-
-\section{Attackers}
-
-- move, have health
-
-- sizes
-
-- special abilities - passive, repeating, reactive
 
 \section{Camera controls}
 

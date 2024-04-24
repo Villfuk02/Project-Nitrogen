@@ -32,7 +32,16 @@ namespace Game.InfoPanel
             { "#ENE", TextUtils.Icon.Energy.Sprite() },
             { "#HUL", TextUtils.Icon.Hull.Sprite() },
             { "#DMG", TextUtils.Icon.Damage.Sprite() },
-            { "#DUR", TextUtils.Icon.Duration.Sprite() }
+            { "#DUR", TextUtils.Icon.Duration.Sprite() },
+            { "#HP", TextUtils.Icon.Health.Sprite() },
+            { "#RAD", TextUtils.Icon.Radius.Sprite() },
+
+            // DAMAGE TYPE ICONS
+            { "#DMT-HPL", TextUtils.Icon.HpLoss.Sprite() },
+            { "#DMT-PHY", TextUtils.Icon.Physical.Sprite() },
+            { "#DMT-FIR", TextUtils.Icon.Fire.Sprite() },
+            { "#DMT-EXP", TextUtils.Icon.Explosive.Sprite() },
+            { "#DMT-ELE", TextUtils.Icon.Energy.Sprite() },
         };
 
         static readonly Dictionary<string, BlueprintDescriptionFormatter.HandleTag> BlueprintTags = new()
@@ -53,11 +62,11 @@ namespace Game.InfoPanel
 
         static readonly Dictionary<string, AttackerDescriptionFormatter.HandleTag> AttackerTags = new()
         {
-            {"SIZ", s => AttackerStats.AttackerStats.HumanReadableSize(s.stats.size, true)},
-            {"SPD", s => FormatFloatStat(TextUtils.Icon.Speed, s.stats.speed, s.original.speed, true, Improvement.More)},
-            {"HP", s => FormatIntStat(TextUtils.Icon.Health, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared)},
-            {"MHP", s => FormatIntStat(TextUtils.Icon.Health, s.stats.maxHealth, s.original.maxHealth, true, Improvement.More)},
-            {"HP/M", s => $"{FormatIntStat(TextUtils.Icon.Health, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared)}/{FormatIntStat(null,s.stats.maxHealth, s.original.maxHealth, true, Improvement.More)}"}
+            { "SIZ", s => AttackerStats.AttackerStats.HumanReadableSize(s.stats.size, true)},
+            { "SPD", s => FormatFloatStat(TextUtils.Icon.Speed, s.stats.speed, s.original.speed, true, Improvement.More)},
+            { "HP", s => FormatIntStat(TextUtils.Icon.Health, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared)},
+            { "MHP", s => FormatIntStat(TextUtils.Icon.Health, s.stats.maxHealth, s.original.maxHealth, true, Improvement.More)},
+            { "HP/M", s => $"{FormatIntStat(TextUtils.Icon.Health, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared)}/{FormatIntStat(null,s.stats.maxHealth, s.original.maxHealth, true, Improvement.More)}"},
         };
 
         static readonly Dictionary<string, TileDescriptionFormatter.HandleTag> TileTags = new();

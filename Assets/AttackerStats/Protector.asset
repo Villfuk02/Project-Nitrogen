@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30d4d1898ecf507489487964fd9b2c39, type: 3}
+  m_Name: Protector
+  m_EditorClassIdentifier: 
+  name: Protector
+  prefab: {fileID: 5845349189104484810, guid: 7841740131f216c448cf8038979a3103, type: 3}
+  icon: {fileID: 21300000, guid: cf1f7f23642a7804e9417f316419cfec, type: 3}
+  size: 1
+  minSpacing: 2
+  baseValue: 150
+  weight: 2
+  speed: 1.6
+  maxHealth: 50
+  descriptions:
+  - When killed, leaves behind a protective bubble [#RAD]1.3 tiles in radius that
+    blocks all projectiles from outside for [#DUR]5s.

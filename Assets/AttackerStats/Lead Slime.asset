@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30d4d1898ecf507489487964fd9b2c39, type: 3}
+  m_Name: Lead Slime
+  m_EditorClassIdentifier: 
+  name: Lead Slime
+  prefab: {fileID: 4503194796023517286, guid: a60be612e8db2584480f4ff07142eb96, type: 3}
+  icon: {fileID: 21300000, guid: b11d4e73a548f204686f0412a14317fd, type: 3}
+  size: 0
+  minSpacing: 0
+  baseValue: 1100
+  weight: 2
+  speed: 1
+  maxHealth: 35
+  magic1: 0
+  descriptions:
+  - Immune to [#DMT-PHY]Physical damage.
+  - When killed, spawns two Black Slimes.

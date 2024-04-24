@@ -75,7 +75,7 @@ MonoBehaviour:
   wd: {fileID: 0}
   countText: {fileID: 783356279298777315}
   baseSpacing: {x: 25, y: -25}
-  padding: {x: 10, y: -25}
+  padding: {x: 10, y: -30}
   shift: -2
 --- !u!1 &6739266966143158032
 GameObject:

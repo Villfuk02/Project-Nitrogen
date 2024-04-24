@@ -28,8 +28,8 @@ namespace BattleSimulation.Targeting
             radiusTrigger.radius = range;
             radiusTrigger.height = 10 + range * 2;
 
-            float startHeight = canTargetDownwards ? -5 : -0.3f;
-            float endHeight = canTargetUpwards ? 5 : 0.4f;
+            float startHeight = canTargetDownwards ? -5 : -0.25f;
+            float endHeight = canTargetUpwards ? 5 : 0.25f;
             heightTrigger.size = new(2 * range, endHeight - startHeight, 2 * range);
             heightTrigger.center = (startHeight + endHeight) * 0.5f * Vector3.up;
         }

@@ -16,13 +16,12 @@ More information is available in the official documentation~\cite{UnityDocs}.
 As explained in the previous chapter, a lot of the game will be procedurally generated including the map of a run and each battle along the way.
 From the player's perspective, all this and the rewards they receive will be randomized and unpredictable.
 However, each run will have a single seed that deterministically decides all the \enquote{random decisions} the game makes.
-Two runs with the same seed will look identical and if the player makes the same decisions and choices, the outcomes will be the same.
-This allows the players to share seeds of the runs they found interesting and compare their skill without the influence of luck.
+Two runs with the same seed should look identical and if the player makes the same decisions and choices, the outcomes should be the same.
+This allows the players to share seeds of the runs they found interesting and compare their skill in the same situations.
 Furthermore, this is helpful for debugging, because it lets us easily reproduce any issue with the generation just by running it with the same seed.
 
 We want to allow the player to save the game between battles.
-Here, determinism is also useful, because it allows us to save just the seed of something that was generated, instead of saving it whole.
-This leads to simpler and smaller save files, but we might still want to save some of these components whole when the procedural generation takes significantly longer than just reading the serialized data.
+Here, determinism is also useful, because it allows us to save just the seed of something that was generated, instead of saving it whole, which leads to simpler and smaller save files.
 
 \subsection{Random Number Generators}
 

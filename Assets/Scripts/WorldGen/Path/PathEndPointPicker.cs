@@ -40,7 +40,7 @@ namespace WorldGen.Path
 
             int worldPerimeter = (WorldUtils.WORLD_SIZE.x + WorldUtils.WORLD_SIZE.y) * 2;
 
-            GenerateCandidates(pathLengths.Length == 1 ? Mathf.Min(pathLengths[0] - 2, worldPerimeter / 6f) : 2);
+            GenerateCandidates(pathLengths.Length == 1 ? Mathf.Min(pathLengths[0] - 2, worldPerimeter / 8f) : 2);
 
             int pathCount = pathLengths.Length;
             float minDist = worldPerimeter * startSpacingMultiplier / pathCount;

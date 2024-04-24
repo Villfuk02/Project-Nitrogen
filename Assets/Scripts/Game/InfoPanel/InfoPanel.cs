@@ -186,7 +186,7 @@ namespace Game.InfoPanel
                 building = null,
                 descriptionProvider = new AttackerDescriptionProvider(attacker),
                 sprite = attacker.stats.icon,
-                title = attacker.name
+                title = attacker.stats.name
             };
             DisplayData(d, highPriority, fallback);
         }

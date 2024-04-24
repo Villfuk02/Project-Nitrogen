@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30d4d1898ecf507489487964fd9b2c39, type: 3}
+  m_Name: Big Yellow Skull
+  m_EditorClassIdentifier: 
+  name: Big Yellow Skull
+  prefab: {fileID: 4658066461009446140, guid: da2b186caf8e3c94fbb6482cb1761ab7, type: 3}
+  icon: {fileID: 21300000, guid: cf84b6b4da50518499da12b6c0a44e56, type: 3}
+  size: 1
+  minSpacing: 2
+  baseValue: 162
+  weight: 2
+  speed: 1.2
+  maxHealth: 15
+  magic1: 0
+  descriptions:
+  - When killed, spawns 3 Yellow Skeletons.
