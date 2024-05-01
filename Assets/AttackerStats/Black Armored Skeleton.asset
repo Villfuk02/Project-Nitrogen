@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Black Armored Skeleton
   prefab: {fileID: 2348413302847870650, guid: 97307d672acfc274da4c4656e7d25391, type: 3}
-  icon: {fileID: 21300000, guid: cf84b6b4da50518499da12b6c0a44e56, type: 3}
+  icon: {fileID: 21300000, guid: bf1cf290130af4a42b539ed46b26a50d, type: 3}
   size: 0
   minSpacing: 0
   baseValue: 225
-  weight: 2
+  weight: 1
   speed: 0.8
   maxHealth: 180
   descriptions:

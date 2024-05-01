@@ -14,14 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Black Coffin
   prefab: {fileID: 6404022796283253360, guid: 5b08c77970c0ff8429dc4a17f1afb13f, type: 3}
-  icon: {fileID: 21300000, guid: 6805223995692554db4793a4fdafa818, type: 3}
+  icon: {fileID: 21300000, guid: c5512a06b580c04479a1c57e1caf9ab0, type: 3}
   size: 1
   minSpacing: 3
-  baseValue: 1800
-  weight: 2
-  speed: 0.3
+  baseValue: 2000
+  weight: 1
+  speed: 0.4
   maxHealth: 360
-  magic1: 0
   descriptions:
   - Spawns a Black Armored Skeleton every [#DUR]6s.
   - When killed, spawns 4 Black Skeletons.

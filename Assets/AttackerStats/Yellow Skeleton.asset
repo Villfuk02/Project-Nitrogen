@@ -14,12 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Yellow Skeleton
   prefab: {fileID: 4863692085861783252, guid: 3e1190ab72c931d47b8222a7603d93d1, type: 3}
-  icon: {fileID: 21300000, guid: cf84b6b4da50518499da12b6c0a44e56, type: 3}
+  icon: {fileID: 21300000, guid: e8721c249db664d4097ff7b8f1707351, type: 3}
   size: 0
   minSpacing: 0
   baseValue: 48
-  weight: 2
+  weight: 1
   speed: 1.6
   maxHealth: 30
-  magic1: 0
   descriptions: []

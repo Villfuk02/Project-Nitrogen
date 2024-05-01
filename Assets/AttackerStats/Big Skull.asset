@@ -14,13 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Big Skull
   prefab: {fileID: 5845349189104484810, guid: 9d0bc4b95575fa544883cb007cee3fe8, type: 3}
-  icon: {fileID: 21300000, guid: cf84b6b4da50518499da12b6c0a44e56, type: 3}
+  icon: {fileID: 21300000, guid: f54ce0e12cb94c641aba67d45f14703b, type: 3}
   size: 1
   minSpacing: 2
   baseValue: 54
-  weight: 2
+  weight: 1
   speed: 1.2
   maxHealth: 5
-  magic1: 0
   descriptions:
   - When killed, spawns 3 Skeletons.

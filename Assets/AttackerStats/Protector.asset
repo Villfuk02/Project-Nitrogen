@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Protector
   prefab: {fileID: 5845349189104484810, guid: 7841740131f216c448cf8038979a3103, type: 3}
-  icon: {fileID: 21300000, guid: cf1f7f23642a7804e9417f316419cfec, type: 3}
+  icon: {fileID: 21300000, guid: 79bd7792c9b5a5d4ab617be2715c565b, type: 3}
   size: 1
   minSpacing: 2
   baseValue: 150
-  weight: 2
+  weight: 1
   speed: 1.6
   maxHealth: 50
   descriptions:

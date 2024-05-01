@@ -14,12 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Skeleton
   prefab: {fileID: 5845349189104484810, guid: c86878b99d694db4082ec019471f8de3, type: 3}
-  icon: {fileID: 21300000, guid: cf84b6b4da50518499da12b6c0a44e56, type: 3}
+  icon: {fileID: 21300000, guid: 1e003412dd197e44dac8a93ec9511b57, type: 3}
   size: 0
   minSpacing: 0
-  baseValue: 8
-  weight: 2
+  baseValue: 16
+  weight: 1
   speed: 1.6
   maxHealth: 10
-  magic1: 0
   descriptions: []

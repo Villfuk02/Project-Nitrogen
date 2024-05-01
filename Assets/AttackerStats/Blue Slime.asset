@@ -14,13 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Blue Slime
   prefab: {fileID: 5845349189104484810, guid: 2e805e3855fcf494b8660cc666245c9b, type: 3}
-  icon: {fileID: 21300000, guid: b11d4e73a548f204686f0412a14317fd, type: 3}
+  icon: {fileID: 21300000, guid: 6c4e80a37b415e2449268b601ef0f7f9, type: 3}
   size: 0
   minSpacing: 0
   baseValue: 19
-  weight: 2
+  weight: 1
   speed: 1.4
   maxHealth: 10
-  magic1: 0
   descriptions:
   - When killed, spawns a Red Slime.

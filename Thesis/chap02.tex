@@ -17,7 +17,7 @@ This is an important goal that will inform many of our decisions throughout the 
 We have analyzed several games of similar genres to our game, that we find enjoyable, and we tried to identify what makes them fun.
 We identified five features, which we think make the games very intriguing and replayable, that we think would work for our game too.
 Thus, we intend to design the game, so it exhibits these features, making them our game-specific design goals.
-We will explain each in a separate subsection, and we will use other games as inspiration for how to reach them.
+We will explain each in a separate section, and we will use other games as inspiration for how to reach them.
 The goals are:
 \begin{enumerate}
     \item \nameref{sec:goal-depth-battle}
@@ -217,7 +217,7 @@ We will also want to balance the base game, so that most players that try are ab
 
 \section{Procedural Generation}
 
-Randomized procedural generation is of the defining features of the roguelike genre.
+Randomized procedural generation is one of the defining features of the roguelike genre.
 We want to use randomized procedural generation to make each run of the game unique.
 Since we design the procedural generation algorithms ourselves, we have great control over the results.
 However, procedurally generated parts of the game can be really hard to balance.
@@ -239,7 +239,7 @@ However, the combination of features that can appear in a given world will be de
 There will be several hand-crafted terrain types to randomly select from, some appearing only early in the run and some only later.
 This is to create several cohesive styles of the worlds that look and play distinctly from each other.
 We feel this is better than if we just let the world generator mix all the features every time, because the results would be more homogenous.
-We will go into more detail about the world generation and these features in subsection~\ref{sec:design-world}.
+We will go into more detail about the world generation and these features in section~\ref{sec:design-world}.
 
 In \emph{Slay the Spire}, each encounter is chosen from a pool of hand-picked enemy combinations.
 Each of these pools contains encounters of similar difficulty.
@@ -310,7 +310,7 @@ Since we want to have various procedurally generated levels in our game, we will
 There are other options used in other games.
 In \emph{Desktop Tower Defense}~\cite{DTDWiki}, for example, the attackers try to cross a rectangular playing field.
 It starts out empty, but as the player fills it with towers, the attackers have to adjust their path, because they cannot go through the towers.
-In figure~\ref{fig:dtd-pathfinding}, we can see the attackers funnel into a narrow passage between the defensive towers.
+In figure~\ref{fig:dtd-pathfinding}, we can see the purple attackers funnel into a narrow passage between the white towers.
 Since the player decides the path of the attackers, they have to learn what kind of path works well, but then they can build it all the time.
 This is not ideal for us, because we want the player to adapt to the environment, not the other way around.
 
@@ -396,11 +396,11 @@ To summarize:
 
 \subsection{Attacker Paths}
 
-In subsection~\ref{sec:design-attacker-waves} we decided that the attackers will travel on predefined paths generated with the world.
+In section~\ref{sec:design-attacker-waves} we decided that the attackers will travel on predefined paths generated with the world.
 If we designed each level of our game by hand, we could create paths that just feel like they would be fun to play around.
 Since the paths will also be procedurally generated, we need to describe what qualities should the paths have, so the generation can later be implemented to produce such paths.
 
-In the previous subsection we decided that the world will consist of a grid of tiles and the paths will be constrained to straight segments between the centers of the tiles.
+In the previous section~\ref{sec:design-world} we decided that the world will consist of a grid of tiles and the paths will be constrained to straight segments between the centers of the tiles.
 We can think of the paths segments as one-way passages between neighboring tiles.
 This means that a path cannot go twice through the same tile or cross itself, because a tile has the same path segments coming from it, no matter if it was visited for the first or second time.
 
@@ -449,7 +449,6 @@ More precisely, each tile on a path has to be the same distance from the \emph{H
 \begin{center}
     \captionsetup{type=figure}
     \begin{tikzpicture}
-        %\draw[step=1.0,black,thin] (-0.4,0.4) grid (8.4,3.4);
         \begin{scope}[blue,very thick,decoration={
                         markings,
                         mark=between positions 0.25cm and -0.01cm step 0.5cm with {\arrow{>}};
@@ -486,9 +485,9 @@ We have marked tiles whose center is 2 or more tiles from the nearest path with 
 In the right figure, we can also see a red point on one tile, marking a great spot for a tower.
 This spot allows even a tower with shorter range, illustrated by the red ring around it, to target attackers on a large portion of the path.
 On the left we have circled another U-turn in the path that is, however, undesirable.
-This is because it is usually a missed opportunity for a great spot for towers.
+This is because there is no empty tile between the paths, so the player can't place a tower there, which feels bad.
 We don't want many sharp turns like these, but they can occur from time to time for variety.
-Similarly, paths going right text to each other (marked in red) are bad.
+Similarly, paths going right next to each other (marked in red) are bad.
 The player cannot place towers on paths, so these paths greatly limit the player's access to each other, making for an unpleasant experience.
 
 \begin{center}
@@ -555,11 +554,11 @@ To summarize, these are the rules the paths should follow:
     \item All paths must end on the tile with the \emph{Hub}, no other dead ends can exist.
     \item Each tile on a path has to be the same distance from the \emph{Hub}, no matter which path an attacker would take.
     \item Paths should be spread throughout the playable world, not bunched up.
-    \item Paths right next to each other and sharp U-turns (viz figure~\ref{fig:path-spacing}) should be rare.
+    \item Paths right next to each other and sharp U-turns (see figure~\ref{fig:path-spacing}) should be rare.
     \item No path branches can join back to the original path after less than 4 path segments.
 \end{itemize}
 
-\section{Attacker Types}
+\subsection{Attacker Types}
 
 We have mentioned that there will be many attacker types in out game.
 Each will be designed on its own, but they will be randomly combined to make attacker waves.
@@ -588,20 +587,21 @@ Each boss will bend the rules of the game a bit as one of their abilities, but m
 
 \subsection{Buildings}
 
-As stated, the player will be able to build buildings, but only between waves of attackers.
+The player will be able to build buildings, but only between waves of attackers.
 They will be able to build one building per tile, if the tile has no obstacles and an attacker path is not going through it.
 Each building costs some amount of \emph{materials} to build.
 The player will be able to delete a building at any time, mainly to make way for other buildings.
 
 There are three building types defined by their primary function: \emph{towers}, \emph{economic} and \emph{special}.
 Towers kill or otherwise impede attackers, and economic buildings produce resources.
+The next section goes into more detail.
 Special buildings are the buildings that don't fit in either category.
 They usually have a unique ability, for example for increasing the effectiveness of other buildings.
 Economic buildings often produce resources at the end of every wave, just in time for the player to use them to build more buildings.
 However, some economic buildings produce resources at other times, often as a reaction to some other event, for example an attacker dying.
 
 One notable special building is the \emph{Hub}, since the player starts each level with one for free, and they cannot build more.
-The goal of the attackers is to reach the \emph{Hub}, and when they do, the player loses some \emph{hull} (viz section~\ref{sec:design-hull}).
+The goal of the attackers is to reach the \emph{Hub}, and when they do, the player loses some \emph{hull} (see section~\ref{sec:design-hull}).
 Additionally, the \emph{Hub} produces some amount of \emph{fuel}, \emph{materials} and \emph{energy} at the end of each wave.
 These resources are further described in their respective sections.
 
@@ -632,6 +632,7 @@ The player will be able to select one of these priorities on most towers:
     \item Strongest~--- the attacker with the greatest HP.
     \item Weakest~--- the attacker with the least HP.
 \end{itemize}
+Each tower will be set to one of these by default, but the player will be able to change the priority of any tower at any time, even during waves.
 This will let the player have more control over their towers, allowing them to best use their unique properties.
 
 The damage the towers deal come in many types.

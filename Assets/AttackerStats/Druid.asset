@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Druid
   prefab: {fileID: 5845349189104484810, guid: 257a0c5f53a888f4fa856d530159ceac, type: 3}
-  icon: {fileID: 21300000, guid: cf1f7f23642a7804e9417f316419cfec, type: 3}
+  icon: {fileID: 21300000, guid: 310ee57cb5d1da243bf68209a80a7acf, type: 3}
   size: 1
   minSpacing: 2
   baseValue: 200
-  weight: 2
+  weight: 1
   speed: 0.8
   maxHealth: 60
   descriptions:

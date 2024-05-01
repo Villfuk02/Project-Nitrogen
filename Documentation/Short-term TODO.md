@@ -1,21 +1,20 @@
 ## questions
-- smím jako ilustrační obrázky v game designu nebo analýze používat screenshoty z mé hry?
-- mám vysvětlovat co bude v demu v ch2?
-- jak moc detailně musím popisovat chování té hry
-- jak moc musím mluvit o věcech, které jsou zatím nerozhodnuté
-- sub-sections?
+- dictionary.com?
 
 ## till next metting
+- [ ] highlight future features
+- [ ] refactor wikipedia references
 - [ ] sec 2.3
 - [ ] organize rest of ch2
 - [ ] implement content
 - [ ] read everything to check for typos and weird paragraphs
 - [ ] comment new parts
+- [ ] sec 3.1
 - [ ] prepare for code review
-    - [ ] comment and name generation
+    - [ ] names
+    - [ ] comments
 
 ## implementation 
-- [ ] fix camera right click controls
 - [ ] content
     - [ ] abilities
         - [x] meteor
@@ -25,15 +24,7 @@
         - [x] temporary tower
         - [ ] laser strike (in a strainght line)
         - [ ] upgrade blueprint stats
-    - [ ] more attackers (see [[Attacker#ideas]])
-        - [x] skellies - white, yellow, black - shielded from physical damage, unshielded
-        - [x] skulls - spawn 3 skellies (spawn attackers using wave controller)
-        - [x] sarcophagus - spawns skellies perpetually
-        - [x] slimes - red, blue, green, yellow, pink, black, lead (hp in multiples of 5)
-        - [x] super fast small bois
-        - [x] heals in an area
-        - [x] after death, leaves a shield to protect others
-        - [ ] icons
+    - [x] more attackers (see [[Attacker#ideas]])
     - [ ] more towers (see [[Tower#tower ideas]])
         - [ ] basic tower - 10 mat, no targeting restrictions
     - [ ] more economic buildings
@@ -47,6 +38,8 @@
         - [ ] pushes back attackers
         - [ ] makes material producers generate extra energy
 - [ ] limit wave generator to pull extras max once per wave
+- [ ] also make early waves shorter
+- [ ] make wave fade shorter
 - [ ] a few more simple terrain types - change up minerals, obstacles, terrain color, difficulty
     - [ ] second terrain type (forest with rivers)
         - [ ] terrain type colors

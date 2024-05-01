@@ -14,13 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Fire Spirit
   prefab: {fileID: 4503194796023517286, guid: ca316ac52cbed894bb5d335a0e285e32, type: 3}
-  icon: {fileID: 21300000, guid: 9799058e456d0944997ba68b2f20e396, type: 3}
+  icon: {fileID: 21300000, guid: c58a4095d66a8dd46a57d931ccbd6a5b, type: 3}
   size: 0
   minSpacing: 0
   baseValue: 10
-  weight: 2
+  weight: 1
   speed: 3
   maxHealth: 3
-  magic1: 0
   descriptions:
   - Immune to [#DMT-FIR]Fire damage.

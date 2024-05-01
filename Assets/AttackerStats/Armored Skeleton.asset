@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Armored Skeleton
   prefab: {fileID: 362422702515819301, guid: 15a7a8f59df3a3746bf19aae6c757958, type: 3}
-  icon: {fileID: 21300000, guid: cf84b6b4da50518499da12b6c0a44e56, type: 3}
+  icon: {fileID: 21300000, guid: 401b81b543694214eb2f3a6aedc7d789, type: 3}
   size: 0
   minSpacing: 0
   baseValue: 25
-  weight: 2
+  weight: 1
   speed: 0.8
   maxHealth: 20
   descriptions:

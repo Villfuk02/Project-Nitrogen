@@ -14,14 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Black Slime
   prefab: {fileID: 4503194796023517286, guid: 8fc9693cda2cd7d41995eca828dd37a1, type: 3}
-  icon: {fileID: 21300000, guid: b11d4e73a548f204686f0412a14317fd, type: 3}
+  icon: {fileID: 21300000, guid: c513290159f9fa349bd0f36e32136044, type: 3}
   size: 0
   minSpacing: 0
   baseValue: 500
-  weight: 2
+  weight: 1
   speed: 1.8
   maxHealth: 30
-  magic1: 0
   descriptions:
   - Immune to [#DMT-EXP]Explosive damage.
   - When killed, spawns two Pink Slimes.
