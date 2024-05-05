@@ -17,10 +17,10 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 7f9f042e88bdedb47ac00ea85bd130fb, type: 3}
   size: 1
   minSpacing: 3
-  baseValue: 700
+  baseValue: 1400
   weight: 1
   speed: 0.4
-  maxHealth: 120
+  maxHealth: 240
   descriptions:
   - Spawns a Yellow Armored Skeleton every [#DUR]5s.
   - When killed, spawns 4 Yellow Skeletons.

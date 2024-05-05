@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 310ee57cb5d1da243bf68209a80a7acf, type: 3}
   size: 1
   minSpacing: 2
-  baseValue: 200
+  baseValue: 400
   weight: 1
   speed: 0.8
-  maxHealth: 60
+  maxHealth: 120
   descriptions:
   - Every [#DUR]4s heals each attacker in a [#RAD]1.6 tile radius by [#HP]8 HP.

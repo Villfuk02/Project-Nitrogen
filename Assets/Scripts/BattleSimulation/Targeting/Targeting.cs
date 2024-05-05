@@ -2,6 +2,7 @@ using BattleSimulation.Attackers;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using Utils;
 
 namespace BattleSimulation.Targeting
@@ -20,7 +21,9 @@ namespace BattleSimulation.Targeting
         protected TargetingPriority[] Priorities { get; private set; }
         protected int selectedPriority;
         public bool CanChangePriority => Priorities.Length > 1;
-        public string CurrentPriority => Priorities[selectedPriority].Name;
+        public string CurrentPriority => Priorities.Length > 0 ? Priorities[selectedPriority].Name : "";
+        [SerializeField] UnityEvent<Attacker> onTargetFound;
+        [SerializeField] UnityEvent<Attacker> onTargetLost;
         [Header("Runtime values")]
         public Attacker target;
         protected HashSet<Attacker> inRange = new();
@@ -52,12 +55,14 @@ namespace BattleSimulation.Targeting
             inRange.Add(t);
             if (target == null)
                 Retarget();
+            onTargetFound.Invoke(t);
         }
         public void TargetLost(Attacker t)
         {
             inRange.Remove(t);
             if (target == t)
                 DropCurrentTarget();
+            onTargetLost.Invoke(t);
         }
         public void DropCurrentTarget()
         {

@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace BattleVisuals.Towers
 {
-    public class TestTowerVisuals : MonoBehaviour
+    public class BasicProjectileTowerVisuals : MonoBehaviour
     {
         static readonly int ShootTrigger = Animator.StringToHash("Shoot");
         [Header("References")]
-        [SerializeField] TestTower t;
+        [SerializeField] BasicProjectileTower t;
         [SerializeField] Animator shootAnim;
         [SerializeField] Transform turretPivot;
         [Header("Runtime variables")]

@@ -202,10 +202,14 @@ namespace BattleSimulation.Selection
 
         public void DeselectInWorld()
         {
+            if (selected != null)
+            {
+                resetVisuals.Invoke();
+                infoPanel.Hide(true, true);
+            }
+
             selected = null;
             isSelectedBuilding_ = false;
-            resetVisuals.Invoke();
-            infoPanel.Hide(true, true);
         }
 
         public void HoverFromMenu(int index)
@@ -242,11 +246,14 @@ namespace BattleSimulation.Selection
         public void DeselectFromMenu()
         {
             if (placing != null)
+            {
                 Destroy(placing.gameObject);
+                infoPanel.Hide(true, true);
+                resetVisuals.Invoke();
+            }
+
             placing = null;
             blueprintMenu.Deselect();
-            resetVisuals.Invoke();
-            infoPanel.Hide(true, true);
         }
     }
 }

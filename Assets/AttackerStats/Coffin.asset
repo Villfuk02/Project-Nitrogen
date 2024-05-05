@@ -17,10 +17,10 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: bf64d9f708cc6a7449b3f5d5c4bd4961, type: 3}
   size: 1
   minSpacing: 3
-  baseValue: 250
+  baseValue: 500
   weight: 1
   speed: 0.4
-  maxHealth: 40
+  maxHealth: 80
   descriptions:
   - Spawns an Armored Skeleton every [#DUR]4s.
   - When killed, spawns 4 Skeletons.

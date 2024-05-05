@@ -15,6 +15,11 @@ namespace BattleSimulation.Projectiles
         public Vector3 lastDir;
         public bool hit;
 
+        public void Init(Vector3 position, IProjectileSource source, Attacker target)
+        {
+            Init(position, source);
+            this.target = target;
+        }
 
         void FixedUpdate()
         {
@@ -35,15 +40,7 @@ namespace BattleSimulation.Projectiles
                 transform.Translate(lastDir * (speed * Time.fixedDeltaTime));
             }
 
-            CheckTerrain();
-        }
-
-        void CheckTerrain()
-        {
-            var newTilePos = WorldUtils.WorldPosToTilePos(transform.localPosition);
-            bool underground = World.WorldData.World.data.tiles.GetHeightAt(newTilePos) >= newTilePos.z;
-            if (underground && !hit)
-                HitTerrain();
+            CheckTerrainHit(0.05f);
         }
 
         void MoveTowardsTarget()

@@ -34,5 +34,5 @@ MonoBehaviour:
   energyProduction: -1
   magic1: -1
   descriptions:
-  - Produces [PRO] every round.
+  - Produces [PRO] after every wave.
   - Must be built on tiles rich in [#MAT]minerals.

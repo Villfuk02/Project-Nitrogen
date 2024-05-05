@@ -22,7 +22,7 @@ MonoBehaviour:
   startingCooldown: 0
   cooldown: 0
   range: -1
-  damage: 10
+  damage: 20
   damageType: 16
   interval: 30
   radius: 2.5

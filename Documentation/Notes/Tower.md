@@ -22,5 +22,6 @@ powerful towers should have impact on terrain and camera
 - chaining lightning
 - get something for kills
 - slow attackers in range
+- multiple tiers selectable with R
 
 ### List

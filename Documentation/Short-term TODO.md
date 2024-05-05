@@ -2,14 +2,20 @@
 - dictionary.com?
 
 ## till next metting
+- [ ] heal effect number
 - [ ] highlight future features
 - [ ] refactor wikipedia references
+- [ ] @online
 - [ ] sec 2.3
 - [ ] organize rest of ch2
+- [ ] mention status effects
 - [ ] implement content
 - [ ] read everything to check for typos and weird paragraphs
 - [ ] comment new parts
 - [ ] sec 3.1
+- [ ] descriptions are too long
+- [ ] unify visuals class names
+- [ ] unify all 0.05f and 20
 - [ ] prepare for code review
     - [ ] names
     - [ ] comments
@@ -26,17 +32,35 @@
         - [ ] upgrade blueprint stats
     - [x] more attackers (see [[Attacker#ideas]])
     - [ ] more towers (see [[Tower#tower ideas]])
-        - [ ] basic tower - 10 mat, no targeting restrictions
+        - [x] basic tower ~10
+        - [x] mortar ~25
+        - [x] cheap tower ~0
+        - [ ] speeds up when shooting ~40
+        - [ ] gets better with each kill (piercing) ~60
+        - [ ] sledgehammer ~45
+        - [ ] closer attacker = faster fire rate ~15
+        - [ ] laser piercing in a straight line (fixed rotation) ~20
+        - [ ] farther attacker = more damage ~25
+        - [ ] slow-rotating shotgun ~20
+        - [ ] chaining lightning ~30
+        - [ ] get energy for kills ~40
+        - [ ] lights on fire everything in a radius (including projectiles) ~80
+        - [ ] slow attackers in range ~30
+        - [ ] charging swarm missiles ~60
+        - [ ] multiple tiers selectable with R ~10/40/100
+        - [ ] path defenses ~20
+        - [ ] icons
     - [ ] more economic buildings
         - [ ] energy maker
         - [ ] produces material per kill in radius
         - [ ] reactor - increasing production, but expensive
         - [ ] alternative fuel source
-        - [ ] materializer - energy that would go over limit bacomes materials
+        - [ ] materializer - energy that would go over limit becomes materials
     - [ ] support building
-        - [ ] speeds up towers
+        - [ ] more damage (absolute)
         - [ ] pushes back attackers
         - [ ] makes material producers generate extra energy
+        - [ ] more range
 - [ ] limit wave generator to pull extras max once per wave
 - [ ] also make early waves shorter
 - [ ] make wave fade shorter

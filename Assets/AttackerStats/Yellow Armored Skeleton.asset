@@ -17,10 +17,10 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: ad9e107db7fee624fbce2973dd863210, type: 3}
   size: 0
   minSpacing: 0
-  baseValue: 75
+  baseValue: 150
   weight: 1
   speed: 0.8
-  maxHealth: 60
+  maxHealth: 120
   descriptions:
   - Has shields that block 3 damage from each hit.
   - Once [#HP]HP drops below half of max HP, loses the shields and doubles its speed.

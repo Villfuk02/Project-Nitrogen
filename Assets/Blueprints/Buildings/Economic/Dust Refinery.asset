@@ -34,6 +34,6 @@ MonoBehaviour:
   energyProduction: -1
   magic1: 5
   descriptions:
-  - Produces [PRO] every round.
+  - Produces [PRO] after every wave.
   - Cannot be built adjacent to another [NAM].
   - Increases cost by [#MAT][M1-] when built.

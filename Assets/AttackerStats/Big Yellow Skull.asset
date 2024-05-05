@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 3812a097315aca9439d2ff11f0b0c522, type: 3}
   size: 1
   minSpacing: 2
-  baseValue: 162
+  baseValue: 324
   weight: 1
   speed: 1.2
-  maxHealth: 15
+  maxHealth: 30
   descriptions:
   - When killed, spawns 3 Yellow Skeletons.

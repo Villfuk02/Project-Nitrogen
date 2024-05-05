@@ -10,29 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed9e4bc5a30718f41968ff1efaf3e48d, type: 3}
-  m_Name: Hub
+  m_Name: Static Sparker
   m_EditorClassIdentifier: 
-  name: Hub
-  prefab: {fileID: 475032649215164951, guid: ad3ddd3fb1fee064288dfc89c3d24938, type: 3}
-  icon: {fileID: 21300000, guid: 64eec666e0c9b0648b459a16fc529d32, type: 3}
-  rarity: 4
-  type: 2
+  name: Static Sparker
+  prefab: {fileID: 475032649215164951, guid: a11acf37e5edc6c48a65ae65f6663b35, type: 3}
+  icon: {fileID: 21300000, guid: cf84b6b4da50518499da12b6c0a44e56, type: 3}
+  rarity: 2
+  type: 0
   energyCost: 0
   materialCost: 0
-  startingCooldown: -1
-  cooldown: -1
-  range: -1
-  damage: -1
-  damageType: 0
+  startingCooldown: 0
+  cooldown: 0
+  range: 1.1
+  damage: 2
+  damageType: 16
   interval: -1
   radius: -1
   delay: -1
   durationTicks: -1
   durationWaves: -1
-  fuelProduction: 5
-  materialProduction: 10
-  energyProduction: 10
+  fuelProduction: -1
+  materialProduction: -1
+  energyProduction: -1
   magic1: -1
   descriptions:
-  - Produces [PRO] after every wave.
-  - When an enemy reaches this building, you lose [#HUL]Hull. Protect at all costs!
+  - Creates a spark whenever an attacker enters its range.
