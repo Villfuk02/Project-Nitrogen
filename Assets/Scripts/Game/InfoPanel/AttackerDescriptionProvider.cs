@@ -35,11 +35,10 @@ namespace Game.InfoPanel
 
             StringBuilder sb = new();
             sb.AppendJoin('\n', stats);
-            sb.Append("[BRK]");
             foreach (string desc in stats_.descriptions)
             {
-                sb.Append(desc);
                 sb.Append("[BRK]");
+                sb.Append(desc);
             }
 
             return sb.ToString();

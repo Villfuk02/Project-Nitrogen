@@ -22,4 +22,4 @@ MonoBehaviour:
   speed: 0.8
   maxHealth: 120
   descriptions:
-  - Every [#DUR]4s heals each attacker in a [#RAD]1.6 tile radius by [#HP]8 HP.
+  - Every [#DUR]4s heals each attacker in a [#RAD]1.6 tile radius by [#HP]15 HP.

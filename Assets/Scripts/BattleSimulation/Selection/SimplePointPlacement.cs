@@ -36,7 +36,7 @@ namespace BattleSimulation.Selection
 
         public override void Place()
         {
-            ability.Placed();
+            ability.Place();
             base.Place();
         }
     }

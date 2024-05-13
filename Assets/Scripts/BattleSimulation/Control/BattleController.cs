@@ -119,12 +119,10 @@ namespace BattleSimulation.Control
         {
             if (param.amount < 0)
                 throw new ArgumentException("Amount cannot be negative");
-            int realAmount = Mathf.FloorToInt(param.amount);
+            int realAmount = Mathf.Min(Mathf.FloorToInt(param.amount), Mathf.Max(MaxEnergy - Energy, 0));
             param.amount = realAmount;
             Energy += realAmount;
-            if (Energy > MaxEnergy)
-                Energy = MaxEnergy;
-            return true;
+            return realAmount > 0;
         }
         bool AddFuel(ref (object source, float amount) param)
         {

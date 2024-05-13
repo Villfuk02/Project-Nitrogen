@@ -10,7 +10,7 @@ namespace BattleSimulation.Selection
         public override void Place()
         {
             selectedTile.Building = b;
-            b.Placed();
+            b.Place();
             base.Place();
         }
     }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Budget Sentry
   prefab: {fileID: 475032649215164951, guid: c11d366ac472d994d899a9fc922884e5, type: 3}
-  icon: {fileID: 21300000, guid: 4726febd0e22bfd4fab8d4e2154f7116, type: 3}
+  icon: {fileID: 21300000, guid: ce0906f85aca7a8439eef4c935d62eaa, type: 3}
   rarity: 0
   type: 0
   energyCost: 0
@@ -32,6 +32,11 @@ MonoBehaviour:
   fuelProduction: -1
   materialProduction: -1
   energyProduction: -1
-  magic1: -1
+  statsToDisplay:
+  - '[$RNG]'
+  - '[$DMG]'
+  - '[$INT]'
+  - '[$DPS]'
+  statsToDisplayWhenUninitialized: []
   descriptions:
   - Shoots projectiles at attackers in line of sight.

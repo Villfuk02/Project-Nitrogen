@@ -93,7 +93,7 @@ namespace Game.Run
 
         public void Hover(BlueprintDisplay self)
         {
-            infoPanel.ShowBlueprint(self.blueprint, self.blueprint, false, false);
+            infoPanel.ShowBlueprint(self.blueprint, self.blueprint, null, false, false);
         }
 
         public void Unhover()
@@ -113,12 +113,12 @@ namespace Game.Run
                     if (!ValidInventorySelection(self.blueprint))
                         return;
                     selectedFromInventory = self.blueprint;
-                    infoPanel.ShowBlueprint(self.blueprint, self.blueprint, false, true);
+                    infoPanel.ShowBlueprint(self.blueprint, self.blueprint, null, true, true);
                 }
                 else
                 {
                     selected = self.blueprint;
-                    infoPanel.ShowBlueprint(self.blueprint, self.blueprint, false, true);
+                    infoPanel.ShowBlueprint(self.blueprint, self.blueprint, null, true, true);
                     if (!blueprintLimited && !buildingLimited && !abilityLimited)
                         selectedFromInventory = null;
                     else if (selectedFromInventory != null && !ValidInventorySelection(selectedFromInventory))
@@ -131,7 +131,7 @@ namespace Game.Run
                     selectedFromInventory = null;
                 else
                     selected = null;
-                infoPanel.Hide(false, true);
+                infoPanel.Hide(true, true);
             }
             UpdateInterfaceState();
         }
@@ -151,16 +151,22 @@ namespace Game.Run
             {
                 foreach (var display in offeredDisplays)
                     display.highlight.color = Color.clear;
-                if (blueprintLimited || buildingLimited || abilityLimited)
+
+                bool haveToExchange = true;
+                string limitingFactorText = "";
+                if (buildingLimited && selected.type != Blueprint.Blueprint.Type.Ability)
+                    limitingFactorText = $"{maxBlueprintsOfOneKind} buildings";
+                else if (abilityLimited && selected.type == Blueprint.Blueprint.Type.Ability)
+                    limitingFactorText = $"{maxBlueprintsOfOneKind} abilities";
+                else if (blueprintLimited)
+                    limitingFactorText = $"{maxBlueprints} blueprints";
+                else
+                    haveToExchange = false;
+
+                if (haveToExchange)
                 {
-                    instructions.text = "Select a blueprint to exchange from your inventory";
+                    instructions.text = $"Select a blueprint to exchange from your inventory\n(You can have at most {limitingFactorText})";
                     confirmButton.interactable = false;
-                    if (buildingLimited)
-                        instructions.text += $"\n(You can have at most {maxBlueprintsOfOneKind} buildings)";
-                    else if (abilityLimited)
-                        instructions.text += $"\n(You can have at most {maxBlueprintsOfOneKind} abilities)";
-                    else
-                        instructions.text += $"\n(You can have at most {maxBlueprints} blueprints)";
                     foreach (var display in inventoryDisplays)
                         display.highlight.color = ValidInventorySelection(display.blueprint) ? activeColor : Color.clear;
                 }
@@ -197,9 +203,9 @@ namespace Game.Run
 
         bool ValidInventorySelection(Blueprint.Blueprint blueprint)
         {
-            if (buildingLimited && blueprint.type != Blueprint.Blueprint.Type.Ability)
+            if (buildingLimited && blueprint.type == Blueprint.Blueprint.Type.Ability)
                 return false;
-            if (abilityLimited && blueprint.type == Blueprint.Blueprint.Type.Ability)
+            if (abilityLimited && blueprint.type != Blueprint.Blueprint.Type.Ability)
                 return false;
             return true;
         }

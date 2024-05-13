@@ -22,4 +22,4 @@ MonoBehaviour:
   speed: 3
   maxHealth: 6
   descriptions:
-  - Immune to [#DMT-FIR]Fire damage.
+  - Takes 75% less [#DMT-ENE]Energy damage.

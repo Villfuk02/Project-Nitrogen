@@ -892,7 +892,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: START
+  m_text: Start
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 682caa0388737e7438835adcb5a6bd2b, type: 2}
   m_sharedMaterial: {fileID: -1229538662994313405, guid: 682caa0388737e7438835adcb5a6bd2b, type: 2}
@@ -919,13 +919,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
-  m_fontSizeBase: 60
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 32
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -1283,6 +1283,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   runPersistencePrefab: {fileID: 3952241801299892883, guid: d0179ac661daaad47a8fdea902bcbc51, type: 3}
   seedString: 
+  selectStartingBlueprints: 0
 --- !u!1 &1286257885
 GameObject:
   m_ObjectHideFlags: 0

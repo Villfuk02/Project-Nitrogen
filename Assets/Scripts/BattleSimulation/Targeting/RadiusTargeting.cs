@@ -10,7 +10,7 @@ namespace BattleSimulation.Targeting
         [Header("Settings")]
         public bool canTargetDownwards;
         public bool canTargetUpwards;
-        [Header("Settings - auto-assigned")]
+        [Header("Runtime variables")]
         public float currentRange;
 
         protected override void InitComponents()

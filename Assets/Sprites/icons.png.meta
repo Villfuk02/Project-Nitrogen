@@ -552,7 +552,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 512
-        y: 642
+        y: 640
         width: 128
         height: 128
       alignment: 0
@@ -568,6 +568,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: energy_dmg
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 640
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2820183f5b03694da2016ebc42f9de0
+      internalID: 1604017460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -579,7 +600,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      energy: -992439401
+      explosive: 1769282286
       health: 1768218070
       hull: 1898444093
       fuel: -497393668
@@ -596,11 +617,12 @@ TextureImporter:
       range: 63292639
       icons_8: 84070370
       material: 2124651440
+      energy_dmg: 1604017460
       radius: 1082865756
       shotinterval: 599189466
       dps: 1316403603
       generation: -342673344
-      explosive: 1769282286
+      energy: -992439401
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

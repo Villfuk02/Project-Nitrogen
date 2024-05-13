@@ -106,6 +106,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   checkLineOfSight: 0
   availablePriorities: 0
+  onTargetFound:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetLost:
+    m_PersistentCalls:
+      m_Calls: []
   target: {fileID: 0}
   radiusTrigger: {fileID: 7471581768413437108}
   heightTrigger: {fileID: 3822997109746519742}
@@ -360,7 +366,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visuals: {fileID: 8451412570879125624}
-  placed: 0
   targeting: {fileID: 3739967506293457857}
   onHit:
     m_PersistentCalls:
@@ -377,7 +382,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  strikes: 0
+  strikes: 4
 --- !u!114 &-3423078672773161603
 MonoBehaviour:
   m_ObjectHideFlags: 0

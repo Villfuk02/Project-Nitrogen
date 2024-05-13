@@ -8,6 +8,12 @@ The game needs to react to the player's actions and communicate the information 
 This all depends on what exactly are we trying to achieve.
 Thus, we will start by setting some design goals.
 
+We would also like to emphasize that some features will not be implemented in the demo version of our game.
+These features will be marked by the following box:
+\begin{notindemo}
+    A feature that won't be in the demo.
+\end{notindemo}
+
 \section{Design goals}
 
 We aim to make the game's mechanics clear, and controls intuitive and responsive.
@@ -15,7 +21,7 @@ This is a necessity for every game because without this, the players can't even 
 This is an important goal that will inform many of our decisions throughout the design.
 
 We have analyzed several games of similar genres to our game, that we find enjoyable, and we tried to identify what makes them fun.
-We identified five features, which we think make the games very intriguing and replayable, that we think would work for our game too.
+We identified five features, which we think make the games very intriguing and replayable, and we think these would work for our game too.
 Thus, we intend to design the game, so it exhibits these features, making them our game-specific design goals.
 We will explain each in a separate section, and we will use other games as inspiration for how to reach them.
 The goals are:
@@ -212,8 +218,10 @@ Each level introduces a small change that makes the game slightly more difficult
 Each \emph{ascension} level is unlocked only after the previous level is beaten, and each difficulty increase is small, so it doesn't discourage the player.
 These changes are cumulative, so in the end it takes serious effort and luck to beat the game on \emph{ascension} level~20 even for the most skilled players.
 
-This system is simple, yet effective, so we might as well use it too.
-We will also want to balance the base game, so that most players that try are able to beat it, but it still takes some effort and several attempts, so the players feel like they've accomplished something.
+\begin{notindemo}
+    This system is simple, yet effective, so we might as well use it too.
+    We will also want to balance the base game, so that most players that try are able to beat it, but it still takes some effort and several attempts, so the players feel like they've accomplished something.
+\end{notindemo}
 
 \section{Procedural Generation}
 
@@ -227,11 +235,13 @@ Another issue with randomized procedural generation is that things might start t
 For example, hand-crafted levels can have features that really stand out.
 We need to decide which parts of our game will be procedurally generated and to what degree.
 
-The overall structure of each run will be decided by what we call the \emph{map}.
-As stated before, it will be a graph, and the player will go from node to node along the edges.
-Each node will be a battle, shop or an event.
-We really want each run to be different enough, that the player doesn't develop a single strategy to use in every run.
-Since the player will decide where to go, it's not a problem when some paths through the map are more difficult than others.
+\begin{notindemo}
+    The overall structure of each run will be decided by what we call the \emph{map}.
+    As stated before, it will be a graph, and the player will go from node to node along the edges.
+    Each node will be a battle, shop or an event.
+    We really want each run to be different enough, that the player doesn't develop a single strategy to use in every run.
+    Since the player will decide where to go, it's not a problem when some paths through the map are more difficult than others.
+\end{notindemo}
 
 Every battle will also be randomized to a large degree.
 The world a battle takes place on will be procedurally generated, making for a different environment every time.
@@ -344,7 +354,7 @@ We feel that any more would make the waves messy and unnecessarily hard to commu
 
 In fact, each wave will be composed of one to three \emph{batches}.
 Each batch will be composed of a number of attackers of only one type, spaced evenly.
-Some waves will be just one batch, but this batch will send a different attacker type on each path on levels with multiple paths.
+But some waves will be just one batch, but this batch will send a different attacker type on each path on levels with multiple paths.
 This should provide enough variety without being too hard to communicate to the player and too hard for a skilled player to predict the wave difficulty.
 
 The waves in a single battle will get progressively harder, forcing the player will to improve their defense.
@@ -558,7 +568,7 @@ To summarize, these are the rules the paths should follow:
     \item No path branches can join back to the original path after less than 4 path segments.
 \end{itemize}
 
-\subsection{Attacker Types}
+\subsection{Attacker Types}\label{sec:attacker-types}
 
 We have mentioned that there will be many attacker types in out game.
 Each will be designed on its own, but they will be randomly combined to make attacker waves.
@@ -580,10 +590,12 @@ Whenever an attacker reaches the \emph{Hub}, the player will lose some \emph{hul
 The \emph{small} attackers will come in greater numbers than \emph{large} attackers.
 To make the stakes more equal, \emph{small} attackers cost the player only 1 hull, whereas the \emph{large} attackers cost 3 hull.
 
-The player will encounter only few \emph{boss} attackers in every run.
-They will be the main attackers in special boss levels, which are spread throughout the run and cannot be avoided by the player.
-When a boss reaches the \emph{Hub}, the player immediately loses the game.
-Each boss will bend the rules of the game a bit as one of their abilities, but most of them will have the same target height as \emph{large} attackers.
+\begin{notindemo}
+    The player will encounter only few \emph{boss} attackers in every run.
+    They will be the main attackers in special boss levels, which are spread throughout the run and cannot be avoided by the player.
+    When a boss reaches the \emph{Hub}, the player immediately loses the game.
+    Each boss will bend the rules of the game a bit as one of their abilities, but most of them will have the same target height as \emph{large} attackers.
+\end{notindemo}
 
 \subsection{Buildings}
 
@@ -629,17 +641,17 @@ The player will be able to select one of these priorities on most towers:
     \item Last~--- the attacker that's farthest from the \emph{Hub}.
     \item Closest~--- the attacker that's closest to this tower.
     \item Farthest~--- the attacker that's farthest from this tower.
-    \item Strongest~--- the attacker with the greatest HP.
     \item Weakest~--- the attacker with the least HP.
+    \item Strongest~--- the attacker with the greatest HP.
 \end{itemize}
 Each tower will be set to one of these by default, but the player will be able to change the priority of any tower at any time, even during waves.
 This will let the player have more control over their towers, allowing them to best use their unique properties.
 
-The damage the towers deal come in many types.
-For example \emph{physical}, \emph{fire}, \emph{explosive}, \emph{electric}.
+The damage the towers deal comes in many types.
+For example \emph{physical}, \emph{explosive}, \emph{energy}.
 Some towers will deal damage of multiple types at once.
 This distinction lets us make some towers explicitly weak against some attackers~--- those that are resistant to the given damage type.
-Or it lets us restrict some synergies, for example by making a building that makes attackers take more damage from \emph{electricity} only.
+Or it lets us restrict some synergies, for example by making a building that makes attackers take more damage from \emph{energy} attacks only.
 
 It is worth mentioning, that in most tower defense games, the player can upgrade any tower during a battle by investing more resources into it.
 The upgrades often increase a tower's damage or fire rate, however some substantially change the tower's behavior.
@@ -649,22 +661,99 @@ Instead, they will have to have some towers that are useful at the start of a le
 
 \subsection{Abilities}\label{sec:design-abilities}
 
-- used mid-wave
+Unlike buildings, abilities will only be usable during waves.
+They will often have only short-term effects on the attackers, so there is no point to using them outside a wave.
+The primary use-case is to kill or weaken attackers of a wave that might be too difficult to deal with for the towers alone.
+Abilities cost \emph{energy} to use, but if the \emph{energy} a player has is insufficient, \emph{materials} can be used to cover the difference.
+The reasoning behind this is explained in the next section~\ref{sec:design-materials-and-energy}.
 
-- usually instant effects
-
-- free placement, global placement, tile placement, use on a building
-
+Most abilities will only deal damage to the attackers, each in its own unique way.
+However, similarly to towers, there is no restriction on what an ability can do, as long as it makes gameplay sense and offers something new.
+One ability could create a temporary defensive tower, another could temporarily improve the towers the player has already built.
+Another ability might improve the player's blueprints for the rest of the battle, yet another might just give the player some additional resources.
 
 \subsection{Materials and energy}\label{sec:design-materials-and-energy}
 
-- what, why, consequences and constraints
+\textbf{Materials} are the main resource within a battle.
+The player starts each battle with some materials, and the \emph{Hub} produces a small amount of materials after every wave.
+Materials accumulate over the battle and there is no limit as to how many the player can have.
+The player can spend materials on buildings, notably towers and economic buildings.
+The more economic buildings that produce materials a player builds, the more materials they will have later in the battle.
 
-- separation of materials and energy
+Intuitively, a great strategy is to build the towers necessary to survive the next wave and spend the rest on economic buildings.
+However, this strategy heavily relies on the player being able to estimate which combination of towers is strong enough to beat the wave.
+To help, the player will have various abilities at their disposal, which can be used to kill of or weaken attackers when the towers are not strong enough by a small margin.
+The abilities should also cost resources to regulate their usage~--- stronger abilities will cost more and weaker abilities will cost less.
+However, if abilities also cost materials, it would be the best to spend everything on permanent defense or economy.
+Ideally a player would leave no materials for their abilities.
+That is why abilities have a resource dedicated only to them~--- \textbf{energy}.
+A steady income of energy lets the player use an ability once in a while, without costing them any long term power.
+
+However, abilities can also be paid for in materials.
+All this time we've assumed that long-term power is always better than short-term.
+However, this is not necessarily true.
+In the last few waves, a powerful one-time effect is way better than a weak long-term one, since the battle is ending soon anyway.
+Due to this, abilities are perhaps most useful in the last few waves of a battle, and allowing the player to use materials for these lets them use the materials on whatever they think is the best.
+Paying with materials also helps when the player has a few materials left over, so they can use a slightly more expensive ability than they could without this.
+
+We don't want the player to hoard all their energy and only use it on the last waves.
+To encourage using abilities throughout the battle, there will be a limit on the energy a player has in reserve.
+This way there is much less downside to using an ability in the middle of a battle when the player's energy reserve is full anyway, so they can't get any more.
 
 \subsection{Fuel}\label{sec:design-fuel}
 
-- win the game
+We have already mentioned fuel a few times, for example in section~\ref{sec:original-vision} and section~\ref{sec:goal-depth-battle}.
+But in this section, we will summarize everything about fuel.
+
+The goal of each battle is to gather enough fuel to continue to the next level.
+The faster the player gathers the fuel, the sooner they win the battle.
+It is generated passively by the \emph{Hub}, but additional buildings can be built to speed up the process.
+This makes the player decide when it's the best to improve their defenses and when to build fuel-producing building instead, to end the battle before the more difficult waves come, hopefully leading to greater strategic depth.
+The maximum number of waves each battle will take is determined by the amount of fuel the player needs to gather.
+
+\begin{notindemo}
+    We want some battles to be significantly harder, but they will provide better rewards.
+    These will be marked on the map, so the player will decide if they want to risk a harder battle.
+    Making these battles require more fuel to complete is a great way to distinguish them from other battles.
+    This also applies to boss battles (see section~\ref{sec:attacker-types}).
+\end{notindemo}
+
+\subsection{Hull}\label{sec:design-hull}
+
+The player starts each run with a fixed amount of hull.
+As described in section~\ref{sec:attacker-types}, whenever an attacker reaches the \emph{Hub} during a battle, the player loses some hull.
+Once the player loses all hull, they lose the game.
+A player's hull is a kind of buffer that allows them to make a few mistakes throughout the whole run before they lose.
+They will be able to restore their hull only a few times during the run (and no hull can be restored in the demo version).
+For example, they can intentionally focus more on economy in the early waves of a battle, maybe letting a few attackers through, in order to be stronger in the later waves and prevent possibly greater losses.
+They can even take a harder battle where they expect to lose hull when they are confident they won't need it before they can restore it back.
+However, an experienced player can use their hull as a resource.
+Another option would be to have the player start each battle with full hull, but we feel that this option allows for way less strategic depth.
+
+\subsection{Status Effects}
+
+\begin{notindemo}
+    Buildings and attackers will both be able to have status effects applied on them.
+    These represent temporary effects which modify the behavior of whatever they affect.
+    They will be displayed with an icon above what they are applied to, along with a number representing their duration.
+    The duration can be measured in seconds, but other kinds of duration are possible.
+    The source of these effects can be anything from a tower to an attacker.
+
+    Here are few examples of effects that might be applied to attackers, $x$ representing their duration:
+    \begin{itemize}
+        \item \textbf{Burning} deals a small amount of \emph{energy} damage over time for $x$ seconds, possibly applied by some fire-based tower.
+        \item \textbf{Freezing} slows down the attacker's movement speed for $x$ seconds, possibly applied by some ice-based ability.
+        \item \textbf{Shield} prevents the next $x$ damage an attacker would take, possibly applied by another attacker.
+        \item \textbf{Stealth} makes the attacker untargetable for the next $x$ seconds, possibly applied on their own.
+    \end{itemize}
+
+    And a few examples of effects that could be applied to buildings are:
+    \begin{itemize}
+        \item An \textbf{Overclocked} tower shoots 50\% faster for $x$ waves, possibly applied by an ability.
+        \item A \textbf{Paralyzed} building is out of order for $x$ seconds, possibly applied by an attacker.
+        \item The next $x$ projectiles an \textbf{Electrified} tower shoots deal additional \emph{energy} damage, possibly applied by a support building.
+    \end{itemize}
+\end{notindemo}
 
 \section{Battle Graphical User Interface}
 
@@ -674,13 +763,35 @@ Instead, they will have to have some towers that are useful at the start of a le
 
 - and time controls
 
-\subsection{Hull}\label{sec:design-hull}
+\subsection{Hull}
 
 \subsection{Wave Preview}
 
 \subsection{Materials and Energy}
 
-\subsection{Blueprints}
+\section{Blueprint Menu}
+
+\subsection{Info Panel and Selection}
+
+- what it looks like and what's on it
+
+- select blueprints
+
+- select buildings
+
+- select attackers
+
+- dynamic values
+
+\subsection{Highlights and Range Visualization}
+
+\subsection{Attacker HP}
+
+\section{Camera controls}
+
+- zoom to look closely, rotate so the terrain doesn't hide stuff
+
+\section{Blueprints}
 
 - separate blueprint menu and blueprint design
 
@@ -702,23 +813,7 @@ Instead, they will have to have some towers that are useful at the start of a le
 
 - blueprint upgrades
 
-\subsection{Info Panel and Selection}
-
-- what it looks like and what's on it
-
-- select blueprints
-
-- select buildings
-
-- select attackers
-
-- dynamic values
-
-\subsection{Highlights and Range Visualization}
-
-\section{Camera controls}
-
-- zoom to look closely, rotate so the terrain doesn't hide stuff
+\subsection{Blueprint acquisition screen}
 
 \section{Future Features}
 

@@ -14,13 +14,13 @@ namespace BattleSimulation.Selection
             public readonly Blueprint original;
             public readonly Blueprint current;
             public readonly int index;
-            public int cooldown;
+            public Box<int> cooldown;
 
             public MenuEntry(Blueprint original, int index)
             {
                 this.original = original;
                 current = original.Clone();
-                cooldown = current.startingCooldown;
+                cooldown = new(current.startingCooldown);
                 this.index = index;
             }
         }
@@ -66,60 +66,64 @@ namespace BattleSimulation.Selection
             selected = -1;
         }
 
-        public void GetBlueprints(int index, out Blueprint blueprint, out Blueprint original)
+        public void GetBlueprints(int index, out Blueprint blueprint, out Blueprint original, out Box<int> cooldown)
         {
             blueprint = CurrentEntries[index].current;
             original = CurrentEntries[index].original;
+            cooldown = CurrentEntries[index].cooldown;
         }
 
-        public bool TrySelect(int index, out Blueprint blueprint, out Blueprint original)
+        public bool TrySelect(int index, out Blueprint blueprint, out Blueprint original, out Box<int> cooldown)
         {
             blueprint = null;
             original = null;
+            cooldown = null;
 
             if (index < 0 || index >= CurrentEntries.Length)
                 return false;
 
-            GetBlueprints(index, out blueprint, out original);
+            GetBlueprints(index, out blueprint, out original, out cooldown);
             selected = index;
             return true;
         }
 
         public bool TryPlace()
         {
-            if (CurrentEntries[selected].cooldown > 0)
+            if (CurrentEntries[selected].cooldown.value > 0)
                 return false;
             var blueprint = CurrentEntries[selected].current;
             if (!BattleController.AdjustAndTrySpend(blueprint.energyCost, blueprint.materialCost))
                 return false;
-            CurrentEntries[selected].cooldown = blueprint.cooldown;
+            CurrentEntries[selected].cooldown.value = blueprint.cooldown;
             return true;
         }
 
         public void OnWaveStarted()
         {
             waveStarted = true;
-            selectionController.DeselectFromMenu();
+            if (selected != -1)
+                selectionController.DeselectFromMenu();
         }
 
         public void OnWaveFinished()
         {
             waveStarted = false;
-            selectionController.DeselectFromMenu();
+            if (selected != -1)
+                selectionController.DeselectFromMenu();
             ReduceCooldowns();
         }
 
         public void ReduceCooldowns()
         {
             foreach (var entry in abilities.Concat(buildings))
-                if (entry.cooldown > 0)
-                    entry.cooldown--;
+                if (entry.cooldown.value > 0)
+                    entry.cooldown.value--;
         }
 
         void FinishCooldowns()
         {
             foreach (var entry in abilities.Concat(buildings))
-                entry.cooldown = 0;
+                entry.cooldown.value = 0;
         }
     }
 }

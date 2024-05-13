@@ -25,13 +25,13 @@ namespace BattleSimulation.Abilities
         }
         protected void OnDestroy()
         {
-            if (placed)
+            if (Placed)
                 WaveController.onWaveFinished.UnregisterReaction(OnWaveFinished);
         }
 
         void FixedUpdate()
         {
-            if (!placed)
+            if (!Placed)
                 return;
             if (delayLeft == 0 && !waveEnded_)
                 Explode();

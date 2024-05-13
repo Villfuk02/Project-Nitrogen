@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BattleSimulation.Attackers;
 using BattleSimulation.Control;
 using Game.Damage;
@@ -26,12 +27,12 @@ namespace BattleSimulation.Towers
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            if (placed)
+            if (Placed)
                 WaveController.onWaveFinished.UnregisterReaction(DecrementWaves);
         }
         void FixedUpdate()
         {
-            if (!placed)
+            if (!Placed)
                 return;
 
             UpdateCharge();
@@ -69,7 +70,14 @@ namespace BattleSimulation.Towers
             }
         }
 
-        public override string? GetExtraStats() => $"Damage dealt [#DMG]{damageDealt}\nWaves left [#DUR]{wavesLeft}";
+        public override IEnumerable<string> GetExtraStats()
+        {
+            if (Placed)
+                yield return $"Waves left [#DUR]{wavesLeft}";
+
+            foreach (string s in base.GetExtraStats())
+                yield return s;
+        }
 
         public void DecrementWaves()
         {

@@ -13,28 +13,28 @@ namespace BattleSimulation.Abilities
         [SerializeField] Targeting.Targeting targeting;
         [Header("Settings")]
         [SerializeField] UnityEvent<Transform> onHit;
+        public int strikes;
 
         [Header("Runtime variables")]
-        public int strikes;
         int timer_;
 
         protected override void OnInitBlueprint()
         {
             targeting.SetRange(Blueprint.radius);
-            strikes = Blueprint.magic1;
         }
+
         protected override void OnPlaced()
         {
             WaveController.onWaveFinished.RegisterReaction(OnWaveFinished, 100);
         }
         protected void OnDestroy()
         {
-            if (placed)
+            if (Placed)
                 WaveController.onWaveFinished.UnregisterReaction(OnWaveFinished);
         }
         void FixedUpdate()
         {
-            if (!placed || strikes < 0)
+            if (!Placed || strikes < 0)
                 return;
             if (strikes == 0)
             {

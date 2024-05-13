@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: Static Sparker
   m_EditorClassIdentifier: 
   name: Static Sparker
-  prefab: {fileID: 475032649215164951, guid: a11acf37e5edc6c48a65ae65f6663b35, type: 3}
-  icon: {fileID: 21300000, guid: cf84b6b4da50518499da12b6c0a44e56, type: 3}
+  prefab: {fileID: 475032649215164951, guid: bbccf5d49b2d14e4988a6f9aca3b9082, type: 3}
+  icon: {fileID: 21300000, guid: 764631ed5516c9146b71e958cb529fd5, type: 3}
   rarity: 2
   type: 0
   energyCost: 0
   materialCost: 0
   startingCooldown: 0
-  cooldown: 0
+  cooldown: 1
   range: 1.1
-  damage: 2
-  damageType: 16
+  damage: 1
+  damageType: 4
   interval: -1
   radius: -1
   delay: -1
@@ -32,6 +32,9 @@ MonoBehaviour:
   fuelProduction: -1
   materialProduction: -1
   energyProduction: -1
-  magic1: -1
+  statsToDisplay:
+  - '[$RNG]'
+  - '[$DMG]'
+  statsToDisplayWhenUninitialized: []
   descriptions:
-  - Creates a spark whenever an attacker enters its range.
+  - Attackers take damage whenever they enter its range.

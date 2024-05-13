@@ -33,7 +33,7 @@ namespace BattleVisuals.Abilities
         }
         void Update()
         {
-            if (!sim.placed)
+            if (!sim.Placed)
                 return;
             UpdateBolt();
             boltTimer_ += Time.deltaTime;

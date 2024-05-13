@@ -15,14 +15,14 @@ MonoBehaviour:
   name: Meteor
   prefab: {fileID: 6702536568690210424, guid: 4adf973834d51aa46b002beec0046a4c, type: 3}
   icon: {fileID: 21300000, guid: 15addddcc13488e46af0c99f24ffd745, type: 3}
-  rarity: 1
+  rarity: 0
   type: 3
   energyCost: 20
   materialCost: 0
   startingCooldown: 0
   cooldown: 0
   range: -1
-  damage: 15
+  damage: 18
   damageType: 10
   interval: -1
   radius: 1.4
@@ -32,6 +32,9 @@ MonoBehaviour:
   fuelProduction: -1
   materialProduction: -1
   energyProduction: -1
-  magic1: -1
+  statsToDisplay:
+  - '[$RAD]'
+  - '[$DMG]'
+  statsToDisplayWhenUninitialized: []
   descriptions:
-  - Impacts the ground, dealing damage to all attackers within radius.
+  - Impacts the ground after [DEL], dealing damage to all attackers within radius.

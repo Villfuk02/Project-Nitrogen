@@ -1,24 +1,25 @@
 ## questions
 - dictionary.com?
+- public fields vs property
 
 ## till next metting
-- [ ] heal effect number
-- [ ] highlight future features
-- [ ] refactor wikipedia references
-- [ ] @online
-- [ ] sec 2.3
-- [ ] organize rest of ch2
-- [ ] mention status effects
-- [ ] implement content
-- [ ] read everything to check for typos and weird paragraphs
-- [ ] comment new parts
-- [ ] sec 3.1
-- [ ] descriptions are too long
+- [x] heal effect number
+- [x] highlight future features
+- [x] refactor wikipedia references
+- [x] sec 2.3
+- [x] mention status effects
+- [x] organize rest of ch2
+- [x] implement towers
+- [x] blueprint descriptions are too long
 - [ ] unify visuals class names
 - [ ] unify all 0.05f and 20
+- [ ] comment new parts
 - [ ] prepare for code review
     - [ ] names
     - [ ] comments
+- [ ] read everything to check for typos and weird paragraphs
+- [ ] sec 3.1
+- [ ] autoload blueprints
 
 ## implementation 
 - [ ] content
@@ -31,25 +32,7 @@
         - [ ] laser strike (in a strainght line)
         - [ ] upgrade blueprint stats
     - [x] more attackers (see [[Attacker#ideas]])
-    - [ ] more towers (see [[Tower#tower ideas]])
-        - [x] basic tower ~10
-        - [x] mortar ~25
-        - [x] cheap tower ~0
-        - [ ] speeds up when shooting ~40
-        - [ ] gets better with each kill (piercing) ~60
-        - [ ] sledgehammer ~45
-        - [ ] closer attacker = faster fire rate ~15
-        - [ ] laser piercing in a straight line (fixed rotation) ~20
-        - [ ] farther attacker = more damage ~25
-        - [ ] slow-rotating shotgun ~20
-        - [ ] chaining lightning ~30
-        - [ ] get energy for kills ~40
-        - [ ] lights on fire everything in a radius (including projectiles) ~80
-        - [ ] slow attackers in range ~30
-        - [ ] charging swarm missiles ~60
-        - [ ] multiple tiers selectable with R ~10/40/100
-        - [ ] path defenses ~20
-        - [ ] icons
+    - [x] more towers (see [[Tower#tower ideas]])
     - [ ] more economic buildings
         - [ ] energy maker
         - [ ] produces material per kill in radius
@@ -64,6 +47,8 @@
 - [ ] limit wave generator to pull extras max once per wave
 - [ ] also make early waves shorter
 - [ ] make wave fade shorter
+- [ ] make all game commands static
+- [ ] check if tags are necessary
 - [ ] a few more simple terrain types - change up minerals, obstacles, terrain color, difficulty
     - [ ] second terrain type (forest with rivers)
         - [ ] terrain type colors
@@ -80,6 +65,7 @@
     - [ ] option to play tutorial anyway
 - [ ] ready up for sharing
     - [ ] global fade
+    - [ ] organize assets
 - [ ] sound effects
 - [ ] +polish
     - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)

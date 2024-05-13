@@ -32,7 +32,12 @@ MonoBehaviour:
   fuelProduction: -1
   materialProduction: -1
   energyProduction: -1
-  magic1: -1
+  statsToDisplay:
+  - '[$RNG]'
+  - '[$DMG]'
+  - '[$INT]'
+  - '[$DPS]'
+  statsToDisplayWhenUninitialized: []
   descriptions:
   - Can be placed on tiles with small obstacles.
   - When placed, instantly deals damage to all attackers within range.

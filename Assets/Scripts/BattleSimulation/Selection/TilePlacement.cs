@@ -1,3 +1,4 @@
+using BattleSimulation.Buildings;
 using BattleSimulation.World;
 using UnityEngine;
 
@@ -17,13 +18,20 @@ namespace BattleSimulation.Selection
             Transform t = transform;
             if (newSelectedTile != null)
             {
-                t.SetParent(newSelectedTile.transform);
-                t.localPosition = Vector3.zero;
+                if (t.TryGetComponent<Building>(out var b))
+                {
+                    newSelectedTile.SetupBuilding(b);
+                }
+                else
+                {
+                    t.localPosition = Vector3.zero;
+                    t.SetParent(newSelectedTile.transform, false);
+                }
             }
             else
             {
-                t.SetParent(defaultParent);
                 t.localPosition = Vector3.one * 1000;
+                t.SetParent(defaultParent, false);
             }
 
             selectedTile = newSelectedTile;

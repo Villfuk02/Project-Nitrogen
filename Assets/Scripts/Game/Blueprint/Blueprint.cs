@@ -30,7 +30,8 @@ namespace Game.Blueprint
         public int fuelProduction = -1;
         public int materialProduction = -1;
         public int energyProduction = -1;
-        public int magic1 = -1;
+        public List<string> statsToDisplay;
+        public List<string> statsToDisplayWhenUninitialized;
         public List<string> descriptions;
 
         public bool HasRange => range >= 0;
@@ -44,7 +45,7 @@ namespace Game.Blueprint
         public bool HasFuelProduction => fuelProduction >= 0;
         public bool HasMaterialProduction => materialProduction >= 0;
         public bool HasEnergyProduction => energyProduction >= 0;
-        public float BaseDps => damage * 2000 / interval * 0.01f;
+        public float BaseDps => Damage.Damage.CalculateDps(damage, interval);
 
         public Blueprint Clone()
         {
@@ -70,7 +71,8 @@ namespace Game.Blueprint
             copy.fuelProduction = fuelProduction;
             copy.materialProduction = materialProduction;
             copy.energyProduction = energyProduction;
-            copy.magic1 = magic1;
+            copy.statsToDisplay = new(statsToDisplay);
+            copy.statsToDisplayWhenUninitialized = new(statsToDisplayWhenUninitialized);
             copy.descriptions = new(descriptions);
 
             return copy;

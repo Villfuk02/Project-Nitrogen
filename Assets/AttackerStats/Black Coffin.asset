@@ -16,7 +16,7 @@ MonoBehaviour:
   prefab: {fileID: 6404022796283253360, guid: 5b08c77970c0ff8429dc4a17f1afb13f, type: 3}
   icon: {fileID: 21300000, guid: c5512a06b580c04479a1c57e1caf9ab0, type: 3}
   size: 1
-  minSpacing: 3
+  minSpacing: 4
   baseValue: 4000
   weight: 1
   speed: 0.4

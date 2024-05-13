@@ -12,13 +12,13 @@ namespace BattleSimulation.Towers
         [SerializeField] protected Transform projectileOrigin;
         [Header("Settings")]
         public GameObject projectilePrefab;
-        [SerializeField] UnityEvent<Attacker> onShoot;
+        [SerializeField] protected UnityEvent<Attacker> onShoot;
         [Header("Runtime variables")]
-        [SerializeField] int shotTimer;
+        [SerializeField] protected int shotTimer;
 
-        void FixedUpdate()
+        protected virtual void FixedUpdate()
         {
-            if (!placed)
+            if (!Placed)
                 return;
 
             shotTimer--;
@@ -31,7 +31,7 @@ namespace BattleSimulation.Towers
                 Shoot(targeting.target);
         }
 
-        void Shoot(Attacker target)
+        protected virtual void Shoot(Attacker target)
         {
             shotTimer = Blueprint.interval;
             ShootInternal(target);

@@ -29,10 +29,7 @@ namespace BattleSimulation.World
                 building = value;
                 if (building == null)
                     return;
-
-                building.transform.localRotation = slantedParts.localRotation;
-                foreach (var t in building.rotateBack)
-                    t.rotation = Quaternion.identity;
+                SetupBuilding(building);
             }
         }
 
@@ -40,6 +37,14 @@ namespace BattleSimulation.World
         {
             if (slant != WorldUtils.Slant.None)
                 slantedParts.Rotate(WorldUtils.WORLD_CARDINAL_DIRS[(int)slant % 4] * WorldUtils.SLANT_ANGLE);
+        }
+
+        public void SetupBuilding(Building b)
+        {
+            b.transform.localPosition = Vector3.zero;
+            b.transform.SetParent(slantedParts, false);
+            foreach (var t in b.rotateBack)
+                t.rotation = b.transform.localRotation;
         }
 
         public void Highlight(Color color)

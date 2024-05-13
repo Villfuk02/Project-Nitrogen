@@ -15,7 +15,7 @@ namespace BattleVisuals.Selection
         public override int AreaSamplesPerFrame => 128;
         public override IEnumerable<(IHighlightable, HighlightType)> GetHighlights()
         {
-            if (!transform.parent.TryGetComponent<Tile>(out var tile))
+            if (!transform.parent.parent.TryGetComponent<Tile>(out var tile))
                 yield break;
 
             yield return (tile, HighlightType.Selected);
@@ -26,7 +26,7 @@ namespace BattleVisuals.Selection
 
         public override (HighlightType highlight, float radius) GetAffectedArea(Vector3 baseWorldPos)
         {
-            if (!transform.parent.TryGetComponent<Tile>(out _))
+            if (!transform.parent.parent.TryGetComponent<Tile>(out _))
                 return placementHighlightProvider.GetAffectedArea(baseWorldPos);
             Vector3 smallPos = baseWorldPos + Vector3.up * Attacker.SMALL_TARGET_HEIGHT;
             Vector3 largePos = baseWorldPos + Vector3.up * Attacker.LARGE_TARGET_HEIGHT;

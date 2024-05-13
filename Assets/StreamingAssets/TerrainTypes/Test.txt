@@ -228,7 +228,7 @@ obstacles {
 
     * SmallRocks {
         type s
-        base_probability 0.3
+        base_probability 0.25
         forces -0.1 0 0.4 -0.1
     }
 }

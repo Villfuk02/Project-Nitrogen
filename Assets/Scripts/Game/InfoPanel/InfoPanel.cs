@@ -3,9 +3,11 @@ using BattleSimulation.Buildings;
 using BattleSimulation.Targeting;
 using BattleSimulation.Towers;
 using BattleSimulation.World;
+using Game.Blueprint;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 namespace Game.InfoPanel
 {
@@ -36,7 +38,7 @@ namespace Game.InfoPanel
             public string title;
             public Sprite sprite;
             public DescriptionProvider descriptionProvider;
-            public Building building;
+            public IBlueprinted blueprinted;
         }
 
         void Start()
@@ -104,10 +106,12 @@ namespace Game.InfoPanel
 
         void Show()
         {
-            if (visible)
-                return;
-            visible = true;
-            root.gameObject.SetActive(true);
+            if (!visible)
+            {
+                visible = true;
+                root.gameObject.SetActive(true);
+            }
+
             foreach (var target in raycastTargets)
                 target.raycastTarget = priority;
             backgroundPanel.color = priority ? Color.white : lowPriorityBackgroundColor;
@@ -116,7 +120,7 @@ namespace Game.InfoPanel
 
         void UpdateDescription(string desc)
         {
-            deleteButton.gameObject.SetActive(current_?.building != null && !current_.building.permanent && allowInteraction);
+            deleteButton.gameObject.SetActive(CanDeleteBuilding(out _));
             UpdateTargeting();
             description.text = desc;
             rebuildLayout = true;
@@ -124,7 +128,7 @@ namespace Game.InfoPanel
 
         void UpdateTargeting()
         {
-            if (current_ != null && current_.building != null && current_.building is Tower t)
+            if (current_?.blueprinted is MonoBehaviour mb && mb != null && current_.blueprinted is Tower { Placed: true } t)
             {
                 Targeting targeting = t.targeting;
                 targetingSection.gameObject.SetActive(targeting.CanChangePriority);
@@ -138,7 +142,7 @@ namespace Game.InfoPanel
 
         public void NextPriority()
         {
-            if (!allowInteraction || current_?.building is not Tower t)
+            if (!allowInteraction || current_?.blueprinted is not Tower { Placed: true } t)
                 return;
 
             t.targeting.NextPriority();
@@ -147,7 +151,7 @@ namespace Game.InfoPanel
 
         public void PrevPriority()
         {
-            if (!allowInteraction || current_?.building is not Tower t)
+            if (!allowInteraction || current_?.blueprinted is not Tower { Placed: true } t)
                 return;
 
             t.targeting.PrevPriority();
@@ -156,25 +160,49 @@ namespace Game.InfoPanel
 
         public void DeleteBuilding()
         {
-            if (!allowInteraction || current_?.building == null || current_.building.permanent)
+            if (!CanDeleteBuilding(out var b))
                 return;
 
-            current_.building!.Delete();
-            if (visible && current_.descriptionProvider != null)
+            b.Delete();
+            if (visible && current_!.descriptionProvider != null)
             {
                 current_.descriptionProvider.HasDescriptionChanged(out string desc);
                 UpdateDescription(desc);
             }
         }
 
-        public void ShowBlueprint(Blueprint.Blueprint blueprint, Blueprint.Blueprint original, bool highPriority, bool fallback)
+        bool CanDeleteBuilding(out Building building)
+        {
+            if (current_?.blueprinted is MonoBehaviour mb && mb != null && current_.blueprinted is Building { permanent: false, Placed: true } b && allowInteraction)
+            {
+                building = b;
+                return true;
+            }
+
+            building = null;
+            return false;
+        }
+
+        public void ShowBlueprint(Blueprint.Blueprint blueprint, Blueprint.Blueprint original, Box<int>? cooldown, bool highPriority, bool fallback)
         {
             Data d = new()
             {
-                building = null,
-                descriptionProvider = new BlueprintDescriptionProvider(blueprint, original),
+                blueprinted = null,
+                descriptionProvider = new BlueprintDescriptionProvider(blueprint, original, cooldown),
                 sprite = blueprint.icon,
                 title = blueprint.name
+            };
+            DisplayData(d, highPriority, fallback);
+        }
+
+        public void ShowBlueprinted(IBlueprinted blueprinted, Box<int>? cooldown, bool highPriority, bool fallback)
+        {
+            Data d = new()
+            {
+                blueprinted = blueprinted,
+                descriptionProvider = new BlueprintDescriptionProvider(blueprinted, cooldown),
+                title = blueprinted.Blueprint.name,
+                sprite = blueprinted.Blueprint.icon
             };
             DisplayData(d, highPriority, fallback);
         }
@@ -183,7 +211,7 @@ namespace Game.InfoPanel
         {
             Data d = new()
             {
-                building = null,
+                blueprinted = null,
                 descriptionProvider = new AttackerDescriptionProvider(attacker),
                 sprite = attacker.stats.icon,
                 title = attacker.stats.name
@@ -195,7 +223,7 @@ namespace Game.InfoPanel
         {
             Data d = new()
             {
-                building = null,
+                blueprinted = null,
                 descriptionProvider = new AttackerDescriptionProvider(stats, original),
                 title = stats.name,
                 sprite = stats.icon
@@ -207,22 +235,10 @@ namespace Game.InfoPanel
         {
             Data d = new()
             {
-                building = null,
+                blueprinted = null,
                 descriptionProvider = new TileDescriptionProvider(tile),
                 title = "Tile",
                 sprite = tileIcon
-            };
-            DisplayData(d, highPriority, fallback);
-        }
-
-        public void ShowBuilding(Building building, bool highPriority, bool fallback)
-        {
-            Data d = new()
-            {
-                building = building,
-                descriptionProvider = new BlueprintDescriptionProvider(building),
-                title = building.Blueprint.name,
-                sprite = building.Blueprint.icon
             };
             DisplayData(d, highPriority, fallback);
         }

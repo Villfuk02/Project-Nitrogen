@@ -73,7 +73,8 @@ namespace BattleSimulation.Targeting
         {
             return t != null && !t.IsDead && IsValidTargetPosition(t.target.position);
         }
-        public bool IsValidTargetPosition(Vector3 pos)
+
+        public virtual bool IsValidTargetPosition(Vector3 pos)
         {
             return !checkLineOfSight || HasLineOfSight(pos);
         }
@@ -101,6 +102,8 @@ namespace BattleSimulation.Targeting
         {
             return inRange.Where(a => a != null && IsValidTarget(a));
         }
+
+        public bool IsAmongTargets(Attacker a) => a != null && IsValidTarget(a) && inRange.Contains(a);
 
         public bool IsInRangeAndValid(Attacker a)
         {

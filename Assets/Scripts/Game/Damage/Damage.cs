@@ -6,7 +6,13 @@ namespace Game.Damage
 {
     public struct Damage
     {
-        [Flags] public enum Type { HealthLoss = 1 << 0, Physical = 1 << 1, Fire = 1 << 2, Explosive = 1 << 3, Electric = 1 << 4 }
+        [Flags] public enum Type
+        {
+            HealthLoss = 1 << 0,
+            Physical = 1 << 1,
+            Energy = 1 << 2,
+            Explosive = 1 << 3
+        }
 
         public float amount;
         public Type type;
@@ -20,23 +26,40 @@ namespace Game.Damage
         }
 
         public readonly override string ToString() => $"{amount} damage (type={type}, source={source})";
+
+        public static string FormatDamage(int value, int original, bool originalExists, Type type, TextUtils.Improvement improvement)
+        {
+            return $"{type.ToHumanReadable(true)}{TextUtils.FormatIntStat(null, value, original, originalExists, improvement)}";
+        }
+
+        public static string FormatDamageType(Type type, Type original)
+        {
+            return $"{(type & original).ToHumanReadable(false)} {(type & ~original).ToHumanReadable(false).Colored(TextUtils.NEW_COLOR)}";
+        }
+
+        public static float CalculateDps(int damage, int intervalTicks) => intervalTicks == 0 ? 0 : damage * 2000 / intervalTicks * 0.01f;
     }
 
     public static class DamageExtensions
     {
-        static readonly string[] HumanReadableNames = { "Health Loss", "Physical", "Fire", "Explosive", "Electric" };
-        static readonly TextUtils.Icon[] Icons = { TextUtils.Icon.HpLoss, TextUtils.Icon.Physical, TextUtils.Icon.Fire, TextUtils.Icon.Explosive, TextUtils.Icon.Energy };
-        public static string ToHumanReadable(this Damage.Type type, bool icons)
+        static readonly string[] HumanReadableNames = { "Health Loss", "Physical", "Energy", "Explosive" };
+        static readonly TextUtils.Icon[] Icons = { TextUtils.Icon.DmgHpLoss, TextUtils.Icon.DmgPhysical, TextUtils.Icon.DmgEnergy, TextUtils.Icon.DmgExplosive };
+
+        public static string ToHumanReadable(this Damage.Type type, bool iconsOnly)
         {
+            if (type == 0)
+                return TextUtils.Icon.Damage.Sprite();
+
             List<string> types = new();
             int i = 0;
             while (type != 0)
             {
                 if (((int)type & 1) != 0)
-                    types.Add($"{(icons ? Icons[i].Sprite() : "")}{HumanReadableNames[i]}");
+                    types.Add($"{Icons[i].Sprite()}{(iconsOnly ? "" : HumanReadableNames[i])}");
                 type = (Damage.Type)((int)type >> 1);
                 i++;
             }
+
             return string.Join(' ', types);
         }
     }

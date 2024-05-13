@@ -101,7 +101,7 @@ namespace BattleSimulation.Targeting
         public override void TargetLost(Attacker target)
         {
             int count = --inRange[target];
-            if (count < parts_.Length)
+            if (count == parts_.Length - 1)
                 parent.TargetLost(target);
             if (count == 0)
                 inRange.Remove(target);

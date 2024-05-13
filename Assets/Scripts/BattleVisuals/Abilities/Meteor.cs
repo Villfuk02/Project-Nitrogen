@@ -23,7 +23,7 @@ namespace BattleVisuals.Abilities
 
         void Update()
         {
-            if (!sim.placed || stopped_)
+            if (!sim.Placed || stopped_)
                 return;
             if (sim.delayLeft > 0)
             {

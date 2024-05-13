@@ -23,7 +23,7 @@ namespace BattleSimulation.Attackers
             {
                 Attacker a = hit.rigidbody.GetComponent<Attacker>();
                 if (!a.IsDead)
-                    a.health = Mathf.Min(a.health + amount, a.stats.maxHealth);
+                    Attacker.HEAL.Invoke((a, amount));
             }
         }
     }

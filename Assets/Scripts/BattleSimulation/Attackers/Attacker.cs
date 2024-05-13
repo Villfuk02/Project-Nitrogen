@@ -15,12 +15,16 @@ namespace BattleSimulation.Attackers
         public const float LARGE_TARGET_HEIGHT = 0.3f;
         public static readonly ModifiableCommand<(Attacker target, Damage damage)> HIT = new();
         public static readonly ModifiableCommand<(Attacker target, Damage damage)> DAMAGE = new();
+        public static readonly ModifiableCommand<(Attacker target, float amount)> HEAL = new();
         public static readonly ModifiableCommand<(Attacker target, Damage cause)> DIE = new();
+
         public delegate void SpawnAttackersRelative(Attacker attacker, AttackerStats stats, int count, float offsetRadius);
         public static SpawnAttackersRelative spawnAttackersRelative;
+
         static Attacker()
         {
             DAMAGE.RegisterHandler(DamageHandler);
+            HEAL.RegisterHandler(HealHandler);
             DIE.RegisterHandler(DeathHandler);
         }
         [Header("References")]
@@ -132,11 +136,9 @@ namespace BattleSimulation.Attackers
             return segmentsToHub - pathSegmentProgress;
         }
 
-        static bool DamageHandler(ref (Attacker target, Damage damage) param)
-        {
-            param.target.TakeDamage(param.damage);
-            return true;
-        }
+        static bool DamageHandler(ref (Attacker target, Damage damage) param) => param.target.TakeDamage(ref param.damage);
+
+        static bool HealHandler(ref (Attacker target, float amount) param) => param.target.Heal(ref param.amount);
 
         static bool DeathHandler(ref (Attacker target, Damage cause) param)
         {
@@ -144,16 +146,16 @@ namespace BattleSimulation.Attackers
             return true;
         }
 
-        void TakeDamage(Damage dmg)
+        bool TakeDamage(ref Damage dmg)
         {
             if (IsDead)
                 throw new InvalidOperationException("Dead attackers cannot be damaged");
             if (dmg.amount < 0)
                 throw new ArgumentException("Damage cannot be negative");
 
-            dmg.amount = Mathf.Floor(dmg.amount);
+            dmg.amount = Mathf.Min(Mathf.Floor(dmg.amount), health);
             if (dmg.amount == 0)
-                return;
+                return false;
 
             onDamage.Invoke(dmg);
 
@@ -163,6 +165,20 @@ namespace BattleSimulation.Attackers
                 (Attacker, Damage) param = (this, dmg);
                 DIE.Invoke(param);
             }
+
+            return true;
+        }
+
+        bool Heal(ref float amount)
+        {
+            if (IsDead)
+                throw new InvalidOperationException("Dead attackers cannot be healed");
+            if (amount < 0)
+                throw new ArgumentException("Healing cannot be negative");
+
+            amount = Mathf.Min(Mathf.Floor(amount), stats.maxHealth - health);
+            health += (int)amount;
+            return amount > 0;
         }
 
         void Die(Damage cause)

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BattleSimulation.Control;
 using System.Text;
 
@@ -23,7 +24,7 @@ namespace BattleSimulation.Buildings
 
         protected override void OnDestroy()
         {
-            if (placed)
+            if (Placed)
             {
                 WaveController.onWaveFinished.UnregisterReaction(Produce);
                 BattleController.updateMaterialsPerWave.UnregisterModifier(ProvideMaterialsIncome);
@@ -39,22 +40,22 @@ namespace BattleSimulation.Buildings
             if (Blueprint.HasFuelProduction)
             {
                 (object, float amt) data = (this, Blueprint.fuelProduction);
-                BattleController.addFuel.InvokeRef(ref data);
-                fuelProduced += (int)data.amt;
+                if (BattleController.addFuel.InvokeRef(ref data))
+                    fuelProduced += (int)data.amt;
             }
 
             if (Blueprint.HasMaterialProduction)
             {
                 (object, float amt) data = (this, Blueprint.materialProduction);
-                BattleController.addMaterial.InvokeRef(ref data);
-                materialsProduced += (int)data.amt;
+                if (BattleController.addMaterial.InvokeRef(ref data))
+                    materialsProduced += (int)data.amt;
             }
 
             if (Blueprint.HasEnergyProduction)
             {
                 (object, float amt) data = (this, Blueprint.energyProduction);
-                BattleController.addEnergy.InvokeRef(ref data);
-                energyProduced += (int)data.amt;
+                if (BattleController.addEnergy.InvokeRef(ref data))
+                    energyProduced += (int)data.amt;
             }
         }
 
@@ -77,19 +78,23 @@ namespace BattleSimulation.Buildings
             return true;
         }
 
-        public override string? GetExtraStats()
+        public override IEnumerable<string> GetExtraStats()
         {
-            if (fuelProduced == 0 && materialsProduced == 0 && energyProduced == 0)
-                return null;
-            StringBuilder sb = new();
-            sb.Append("Produced");
-            if (fuelProduced > 0)
-                sb.Append($" [#FUE]{fuelProduced}");
-            if (materialsProduced > 0)
-                sb.Append($" [#MAT]{materialsProduced}");
-            if (energyProduced > 0)
-                sb.Append($" [#ENE]{energyProduced}");
-            return sb.ToString();
+            if (fuelProduced != 0 || materialsProduced != 0 || energyProduced != 0)
+            {
+                StringBuilder sb = new();
+                sb.Append("Produced");
+                if (fuelProduced > 0)
+                    sb.Append($" [#FUE]{fuelProduced}");
+                if (materialsProduced > 0)
+                    sb.Append($" [#MAT]{materialsProduced}");
+                if (energyProduced > 0)
+                    sb.Append($" [#ENE]{energyProduced}");
+                yield return sb.ToString();
+            }
+
+            foreach (string s in base.GetExtraStats())
+                yield return s;
         }
     }
 }

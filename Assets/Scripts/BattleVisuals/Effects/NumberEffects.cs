@@ -15,9 +15,10 @@ namespace BattleVisuals.Effects
     {
         [Header("References")]
         [SerializeField] GameObject numberEffectPrefab;
-        [Header("Settings - damage")]
+        [Header("Settings - damage and healing")]
         [SerializeField] float damageTimeToLive;
         [SerializeField] Color damageColor;
+        [SerializeField] Color healColor;
         [SerializeField] float damageMinFontSize;
         [SerializeField] float damageMaxFontSize;
         [SerializeField] float fullSizeDamage;
@@ -37,6 +38,7 @@ namespace BattleVisuals.Effects
             fullSizeDamageLog = Mathf.Log(fullSizeDamage);
 
             Attacker.DAMAGE.RegisterReaction(SpawnDamage, 100);
+            Attacker.HEAL.RegisterReaction(SpawnHeal, 100);
             BattleController.addMaterial.RegisterReaction(SpawnMaterial, 100);
             BattleController.addEnergy.RegisterReaction(SpawnEnergy, 100);
             BattleController.addFuel.RegisterReaction(SpawnFuel, 100);
@@ -45,6 +47,7 @@ namespace BattleVisuals.Effects
         void OnDestroy()
         {
             Attacker.DAMAGE.UnregisterReaction(SpawnDamage);
+            Attacker.HEAL.UnregisterReaction(SpawnHeal);
             BattleController.addMaterial.UnregisterReaction(SpawnMaterial);
             BattleController.addEnergy.UnregisterReaction(SpawnEnergy);
             BattleController.addFuel.UnregisterReaction(SpawnFuel);
@@ -61,6 +64,12 @@ namespace BattleVisuals.Effects
             Vector2 r = Random.insideUnitCircle;
             Vector3 vel = new(r.x, 2, r.y);
             Spawn(param.damage.amount.ToString(CultureInfo.InvariantCulture), size, damageColor, damageTimeToLive, param.target.target.position + Vector3.up * 0.3f, vel, Vector3.down * 10);
+        }
+
+        void SpawnHeal((Attacker target, float amount) param)
+        {
+            float size = Mathf.Lerp(damageMinFontSize, damageMaxFontSize, Mathf.Log(param.amount) / fullSizeDamageLog);
+            Spawn(param.amount.ToString(CultureInfo.InvariantCulture), size, healColor, damageTimeToLive, param.target.target.position + Vector3.up * 0.3f, Vector3.up * 1.5f, Vector3.down * 0.5f);
         }
 
         void SpawnMaterial((object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Materials.Sprite()}", materialsColor);

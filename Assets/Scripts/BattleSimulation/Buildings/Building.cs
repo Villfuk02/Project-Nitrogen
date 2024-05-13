@@ -1,5 +1,6 @@
 using Game.Blueprint;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BattleSimulation.Buildings
@@ -11,10 +12,11 @@ namespace BattleSimulation.Buildings
         public Transform[] rotateBack;
         [Header("Settings")]
         public bool permanent;
-        [Header("Runtime variables")]
-        public bool placed;
+
+        // Runtime variables
         public Blueprint Blueprint { get; private set; }
         public Blueprint OriginalBlueprint { get; private set; }
+        public bool Placed { get; private set; }
 
         public void InitBlueprint(Blueprint blueprint)
         {
@@ -23,9 +25,10 @@ namespace BattleSimulation.Buildings
             Blueprint = blueprint.Clone();
             OnInitBlueprint();
         }
-        public void Placed()
+
+        public void Place()
         {
-            placed = true;
+            Placed = true;
             visuals.SetActive(true);
             OnPlaced();
         }
@@ -33,7 +36,10 @@ namespace BattleSimulation.Buildings
         protected virtual void OnInitBlueprint() { }
         protected virtual void OnPlaced() { }
 
-        public virtual string? GetExtraStats() => null;
+        public virtual IEnumerable<string> GetExtraStats()
+        {
+            yield break;
+        }
 
         public void Delete()
         {

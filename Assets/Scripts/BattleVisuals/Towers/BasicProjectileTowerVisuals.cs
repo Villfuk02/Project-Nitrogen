@@ -8,7 +8,7 @@ namespace BattleVisuals.Towers
     {
         static readonly int ShootTrigger = Animator.StringToHash("Shoot");
         [Header("References")]
-        [SerializeField] BasicProjectileTower t;
+        [SerializeField] ProjectileTower t;
         [SerializeField] Animator shootAnim;
         [SerializeField] Transform turretPivot;
         [Header("Runtime variables")]
@@ -17,7 +17,7 @@ namespace BattleVisuals.Towers
 
         void Update()
         {
-            if (!t.placed)
+            if (!t.Placed)
                 return;
 
             var target = t.targeting.target;

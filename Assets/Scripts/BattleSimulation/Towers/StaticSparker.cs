@@ -12,7 +12,7 @@ namespace BattleSimulation.Towers
 
         public void Spark(Attacker attacker)
         {
-            if (!placed)
+            if (!Placed)
                 return;
 
             if (attacker.IsDead)

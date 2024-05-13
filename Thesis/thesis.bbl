@@ -37,15 +37,16 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Tower defense --- {Wikipedia}{,} The Free Encyclopedia}
-      \field{urlday}{5}
-      \field{urlmonth}{4}
+      \field{urlday}{6}
+      \field{urlmonth}{5}
       \field{urlyear}{2024}
+      \field{year}{2024}
       \field{urldateera}{ce}
       \verb{urlraw}
-      \verb https://en.wikipedia.org/wiki/Tower_defense
+      \verb https://en.wikipedia.org/w/index.php?title=Tower_defense&oldid=1212378185
       \endverb
       \verb{url}
-      \verb https://en.wikipedia.org/wiki/Tower_defense
+      \verb https://en.wikipedia.org/w/index.php?title=Tower_defense&oldid=1212378185
       \endverb
     \endentry
     \entry{CITD}{inproceedings}{}
@@ -91,33 +92,32 @@
       \verb 10.1109/CEC.2011.5949738
       \endverb
     \endentry
-    \entry{PvZWiki}{misc}{}
+    \entry{PvZWeb}{misc}{}
       \name{author}{1}{}{%
-        {{hash=b6aea1a416c89509a7df1cbb69249cb6}{%
-           family={{Wikipedia contributors}},
-           familyi={W\bibinitperiod}}}%
+        {{hash=afe5df7921427abaa6ca89cb21e93f99}{%
+           family={{Electronic Arts Inc.}},
+           familyi={E\bibinitperiod}}}%
       }
-      \strng{namehash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \strng{fullhash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \strng{bibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \field{extraname}{2}
+      \strng{namehash}{afe5df7921427abaa6ca89cb21e93f99}
+      \strng{fullhash}{afe5df7921427abaa6ca89cb21e93f99}
+      \strng{bibnamehash}{afe5df7921427abaa6ca89cb21e93f99}
+      \strng{authorbibnamehash}{afe5df7921427abaa6ca89cb21e93f99}
+      \strng{authornamehash}{afe5df7921427abaa6ca89cb21e93f99}
+      \strng{authorfullhash}{afe5df7921427abaa6ca89cb21e93f99}
       \field{sortinit}{3}
       \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{title}{Plants vs. Zombies (video game) --- {Wikipedia}{,} The Free Encyclopedia}
-      \field{urlday}{24}
-      \field{urlmonth}{3}
+      \field{title}{Buy plants vs. zombies - PC {\&} mac - EA}
+      \field{urlday}{6}
+      \field{urlmonth}{5}
       \field{urlyear}{2024}
       \field{urldateera}{ce}
       \verb{urlraw}
-      \verb https://en.wikipedia.org/wiki/Plants_vs._Zombies_(video_game)
+      \verb https://www.ea.com/games/plants-vs-zombies/plants-vs-zombies
       \endverb
       \verb{url}
-      \verb https://en.wikipedia.org/wiki/Plants_vs._Zombies_(video_game)
+      \verb https://www.ea.com/games/plants-vs-zombies/plants-vs-zombies
       \endverb
     \endentry
     \entry{rpgBycer}{book}{}
@@ -158,21 +158,22 @@
       \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \field{extraname}{3}
+      \field{extraname}{2}
       \field{sortinit}{6}
       \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Rogue (video game) --- {Wikipedia}{,} The Free Encyclopedia}
-      \field{urlday}{24}
-      \field{urlmonth}{3}
+      \field{urlday}{6}
+      \field{urlmonth}{5}
       \field{urlyear}{2024}
+      \field{year}{2023}
       \field{urldateera}{ce}
       \verb{urlraw}
-      \verb https://en.wikipedia.org/wiki/Rogue_(video_game)
+      \verb https://en.wikipedia.org/w/index.php?title=Rogue_(video_game)&oldid=1191758861
       \endverb
       \verb{url}
-      \verb https://en.wikipedia.org/wiki/Rogue_(video_game)
+      \verb https://en.wikipedia.org/w/index.php?title=Rogue_(video_game)&oldid=1191758861
       \endverb
     \endentry
     \entry{roguelikeBycer}{book}{}
@@ -213,21 +214,22 @@
       \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \field{extraname}{4}
+      \field{extraname}{3}
       \field{sortinit}{8}
       \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Slay the Spire --- {Wikipedia}{,} The Free Encyclopedia}
-      \field{urlday}{24}
-      \field{urlmonth}{3}
+      \field{urlday}{6}
+      \field{urlmonth}{5}
       \field{urlyear}{2024}
+      \field{year}{2024}
       \field{urldateera}{ce}
       \verb{urlraw}
-      \verb https://en.wikipedia.org/wiki/Slay_the_Spire
+      \verb https://en.wikipedia.org/w/index.php?title=Slay_the_Spire&oldid=1221499787
       \endverb
       \verb{url}
-      \verb https://en.wikipedia.org/wiki/Slay_the_Spire
+      \verb https://en.wikipedia.org/w/index.php?title=Slay_the_Spire&oldid=1221499787
       \endverb
     \endentry
     \entry{buildDict}{misc}{}
@@ -326,21 +328,22 @@
       \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \field{extraname}{5}
+      \field{extraname}{4}
       \field{sortinit}{1}
       \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Desktop Tower Defense --- {Wikipedia}{,} The Free Encyclopedia}
-      \field{urlday}{16}
-      \field{urlmonth}{4}
+      \field{urlday}{6}
+      \field{urlmonth}{5}
       \field{urlyear}{2024}
+      \field{year}{2024}
       \field{urldateera}{ce}
       \verb{urlraw}
-      \verb https://en.wikipedia.org/wiki/Desktop_Tower_Defense
+      \verb https://en.wikipedia.org/w/index.php?title=Desktop_Tower_Defense&oldid=1220758442
       \endverb
       \verb{url}
-      \verb https://en.wikipedia.org/wiki/Desktop_Tower_Defense
+      \verb https://en.wikipedia.org/w/index.php?title=Desktop_Tower_Defense&oldid=1220758442
       \endverb
     \endentry
     \entry{UnityDocs}{manual}{}

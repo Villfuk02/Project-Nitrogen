@@ -1566,6 +1566,7 @@ MonoBehaviour:
   numberEffectPrefab: {fileID: 7217571459049444440, guid: 8ecb4953dee557f418d546ed9fb344ec, type: 3}
   damageTimeToLive: 1
   damageColor: {r: 1, g: 0.04241266, b: 0, a: 0}
+  healColor: {r: 0.38479587, g: 1, b: 0.2235294, a: 0}
   damageMinFontSize: 25
   damageMaxFontSize: 50
   fullSizeDamage: 100

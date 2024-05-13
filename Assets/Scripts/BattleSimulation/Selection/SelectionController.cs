@@ -190,7 +190,7 @@ namespace BattleSimulation.Selection
             if (select.tile != null)
             {
                 if (select.tile.Building != null)
-                    infoPanel.ShowBuilding(select.tile.Building, !hover, !hover);
+                    infoPanel.ShowBlueprinted(select.tile.Building, null, !hover, !hover);
                 else
                     infoPanel.ShowTile(select.tile, !hover, !hover);
             }
@@ -214,8 +214,8 @@ namespace BattleSimulation.Selection
 
         public void HoverFromMenu(int index)
         {
-            blueprintMenu.GetBlueprints(index, out var blueprint, out var original);
-            infoPanel.ShowBlueprint(blueprint, original, true, false);
+            blueprintMenu.GetBlueprints(index, out var blueprint, out var original, out var cooldown);
+            infoPanel.ShowBlueprint(blueprint, original, cooldown, true, false);
         }
 
         public void UnhoverFromMenu()
@@ -233,14 +233,14 @@ namespace BattleSimulation.Selection
             if (onlyDeselect)
                 return;
 
-            if (!blueprintMenu.TrySelect(index, out var blueprint, out var originalBlueprint))
+            if (!blueprintMenu.TrySelect(index, out var blueprint, out _, out var cooldown))
                 return;
 
             placing = Instantiate(blueprint.prefab, transform).GetComponent<Placement>();
             placing.GetComponent<IBlueprinted>().InitBlueprint(blueprint);
             placing.Setup(hovered, rotation, hoverTilePosition, transform);
             resetVisuals.Invoke();
-            infoPanel.ShowBlueprint(blueprint, originalBlueprint, true, true);
+            infoPanel.ShowBlueprinted(placing.GetComponent<IBlueprinted>(), cooldown, true, true);
         }
 
         public void DeselectFromMenu()
@@ -248,11 +248,11 @@ namespace BattleSimulation.Selection
             if (placing != null)
             {
                 Destroy(placing.gameObject);
-                infoPanel.Hide(true, true);
                 resetVisuals.Invoke();
+                placing = null;
             }
 
-            placing = null;
+            infoPanel.Hide(true, true);
             blueprintMenu.Deselect();
         }
     }

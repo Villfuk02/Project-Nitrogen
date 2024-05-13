@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BattleSimulation.Buildings;
 using UnityEngine;
 
@@ -15,6 +16,13 @@ namespace BattleSimulation.Towers
             targeting.SetRange(Blueprint.range);
         }
 
-        public override string? GetExtraStats() => $"Damage dealt [#DMG]{damageDealt}";
+        public override IEnumerable<string> GetExtraStats()
+        {
+            if (Placed && Blueprint.HasDamage)
+                yield return $"Damage dealt [#DMG]{damageDealt}";
+
+            foreach (string s in base.GetExtraStats())
+                yield return s;
+        }
     }
 }

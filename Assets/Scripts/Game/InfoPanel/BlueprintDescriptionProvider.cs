@@ -1,68 +1,89 @@
-using BattleSimulation.Buildings;
 using System.Collections.Generic;
 using System.Text;
+using Game.Blueprint;
+using UnityEngine;
+using Utils;
 
 namespace Game.InfoPanel
 {
     public class BlueprintDescriptionProvider : DescriptionProvider
     {
         readonly Blueprint.Blueprint blueprint_;
-        readonly Building? building_;
+        readonly IBlueprinted? blueprinted_;
         readonly DescriptionFormatter<(Blueprint.Blueprint, Blueprint.Blueprint)> descriptionFormatter_;
-        public BlueprintDescriptionProvider(Building building) : this(building.Blueprint, building.OriginalBlueprint)
+        readonly Box<int> cooldown_;
+
+        public BlueprintDescriptionProvider(IBlueprinted blueprinted, Box<int>? cooldown = null) : this(blueprinted.Blueprint, blueprinted.OriginalBlueprint, cooldown)
         {
-            building_ = building;
+            blueprinted_ = blueprinted;
         }
 
-        public BlueprintDescriptionProvider(Blueprint.Blueprint blueprint, Blueprint.Blueprint original)
+        public BlueprintDescriptionProvider(Blueprint.Blueprint blueprint, Blueprint.Blueprint original, Box<int>? cooldown = null)
         {
             blueprint_ = blueprint;
             descriptionFormatter_ = DescriptionFormat.Blueprint(blueprint, original);
+            cooldown_ = cooldown;
         }
 
         protected override string GenerateDescription() => descriptionFormatter_.Format(GenerateRawDescription());
 
         string GenerateRawDescription()
         {
+            bool initialized = blueprinted_ is MonoBehaviour mb && mb != null;
             StringBuilder sb = new();
+            List<string> statBlock = new();
 
-            string? extra = building_ != null ? building_.GetExtraStats() : null;
-            if (extra != null)
+            if (cooldown_ is not null)
             {
-                sb.Append(extra);
-                sb.Append("[BRK]");
+                if (cooldown_.value > 0 || blueprint_.cooldown > 0)
+                    AppendStat($"Cooldown {cooldown_.value}[+CD]");
+            }
+            else if (!initialized || !blueprinted_.Placed)
+            {
+                if (blueprint_.cooldown > 0)
+                    AppendStat("[$CD]");
+                if (blueprint_.startingCooldown > 0 || blueprint_.cooldown > 0)
+                    AppendStat("[$SCD]");
             }
 
-            List<string> stats = new();
-            if (blueprint_.HasRange)
-                stats.Add("Range [RNG]");
-            if (blueprint_.HasRadius)
-                stats.Add("Radius [RAD]");
-            if (blueprint_.HasDamage)
-                stats.Add("Damage [DMG]");
-            if (blueprint_.HasDamageType)
-                stats.Add("Damage Type [DMT]");
-            if (blueprint_.HasInterval)
-                stats.Add("Interval [INT]");
-            if (blueprint_.HasDamage && blueprint_.HasInterval)
-                stats.Add("Base Damage/s [DPS]");
-            if (blueprint_.HasDelay)
-                stats.Add("Delay [DEL]");
-            if (blueprint_.HasDurationTicks || blueprint_.HasDurationWaves)
-                stats.Add("Duration [DUR]");
+            if (initialized)
+                foreach (var stat in blueprinted_.GetExtraStats())
+                    AppendStat(stat);
 
-            if (stats.Count > 0)
-            {
-                sb.AppendJoin('\n', stats);
-                sb.Append("[BRK]");
-            }
+            foreach (var stat in blueprint_.statsToDisplay)
+                AppendStat(stat);
+
+            if (!initialized)
+                foreach (var stat in blueprint_.statsToDisplayWhenUninitialized)
+                    AppendStat(stat);
+
+            FlushStatBlock();
+
             foreach (string desc in blueprint_.descriptions)
             {
-                sb.Append(desc);
                 sb.Append("[BRK]");
+                sb.Append(desc);
             }
 
             return sb.ToString();
+
+            void AppendStat(string stat)
+            {
+                if (stat.Length <= 0 || stat == "[BRK]")
+                    FlushStatBlock();
+                else
+                    statBlock.Add(stat);
+            }
+
+            void FlushStatBlock()
+            {
+                if (statBlock.Count <= 0)
+                    return;
+                if (sb.Length > 0)
+                    sb.Append("[BRK]");
+                sb.AppendJoin('\n', statBlock);
+                statBlock.Clear();
+            }
         }
     }
 }

@@ -32,8 +32,9 @@ MonoBehaviour:
   fuelProduction: -1
   materialProduction: 5
   energyProduction: -1
-  magic1: 5
+  statsToDisplay: []
+  statsToDisplayWhenUninitialized: []
   descriptions:
   - Produces [PRO] after every wave.
   - Cannot be built adjacent to another [NAM].
-  - Increases cost by [#MAT][M1-] when built.
+  - Increases cost by [#MAT]5 when built.

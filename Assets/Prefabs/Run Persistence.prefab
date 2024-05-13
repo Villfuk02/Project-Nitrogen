@@ -430,8 +430,8 @@ MonoBehaviour:
   blueprints:
   - {fileID: 11400000, guid: 376c6eb40ad25ad438f202cf9fd84f42, type: 2}
   - {fileID: 11400000, guid: e91792428c7fbaf44b512304b52643e2, type: 2}
-  - {fileID: 11400000, guid: f7194962d8ed52a41887aebd5a9644d5, type: 2}
   - {fileID: 11400000, guid: 3425f27343a18a24c88b3ec33a6ead8c, type: 2}
+  - {fileID: 11400000, guid: f7194962d8ed52a41887aebd5a9644d5, type: 2}
   - {fileID: 11400000, guid: 795fea2ef81d3f84799dff3a745b2be8, type: 2}
   level: 0
   cheatAddHull: 0
@@ -530,6 +530,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f7194962d8ed52a41887aebd5a9644d5, type: 2}
   - {fileID: 11400000, guid: 3425f27343a18a24c88b3ec33a6ead8c, type: 2}
   - {fileID: 11400000, guid: 2c4f327fc7cfc9045ab1283e27518867, type: 2}
+  - {fileID: 11400000, guid: a9c01dea74c20d34bab7cf6247dfb6fe, type: 2}
+  - {fileID: 11400000, guid: f407f5dca50eccf43b9927fea2f23384, type: 2}
+  - {fileID: 11400000, guid: f5eb3988800089348bbfb7d79cd7ca34, type: 2}
+  - {fileID: 11400000, guid: 159e61d374f78a04bad999da97be3102, type: 2}
+  - {fileID: 11400000, guid: b46e88730c59b5a43a3cf95fd2393994, type: 2}
+  - {fileID: 11400000, guid: 69a1f5c2a2dd3db4aaabdc0fab288672, type: 2}
+  - {fileID: 11400000, guid: ed3617c8db505bc4295d14424911ba8c, type: 2}
   blueprintsPerOffer: 3
   rareChanceIncrement: 0.1
   legendaryChanceIncrement: 0.02

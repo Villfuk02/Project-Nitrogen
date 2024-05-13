@@ -162,9 +162,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a25db7fe2105f5844b8833f3c09a194f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placed: 0
   visuals: {fileID: 475032649205546438}
-  priceIncrease: 5
+  rotateBack: []
+  permanent: 0
+  costIncrease: 5
 --- !u!114 &8337531359384607749
 MonoBehaviour:
   m_ObjectHideFlags: 0

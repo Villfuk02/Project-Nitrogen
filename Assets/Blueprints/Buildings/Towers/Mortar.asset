@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Mortar
   prefab: {fileID: 475032649215164951, guid: a11acf37e5edc6c48a65ae65f6663b35, type: 3}
-  icon: {fileID: 21300000, guid: cf84b6b4da50518499da12b6c0a44e56, type: 3}
+  icon: {fileID: 21300000, guid: 409f2dfc8747eb6429aeb1ec73686483, type: 3}
   rarity: 0
   type: 0
   energyCost: 0
@@ -32,7 +32,12 @@ MonoBehaviour:
   fuelProduction: -1
   materialProduction: -1
   energyProduction: -1
-  magic1: -1
+  statsToDisplay:
+  - '[$RNG]'
+  - '[$DMG]'
+  - '[$INT]'
+  - '[$DPS]'
+  statsToDisplayWhenUninitialized: []
   descriptions:
   - Cannot be paced on slanted tiles.
   - Shoots a cannonball over obstacles, impacting the ground after [DEL] and dealing
