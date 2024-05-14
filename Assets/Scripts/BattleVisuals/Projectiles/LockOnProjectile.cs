@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace BattleVisuals.Projectiles
 {
-    public class LockOnProjectileVis : MonoBehaviour
+    public class LockOnProjectile : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] LockOnProjectile sim;
+        [SerializeField] BattleSimulation.Projectiles.LockOnProjectile sim;
         [SerializeField] float stoppedLifetime;
         [Header("Runtime variables")]
         [SerializeField] Vector3 realPos;

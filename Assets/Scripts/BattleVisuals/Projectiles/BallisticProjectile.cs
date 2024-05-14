@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace BattleVisuals.Projectiles
 {
-    public class BallisticProjectileVis : MonoBehaviour
+    public class BallisticProjectile : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] BallisticProjectile sim;
+        [SerializeField] BattleSimulation.Projectiles.BallisticProjectile sim;
         [Header("Runtime variables")]
         [SerializeField] Vector3 realPos;
         [SerializeField] Vector3 velocity;

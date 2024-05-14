@@ -37,7 +37,7 @@ namespace Game.Damage
             return $"{(type & original).ToHumanReadable(false)} {(type & ~original).ToHumanReadable(false).Colored(TextUtils.NEW_COLOR)}";
         }
 
-        public static float CalculateDps(int damage, int intervalTicks) => intervalTicks == 0 ? 0 : damage * 2000 / intervalTicks * 0.01f;
+        public static float CalculateDps(int damage, int intervalTicks) => intervalTicks == 0 ? 0 : damage * TimeUtils.TICKS_PER_SEC / (float)intervalTicks;
     }
 
     public static class DamageExtensions

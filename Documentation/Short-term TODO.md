@@ -11,8 +11,7 @@
 - [x] organize rest of ch2
 - [x] implement towers
 - [x] blueprint descriptions are too long
-- [ ] unify visuals class names
-- [ ] unify all 0.05f and 20
+- [x] unify all 0.05f and 20
 - [ ] comment new parts
 - [ ] prepare for code review
     - [ ] names

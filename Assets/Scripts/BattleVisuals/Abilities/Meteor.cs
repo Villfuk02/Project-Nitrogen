@@ -1,4 +1,5 @@
 using UnityEngine;
+using Utils;
 
 namespace BattleVisuals.Abilities
 {
@@ -18,7 +19,7 @@ namespace BattleVisuals.Abilities
         {
             var t = transform;
             t.localPosition = (Vector3.up + Random.onUnitSphere * 0.3f) * startHeight;
-            speed_ = -t.localPosition * 20 / sim.Blueprint.delay;
+            speed_ = -t.localPosition * TimeUtils.TICKS_PER_SEC / sim.Blueprint.delay;
         }
 
         void Update()

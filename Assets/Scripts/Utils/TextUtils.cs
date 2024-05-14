@@ -67,7 +67,7 @@ namespace Utils
 
         public static string FormatTicksStat(Icon? icon, int ticks, int original, bool originalExists, Improvement improvement)
         {
-            return ColorImprovement($"{icon?.Sprite()}{(ticks * 0.05f).ToString("0.##", CultureInfo.InvariantCulture)}s", ticks, original, originalExists, improvement);
+            return ColorImprovement($"{icon?.Sprite()}{(ticks * TimeUtils.SECS_PER_TICK).ToString("0.##", CultureInfo.InvariantCulture)}s", ticks, original, originalExists, improvement);
         }
 
         public static string FormatProduction(int fuel, int materials, int energy, int originalFuel, int originalMaterials, int originalEnergy)

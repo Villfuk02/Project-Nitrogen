@@ -51,7 +51,7 @@ namespace Game.AttackerStats
         static readonly float[] DisplaySpacing = { 0.375f, 0.5f, 0.75f, 1, 1.5f };
         static readonly int[] MaxDisplayCount = { 5, 4, 3, 2, 2 };
         public static int GetTicks(this Spacing spacing) => TicksSpacing[(int)spacing];
-        public static float GetSeconds(this Spacing spacing) => spacing.GetTicks() * 0.05f;
+        public static float GetSeconds(this Spacing spacing) => spacing.GetTicks() * TimeUtils.SECS_PER_TICK;
         public static float GetDisplaySpacing(this Spacing spacing) => DisplaySpacing[(int)spacing];
         public static int GetMaxDisplayCount(this Spacing spacing) => MaxDisplayCount[(int)spacing];
     }

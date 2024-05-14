@@ -26,7 +26,7 @@ namespace BattleSimulation.Projectiles
         {
             Init(position, source);
             this.impactRadius = impactRadius;
-            velocity = (target - position) / delay - Physics.gravity * (delay - 2 * 0.05f) / 2;
+            velocity = (target - position) / delay - Physics.gravity * (delay - 2 * TimeUtils.SECS_PER_TICK) / 2;
         }
 
         void FixedUpdate()

@@ -76,7 +76,7 @@ namespace BattleSimulation.Control
         {
             Material = 20;
             Energy = 10;
-            MaxEnergy = 40;
+            MaxEnergy = 50;
             Fuel = 0;
             FuelGoal = 75;
         }

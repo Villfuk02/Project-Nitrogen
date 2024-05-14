@@ -1,4 +1,5 @@
 using UnityEngine;
+using Utils;
 
 namespace BattleSimulation.Control
 {
@@ -27,7 +28,7 @@ namespace BattleSimulation.Control
 
         void Start()
         {
-            timeLeft = ticksLeft * 0.05f;
+            timeLeft = ticksLeft * TimeUtils.SECS_PER_TICK;
             transform.localScale = Vector3.one * radius;
         }
 
@@ -56,7 +57,7 @@ namespace BattleSimulation.Control
         void Delete()
         {
             timeLeft = fadeTime;
-            ticksLeft = Mathf.FloorToInt(fadeTime * 20);
+            ticksLeft = Mathf.FloorToInt(fadeTime * TimeUtils.TICKS_PER_SEC);
             col.enabled = false;
         }
     }
