@@ -8,7 +8,14 @@ namespace Game.Blueprint
     public class Blueprint : ScriptableObject
     {
         public enum Rarity { Starter, Common, Rare, Legendary, Special }
-        public enum Type { DefensiveBuilding, EconomicBuilding, SpecialBuilding, Ability, Upgrade }
+
+        public enum Type
+        {
+            Tower,
+            EconomicBuilding,
+            SpecialBuilding,
+            Ability,
+        }
 
         public new string name;
         public GameObject prefab;

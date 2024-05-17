@@ -1,7 +1,7 @@
-using BattleSimulation.Control;
-using BattleSimulation.World.WorldData;
 using System.Collections;
 using System.Collections.Generic;
+using BattleSimulation.Control;
+using BattleSimulation.World.WorldData;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,6 +28,7 @@ namespace BattleVisuals.UI
         float lastWidth_;
         float offset_;
         int fuelProduction_;
+
         void Awake()
         {
             BattleController.updateFuelPerWave.RegisterReaction(UpdateFuelIncome, 10);
@@ -65,10 +66,10 @@ namespace BattleVisuals.UI
         {
             if (fuelProduction_ <= 0)
                 return "???";
-            int remaining = (bc.FuelGoal - bc.Fuel + fuelProduction_ - 1) / fuelProduction_;
+            int remaining = (bc.fuelGoal - bc.fuel + fuelProduction_ - 1) / fuelProduction_;
             return remaining switch
             {
-                <= 0 => "<size=36>departing</size>",
+                <= 0 => "<size=28>VICTORY</size>",
                 1 => "<size=26>last\n\nwave left</size>",
                 _ => $"{remaining}\n<size=26>waves left</size>"
             };

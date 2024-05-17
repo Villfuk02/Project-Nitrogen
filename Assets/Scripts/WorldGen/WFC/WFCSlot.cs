@@ -46,6 +46,10 @@ namespace WorldGen.WFC
             validHeights_ = new();
         }
 
+        /// <summary>
+        /// Collapses the slot to a random module.
+        /// </summary>
+        /// <returns>The new slot after collapsing.</returns>
         public WFCSlot CollapseRandom(WFCState state)
         {
             WFCSlot n = new(pos);
@@ -64,6 +68,9 @@ namespace WorldGen.WFC
             return n;
         }
 
+        /// <summary>
+        /// Marks the given module as invalid, to be removed from the possible modules on the next valid module recalculation.
+        /// </summary>
         public void MarkInvalid(TilesData.CollapsedSlot invalid)
         {
             invalidModule_ = invalid;

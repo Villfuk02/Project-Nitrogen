@@ -1,6 +1,6 @@
+using System;
 using BattleSimulation.Attackers;
 using Game.Run.Events;
-using System;
 using UnityEngine;
 using Utils;
 
@@ -8,7 +8,13 @@ namespace BattleSimulation.Control
 {
     public class BattleController : MonoBehaviour
     {
-        public enum Affordable { Yes, UseMaterialsAsEnergy, No }
+        public enum Affordable
+        {
+            Yes,
+            UseMaterialsAsEnergy,
+            No
+        }
+
         public static ModifiableCommand<(object source, float amount)> addMaterial = new();
         public static ModifiableCommand<(object source, float amount)> addEnergy = new();
         public static ModifiableCommand<(object source, float amount)> addFuel = new();
@@ -20,20 +26,16 @@ namespace BattleSimulation.Control
         public static ModifiableCommand winLevel = new();
         public static RunEvents runEvents;
 
-        // Runtime variables
-        public int Material { get; private set; }
-        public int Energy { get; private set; }
-        public int MaxEnergy { get; private set; }
-        public int Fuel { get; private set; }
-        public int FuelGoal { get; private set; }
+        [Header("Runtime variables")]
+        public int material;
+        public int energy;
+        public int maxEnergy;
+        public int fuel;
+        public int fuelGoal;
 
-        public int HullDmgTaken { get; private set; }
-        public bool Won { get; private set; }
-        public bool Lost { get; private set; }
-
-        [Header("Cheats")]
-        [SerializeField] bool cheatAddMaterialsAndEnergy;
-        [SerializeField] bool cheatWin;
+        public int hullDmgTaken;
+        public bool won;
+        public bool lost;
 
         void Awake()
         {
@@ -72,31 +74,6 @@ namespace BattleSimulation.Control
             runEvents.defeat.UnregisterReaction(Lose);
         }
 
-        void Start()
-        {
-            Material = 20;
-            Energy = 10;
-            MaxEnergy = 50;
-            Fuel = 0;
-            FuelGoal = 75;
-        }
-
-        void Update()
-        {
-            if (cheatAddMaterialsAndEnergy)
-            {
-                cheatAddMaterialsAndEnergy = false;
-                Material += 100;
-                Energy += 100;
-            }
-
-            if (cheatWin)
-            {
-                cheatWin = false;
-                winLevel.Invoke();
-            }
-        }
-
         public static bool AdjustAndTrySpend(int energy, int materials)
         {
             var (affordable, spendEnergy, spendMaterials) = canAfford.Query((energy, materials));
@@ -112,30 +89,32 @@ namespace BattleSimulation.Control
                 throw new ArgumentException("Amount cannot be negative");
             int realAmount = Mathf.FloorToInt(param.amount);
             param.amount = realAmount;
-            Material += realAmount;
+            material += realAmount;
             return true;
         }
+
         bool AddEnergy(ref (object source, float amount) param)
         {
             if (param.amount < 0)
                 throw new ArgumentException("Amount cannot be negative");
-            int realAmount = Mathf.Min(Mathf.FloorToInt(param.amount), Mathf.Max(MaxEnergy - Energy, 0));
+            int realAmount = Mathf.Min(Mathf.FloorToInt(param.amount), Mathf.Max(maxEnergy - energy, 0));
             param.amount = realAmount;
-            Energy += realAmount;
+            energy += realAmount;
             return realAmount > 0;
         }
+
         bool AddFuel(ref (object source, float amount) param)
         {
             if (param.amount < 0)
                 throw new ArgumentException("Amount cannot be negative");
             int realAmount = Mathf.FloorToInt(param.amount);
             param.amount = realAmount;
-            if (Fuel >= FuelGoal)
+            if (fuel >= fuelGoal)
                 return true;
-            Fuel += realAmount;
-            if (Fuel > FuelGoal)
-                Fuel = FuelGoal;
-            if (Fuel == FuelGoal && !Lost)
+            fuel += realAmount;
+            if (fuel > fuelGoal)
+                fuel = fuelGoal;
+            if (fuel == fuelGoal && !lost)
                 winLevel.Invoke();
             return true;
         }
@@ -144,10 +123,10 @@ namespace BattleSimulation.Control
         {
             if (param.energy < 0 || param.materials < 0)
                 throw new ArgumentException("Amount cannot be negative");
-            if (param.energy > Energy || param.materials > Material)
+            if (param.energy > energy || param.materials > material)
                 throw new InvalidOperationException("Cannot afford");
-            Material -= param.materials;
-            Energy -= param.energy;
+            material -= param.materials;
+            energy -= param.energy;
             return true;
         }
 
@@ -158,14 +137,14 @@ namespace BattleSimulation.Control
 
             Affordable result = Affordable.Yes;
 
-            if (energy > Energy)
+            if (energy > this.energy)
             {
-                materials += energy - Energy;
-                energy = Energy;
+                materials += energy - this.energy;
+                energy = this.energy;
                 result = Affordable.UseMaterialsAsEnergy;
             }
 
-            if (materials > Material)
+            if (materials > material)
                 result = Affordable.No;
 
             return (result, energy, materials);
@@ -184,30 +163,30 @@ namespace BattleSimulation.Control
 
         void OnHullDmgTaken(int dmg)
         {
-            HullDmgTaken += dmg;
+            hullDmgTaken += dmg;
         }
 
         void OnHullRepaired(int repaired)
         {
-            HullDmgTaken -= repaired;
+            hullDmgTaken -= repaired;
         }
 
-        bool CanStartWave() => !Won && !Lost;
+        bool CanStartWave() => !won && !lost;
 
         void OnWaveStarted()
         {
-            HullDmgTaken = 0;
+            hullDmgTaken = 0;
         }
 
         bool Win()
         {
-            Won = true;
+            won = true;
             return true;
         }
 
         public void Stay()
         {
-            Won = false;
+            won = false;
         }
 
         public void FinishLevel()
@@ -217,7 +196,7 @@ namespace BattleSimulation.Control
 
         void Lose()
         {
-            Lost = true;
+            lost = true;
         }
     }
 }

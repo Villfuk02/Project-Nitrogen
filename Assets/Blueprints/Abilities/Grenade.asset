@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9e4bc5a30718f41968ff1efaf3e48d, type: 3}
+  m_Name: Grenade
+  m_EditorClassIdentifier: 
+  name: Grenade
+  prefab: {fileID: 6702536568690210424, guid: 4b916e183474668429fbd46bd64dc0b6, type: 3}
+  icon: {fileID: 21300000, guid: 82b113b4feca3154ab34f4466a3a06b3, type: 3}
+  rarity: 0
+  type: 3
+  energyCost: 10
+  materialCost: 0
+  startingCooldown: 0
+  cooldown: 0
+  range: -1
+  damage: 12
+  damageType: 8
+  interval: -1
+  radius: 0.9
+  delay: -1
+  durationTicks: -1
+  durationWaves: -1
+  fuelProduction: -1
+  materialProduction: -1
+  energyProduction: -1
+  statsToDisplay:
+  - '[$RAD]'
+  - '[$DMG]'
+  statsToDisplayWhenUninitialized: []
+  descriptions:
+  - Deals damage to all attackers within radius.

@@ -1,6 +1,6 @@
 ## questions
 - dictionary.com?
-- public fields vs property
+- playtesting?
 
 ## till next metting
 - [x] heal effect number
@@ -12,40 +12,21 @@
 - [x] implement towers
 - [x] blueprint descriptions are too long
 - [x] unify all 0.05f and 20
-- [ ] comment new parts
-- [ ] prepare for code review
-    - [ ] names
-    - [ ] comments
-- [ ] read everything to check for typos and weird paragraphs
-- [ ] sec 3.1
-- [ ] autoload blueprints
-
+- [ ] add notes to ch3
+    - [ ] separation of blueprints from behavior
 ## implementation 
 - [ ] content
-    - [ ] abilities
-        - [x] meteor
-        - [x] > use abilities only during waves
-        - [x] > deactivate timed or delayed abilities at end of wave
-        - [x] lightning storm
-        - [x] temporary tower
-        - [ ] laser strike (in a strainght line)
-        - [ ] upgrade blueprint stats
+    - [x] abilities
     - [x] more attackers (see [[Attacker#ideas]])
     - [x] more towers (see [[Tower#tower ideas]])
-    - [ ] more economic buildings
-        - [ ] energy maker
-        - [ ] produces material per kill in radius
-        - [ ] reactor - increasing production, but expensive
-        - [ ] alternative fuel source
-        - [ ] materializer - energy that would go over limit becomes materials
+    - [x] more economic buildings
     - [ ] support building
-        - [ ] more damage (absolute)
-        - [ ] pushes back attackers
-        - [ ] makes material producers generate extra energy
-        - [ ] more range
+        - [ ] more damage to towers in radius (absolute) (rare)
+        - [ ] more range to towers in radius (common)
 - [ ] limit wave generator to pull extras max once per wave
 - [ ] also make early waves shorter
 - [ ] make wave fade shorter
+- [ ] hover attackers from wave preview
 - [ ] make all game commands static
 - [ ] check if tags are necessary
 - [ ] a few more simple terrain types - change up minerals, obstacles, terrain color, difficulty

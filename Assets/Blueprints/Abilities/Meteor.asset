@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Meteor
   prefab: {fileID: 6702536568690210424, guid: 4adf973834d51aa46b002beec0046a4c, type: 3}
   icon: {fileID: 21300000, guid: 15addddcc13488e46af0c99f24ffd745, type: 3}
-  rarity: 0
+  rarity: 1
   type: 3
   energyCost: 20
   materialCost: 0

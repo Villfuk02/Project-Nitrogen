@@ -44,12 +44,12 @@ namespace BattleVisuals.UI
             maxHullText.text = runPersistence_.MaxHull.ToString();
             MathUtils.StepTowards(ref hullDisplay, runPersistence_.Hull, convergenceDivisor);
             hullText.text = hullDisplay.ToString();
-            dmgTakenText.text = (-bc.HullDmgTaken).ToString();
+            dmgTakenText.text = (-bc.hullDmgTaken).ToString();
         }
 
         void UpdateBackgroundFill()
         {
-            int previousHull = runPersistence_.Hull + Mathf.Max(bc.HullDmgTaken, 0);
+            int previousHull = runPersistence_.Hull + Mathf.Max(bc.hullDmgTaken, 0);
             float targetBackgroundWidth = previousHull <= 0 ? emptyWidth : Mathf.Lerp(minWidth, maxWidth, previousHull / (float)runPersistence_.MaxHull);
             currentBackgroundWidth = Mathf.Lerp(currentBackgroundWidth, targetBackgroundWidth, 10 * Time.deltaTime);
             backgroundFill.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, currentBackgroundWidth);

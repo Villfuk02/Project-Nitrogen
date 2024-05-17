@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9e4bc5a30718f41968ff1efaf3e48d, type: 3}
+  m_Name: Streamline
+  m_EditorClassIdentifier: 
+  name: Streamline
+  prefab: {fileID: 6702536568690210424, guid: f8b58441c9e65684ea47e135814ae57c, type: 3}
+  icon: {fileID: 21300000, guid: df4e0c9925137ad47bf3c5a25f1cb9a1, type: 3}
+  rarity: 3
+  type: 3
+  energyCost: 10
+  materialCost: 10
+  startingCooldown: 1
+  cooldown: 1
+  range: -1
+  damage: -1
+  damageType: 0
+  interval: -1
+  radius: -1
+  delay: -1
+  durationTicks: -1
+  durationWaves: -1
+  fuelProduction: -1
+  materialProduction: -1
+  energyProduction: -1
+  statsToDisplay: []
+  statsToDisplayWhenUninitialized: []
+  descriptions:
+  - 'Improves other bluperints for the rest of the battle:'
+  - Makes them [#ENE]2[#MAT]2 cheaper.
+  - Increases [#RNG]Range and [#RAD]Radius by 5%.
+  - Decreases [#INT]Interval by 10%, to a minimum of 0.25s.

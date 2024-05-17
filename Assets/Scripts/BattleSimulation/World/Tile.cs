@@ -7,7 +7,15 @@ namespace BattleSimulation.World
 {
     public class Tile : MonoBehaviour, IHighlightable
     {
-        public enum Obstacle { None, Path, Small, Large, Fuel, Minerals }
+        public enum Obstacle
+        {
+            None,
+            Path,
+            Small,
+            Large,
+            Fuel,
+            Minerals
+        }
 
         [Header("References")]
         [SerializeField] Transform slantedParts;
@@ -16,11 +24,13 @@ namespace BattleSimulation.World
         [SerializeField] SpriteRenderer[] highlights;
         [Header("Settings - auto-assigned")]
         public Vector2Int pos;
+        public float height;
         public Obstacle obstacle;
         public WorldUtils.Slant slant;
 
         [Header("Runtime variables")]
         [SerializeField] Building building;
+
         public Building? Building
         {
             get { return building; }

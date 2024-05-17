@@ -1,13 +1,14 @@
+using System.Collections.Generic;
+using System.Linq;
 using BattleSimulation.Control;
 using Game.Blueprint;
 using Game.Run;
-using System.Linq;
 using UnityEngine;
 using Utils;
 
 namespace BattleSimulation.Selection
 {
-    public class BlueprintMenu : MonoBehaviour
+    public class BlueprintMenu : MonoBehaviour, IBlueprintHolder
     {
         public class MenuEntry
         {
@@ -24,6 +25,7 @@ namespace BattleSimulation.Selection
                 this.index = index;
             }
         }
+
         [Header("References")]
         [SerializeField] SelectionController selectionController;
         [Header("Runtime variables")]
@@ -66,14 +68,7 @@ namespace BattleSimulation.Selection
             selected = -1;
         }
 
-        public void GetBlueprints(int index, out Blueprint blueprint, out Blueprint original, out Box<int> cooldown)
-        {
-            blueprint = CurrentEntries[index].current;
-            original = CurrentEntries[index].original;
-            cooldown = CurrentEntries[index].cooldown;
-        }
-
-        public bool TrySelect(int index, out Blueprint blueprint, out Blueprint original, out Box<int> cooldown)
+        public bool TryGetBlueprints(int index, out Blueprint blueprint, out Blueprint original, out Box<int> cooldown)
         {
             blueprint = null;
             original = null;
@@ -82,7 +77,16 @@ namespace BattleSimulation.Selection
             if (index < 0 || index >= CurrentEntries.Length)
                 return false;
 
-            GetBlueprints(index, out blueprint, out original, out cooldown);
+            blueprint = CurrentEntries[index].current;
+            original = CurrentEntries[index].original;
+            cooldown = CurrentEntries[index].cooldown;
+            return true;
+        }
+
+        public bool TrySelect(int index, out Blueprint blueprint, out Blueprint original, out Box<int> cooldown)
+        {
+            if (!TryGetBlueprints(index, out blueprint, out original, out cooldown))
+                return false;
             selected = index;
             return true;
         }
@@ -124,6 +128,11 @@ namespace BattleSimulation.Selection
         {
             foreach (var entry in abilities.Concat(buildings))
                 entry.cooldown.value = 0;
+        }
+
+        public IEnumerable<Blueprint> GetBlueprints()
+        {
+            return abilities.Concat(buildings).Select(e => e.current);
         }
     }
 }

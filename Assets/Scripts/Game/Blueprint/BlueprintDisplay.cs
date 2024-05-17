@@ -18,10 +18,10 @@ namespace Game.Blueprint
         public Image highlight;
 
         [Header("Settings")]
-        [SerializeField] Color defensiveBuildingColor;
+        [SerializeField] Color towerColor;
         [SerializeField] Color economicBuildingColor;
+        [SerializeField] Color specialBuildingColor;
         [SerializeField] Color abilityColor;
-        [SerializeField] Color upgradeColor;
         [SerializeField] float hoveredIconScale;
         [SerializeField] float highlightPeriod;
         public float highlightScale;
@@ -86,11 +86,10 @@ namespace Game.Blueprint
 
         Color GetColorFromType(Blueprint.Type type) => type switch
         {
-            Blueprint.Type.DefensiveBuilding => defensiveBuildingColor,
+            Blueprint.Type.Tower => towerColor,
             Blueprint.Type.EconomicBuilding => economicBuildingColor,
+            Blueprint.Type.SpecialBuilding => specialBuildingColor,
             Blueprint.Type.Ability => abilityColor,
-            Blueprint.Type.Upgrade => upgradeColor,
-            Blueprint.Type.SpecialBuilding => economicBuildingColor,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
 

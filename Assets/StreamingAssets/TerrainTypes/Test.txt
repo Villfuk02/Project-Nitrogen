@@ -202,8 +202,8 @@ obstacles {
 
     * Fuel {
         type f
-        min 3
-        max 3
+        min 5
+        max 6
         base_probability 1
         # valid_surfaces d
         on_slants false
@@ -212,8 +212,8 @@ obstacles {
 
     * Minerals {
         type m
-        min 4
-        max 8
+        min 6
+        max 10
         base_probability 0.3
         on_slants false
         forces -2 0.5

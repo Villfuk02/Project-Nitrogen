@@ -67,6 +67,9 @@ namespace WorldGen.Path
             pathStarts = pickedStarts_.ToArray();
         }
 
+        /// <summary>
+        /// Picks the hub position uniformly from all tiles that are at most maxHubDistFromCenter from center.
+        /// </summary>
         static Vector2Int GenerateHubPos(float maxHubDistFromCenter)
         {
             List<Vector2Int> validPositions = new();
@@ -81,6 +84,7 @@ namespace WorldGen.Path
         /// <summary>
         /// Selects the possible path starting tiles - those at the edge of the world.
         /// Due to parity, paths of odd length cannot start at the same spots as paths of even length.
+        /// Discards those that are closer to hub than minDistFromHub.
         /// </summary>
         void GenerateCandidates(float minDistFromHub)
         {
@@ -97,8 +101,9 @@ namespace WorldGen.Path
                 AddCandidateIfFarEnoughFromHub(new(WorldUtils.WORLD_SIZE.x - 1, y), minDistFromHub);
             }
         }
+
         /// <summary>
-        /// Add the given position to the right candidates set based on the position's parity
+        /// Add the given position to the right candidates set based on the position's parity, but only if it's further than minDistFromHub from the hub.
         /// </summary>
         void AddCandidateIfFarEnoughFromHub(Vector2Int position, float minDistFromHub)
         {

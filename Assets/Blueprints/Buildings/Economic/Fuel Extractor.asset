@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Fuel Extractor
   prefab: {fileID: 475032649215164951, guid: a6c44a4163e87f44986d774d22ee3073, type: 3}
   icon: {fileID: 21300000, guid: 6b9b209b353d14e499697c4453388809, type: 3}
-  rarity: 0
+  rarity: 2
   type: 1
   energyCost: 0
   materialCost: 40
@@ -29,10 +29,11 @@ MonoBehaviour:
   delay: -1
   durationTicks: -1
   durationWaves: -1
-  fuelProduction: 5
+  fuelProduction: 10
   materialProduction: -1
   energyProduction: -1
-  magic1: -1
+  statsToDisplay: []
+  statsToDisplayWhenUninitialized: []
   descriptions:
   - Produces [PRO] after every wave.
   - Must be built on tiles rich in [#FUE]fuel.

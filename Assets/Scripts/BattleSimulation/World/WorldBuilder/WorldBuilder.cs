@@ -1,9 +1,9 @@
+using System.Collections;
+using System.Diagnostics;
 using BattleSimulation.Buildings;
 using BattleSimulation.World.WorldData;
 using BattleVisuals.World;
 using Game.Blueprint;
-using System.Collections;
-using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -66,9 +66,11 @@ namespace BattleSimulation.World.WorldBuilder
                 if (frameTimer_.ElapsedMilliseconds >= millisPerFrame)
                     yield return null;
             }
+
             hubTile = Tiles.TILES[worldData.hubPosition];
             done++;
         }
+
         IEnumerator BuildTerrain()
         {
             foreach (var pos in WorldUtils.WORLD_SIZE + Vector2Int.one)
@@ -77,8 +79,10 @@ namespace BattleSimulation.World.WorldBuilder
                 if (frameTimer_.ElapsedMilliseconds >= millisPerFrame)
                     yield return null;
             }
+
             done++;
         }
+
         IEnumerator PlaceDecorations()
         {
             foreach (var tile in worldData.tiles)
@@ -92,6 +96,7 @@ namespace BattleSimulation.World.WorldBuilder
                         yield return null;
                 }
             }
+
             done++;
         }
 
@@ -112,6 +117,7 @@ namespace BattleSimulation.World.WorldBuilder
             t.GetComponent<MeshFilter>().mesh = slot.module.CollisionMesh;
             t.GetComponent<MeshCollider>().sharedMesh = slot.module.CollisionMesh;
         }
+
         void PlaceDecoration(DecorationInstance decoration, Transform parent)
         {
             Transform t = Instantiate(decoration.decoration.Prefab, parent).transform;
@@ -119,6 +125,7 @@ namespace BattleSimulation.World.WorldBuilder
             t.localScale = Vector3.one * decoration.size;
             t.localRotation = Quaternion.Euler(decoration.eulerRotation);
         }
+
         void PlaceTile(Vector2Int pos)
         {
             Tile t = Instantiate(tilePrefab, tileHolder.transform).GetComponent<Tile>();
@@ -131,7 +138,8 @@ namespace BattleSimulation.World.WorldBuilder
                 t.obstacle = Tile.Obstacle.None;
             else
                 t.obstacle = (Tile.Obstacle)((int)tileData.obstacle.ObstacleType + 2);
-            t.transform.localPosition = WorldUtils.TilePosToWorldPos(pos.x, pos.y, worldData.tiles.GetHeightAt(pos));
+            t.height = worldData.tiles.GetHeightAt(pos);
+            t.transform.localPosition = WorldUtils.TilePosToWorldPos(pos.x, pos.y, t.height);
             Tiles.TILES[pos] = t;
         }
 

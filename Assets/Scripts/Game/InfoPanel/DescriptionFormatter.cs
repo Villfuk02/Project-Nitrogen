@@ -21,16 +21,19 @@ namespace Game.InfoPanel
             { "#MAT", Icon.Materials.Sprite() },
             { "#ENE", Icon.Energy.Sprite() },
             { "#HUL", Icon.Hull.Sprite() },
+            { "#RNG", Icon.Range.Sprite() },
             { "#DMG", Icon.Damage.Sprite() },
+            { "#INT", Icon.Interval.Sprite() },
             { "#DUR", Icon.Duration.Sprite() },
             { "#HP", Icon.Health.Sprite() },
             { "#RAD", Icon.Radius.Sprite() },
+            { "#+", Icon.Production.Sprite() },
 
             // DAMAGE TYPE ICONS
             { "#DMT-HPL", Icon.DmgHpLoss.Sprite() },
             { "#DMT-PHY", Icon.DmgPhysical.Sprite() },
             { "#DMT-ENE", Icon.DmgEnergy.Sprite() },
-            { "#DMT-EXP", Icon.DmgExplosive.Sprite() },
+            { "#DMT-EXP", Icon.DmgExplosive.Sprite() }
         };
 
         static readonly Dictionary<string, (BlueprintDescriptionFormatter.HandleTag, string)> BlueprintTags = new()
@@ -48,7 +51,10 @@ namespace Game.InfoPanel
             { "PRO", (s => FormatProduction(s.blueprint.fuelProduction, s.blueprint.materialProduction, s.blueprint.energyProduction, s.original.fuelProduction, s.original.materialProduction, s.original.energyProduction), "Production") },
             { "SCD", (s => $"{s.blueprint.startingCooldown} waves", "Starting cooldown") },
             { "CD", (s => $"{FormatIntStat(null, s.blueprint.cooldown, s.original.cooldown, true, Improvement.Less)} waves", "Cooldown") },
-            { "+CD", (s => FormatCooldownSuffix(s.blueprint.cooldown, s.original.cooldown), "Cooldown SUFFIX") }
+            { "+CD", (s => FormatCooldownSuffix(s.blueprint.cooldown, s.original.cooldown), "Cooldown SUFFIX") },
+            { "FUE", (s => FormatIntStat(Icon.Fuel, s.blueprint.fuelProduction, s.original.fuelProduction, s.original.HasFuelProduction, Improvement.More), "Fuel production") },
+            { "MAT", (s => FormatIntStat(Icon.Materials, s.blueprint.materialProduction, s.original.materialProduction, s.original.HasMaterialProduction, Improvement.More), "Material production") },
+            { "ENE", (s => FormatIntStat(Icon.Energy, s.blueprint.energyProduction, s.original.energyProduction, s.original.HasEnergyProduction, Improvement.More), "Energy production") }
         };
 
         static readonly Dictionary<string, (AttackerDescriptionFormatter.HandleTag, string)> AttackerTags = new()
@@ -57,7 +63,7 @@ namespace Game.InfoPanel
             { "SPD", (s => FormatFloatStat(Icon.Speed, s.stats.speed, s.original.speed, true, Improvement.More), "Speed") },
             { "HP", (s => FormatIntStat(Icon.Health, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared), "Health") },
             { "MHP", (s => FormatIntStat(Icon.Health, s.stats.maxHealth, s.original.maxHealth, true, Improvement.More), "Health") },
-            { "HP/M", (s => $"{FormatIntStat(Icon.Health, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared)}/{FormatIntStat(null, s.stats.maxHealth, s.original.maxHealth, true, Improvement.More)}", "Health") },
+            { "HP/M", (s => $"{FormatIntStat(Icon.Health, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared)}/{FormatIntStat(null, s.stats.maxHealth, s.original.maxHealth, true, Improvement.More)}", "Health") }
         };
 
         static readonly Dictionary<string, (TileDescriptionFormatter.HandleTag, string)> TileTags = new();

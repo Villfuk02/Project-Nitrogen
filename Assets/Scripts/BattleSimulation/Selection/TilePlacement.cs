@@ -8,6 +8,7 @@ namespace BattleSimulation.Selection
     {
         [Header("Runtime variables")]
         public Tile selectedTile;
+
         public override bool Setup(Selectable selected, int rotation, Vector3? pos, Transform defaultParent)
         {
             var newSelectedTile = selected == null ? null : selected.tile;
@@ -41,6 +42,6 @@ namespace BattleSimulation.Selection
         public override bool IsValid() => IsTileValid(selectedTile);
         public override bool IsCorrectTypeSelected() => selectedTile != null;
 
-        public abstract bool IsTileValid(Tile tile);
+        public abstract bool IsTileValid(Tile? tile);
     }
 }

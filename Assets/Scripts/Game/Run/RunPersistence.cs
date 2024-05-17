@@ -1,5 +1,6 @@
 using Game.Run.Events;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = Utils.Random.Random;
@@ -16,8 +17,8 @@ namespace Game.Run
         public ulong runSeed;
         public string seedString;
         [SerializeField] int startMaxHull;
-        public List<Blueprint.Blueprint> blueprints;
         [Header("Runtime variables")]
+        public List<Blueprint.Blueprint> blueprints;
         public int level;
         public int MaxHull { get; private set; }
         public int Hull { get; private set; }
@@ -36,12 +37,14 @@ namespace Game.Run
             runEvents.quit.RegisterHandler(Quit);
         }
 
-        public void Init()
+        public void Init(bool noStartingBlueprints)
         {
             random_ = new(runSeed);
             MaxHull = startMaxHull;
             Hull = MaxHull;
             blueprintRewards.Init(random_.NewSeed());
+            if (!noStartingBlueprints)
+                blueprints = blueprintRewards.allBlueprints.Where(b => b.rarity == Blueprint.Blueprint.Rarity.Starter).ToList();
         }
 
         void Update()
@@ -79,6 +82,7 @@ namespace Game.Run
             Invoke(nameof(FinishLevel), 0.5f);
             return true;
         }
+
         public void FinishLevel()
         {
             blueprintRewards.MakeBlueprintReward();

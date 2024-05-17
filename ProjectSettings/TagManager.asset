@@ -10,7 +10,7 @@ TagManager:
   - BattleController
   - RunPersistence
   - WaveGenerator
-  - BlueprintSelectionController
+  - BlueprintMenu
   layers:
   - Default
   - TransparentFX

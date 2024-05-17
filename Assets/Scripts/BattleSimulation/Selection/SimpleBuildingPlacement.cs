@@ -1,5 +1,5 @@
-using BattleSimulation.World;
 using System.Linq;
+using BattleSimulation.World;
 using UnityEngine;
 using Utils;
 
@@ -11,7 +11,7 @@ namespace BattleSimulation.Selection
         [SerializeField] bool onSlants;
         [SerializeField] Tile.Obstacle[] allowedObstacles;
 
-        public override bool IsTileValid(Tile tile)
+        public override bool IsTileValid(Tile? tile)
         {
             if (tile == null || tile.Building != null || !allowedObstacles.Contains(tile.obstacle))
                 return false;

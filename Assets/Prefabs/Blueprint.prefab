@@ -662,8 +662,9 @@ MonoBehaviour:
   costText: {fileID: 7667762282025681532}
   icon: {fileID: 124882614695351867}
   highlight: {fileID: 4688335200499422972}
-  defensiveBuildingColor: {r: 0.13725491, g: 0.5294118, b: 0.81960785, a: 1}
+  towerColor: {r: 0.1373, g: 0.5294, b: 0.8196, a: 1}
   economicBuildingColor: {r: 0.2509804, g: 0.7254902, b: 0.6745098, a: 1}
+  specialBuildingColor: {r: 0.49803922, g: 0.3882353, b: 0.78431374, a: 1}
   abilityColor: {r: 1, g: 0.6392157, b: 0.4745098, a: 1}
   upgradeColor: {r: 0.49803922, g: 0.3882353, b: 0.78431374, a: 1}
   hoveredIconScale: 1.2

@@ -36,5 +36,5 @@ MonoBehaviour:
   statsToDisplayWhenUninitialized: []
   descriptions:
   - Produces [PRO] after every wave.
-  - Cannot be built adjacent to another [NAM].
+  - Cannot be placed on slants and adjacent to another [NAM].
   - Increases cost by [#MAT]5 when built.

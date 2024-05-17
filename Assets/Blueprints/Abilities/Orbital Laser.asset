@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9e4bc5a30718f41968ff1efaf3e48d, type: 3}
+  m_Name: Orbital Laser
+  m_EditorClassIdentifier: 
+  name: Orbital Laser
+  prefab: {fileID: 6702536568690210424, guid: 6a9696cd2830e2445b7401cb732b107f, type: 3}
+  icon: {fileID: 21300000, guid: afd3a0eae3a87334c8ff31db80914f47, type: 3}
+  rarity: 2
+  type: 3
+  energyCost: 30
+  materialCost: 0
+  startingCooldown: 0
+  cooldown: 0
+  range: -1
+  damage: 25
+  damageType: 4
+  interval: -1
+  radius: -1
+  delay: -1
+  durationTicks: 60
+  durationWaves: -1
+  fuelProduction: -1
+  materialProduction: -1
+  energyProduction: -1
+  statsToDisplay:
+  - '[$DMG]'
+  - '[$DUR]'
+  statsToDisplayWhenUninitialized: []
+  descriptions:
+  - Press [R] to rotate.
+  - Sweeps across the world in a cardinal direction, dealing damage to each attacker
+    in its path.

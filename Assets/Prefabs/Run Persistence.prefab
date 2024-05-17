@@ -427,12 +427,7 @@ MonoBehaviour:
   runSeed: 0
   seedString: 
   startMaxHull: 20
-  blueprints:
-  - {fileID: 11400000, guid: 376c6eb40ad25ad438f202cf9fd84f42, type: 2}
-  - {fileID: 11400000, guid: e91792428c7fbaf44b512304b52643e2, type: 2}
-  - {fileID: 11400000, guid: 3425f27343a18a24c88b3ec33a6ead8c, type: 2}
-  - {fileID: 11400000, guid: f7194962d8ed52a41887aebd5a9644d5, type: 2}
-  - {fileID: 11400000, guid: 795fea2ef81d3f84799dff3a745b2be8, type: 2}
+  blueprints: []
   level: 0
   cheatAddHull: 0
 --- !u!114 &3952241801299892886
@@ -520,23 +515,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runPersistence: {fileID: 3952241801299892880}
-  availableBlueprints:
+  allBlueprints:
   - {fileID: 11400000, guid: 742301ba2e463c84da4eb9b309716433, type: 2}
   - {fileID: 11400000, guid: e8d1ee3073478c044a79ec282da3dac3, type: 2}
   - {fileID: 11400000, guid: 795fea2ef81d3f84799dff3a745b2be8, type: 2}
-  - {fileID: 11400000, guid: 376c6eb40ad25ad438f202cf9fd84f42, type: 2}
-  - {fileID: 11400000, guid: e91792428c7fbaf44b512304b52643e2, type: 2}
   - {fileID: 11400000, guid: 05459f1e64a666c4991299d3ab4ba443, type: 2}
   - {fileID: 11400000, guid: f7194962d8ed52a41887aebd5a9644d5, type: 2}
   - {fileID: 11400000, guid: 3425f27343a18a24c88b3ec33a6ead8c, type: 2}
-  - {fileID: 11400000, guid: 2c4f327fc7cfc9045ab1283e27518867, type: 2}
+  - {fileID: 11400000, guid: 376c6eb40ad25ad438f202cf9fd84f42, type: 2}
+  - {fileID: 11400000, guid: ed3617c8db505bc4295d14424911ba8c, type: 2}
+  - {fileID: 11400000, guid: 69a1f5c2a2dd3db4aaabdc0fab288672, type: 2}
   - {fileID: 11400000, guid: a9c01dea74c20d34bab7cf6247dfb6fe, type: 2}
+  - {fileID: 11400000, guid: e91792428c7fbaf44b512304b52643e2, type: 2}
   - {fileID: 11400000, guid: f407f5dca50eccf43b9927fea2f23384, type: 2}
   - {fileID: 11400000, guid: f5eb3988800089348bbfb7d79cd7ca34, type: 2}
-  - {fileID: 11400000, guid: 159e61d374f78a04bad999da97be3102, type: 2}
   - {fileID: 11400000, guid: b46e88730c59b5a43a3cf95fd2393994, type: 2}
-  - {fileID: 11400000, guid: 69a1f5c2a2dd3db4aaabdc0fab288672, type: 2}
-  - {fileID: 11400000, guid: ed3617c8db505bc4295d14424911ba8c, type: 2}
+  - {fileID: 11400000, guid: 2c4f327fc7cfc9045ab1283e27518867, type: 2}
+  - {fileID: 11400000, guid: 159e61d374f78a04bad999da97be3102, type: 2}
+  - {fileID: 11400000, guid: fc7b1cb7632f69a4d994e6cd8bb4d639, type: 2}
+  - {fileID: 11400000, guid: 4ddf83df9dc6fbd419d9ae0f0f343c04, type: 2}
+  - {fileID: 11400000, guid: e736ca48e9602ba479272c261493d1c4, type: 2}
+  - {fileID: 11400000, guid: 79776d758e836fd45aa0b2d57b470d9a, type: 2}
+  - {fileID: 11400000, guid: 8bd37302399ac5741b6bffc8b4bfd1de, type: 2}
+  - {fileID: 11400000, guid: c0df015ee54bf0a4f84ff36fdb46b65c, type: 2}
+  - {fileID: 11400000, guid: 4dfbaf1f687f2624e83851e2d7ce95b1, type: 2}
   blueprintsPerOffer: 3
   rareChanceIncrement: 0.1
   legendaryChanceIncrement: 0.02

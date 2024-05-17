@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using BattleSimulation.Control;
 using System.Text;
+using BattleSimulation.Control;
 
 namespace BattleSimulation.Buildings
 {
@@ -9,6 +9,7 @@ namespace BattleSimulation.Buildings
         protected int fuelProduced;
         protected int materialsProduced;
         protected int energyProduced;
+
         protected override void OnPlaced()
         {
             WaveController.onWaveFinished.RegisterReaction(Produce, 100);
@@ -35,7 +36,7 @@ namespace BattleSimulation.Buildings
             base.OnDestroy();
         }
 
-        void Produce()
+        protected virtual void Produce()
         {
             if (Blueprint.HasFuelProduction)
             {
@@ -65,12 +66,14 @@ namespace BattleSimulation.Buildings
                 income += Blueprint.materialProduction;
             return true;
         }
+
         bool ProvideEnergyIncome(ref float income)
         {
             if (Blueprint.HasEnergyProduction)
                 income += Blueprint.energyProduction;
             return true;
         }
+
         bool ProvideFuelIncome(ref float income)
         {
             if (Blueprint.HasFuelProduction)

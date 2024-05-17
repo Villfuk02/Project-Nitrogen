@@ -1,5 +1,5 @@
-using BattleSimulation.Control;
 using System.Collections.Generic;
+using BattleSimulation.Control;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -43,7 +43,7 @@ namespace BattleVisuals.UI
 
         void Update()
         {
-            goalText.text = bc.FuelGoal.ToString();
+            goalText.text = bc.fuelGoal.ToString();
 
             UpdateFill();
             UpdateFuelText();
@@ -54,7 +54,7 @@ namespace BattleVisuals.UI
         void UpdateFill()
         {
             float targetWidth;
-            if (bc.Fuel == 0)
+            if (bc.fuel == 0)
             {
                 fill.color = Color.clear;
                 targetWidth = emptyWidth;
@@ -62,7 +62,7 @@ namespace BattleVisuals.UI
             else
             {
                 fill.color = Color.white;
-                targetWidth = Mathf.Lerp(minWidth, maxWidth, bc.Fuel / (float)bc.FuelGoal);
+                targetWidth = Mathf.Lerp(minWidth, maxWidth, bc.fuel / (float)bc.fuelGoal);
             }
 
             currentWidth = Mathf.Lerp(currentWidth, targetWidth, 10 * Time.deltaTime);
@@ -71,7 +71,7 @@ namespace BattleVisuals.UI
 
         void UpdateFuelText()
         {
-            MathUtils.StepTowards(ref fuelDisplay, bc.Fuel, convergenceDivisor);
+            MathUtils.StepTowards(ref fuelDisplay, bc.fuel, convergenceDivisor);
             fuelText.text = fuelDisplay.ToString();
         }
 
@@ -88,9 +88,9 @@ namespace BattleVisuals.UI
             if (income_ <= 0)
                 remain = -1;
             else
-                remain = (bc.FuelGoal - bc.Fuel + income_ - 1) / income_;
+                remain = (bc.fuelGoal - bc.fuel + income_ - 1) / income_;
             int arrows = Mathf.Max(remain - 1, 0);
-            float targetSpacing = (maxWidth - minWidth) * income_ / bc.FuelGoal;
+            float targetSpacing = (maxWidth - minWidth) * income_ / bc.fuelGoal;
             arrowSpacing_ = Mathf.Lerp(arrowSpacing_, targetSpacing, Time.deltaTime * 10);
 
             if (predictionArrows_.Count < arrows)

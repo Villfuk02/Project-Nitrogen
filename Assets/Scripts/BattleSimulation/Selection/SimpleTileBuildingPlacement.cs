@@ -9,7 +9,7 @@ namespace BattleSimulation.Selection
         [Header("Settings")]
         [SerializeField] bool onSlants;
 
-        public override bool IsTileValid(Tile tile)
+        public override bool IsTileValid(Tile? tile)
         {
             if (tile == null || tile.Building != null || tile.obstacle != Tile.Obstacle.None)
                 return false;

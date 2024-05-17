@@ -3448,8 +3448,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f036ecce0ce643948a1783b605fd8ac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cheatAddMaterialsAndEnergy: 0
-  cheatWin: 0
+  material: 20
+  energy: 0
+  maxEnergy: 50
+  fuel: 0
+  fuelGoal: 150
+  hullDmgTaken: 0
+  won: 0
+  lost: 0
 --- !u!4 &568931856
 Transform:
   m_ObjectHideFlags: 0
@@ -6113,7 +6119,7 @@ GameObject:
   - component: {fileID: 1234769087}
   m_Layer: 0
   m_Name: Blueprint Menu
-  m_TagString: Untagged
+  m_TagString: BlueprintMenu
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10464,7 +10470,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 330
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.y
@@ -10472,7 +10478,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 165
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.y

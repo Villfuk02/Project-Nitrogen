@@ -1,6 +1,6 @@
+using System.Linq;
 using Game.Blueprint;
 using Game.InfoPanel;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -36,6 +36,7 @@ namespace BattleSimulation.Selection
             selectionMask_ = LayerMask.GetMask(LayerNames.SELECTION);
             coarseTerrainMask_ = LayerMask.GetMask(LayerNames.COARSE_TERRAIN);
         }
+
         void Update()
         {
             UpdateHover();
@@ -73,10 +74,7 @@ namespace BattleSimulation.Selection
                     DeselectInWorld();
                     resetVisuals.Invoke();
                 }
-                else
-                {
-                    // TODO: feedback for the player - sound effect
-                }
+                // TODO: feedback for the player - sound effect
             }
             else if (hovered != null)
             {
@@ -214,8 +212,8 @@ namespace BattleSimulation.Selection
 
         public void HoverFromMenu(int index)
         {
-            blueprintMenu.GetBlueprints(index, out var blueprint, out var original, out var cooldown);
-            infoPanel.ShowBlueprint(blueprint, original, cooldown, true, false);
+            if (blueprintMenu.TryGetBlueprints(index, out var blueprint, out var original, out var cooldown))
+                infoPanel.ShowBlueprint(blueprint, original, cooldown, true, false);
         }
 
         public void UnhoverFromMenu()

@@ -1,10 +1,9 @@
-using BattleSimulation.Attackers;
-using BattleSimulation.Buildings;
-using BattleSimulation.Control;
-using Game.Damage;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using BattleSimulation.Attackers;
+using BattleSimulation.Control;
+using Game.Damage;
 using UnityEngine;
 using Utils;
 using Random = UnityEngine.Random;
@@ -78,18 +77,18 @@ namespace BattleVisuals.Effects
 
         void SpawnProduction(object source, string text, Color color)
         {
-            if (source == null || source is not Building b)
+            if (source is not MonoBehaviour mb || mb == null)
                 return;
-            Vector3 pos = b.transform.position + Vector3.up;
-            if (createdThisFrame_.ContainsKey(b))
+            Vector3 pos = mb.transform.position + Vector3.up;
+            if (createdThisFrame_.ContainsKey(mb))
             {
-                StartCoroutine(SpawnLater(text, productionFontSize, color, productionTimeToLive, pos, Vector3.up * 1.5f, Vector3.down * 0.5f, createdThisFrame_[b] * productionDelay));
-                createdThisFrame_[b]++;
+                StartCoroutine(SpawnLater(text, productionFontSize, color, productionTimeToLive, pos, Vector3.up * 1.5f, Vector3.down * 0.5f, createdThisFrame_[mb] * productionDelay));
+                createdThisFrame_[mb]++;
             }
             else
             {
                 Spawn(text, productionFontSize, color, productionTimeToLive, pos, Vector3.up * 1.5f, Vector3.down * 0.5f);
-                createdThisFrame_[b] = 1;
+                createdThisFrame_[mb] = 1;
             }
         }
 

@@ -70,7 +70,7 @@ namespace WorldGen.Path
         }
 
         /// <summary>
-        /// Trace a path from one start tile.
+        /// Trace a path from the given start tile.
         /// </summary>
         void TracePath(TileData start)
         {
@@ -101,7 +101,7 @@ namespace WorldGen.Path
 
         /// <summary>
         /// Joins a path to an existing one if possible and returns true.
-        /// Otherwise finds all valid one-tile continuations, ordered by how good they are and appends them to the stack
+        /// Otherwise, finds all valid one-tile continuations, ordered by how good they are and appends them to the stack.
         /// </summary>
         bool PathStep(TileData tile, Vector2Int[] path, bool foundAny, LinkedList<(TileData tile, Vector2Int[] path)> stack)
         {
@@ -210,7 +210,7 @@ namespace WorldGen.Path
         }
 
         /// <summary>
-        /// Increases the strength of the repulsion field at tiles close to the provided tile, bigger values closer to the pathNode provided with quadratic falloff.
+        /// Increases the strength of the repulsion field at tiles close to the provided tile, bigger values closer to the pathNode.
         /// </summary>
         void UpdateRepulsionField(Vector2Int pathNode)
         {

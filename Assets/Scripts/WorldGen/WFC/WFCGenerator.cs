@@ -83,7 +83,7 @@ namespace WorldGen.WFC
         /// <summary>
         /// Assigns which passages can or cannot be passable based on the planned paths.
         /// A passage must exist from a tile on the edge of the world over the edge.
-        /// A passage can't exist between two tiles that both have a path going through them, but the paths' distances to the hub differ by more than one.
+        /// A passage can't exist between two tiles, which both have a path going through them but the paths' distances to the hub differ by more than one.
         /// </summary>
         void InitPassages(Vector2Int[][] paths)
         {
@@ -129,6 +129,10 @@ namespace WorldGen.WFC
             return false;
         }
 
+        /// <summary>
+        /// Do one step of the WFC algorithm by propagating constraints and then collapsing a random slot.
+        /// Fails and returns false if constraint propagation creates an unsolvable state and more backtracking isn't possible.
+        /// </summary>
         bool TryStep()
         {
             if (!TryPropagateConstraints())
@@ -150,6 +154,11 @@ namespace WorldGen.WFC
             return true;
         }
 
+        /// <summary>
+        /// Propagates constraints and backtracks if this propagation creates an unsolvable state.
+        /// Fails and returns false when trying to backtrack and more backtracking isn't possible.
+        /// </summary>
+        /// <returns></returns>
         bool TryPropagateConstraints()
         {
             while (anythingDirty_)
@@ -158,8 +167,10 @@ namespace WorldGen.WFC
                 for (int x = 0; x < 2; x++)
                     for (int y = 0; y < 2; y++)
                     {
+                        // debug
                         RegisterGizmos(StepType.MicroStep, MakeEntropyGizmos);
                         WaitForStep(StepType.MicroStep);
+                        // end debug
                         if (!TryUpdateConstraintsGroup(x, y))
                         {
                             if (!TryBacktrack())
@@ -170,18 +181,28 @@ namespace WorldGen.WFC
                     }
             }
 
+            // debug
             RegisterGizmos(StepType.MicroStep, MakeEntropyGizmos);
+            // end debug
             return true;
         }
 
+        /// <summary>
+        /// Propagates in parallel constraints of slots with x and y position of the given parity.
+        /// Returns false if any slot ends up in an unsolvable state.
+        /// </summary>
         bool TryUpdateConstraintsGroup(int x, int y)
         {
-            var tasks = dirtySlots_.IndexedEnumerable.Where(p => p.index.x % 2 == x && p.index.y % 2 == y && p.value).Select(p => Task.Run(() => TryUpdateSlot(p.index))).ToArray();
+            var tasks = dirtySlots_.IndexedEnumerable.Where(p => p.index.x % 2 == x && p.index.y % 2 == y && p.value).Select(p => Task.Run(() => TryUpdateSlotConstraints(p.index))).ToArray();
             Task.WaitAll(tasks);
             return tasks.All(t => t.Result);
         }
 
-        bool TryUpdateSlot(Vector2Int pos)
+        /// <summary>
+        /// Updates constraints of a given slot.
+        /// Returns false if the slot ends up in an unsolvable state.
+        /// </summary>
+        bool TryUpdateSlotConstraints(Vector2Int pos)
         {
             dirtySlots_[pos] = false;
             WFCSlot s = state_.slots[pos];
@@ -198,6 +219,10 @@ namespace WorldGen.WFC
             return true;
         }
 
+        /// <summary>
+        /// Backtracks to the previous state, but removes the option to collapse to the current state.
+        /// Fails and returns false more backtracking isn't possible.
+        /// </summary>
         bool TryBacktrack()
         {
             dirtySlots_.Fill(false);
@@ -212,11 +237,18 @@ namespace WorldGen.WFC
             return true;
         }
 
+        /// <summary>
+        /// Marks dirty all slots that ate at the given offsets relative to the given slot.
+        /// </summary>
         public void MarkNeighborsDirty(Vector2Int pos, IEnumerable<Vector2Int> offsets)
         {
             foreach (var offset in offsets)
                 MarkDirty(pos + offset);
         }
+
+        /// <summary>
+        /// Marks dirty the slot at the given position, meaning that its constraints need to be recalculated.
+        /// </summary>
         public void MarkDirty(Vector2Int pos)
         {
             if (!state_.slots.TryGet(pos, out var s) || s.Collapsed.module is not null)

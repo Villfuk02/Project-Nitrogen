@@ -35,12 +35,12 @@ namespace BattleVisuals.UI
 
         void Update()
         {
-            float energyFillAmount = Mathf.Clamp01(bc.Energy / (float)bc.MaxEnergy);
+            float energyFillAmount = Mathf.Clamp01(bc.energy / (float)bc.maxEnergy);
             energyFill.fillAmount = Mathf.Lerp(energyFill.fillAmount, energyFillAmount, Time.deltaTime * 4);
-            MathUtils.StepTowards(ref energyDisplay, bc.Energy, convergenceDivisor);
-            energyText.text = $"{energyDisplay}<size=15>/{bc.MaxEnergy}</size>";
+            MathUtils.StepTowards(ref energyDisplay, bc.energy, convergenceDivisor);
+            energyText.text = $"{energyDisplay}<size=15>/{bc.maxEnergy}</size>";
 
-            MathUtils.StepTowards(ref materialDisplay, bc.Material, convergenceDivisor);
+            MathUtils.StepTowards(ref materialDisplay, bc.material, convergenceDivisor);
             materialText.text = materialDisplay.ToString();
         }
 

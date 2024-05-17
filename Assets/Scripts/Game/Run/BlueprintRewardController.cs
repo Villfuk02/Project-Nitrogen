@@ -14,7 +14,7 @@ namespace Game.Run
         [Header("References")]
         [SerializeField] RunPersistence runPersistence;
         [Header("Settings")]
-        [SerializeField] Blueprint.Blueprint[] availableBlueprints;
+        public Blueprint.Blueprint[] allBlueprints;
         [SerializeField] int blueprintsPerOffer;
         [SerializeField] float rareChanceIncrement;
         [SerializeField] float legendaryChanceIncrement;
@@ -36,7 +36,7 @@ namespace Game.Run
             commonBlueprints_ = new(random_.NewSeed());
             rareBlueprints_ = new(random_.NewSeed());
             legendaryBlueprints_ = new(random_.NewSeed());
-            IncludeBlueprintsInOffers(availableBlueprints);
+            IncludeBlueprintsInOffers(allBlueprints);
         }
 
         void IncludeBlueprintsInOffers(IEnumerable<Blueprint.Blueprint> blueprints)
@@ -86,7 +86,7 @@ namespace Game.Run
 
         public void MakeBlueprintSelection()
         {
-            currentOffer_ = availableBlueprints.OrderBy(b => b.type).ToList();
+            currentOffer_ = allBlueprints.OrderBy(b => b.type).ToList();
             StartCoroutine(SetupWhenReady(bsc => bsc.Setup(runPersistence.blueprints, currentOffer_, null, "Finish", OnFinishedPickingSelection, true)));
         }
 
@@ -99,12 +99,14 @@ namespace Game.Run
                 rareChance += rareChanceIncrement;
                 return legendaryBlueprints_.Count > 0 ? legendaryBlueprints_.PopRandom() : null;
             }
+
             if (selection <= legendaryChance + rareChance)
             {
                 legendaryChance += legendaryChanceIncrement;
                 rareChance = rareChanceIncrement;
                 return rareBlueprints_.Count > 0 ? rareBlueprints_.PopRandom() : null;
             }
+
             legendaryChance += legendaryChanceIncrement;
             rareChance += rareChanceIncrement;
             return commonBlueprints_.Count > 0 ? commonBlueprints_.PopRandom() : null;

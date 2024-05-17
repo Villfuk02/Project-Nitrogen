@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Lightning Storm
   prefab: {fileID: 6702536568690210424, guid: 80beae23b6bc2b043a890a18b9eb4db1, type: 3}
   icon: {fileID: 21300000, guid: 306d278575019d645a71c2f91e05defb, type: 3}
-  rarity: 2
+  rarity: 1
   type: 3
   energyCost: 15
   materialCost: 0

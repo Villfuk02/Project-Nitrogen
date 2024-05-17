@@ -29,10 +29,11 @@ MonoBehaviour:
   delay: -1
   durationTicks: -1
   durationWaves: -1
-  fuelProduction: -1
+  fuelProduction: 2
   materialProduction: 5
   energyProduction: -1
-  magic1: -1
+  statsToDisplay: []
+  statsToDisplayWhenUninitialized: []
   descriptions:
-  - Produces [PRO] after every wave.
-  - Must be built on tiles rich in [#MAT]minerals.
+  - Must be built on tiles rich in [#MAT]minerals or [#FUE]fuel.
+  - Produces [#+][MAT] or [#+][FUE] after every wave.

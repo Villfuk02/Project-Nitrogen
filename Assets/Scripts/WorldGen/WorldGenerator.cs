@@ -130,7 +130,7 @@ namespace WorldGen
         IEnumerator Benchmark()
         {
             if (!worldSettings.overrideRun)
-                Debug.LogError("World settings have to be be constant for benchmarking!");
+                throw new WorldGeneratorException("World settings have to be be constant for benchmarking!");
             tries = 0;
             Stopwatch s = new();
             s.Start();
@@ -194,22 +194,24 @@ namespace WorldGen
             }
         }
 
-        void GizmoStep(StepType type)
+        void ExpireGizmosBecauseOfStep(StepType type)
         {
             for (StepType t = type; t <= STEP_TYPES[^1]; t++)
             {
                 gizmos.Expire(t);
             }
         }
-        void Stepped()
+
+        void SetStepped()
         {
             lock (steppedLock_)
             {
                 stepped = true;
             }
         }
+
         /// <summary>
-        /// If we're going by steps of type 'type' or smaller, blocks the thread until next step is allowed.
+        /// If we're going by steps of type 'type' or smaller, blocks until next step is allowed.
         /// </summary>
         public static void WaitForStep(StepType type)
         {
@@ -218,8 +220,8 @@ namespace WorldGen
 
             if (instance_.stepped)
                 instance_.waitForStepEvent_.WaitOne();
-            instance_.GizmoStep(type);
-            instance_.Stepped();
+            instance_.ExpireGizmosBecauseOfStep(type);
+            instance_.SetStepped();
         }
 
         /// <summary>

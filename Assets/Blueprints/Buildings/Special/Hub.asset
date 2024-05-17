@@ -29,10 +29,11 @@ MonoBehaviour:
   delay: -1
   durationTicks: -1
   durationWaves: -1
-  fuelProduction: 5
+  fuelProduction: 10
   materialProduction: 10
   energyProduction: 10
-  magic1: -1
+  statsToDisplay: []
+  statsToDisplayWhenUninitialized: []
   descriptions:
   - Produces [PRO] after every wave.
   - When an enemy reaches this building, you lose [#HUL]Hull. Protect at all costs!

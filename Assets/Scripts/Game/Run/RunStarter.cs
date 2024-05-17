@@ -17,10 +17,9 @@ namespace Game.Run
             RunPersistence runPersistence = Instantiate(runPersistencePrefab).GetComponent<RunPersistence>();
             runPersistence.seedString = seedString;
             runPersistence.runSeed = SeedEncoder.GetSeedFromString(ref runPersistence.seedString);
-            runPersistence.Init();
+            runPersistence.Init(selectStartingBlueprints);
             if (selectStartingBlueprints)
             {
-                runPersistence.blueprints.Clear();
                 runPersistence.GetComponentInChildren<BlueprintRewardController>().MakeBlueprintSelection();
             }
             else

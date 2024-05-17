@@ -103,7 +103,8 @@ namespace WorldGen.Obstacles
         }
 
         /// <summary>
-        /// Fills all tiles with the given filler obstacles and one by one removes each, unless it would allow for a shorter path than specified.
+        /// Fills tiles with virtual obstacles to make sure the shortest paths to the hub have the specified length.
+        /// Fills all tiles and one by one removes each virtual obstacle, unless that would allow for a shorter path than specified.
         /// </summary>
         void EnsurePathLengths(Vector2Int[] pathStarts, int[] pathLengths, Vector2Int hubPosition)
         {
