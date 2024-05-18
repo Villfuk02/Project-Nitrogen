@@ -41,23 +41,23 @@ namespace BattleVisuals.UI
 
         void UpdateTexts()
         {
-            maxHullText.text = runPersistence_.MaxHull.ToString();
-            MathUtils.StepTowards(ref hullDisplay, runPersistence_.Hull, convergenceDivisor);
+            maxHullText.text = runPersistence_.maxHull.ToString();
+            MathUtils.StepTowards(ref hullDisplay, runPersistence_.hull, convergenceDivisor);
             hullText.text = hullDisplay.ToString();
             dmgTakenText.text = (-bc.hullDmgTaken).ToString();
         }
 
         void UpdateBackgroundFill()
         {
-            int previousHull = runPersistence_.Hull + Mathf.Max(bc.hullDmgTaken, 0);
-            float targetBackgroundWidth = previousHull <= 0 ? emptyWidth : Mathf.Lerp(minWidth, maxWidth, previousHull / (float)runPersistence_.MaxHull);
+            int previousHull = runPersistence_.hull + Mathf.Max(bc.hullDmgTaken, 0);
+            float targetBackgroundWidth = previousHull <= 0 ? emptyWidth : Mathf.Lerp(minWidth, maxWidth, previousHull / (float)runPersistence_.maxHull);
             currentBackgroundWidth = Mathf.Lerp(currentBackgroundWidth, targetBackgroundWidth, 10 * Time.deltaTime);
             backgroundFill.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, currentBackgroundWidth);
         }
 
         void UpdateFill()
         {
-            float targetWidth = runPersistence_.Hull <= 0 ? emptyWidth : Mathf.Lerp(minWidth, maxWidth, runPersistence_.Hull / (float)runPersistence_.MaxHull);
+            float targetWidth = runPersistence_.hull <= 0 ? emptyWidth : Mathf.Lerp(minWidth, maxWidth, runPersistence_.hull / (float)runPersistence_.maxHull);
             currentWidth = Mathf.Lerp(currentWidth, targetWidth, 10 * Time.deltaTime);
             fill.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, currentWidth);
         }

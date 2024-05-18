@@ -6,25 +6,17 @@ using UnityEngine;
 
 namespace BattleSimulation.Abilities
 {
-    public class Catalyst : Ability
+    public class Catalyst : TargetedAbility
     {
-        [Header("References")]
-        [SerializeField] Targeting.Targeting targeting;
-
         [Header("Settings")]
         [SerializeField] float damageIncrease;
 
         [Header("Runtime variables")]
         HashSet<Attacker> afflicted_;
 
-        protected override void OnInitBlueprint()
-        {
-            targeting.SetRange(Blueprint.radius);
-        }
-
         protected override void OnPlaced()
         {
-            WaveController.onWaveFinished.RegisterReaction(OnWaveFinished, 100);
+            WaveController.ON_WAVE_FINISHED.RegisterReaction(OnWaveFinished, 100);
             Attacker.DAMAGE.RegisterModifier(DamageAttacker, -100);
             Attacker.DIE.RegisterReaction(OnAttackerKilled, 100);
 
@@ -36,7 +28,7 @@ namespace BattleSimulation.Abilities
             if (!Placed)
                 return;
 
-            WaveController.onWaveFinished.UnregisterReaction(OnWaveFinished);
+            WaveController.ON_WAVE_FINISHED.UnregisterReaction(OnWaveFinished);
             Attacker.DAMAGE.UnregisterModifier(DamageAttacker);
             Attacker.DIE.UnregisterReaction(OnAttackerKilled);
         }
@@ -52,9 +44,8 @@ namespace BattleSimulation.Abilities
         void OnAttackerKilled((Attacker target, Damage cause) param)
         {
             if (afflicted_.Contains(param.target))
-                BattleController.addMaterial.Invoke((param.target, Blueprint.materialProduction));
+                BattleController.ADD_MATERIAL.Invoke((param.target, Blueprint.materialProduction));
         }
-
 
         void OnWaveFinished()
         {

@@ -410,10 +410,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bd0063cb2817e64eb6db3890c247b79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 2616844260447618044}
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
-  ability: {fileID: 2616844260447618044}
 --- !u!1 &7968616451989447347
 GameObject:
   m_ObjectHideFlags: 0

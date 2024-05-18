@@ -165,7 +165,6 @@ MonoBehaviour:
   visuals: {fileID: 475032649205546438}
   rotateBack: []
   permanent: 0
-  placed: 0
 --- !u!114 &2536735349911483196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,6 +177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 175ce151fac799444bceebb5f5f05aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 6082830025102009326}
   onPlaced:
     m_PersistentCalls:
       m_Calls:
@@ -194,7 +194,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   selectedTile: {fileID: 0}
-  b: {fileID: 6082830025102009326}
   obstacleTypes: 04000000
   onSlants: 0
 --- !u!114 &5395418316105941493

@@ -1,8 +1,8 @@
-using BattleSimulation.Attackers;
-using Game.AttackerStats;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BattleSimulation.Attackers;
+using Game.AttackerStats;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -12,9 +12,9 @@ namespace BattleSimulation.Control
 {
     public class WaveController : MonoBehaviour
     {
-        public static ModifiableCommand startWave = new();
-        public static EventReactionChain onWaveSpawned = new();
-        public static EventReactionChain onWaveFinished = new();
+        public static readonly ModifiableCommand START_WAVE = new();
+        public static readonly EventReactionChain ON_WAVE_SPAWNED = new();
+        public static readonly EventReactionChain ON_WAVE_FINISHED = new();
         [Header("References")]
         public WaveGenerator waveGenerator;
         public Button nextWaveButton;
@@ -37,6 +37,7 @@ namespace BattleSimulation.Control
             public int path;
             public int delay;
         }
+
         List<QueuedAttacker> spawnQueue_ = new();
 
         void Awake()
@@ -45,14 +46,14 @@ namespace BattleSimulation.Control
             currentIndex = (uint)(World.WorldData.World.data.seed & 0x7FFFFFFF);
             paths_ = World.WorldData.World.data.firstPathTiles.Length;
 
-            startWave.RegisterHandler(StartNextWave);
+            START_WAVE.RegisterHandler(StartNextWave);
 
             Attacker.spawnAttackersRelative = SpawnRelative;
         }
 
         void OnDestroy()
         {
-            startWave.UnregisterHandler(StartNextWave);
+            START_WAVE.UnregisterHandler(StartNextWave);
         }
 
         void Update()
@@ -66,7 +67,7 @@ namespace BattleSimulation.Control
             if (startNextWave)
             {
                 startNextWave = false;
-                startWave.Invoke();
+                START_WAVE.Invoke();
             }
             else
             {
@@ -83,7 +84,7 @@ namespace BattleSimulation.Control
             {
                 waveStarted = false;
                 nextWaveButton.interactable = true;
-                onWaveFinished.Broadcast();
+                ON_WAVE_FINISHED.Broadcast();
             }
         }
 
@@ -92,7 +93,7 @@ namespace BattleSimulation.Control
             if (currentWave.batches.Count == 0)
             {
                 spawning = false;
-                onWaveSpawned.Broadcast();
+                ON_WAVE_SPAWNED.Broadcast();
                 return;
             }
 
@@ -118,6 +119,7 @@ namespace BattleSimulation.Control
                     attackersLeft++;
                 }
             }
+
             onSpawnedOnce.Invoke();
         }
 
@@ -168,6 +170,7 @@ namespace BattleSimulation.Control
                 SpawnRelative(attacker, stats, 0);
                 return;
             }
+
             for (int i = 0; i < count; i++)
             {
                 SpawnRelative(attacker, stats, Mathf.Lerp(-offsetRadius, offsetRadius, i / (float)(count - 1)));
@@ -197,4 +200,3 @@ namespace BattleSimulation.Control
         }
     }
 }
-

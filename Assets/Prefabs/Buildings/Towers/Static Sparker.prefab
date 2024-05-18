@@ -344,7 +344,6 @@ MonoBehaviour:
   rotateBack:
   - {fileID: 475032647605434327}
   permanent: 0
-  placed: 0
   targeting: {fileID: 475032647605434328}
   onShoot:
     m_PersistentCalls:
@@ -373,11 +372,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fab0ab09dbff02143af01e634b8f76f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 704491585352354903}
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
   selectedTile: {fileID: 0}
-  b: {fileID: 704491585352354903}
   onSlants: 1
   allowedObstacles: 00000000
 --- !u!114 &2692797349279770925

@@ -96,11 +96,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1c7896c57f6254fa18751d71c2a328, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 5056433855505364203}
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
   selectedTile: {fileID: 0}
-  b: {fileID: 5056433855505364203}
   onSlants: 1
 --- !u!114 &5395418316105941493
 MonoBehaviour:
@@ -410,7 +410,6 @@ GameObject:
   - component: {fileID: 5310039077024746019}
   - component: {fileID: 3051364724733853731}
   - component: {fileID: 2375862357920237012}
-  - component: {fileID: 7546165976071991957}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: Untagged
@@ -483,17 +482,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &7546165976071991957
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9132928007560189433}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}

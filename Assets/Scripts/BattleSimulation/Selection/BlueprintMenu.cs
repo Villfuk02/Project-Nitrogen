@@ -44,14 +44,14 @@ namespace BattleSimulation.Selection
             abilities = rp.blueprints.Where(b => b.type == Blueprint.Type.Ability).Select((b, i) => new MenuEntry(b, i)).ToArray();
             buildings = rp.blueprints.Where(b => b.type != Blueprint.Type.Ability).Select((b, i) => new MenuEntry(b, i)).ToArray();
 
-            WaveController.onWaveFinished.RegisterReaction(OnWaveFinished, 10);
-            WaveController.startWave.RegisterReaction(OnWaveStarted, 10);
+            WaveController.ON_WAVE_FINISHED.RegisterReaction(OnWaveFinished, 10);
+            WaveController.START_WAVE.RegisterReaction(OnWaveStarted, 10);
         }
 
         void OnDestroy()
         {
-            WaveController.onWaveFinished.UnregisterReaction(OnWaveFinished);
-            WaveController.startWave.UnregisterReaction(OnWaveStarted);
+            WaveController.ON_WAVE_FINISHED.UnregisterReaction(OnWaveFinished);
+            WaveController.START_WAVE.UnregisterReaction(OnWaveStarted);
         }
 
         void Update()

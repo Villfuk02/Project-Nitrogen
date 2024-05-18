@@ -33,12 +33,13 @@ namespace Game.InfoPanel
         [SerializeField] bool rebuildLayout;
         Data? current_;
         Data? fallback_;
+
         class Data
         {
             public string title;
             public Sprite sprite;
             public DescriptionProvider descriptionProvider;
-            public IBlueprinted blueprinted;
+            public Blueprinted blueprinted;
         }
 
         void Start()
@@ -53,6 +54,7 @@ namespace Game.InfoPanel
                 rebuildLayout = false;
                 LayoutRebuilder.ForceRebuildLayoutImmediate(root);
             }
+
             if (!visible || current_?.descriptionProvider == null || !current_.descriptionProvider.HasDescriptionChanged(out var desc))
                 return;
             UpdateDescription(desc);
@@ -96,6 +98,7 @@ namespace Game.InfoPanel
                 Hide();
                 return;
             }
+
             current_ = data;
             title.text = data.title;
             icon.sprite = data.sprite;
@@ -195,7 +198,7 @@ namespace Game.InfoPanel
             DisplayData(d, highPriority, fallback);
         }
 
-        public void ShowBlueprinted(IBlueprinted blueprinted, Box<int>? cooldown, bool highPriority, bool fallback)
+        public void ShowBlueprinted(Blueprinted blueprinted, Box<int>? cooldown, bool highPriority, bool fallback)
         {
             Data d = new()
             {

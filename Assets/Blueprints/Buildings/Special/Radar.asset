@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9e4bc5a30718f41968ff1efaf3e48d, type: 3}
+  m_Name: Radar
+  m_EditorClassIdentifier: 
+  name: Radar
+  prefab: {fileID: 475032649215164951, guid: 84699dbb5ac40a54ba515ea2d12d1c48, type: 3}
+  icon: {fileID: 21300000, guid: 9a7625262363c4c4286e4bd1a60a98d3, type: 3}
+  rarity: 1
+  type: 2
+  energyCost: 0
+  materialCost: 15
+  startingCooldown: 0
+  cooldown: 0
+  range: -1
+  damage: -1
+  damageType: 0
+  interval: -1
+  radius: -1
+  delay: -1
+  durationTicks: -1
+  durationWaves: -1
+  fuelProduction: -1
+  materialProduction: -1
+  energyProduction: -1
+  statsToDisplay: []
+  descriptions:
+  - Increases the range of adjacent buildings by [#RNG]20%.

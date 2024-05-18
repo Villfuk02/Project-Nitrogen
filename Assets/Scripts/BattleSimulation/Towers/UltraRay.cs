@@ -1,6 +1,5 @@
 using System.Linq;
 using BattleSimulation.Attackers;
-using Game.Damage;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -15,8 +14,9 @@ namespace BattleSimulation.Towers
         [Header("Runtime variables")]
         [SerializeField] protected int shotTimer;
 
-        protected void FixedUpdate()
+        protected override void FixedUpdateInternal()
         {
+            base.FixedUpdateInternal();
             if (!Placed)
                 return;
 
@@ -34,7 +34,8 @@ namespace BattleSimulation.Towers
             {
                 if (hitsLeft <= 0)
                     break;
-                Hit(target);
+                if (target.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
+                    damageDealt += dmg;
                 hitsLeft--;
             }
         }
@@ -43,23 +44,6 @@ namespace BattleSimulation.Towers
         {
             Vector3 diff = a.target.position - targeting.transform.position;
             return diff.XZ().ManhattanMagnitude();
-        }
-
-        public bool Hit(Attacker attacker)
-        {
-            if (attacker.IsDead)
-                return false;
-            (Attacker a, Damage dmg) hitParam = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
-            if (!Attacker.HIT.InvokeRef(ref hitParam))
-                return false;
-            if (hitParam.dmg.amount > 0)
-            {
-                (Attacker a, Damage dmg) dmgParam = hitParam;
-                if (Attacker.DAMAGE.InvokeRef(ref dmgParam))
-                    damageDealt += (int)dmgParam.dmg.amount;
-            }
-
-            return true;
         }
     }
 }

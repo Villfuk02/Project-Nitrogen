@@ -150,6 +150,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   checkLineOfSight: 0
   availablePriorities: 0
+  onTargetFound:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetLost:
+    m_PersistentCalls:
+      m_Calls: []
   target: {fileID: 0}
   radiusTrigger: {fileID: 7471581768413437108}
   heightTrigger: {fileID: 3822997109746519742}
@@ -5135,7 +5141,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visuals: {fileID: 8451412570879125624}
-  placed: 0
   targeting: {fileID: 3739967506293457857}
   delayLeft: 0
 --- !u!114 &-3423078672773161603
@@ -5165,10 +5170,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bd0063cb2817e64eb6db3890c247b79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 4308364385990413780}
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
-  ability: {fileID: 4308364385990413780}
 --- !u!1 &7071433805063597570
 GameObject:
   m_ObjectHideFlags: 0

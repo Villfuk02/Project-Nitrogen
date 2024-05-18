@@ -11,14 +11,15 @@ namespace BattleSimulation.Towers
         [Header("Runtime variables")]
         protected int damageDealt;
 
-        protected override void OnInitBlueprint()
+        public override void OnSetupChanged()
         {
+            base.OnSetupChanged();
             targeting.SetRange(Blueprint.range);
         }
 
         public override IEnumerable<string> GetExtraStats()
         {
-            if (Placed && Blueprint.HasDamage)
+            if (damageDealt > 0)
                 yield return $"Damage dealt [#DMG]{damageDealt}";
 
             foreach (string s in base.GetExtraStats())

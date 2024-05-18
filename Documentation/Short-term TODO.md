@@ -1,33 +1,16 @@
 ## questions
-- dictionary.com?
-- playtesting?
 
 ## till next metting
-- [x] heal effect number
-- [x] highlight future features
-- [x] refactor wikipedia references
-- [x] sec 2.3
-- [x] mention status effects
-- [x] organize rest of ch2
-- [x] implement towers
-- [x] blueprint descriptions are too long
-- [x] unify all 0.05f and 20
+- [ ] stuff
+- [ ] rewrite definition of towers and special buildings
 - [ ] add notes to ch3
     - [ ] separation of blueprints from behavior
+- [ ] prepare playtest questionnaire
 ## implementation 
-- [ ] content
-    - [x] abilities
-    - [x] more attackers (see [[Attacker#ideas]])
-    - [x] more towers (see [[Tower#tower ideas]])
-    - [x] more economic buildings
-    - [ ] support building
-        - [ ] more damage to towers in radius (absolute) (rare)
-        - [ ] more range to towers in radius (common)
 - [ ] limit wave generator to pull extras max once per wave
 - [ ] also make early waves shorter
 - [ ] make wave fade shorter
 - [ ] hover attackers from wave preview
-- [ ] make all game commands static
 - [ ] check if tags are necessary
 - [ ] a few more simple terrain types - change up minerals, obstacles, terrain color, difficulty
     - [ ] second terrain type (forest with rivers)
@@ -37,6 +20,8 @@
         - [ ] modules
         - [ ] select randomly
 - [ ] update lists in obsidian (and progress tags)
+- [ ] balance stuff
+- [ ] center blueprint selection
 - [ ] tutorial
     - extra levels before the first, each with one more blueprint
     - slowly introduce concepts
@@ -47,13 +32,13 @@
     - [ ] global fade
     - [ ] organize assets
 - [ ] sound effects
+- [ ] box<> and visualsreference
+- [ ] use bitfields in wfc?
 - [ ] +polish
     - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)
-    - [ ] non-keyboard camera controls
-    - [ ] info panel text style tweaks
     - [ ] increase shadow resolution
     - [ ] redo building look to make them more visible
-    - [ ] damage taken effects
+    - [ ] hull damage taken effects
     - [ ] low hull effects
 - [ ] +playtest
 - [ ] +polish

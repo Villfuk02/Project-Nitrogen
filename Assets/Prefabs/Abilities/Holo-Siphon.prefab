@@ -48,6 +48,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   checkLineOfSight: 0
   availablePriorities: -1
+  onTargetFound:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetLost:
+    m_PersistentCalls:
+      m_Calls: []
   target: {fileID: 0}
   radiusTrigger: {fileID: 475032649220956779}
   heightTrigger: {fileID: 475032648339523277}
@@ -327,7 +333,6 @@ MonoBehaviour:
   visuals: {fileID: 475032649205546438}
   rotateBack: []
   permanent: 0
-  placed: 0
   targeting: {fileID: 475032647605434328}
   retargetTimer: 0
   chargeTimer: 0
@@ -345,11 +350,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fab0ab09dbff02143af01e634b8f76f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 2992026775721385814}
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
   selectedTile: {fileID: 0}
-  b: {fileID: 2992026775721385814}
   onSlants: 1
   allowedObstacles: 00000000020000000400000005000000
 --- !u!114 &2692797349279770925

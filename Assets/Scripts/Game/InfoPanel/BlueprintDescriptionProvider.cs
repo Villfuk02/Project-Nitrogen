@@ -8,20 +8,23 @@ namespace Game.InfoPanel
 {
     public class BlueprintDescriptionProvider : DescriptionProvider
     {
-        readonly Blueprint.Blueprint blueprint_;
-        readonly IBlueprinted? blueprinted_;
-        readonly DescriptionFormatter<(Blueprint.Blueprint, Blueprint.Blueprint)> descriptionFormatter_;
+        readonly DescriptionFormat.BlueprintProvider getBlueprint_;
+        readonly Blueprinted? blueprinted_;
+        readonly DescriptionFormatter<(DescriptionFormat.BlueprintProvider, Blueprint.Blueprint)> descriptionFormatter_;
         readonly Box<int> cooldown_;
 
-        public BlueprintDescriptionProvider(IBlueprinted blueprinted, Box<int>? cooldown = null) : this(blueprinted.Blueprint, blueprinted.OriginalBlueprint, cooldown)
+        public BlueprintDescriptionProvider(Blueprinted blueprinted, Box<int>? cooldown = null)
         {
             blueprinted_ = blueprinted;
+            getBlueprint_ = () => blueprinted.Blueprint;
+            descriptionFormatter_ = DescriptionFormat.Blueprint(getBlueprint_, blueprinted.OriginalBlueprint);
+            cooldown_ = cooldown;
         }
 
         public BlueprintDescriptionProvider(Blueprint.Blueprint blueprint, Blueprint.Blueprint original, Box<int>? cooldown = null)
         {
-            blueprint_ = blueprint;
-            descriptionFormatter_ = DescriptionFormat.Blueprint(blueprint, original);
+            getBlueprint_ = () => blueprint;
+            descriptionFormatter_ = DescriptionFormat.Blueprint(getBlueprint_, original);
             cooldown_ = cooldown;
         }
 
@@ -32,17 +35,19 @@ namespace Game.InfoPanel
             bool initialized = blueprinted_ is MonoBehaviour mb && mb != null;
             StringBuilder sb = new();
             List<string> statBlock = new();
+            Blueprint.Blueprint blueprint = getBlueprint_();
+
 
             if (cooldown_ is not null)
             {
-                if (cooldown_.value > 0 || blueprint_.cooldown > 0)
+                if (cooldown_.value > 0 || blueprint.cooldown > 0)
                     AppendStat($"Cooldown {cooldown_.value}[+CD]");
             }
             else if (!initialized || !blueprinted_.Placed)
             {
-                if (blueprint_.cooldown > 0)
+                if (blueprint.cooldown > 0)
                     AppendStat("[$CD]");
-                if (blueprint_.startingCooldown > 0 || blueprint_.cooldown > 0)
+                if (blueprint.startingCooldown > 0 || blueprint.cooldown > 0)
                     AppendStat("[$SCD]");
             }
 
@@ -50,16 +55,12 @@ namespace Game.InfoPanel
                 foreach (var stat in blueprinted_.GetExtraStats())
                     AppendStat(stat);
 
-            foreach (var stat in blueprint_.statsToDisplay)
+            foreach (var stat in blueprint.statsToDisplay)
                 AppendStat(stat);
-
-            if (!initialized)
-                foreach (var stat in blueprint_.statsToDisplayWhenUninitialized)
-                    AppendStat(stat);
 
             FlushStatBlock();
 
-            foreach (string desc in blueprint_.descriptions)
+            foreach (string desc in blueprint.descriptions)
             {
                 sb.Append("[BRK]");
                 sb.Append(desc);

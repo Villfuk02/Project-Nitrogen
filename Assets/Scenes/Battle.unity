@@ -6102,7 +6102,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfaa70ca41a63f34799e6f14b037cad4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runEvents: {fileID: 0}
   victoryOverlay: {fileID: 1702629380}
   defeatOverlay: {fileID: 147639396}
   fade: {fileID: 960308602}

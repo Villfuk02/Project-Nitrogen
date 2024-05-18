@@ -384,7 +384,6 @@ GameObject:
   - component: {fileID: 3952241801299892880}
   - component: {fileID: 3952241801299892886}
   - component: {fileID: 3952241801299892887}
-  - component: {fileID: 3952241801299892884}
   m_Layer: 0
   m_Name: Run Persistence
   m_TagString: RunPersistence
@@ -422,14 +421,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldSetter: {fileID: 3952241801299892886}
-  runEvents: {fileID: 3952241801299892884}
   blueprintRewards: {fileID: 6181154220736681315}
   runSeed: 0
   seedString: 
-  startMaxHull: 20
   blueprints: []
   level: 0
-  cheatAddHull: 0
+  maxHull: 30
+  hull: 0
 --- !u!114 &3952241801299892886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -458,18 +456,6 @@ MonoBehaviour:
   txt: {fileID: 3952241800014511813}
   seedText: {fileID: 2567972250228556438}
   displayed: 0
---- !u!114 &3952241801299892884
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3952241801299892883}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 282f1e5ccd845344b83ca38ec56a3e4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7509405854252660220
 GameObject:
   m_ObjectHideFlags: 0
@@ -539,6 +525,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8bd37302399ac5741b6bffc8b4bfd1de, type: 2}
   - {fileID: 11400000, guid: c0df015ee54bf0a4f84ff36fdb46b65c, type: 2}
   - {fileID: 11400000, guid: 4dfbaf1f687f2624e83851e2d7ce95b1, type: 2}
+  - {fileID: 11400000, guid: c92e5d39a35739f478f4828bcae4ccc9, type: 2}
+  - {fileID: 11400000, guid: 9766de7fc699eed44884e39994b84c75, type: 2}
   blueprintsPerOffer: 3
   rareChanceIncrement: 0.1
   legendaryChanceIncrement: 0.02

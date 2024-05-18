@@ -98,11 +98,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bc6e56933b93a74295b346d8e57bbc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 3378732584434098473}
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
   selectedTile: {fileID: 0}
-  b: {fileID: 3378732584434098473}
   onSlants: 0
   minHeight: 1
   maxHeight: 10000

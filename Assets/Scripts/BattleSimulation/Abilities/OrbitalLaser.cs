@@ -1,16 +1,12 @@
 using BattleSimulation.Attackers;
 using BattleSimulation.Control;
-using Game.Damage;
 using UnityEngine;
 using Utils;
 
 namespace BattleSimulation.Abilities
 {
-    public class OrbitalLaser : Ability
+    public class OrbitalLaser : TargetedAbility
     {
-        [Header("References")]
-        [SerializeField] Targeting.Targeting targeting;
-
         [Header("Settings")]
         [SerializeField] float radius;
 
@@ -20,15 +16,16 @@ namespace BattleSimulation.Abilities
         public int ticksLeft;
         [SerializeField] bool finished;
 
-        protected override void OnInitBlueprint()
+        public override void OnSetupChanged()
         {
-            targeting.SetRange(radius);
-            ticksLeft = Blueprint.durationTicks;
+            base.OnSetupChanged();
+            if (!Placed)
+                ticksLeft = Blueprint.durationTicks;
         }
 
         protected override void OnPlaced()
         {
-            WaveController.onWaveFinished.RegisterReaction(OnWaveFinished, 100);
+            WaveController.ON_WAVE_FINISHED.RegisterReaction(OnWaveFinished, 100);
 
             Vector3 dir = transform.localRotation * Vector3.forward;
             if (Mathf.Abs(dir.z) <= 1e-4f)
@@ -50,11 +47,12 @@ namespace BattleSimulation.Abilities
         protected void OnDestroy()
         {
             if (Placed)
-                WaveController.onWaveFinished.UnregisterReaction(OnWaveFinished);
+                WaveController.ON_WAVE_FINISHED.UnregisterReaction(OnWaveFinished);
         }
 
-        void FixedUpdate()
+        protected override void FixedUpdateInternal()
         {
+            base.FixedUpdateInternal();
             if (!Placed)
                 return;
             if (ticksLeft == 0)
@@ -66,16 +64,7 @@ namespace BattleSimulation.Abilities
         public void OnAttackerEnter(Attacker a)
         {
             if (Placed && !finished)
-                Hit(a);
-        }
-
-        void Hit(Attacker attacker)
-        {
-            (Attacker a, Damage dmg) hitParam = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
-            if (!Attacker.HIT.InvokeRef(ref hitParam) || hitParam.dmg.amount <= 0)
-                return;
-
-            Attacker.DAMAGE.Invoke(hitParam);
+                a.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out _);
         }
 
         void OnWaveFinished()

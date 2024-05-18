@@ -19,31 +19,32 @@ namespace BattleSimulation.Towers
         [SerializeField] Projectile lastChargedProjectile;
         [SerializeField] int energyProduced;
 
+        bool IsCharged => ticksSinceLastShot >= Blueprint.delay;
+
         protected override void OnPlaced()
         {
             base.OnPlaced();
-            WaveController.startWave.RegisterReaction(OnWaveStarted, 100);
+            WaveController.START_WAVE.RegisterReaction(OnWaveStarted, 100);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             if (Placed)
-                WaveController.startWave.UnregisterReaction(OnWaveStarted);
+                WaveController.START_WAVE.UnregisterReaction(OnWaveStarted);
         }
 
-        protected override void FixedUpdate()
+        protected override void FixedUpdateInternal()
         {
             ticksSinceLastShot++;
-            base.FixedUpdate();
+            base.FixedUpdateInternal();
         }
 
         protected override void ShootInternal(Attacker target)
         {
-            bool charged = ticksSinceLastShot >= Blueprint.delay;
+            var p = Instantiate(IsCharged ? chargedProjectilePrefab : projectilePrefab, World.WorldData.World.instance.transform).GetComponent<LockOnProjectile>();
             ticksSinceLastShot = 0;
-            var p = Instantiate(charged ? chargedProjectilePrefab : projectilePrefab, World.WorldData.World.instance.transform).GetComponent<LockOnProjectile>();
-            if (charged)
+            if (IsCharged)
                 lastChargedProjectile = p;
             p.Init(projectileOrigin.position, this, target);
         }
@@ -53,7 +54,7 @@ namespace BattleSimulation.Towers
             ticksSinceLastShot = 1000;
         }
 
-        public override bool Hit(Projectile projectile, Attacker attacker)
+        public override bool TryHit(Projectile projectile, Attacker attacker)
         {
             if (attacker.IsDead)
                 return false;
@@ -71,7 +72,7 @@ namespace BattleSimulation.Towers
             if (charged)
             {
                 (object source, float amount) energyProductionParam = (this, Blueprint.energyProduction);
-                if (BattleController.addEnergy.InvokeRef(ref energyProductionParam))
+                if (BattleController.ADD_ENERGY.InvokeRef(ref energyProductionParam))
                     energyProduced += (int)energyProductionParam.amount;
             }
 
@@ -89,7 +90,7 @@ namespace BattleSimulation.Towers
         {
             if (Placed)
             {
-                if (ticksSinceLastShot > Blueprint.delay)
+                if (IsCharged)
                     yield return $"{TextUtils.Icon.Energy.Sprite()} Charged!";
                 yield return $"Produced [#ENE]{energyProduced}";
             }

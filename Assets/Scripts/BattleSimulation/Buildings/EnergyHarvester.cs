@@ -11,13 +11,13 @@ namespace BattleSimulation.Buildings
 
         protected override void OnPlaced()
         {
-            BattleController.addMaterial.RegisterReaction(OnAddedMaterial, 1000);
+            BattleController.ADD_MATERIAL.RegisterReaction(OnAddedMaterial, 1000);
         }
 
         protected override void OnDestroy()
         {
             if (Placed)
-                BattleController.addMaterial.UnregisterReaction(OnAddedMaterial);
+                BattleController.ADD_MATERIAL.UnregisterReaction(OnAddedMaterial);
 
             base.OnDestroy();
         }
@@ -25,7 +25,7 @@ namespace BattleSimulation.Buildings
         void OnAddedMaterial((object source, float amount) param)
         {
             (object, float amt) data = (param.source, Blueprint.energyProduction * 0.01f * param.amount);
-            if (BattleController.addEnergy.InvokeRef(ref data))
+            if (BattleController.ADD_ENERGY.InvokeRef(ref data))
                 energyProduced += (int)data.amt;
         }
 

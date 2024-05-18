@@ -1,7 +1,7 @@
+using System;
 using BattleVisuals.Selection.Highlightable;
 using Game.AttackerStats;
 using Game.Damage;
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -19,6 +19,7 @@ namespace BattleSimulation.Attackers
         public static readonly ModifiableCommand<(Attacker target, Damage cause)> DIE = new();
 
         public delegate void SpawnAttackersRelative(Attacker attacker, AttackerStats stats, int count, float offsetRadius);
+
         public static SpawnAttackersRelative spawnAttackersRelative;
 
         static Attacker()
@@ -27,6 +28,7 @@ namespace BattleSimulation.Attackers
             HEAL.RegisterHandler(HealHandler);
             DIE.RegisterHandler(DeathHandler);
         }
+
         [Header("References")]
         [SerializeField] Rigidbody rb;
         [SerializeField] Image highlight;
@@ -121,6 +123,7 @@ namespace BattleSimulation.Attackers
             segmentsToHub = World.WorldData.World.data.tiles[firstNode].dist + 1;
             UpdateWorldPosition();
         }
+
         public void AddPathProgress(float progress, uint newPathSplitIndex)
         {
             pathSegmentProgress += progress;
@@ -217,6 +220,21 @@ namespace BattleSimulation.Attackers
         public void Unhighlight()
         {
             highlightAnim.SetTrigger(IHighlightable.UNHIGHLIGHT_TRIGGER);
+        }
+
+        public bool TryHit(Damage damage, out int damageDealt)
+        {
+            damageDealt = 0;
+            if (IsDead)
+                return false;
+            (Attacker a, Damage dmg) hitParam = (this, damage);
+            if (!HIT.InvokeRef(ref hitParam))
+                return false;
+            if (hitParam.dmg.amount == 0)
+                return true;
+            if (DAMAGE.Invoke(hitParam))
+                damageDealt = (int)hitParam.dmg.amount;
+            return true;
         }
     }
 }

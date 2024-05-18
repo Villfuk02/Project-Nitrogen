@@ -14,19 +14,19 @@ namespace BattleSimulation.Buildings
 
         protected override void OnPlaced()
         {
-            WaveController.onWaveFinished.RegisterReaction(Produce, 100);
+            WaveController.ON_WAVE_FINISHED.RegisterReaction(Produce, 100);
 
-            BattleController.updateEnergyPerWave.RegisterModifier(ProvideEnergyIncome, -100);
+            BattleController.UPDATE_ENERGY_PER_WAVE.RegisterModifier(ProvideEnergyIncome, -100);
 
-            BattleController.updateEnergyPerWave.Invoke(0);
+            BattleController.UPDATE_ENERGY_PER_WAVE.Invoke(0);
         }
 
         protected override void OnDestroy()
         {
             if (Placed)
             {
-                WaveController.onWaveFinished.UnregisterReaction(Produce);
-                BattleController.updateEnergyPerWave.UnregisterModifier(ProvideEnergyIncome);
+                WaveController.ON_WAVE_FINISHED.UnregisterReaction(Produce);
+                BattleController.UPDATE_ENERGY_PER_WAVE.UnregisterModifier(ProvideEnergyIncome);
             }
 
             base.OnDestroy();
@@ -40,7 +40,7 @@ namespace BattleSimulation.Buildings
         void Produce()
         {
             (object, float amt) data = (this, production);
-            if (BattleController.addEnergy.InvokeRef(ref data))
+            if (BattleController.ADD_ENERGY.InvokeRef(ref data))
                 energyProduced += (int)data.amt;
         }
 

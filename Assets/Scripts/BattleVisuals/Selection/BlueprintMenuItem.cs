@@ -1,7 +1,7 @@
+using System;
 using BattleSimulation.Control;
 using BattleSimulation.Selection;
 using Game.Blueprint;
-using System;
 using UnityEngine;
 
 namespace BattleVisuals.Selection
@@ -36,7 +36,7 @@ namespace BattleVisuals.Selection
 
             display.targetCooldownFill = entry.cooldown.value / (float)Mathf.Max(display.blueprint.cooldown, 1);
 
-            var (affordable, _, _) = BattleController.canAfford.Query((display.blueprint.energyCost, display.blueprint.materialCost));
+            var (affordable, _, _) = BattleController.CAN_AFFORD.Query((display.blueprint.energyCost, display.blueprint.materialCost));
 
             display.UpdateText(display.blueprint.energyCost, display.blueprint.materialCost, GetTextColor(entry.cooldown.value > 0, affordable));
 

@@ -180,11 +180,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 475a7aec697860545aec390770735c03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 7111129539660429524}
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
   selectedTile: {fileID: 0}
-  b: {fileID: 7111129539660429524}
   obstacleTypes: 0500000004000000
   onSlants: 0
 --- !u!114 &5395418316105941493

@@ -1,3 +1,4 @@
+using Game.Blueprint;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -5,6 +6,8 @@ namespace BattleSimulation.Selection
 {
     public abstract class Placement : MonoBehaviour
     {
+        [Header("References")]
+        public Blueprinted blueprinted;
         [Header("Settings")]
         public UnityEvent onPlaced;
 
@@ -14,6 +17,7 @@ namespace BattleSimulation.Selection
 
         public virtual void Place()
         {
+            blueprinted.Place();
             onPlaced.Invoke();
         }
     }

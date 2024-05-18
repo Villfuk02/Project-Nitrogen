@@ -58,7 +58,7 @@ namespace BattleSimulation.Projectiles
             foreach (var hit in hits)
             {
                 Attacker a = hit.rigidbody.GetComponent<Attacker>();
-                source.Hit(this, a);
+                source.TryHit(this, a);
             }
 
             onImpact.Invoke();

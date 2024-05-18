@@ -1,5 +1,4 @@
 using BattleSimulation.Attackers;
-using Game.Damage;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -15,19 +14,11 @@ namespace BattleSimulation.Towers
             if (!Placed)
                 return;
 
-            if (attacker.IsDead)
+            if (!attacker.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
                 return;
-            (Attacker a, Damage dmg) hitParam = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
-            if (!Attacker.HIT.InvokeRef(ref hitParam))
-                return;
-            if (hitParam.dmg.amount > 0)
-            {
-                (Attacker a, Damage dmg) dmgParam = hitParam;
-                if (Attacker.DAMAGE.InvokeRef(ref dmgParam))
-                    damageDealt += (int)dmgParam.dmg.amount;
-            }
 
             onShoot.Invoke(attacker);
+            damageDealt += dmg;
         }
     }
 }

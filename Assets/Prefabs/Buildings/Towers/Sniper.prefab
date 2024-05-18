@@ -304,7 +304,6 @@ MonoBehaviour:
   rotateBack:
   - {fileID: 475032647605434327}
   permanent: 0
-  placed: 0
   targeting: {fileID: 475032647605434328}
   projectileOrigin: {fileID: 475032647605434327}
   projectilePrefab: {fileID: 2180857672546275147, guid: ed659a94a905578459fd1d60987d90d9, type: 3}
@@ -336,11 +335,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fab0ab09dbff02143af01e634b8f76f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 2242711408632258019}
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
   selectedTile: {fileID: 0}
-  b: {fileID: 2242711408632258019}
   onSlants: 1
   allowedObstacles: 00000000
 --- !u!114 &2692797349279770925

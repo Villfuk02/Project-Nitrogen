@@ -1,14 +1,22 @@
-using UnityEngine;
 using Utils;
 
 namespace Game.Run.Events
 {
-    public class RunEvents : MonoBehaviour
+    public static class RunEvents
     {
-        public ModifiableCommand<int> damageHull = new();
-        public ModifiableCommand<int> repairHull = new();
-        public ModifiableCommand defeat = new();
-        public ModifiableCommand finishLevel = new();
-        public ModifiableCommand quit = new();
+        public static ModifiableCommand<int> damageHull = new();
+        public static ModifiableCommand<int> repairHull = new();
+        public static ModifiableCommand defeat = new();
+        public static ModifiableCommand finishLevel = new();
+        public static ModifiableCommand quit = new();
+
+        public static void InitEvents()
+        {
+            damageHull = new();
+            repairHull = new();
+            defeat = new();
+            finishLevel = new();
+            quit = new();
+        }
     }
 }

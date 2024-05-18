@@ -1,4 +1,3 @@
-using BattleSimulation.Abilities;
 using UnityEngine;
 using Utils;
 
@@ -6,10 +5,9 @@ namespace BattleSimulation.Selection
 {
     public class SimplePointPlacement : Placement
     {
-        [Header("References")]
-        public Ability ability;
         [Header("Runtime variables")]
         public Vector2? selectedPos = Vector2.zero;
+
         public override bool Setup(Selectable? selected, int rotation, Vector3? pos, Transform defaultParent)
         {
             if (pos is null)
@@ -21,6 +19,7 @@ namespace BattleSimulation.Selection
                 selectedPos = null;
                 return true;
             }
+
             var newPos = (Vector2)pos;
             if (selectedPos is Vector2 sp && (sp - newPos).sqrMagnitude < 0.0001f)
                 return false;
@@ -33,11 +32,5 @@ namespace BattleSimulation.Selection
         public override bool IsValid() => selectedPos is not null;
 
         public override bool IsCorrectTypeSelected() => false;
-
-        public override void Place()
-        {
-            ability.Place();
-            base.Place();
-        }
     }
 }

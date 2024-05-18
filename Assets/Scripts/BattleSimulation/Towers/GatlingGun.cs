@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using BattleSimulation.Attackers;
 using BattleSimulation.Control;
-using Game.Damage;
+using Game.Blueprint;
 using UnityEngine;
-using Utils;
 
 namespace BattleSimulation.Towers
 {
@@ -14,43 +12,48 @@ namespace BattleSimulation.Towers
         public int slowdownRate;
         [Header("Runtime variables - Gatling Gun")]
         public int continuousShootingTicks;
-        public int currentInterval;
 
-        protected override void OnInitBlueprint()
+        protected override void OnInit()
         {
-            base.OnInitBlueprint();
-            continuousShootingTicks = 10000;
-            UpdateSpeed();
+            base.OnInit();
+            GET_BLUEPRINT.RegisterModifier(UpdateStats, -1000);
         }
 
         protected override void OnPlaced()
         {
             base.OnPlaced();
-            WaveController.onWaveFinished.RegisterReaction(ResetSpeed, 1000);
-            continuousShootingTicks = 0;
+            WaveController.ON_WAVE_FINISHED.RegisterReaction(ResetSpeed, 1000);
+            ResetSpeed();
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
+            GET_BLUEPRINT.UnregisterModifier(UpdateStats);
             if (Placed)
-                WaveController.onWaveFinished.UnregisterReaction(ResetSpeed);
+                WaveController.ON_WAVE_FINISHED.UnregisterReaction(ResetSpeed);
         }
 
-        protected override void FixedUpdate()
+        protected override void FixedUpdateInternal()
         {
+            base.FixedUpdateInternal();
             if (targeting.target == null)
                 continuousShootingTicks = Mathf.Max(continuousShootingTicks - slowdownRate, 0);
             else
                 continuousShootingTicks = Mathf.Min(continuousShootingTicks + 1, Blueprint.delay);
-            UpdateSpeed();
-            base.FixedUpdate();
+        }
+
+        void UpdateStats(ref (Blueprinted blueprinted, Blueprint blueprint) param)
+        {
+            if (!Placed || param.blueprinted != this)
+                return;
+            float speed = Mathf.Lerp(baseSpeed, 1, continuousShootingTicks / (float)param.blueprint.delay);
+            param.blueprint.interval = Mathf.RoundToInt(param.blueprint.interval / speed);
         }
 
         protected override void Shoot(Attacker target)
         {
-            UpdateSpeed();
-            shotTimer = currentInterval;
+            shotTimer = Blueprint.interval;
             ShootInternal(target);
             onShoot.Invoke(target);
         }
@@ -58,22 +61,6 @@ namespace BattleSimulation.Towers
         void ResetSpeed()
         {
             continuousShootingTicks = 0;
-            UpdateSpeed();
-        }
-
-        void UpdateSpeed()
-        {
-            float speed = Mathf.Lerp(baseSpeed, 1, continuousShootingTicks / (float)Blueprint.delay);
-            currentInterval = Mathf.RoundToInt(Blueprint.interval / speed);
-        }
-
-        public override IEnumerable<string> GetExtraStats()
-        {
-            foreach (string s in base.GetExtraStats())
-                yield return s;
-
-            yield return $"Interval {TextUtils.FormatTicksStat(TextUtils.Icon.Interval, currentInterval, OriginalBlueprint.interval, true, TextUtils.Improvement.Less)}";
-            yield return $"Damage/s {TextUtils.FormatFloatStat(TextUtils.Icon.Dps, Damage.CalculateDps(Blueprint.damage, currentInterval), Damage.CalculateDps(OriginalBlueprint.damage, OriginalBlueprint.interval), true, TextUtils.Improvement.More)}";
         }
     }
 }

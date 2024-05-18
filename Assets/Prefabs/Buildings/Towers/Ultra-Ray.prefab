@@ -328,7 +328,6 @@ MonoBehaviour:
   - {fileID: 475032647605434327}
   - {fileID: 8744715610318524709}
   permanent: 0
-  placed: 0
   targeting: {fileID: 7645817159438176310}
   onShoot:
     m_PersistentCalls:
@@ -347,11 +346,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cdd6584a6df6114384363bdeb7d34dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 1384148323585851452}
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
   selectedTile: {fileID: 0}
-  b: {fileID: 1384148323585851452}
   onSlants: 1
   allowedObstacles: 00000000020000000400000005000000
   rotations: 4

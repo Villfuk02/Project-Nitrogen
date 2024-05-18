@@ -1,36 +1,35 @@
-using BattleSimulation.Attackers;
 using BattleSimulation.Control;
-using Game.Damage;
 using UnityEngine;
 
 namespace BattleSimulation.Abilities
 {
-    public class Meteor : Ability
+    public class Meteor : TargetedAbility
     {
-        [Header("References")]
-        [SerializeField] Targeting.Targeting targeting;
-
         [Header("Runtime variables")]
         public int delayLeft;
         bool waveEnded_;
 
-        protected override void OnInitBlueprint()
+        public override void OnSetupChanged()
         {
-            targeting.SetRange(Blueprint.radius);
-            delayLeft = Blueprint.delay;
+            base.OnSetupChanged();
+            if (!Placed)
+                delayLeft = Blueprint.delay;
         }
+
         protected override void OnPlaced()
         {
-            WaveController.onWaveFinished.RegisterReaction(OnWaveFinished, 100);
+            WaveController.ON_WAVE_FINISHED.RegisterReaction(OnWaveFinished, 100);
         }
+
         protected void OnDestroy()
         {
             if (Placed)
-                WaveController.onWaveFinished.UnregisterReaction(OnWaveFinished);
+                WaveController.ON_WAVE_FINISHED.UnregisterReaction(OnWaveFinished);
         }
 
-        void FixedUpdate()
+        protected override void FixedUpdateInternal()
         {
+            base.FixedUpdateInternal();
             if (!Placed)
                 return;
             if (delayLeft == 0 && !waveEnded_)
@@ -41,17 +40,8 @@ namespace BattleSimulation.Abilities
         void Explode()
         {
             foreach (var a in targeting.GetValidTargets())
-                Hit(a);
+                a.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out _);
             Destroy(gameObject, 3f);
-        }
-
-        void Hit(Attacker attacker)
-        {
-            (Attacker a, Damage dmg) hitParam = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
-            if (!Attacker.HIT.InvokeRef(ref hitParam) || hitParam.dmg.amount <= 0)
-                return;
-
-            Attacker.DAMAGE.Invoke(hitParam);
         }
 
         void OnWaveFinished()

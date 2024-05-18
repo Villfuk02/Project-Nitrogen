@@ -1,17 +1,15 @@
+using System.Collections;
 using BattleSimulation.Control;
 using Game.Run.Events;
-using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Utils;
 
 namespace BattleVisuals.UI
 {
     public class OverlayController : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] RunEvents runEvents;
         [SerializeField] GameObject victoryOverlay;
         [SerializeField] GameObject defeatOverlay;
         [SerializeField] Image fade;
@@ -19,9 +17,8 @@ namespace BattleVisuals.UI
 
         void Awake()
         {
-            BattleController.winLevel.RegisterReaction(OnVictory, 100);
-            runEvents = GameObject.FindGameObjectWithTag(TagNames.RUN_PERSISTENCE).GetComponent<RunEvents>();
-            runEvents.defeat.RegisterReaction(OnDefeat, 100);
+            BattleController.WIN_LEVEL.RegisterReaction(OnVictory, 100);
+            RunEvents.defeat.RegisterReaction(OnDefeat, 100);
 
             Hide();
             fade.enabled = true;
@@ -29,8 +26,8 @@ namespace BattleVisuals.UI
 
         void OnDestroy()
         {
-            BattleController.winLevel.UnregisterReaction(OnVictory);
-            runEvents.defeat.UnregisterReaction(OnDefeat);
+            BattleController.WIN_LEVEL.UnregisterReaction(OnVictory);
+            RunEvents.defeat.UnregisterReaction(OnDefeat);
         }
 
         void OnVictory()
@@ -51,7 +48,7 @@ namespace BattleVisuals.UI
 
         public void Quit()
         {
-            runEvents.quit.Invoke();
+            RunEvents.quit.Invoke();
         }
 
         public void FadeIn(float time)
@@ -79,6 +76,5 @@ namespace BattleVisuals.UI
             if (alpha <= 0)
                 fade.enabled = false;
         }
-
     }
 }

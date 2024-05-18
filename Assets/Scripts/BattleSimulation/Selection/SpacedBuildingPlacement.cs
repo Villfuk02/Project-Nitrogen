@@ -17,7 +17,7 @@ namespace BattleSimulation.Selection
                 return false;
             if (!onSlants && tile.slant != WorldUtils.Slant.None)
                 return false;
-            Type t = b.GetType();
+            Type t = blueprinted.GetType();
             if (WorldUtils.ADJACENT_DIRS.Any(d => HasBuildingType(t, tile.pos + d)))
                 return false;
             return true;

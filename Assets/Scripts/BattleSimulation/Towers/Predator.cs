@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using BattleSimulation.Attackers;
-using BattleSimulation.Control;
 using Game.Damage;
 using UnityEngine;
-using Utils;
 
 namespace BattleSimulation.Towers
 {
@@ -27,11 +25,10 @@ namespace BattleSimulation.Towers
 
         void OnAttackerDied((Attacker attacker, Damage cause) param)
         {
-            if (param.cause.source != (object)this)
+            if (!ReferenceEquals(param.cause.source, this))
                 return;
-
             kills++;
-            Blueprint.damage++;
+            baseBlueprint.damage++;
         }
 
         public override IEnumerable<string> GetExtraStats()

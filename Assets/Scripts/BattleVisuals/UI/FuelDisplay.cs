@@ -33,12 +33,12 @@ namespace BattleVisuals.UI
 
         void Awake()
         {
-            BattleController.updateFuelPerWave.RegisterHandler(UpdateFuelIncome);
+            BattleController.UPDATE_FUEL_PER_WAVE.RegisterHandler(UpdateFuelIncome);
         }
 
         void OnDestroy()
         {
-            BattleController.updateFuelPerWave.UnregisterHandler(UpdateFuelIncome);
+            BattleController.UPDATE_FUEL_PER_WAVE.UnregisterHandler(UpdateFuelIncome);
         }
 
         void Update()

@@ -11,8 +11,8 @@ namespace BattleSimulation.Buildings
         protected override void Produce()
         {
             base.Produce();
-            Blueprint.materialProduction += productionIncrease;
-            BattleController.updateMaterialsPerWave.Invoke(0);
+            baseBlueprint.materialProduction += productionIncrease;
+            BattleController.UPDATE_MATERIALS_PER_WAVE.Invoke(0);
         }
     }
 }

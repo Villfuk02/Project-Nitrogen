@@ -45,7 +45,10 @@ namespace BattleSimulation.Selection
             HandleDeselect();
 
             if (placing != null && placing.Setup(hovered, rotation, hoverTilePosition, transform))
+            {
                 resetVisuals.Invoke();
+                placing.blueprinted.OnSetupChanged();
+            }
 
             HandleSelectOrPlace();
             HandleDelete();
@@ -200,7 +203,9 @@ namespace BattleSimulation.Selection
 
         public void DeselectInWorld()
         {
-            if (selected != null)
+#pragma warning disable UNT0029 // Pattern matching with null on Unity objects
+            if (selected is not null)
+#pragma warning restore UNT0029 // Pattern matching with null on Unity objects
             {
                 resetVisuals.Invoke();
                 infoPanel.Hide(true, true);
@@ -235,10 +240,11 @@ namespace BattleSimulation.Selection
                 return;
 
             placing = Instantiate(blueprint.prefab, transform).GetComponent<Placement>();
-            placing.GetComponent<IBlueprinted>().InitBlueprint(blueprint);
+            placing.GetComponent<Blueprinted>().InitBlueprint(blueprint);
             placing.Setup(hovered, rotation, hoverTilePosition, transform);
+            placing.blueprinted.OnSetupChanged();
             resetVisuals.Invoke();
-            infoPanel.ShowBlueprinted(placing.GetComponent<IBlueprinted>(), cooldown, true, true);
+            infoPanel.ShowBlueprinted(placing.GetComponent<Blueprinted>(), cooldown, true, true);
         }
 
         public void DeselectFromMenu()

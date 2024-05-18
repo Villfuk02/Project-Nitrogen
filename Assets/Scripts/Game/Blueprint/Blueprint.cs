@@ -7,14 +7,21 @@ namespace Game.Blueprint
     [CreateAssetMenu(fileName = "New Blueprint", menuName = "Blueprint")]
     public class Blueprint : ScriptableObject
     {
-        public enum Rarity { Starter, Common, Rare, Legendary, Special }
+        public enum Rarity
+        {
+            Starter,
+            Common,
+            Rare,
+            Legendary,
+            Special
+        }
 
         public enum Type
         {
             Tower,
             EconomicBuilding,
             SpecialBuilding,
-            Ability,
+            Ability
         }
 
         public new string name;
@@ -38,7 +45,6 @@ namespace Game.Blueprint
         public int materialProduction = -1;
         public int energyProduction = -1;
         public List<string> statsToDisplay;
-        public List<string> statsToDisplayWhenUninitialized;
         public List<string> descriptions;
 
         public bool HasRange => range >= 0;
@@ -79,10 +85,27 @@ namespace Game.Blueprint
             copy.materialProduction = materialProduction;
             copy.energyProduction = energyProduction;
             copy.statsToDisplay = new(statsToDisplay);
-            copy.statsToDisplayWhenUninitialized = new(statsToDisplayWhenUninitialized);
             copy.descriptions = new(descriptions);
 
             return copy;
+        }
+
+        public int GetStatsHash()
+        {
+            object[] stats =
+            {
+                energyCost, materialCost, startingCooldown, cooldown, range,
+                damage, damageType, interval, radius, delay, durationTicks, durationWaves,
+                fuelProduction, materialProduction, energyProduction
+            };
+            int hash = 0;
+            foreach (object item in stats)
+            {
+                hash = 47 * hash + (hash >> 29);
+                hash ^= item.GetHashCode();
+            }
+
+            return hash;
         }
     }
 }

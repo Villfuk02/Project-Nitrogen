@@ -3,7 +3,7 @@ using BattleSimulation.Attackers;
 using BattleSimulation.World;
 using Game.Damage;
 using AttackerDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<(Game.AttackerStats.AttackerStats stats, Game.AttackerStats.AttackerStats original, BattleSimulation.Attackers.Attacker attacker)>;
-using BlueprintDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<(Game.Blueprint.Blueprint blueprint, Game.Blueprint.Blueprint original)>;
+using BlueprintDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<(Game.InfoPanel.DescriptionFormat.BlueprintProvider getBlueprint, Game.Blueprint.Blueprint original)>;
 using TileDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<BattleSimulation.World.Tile>;
 using static Utils.TextUtils;
 
@@ -11,6 +11,8 @@ namespace Game.InfoPanel
 {
     public static class DescriptionFormat
     {
+        public delegate Blueprint.Blueprint BlueprintProvider();
+
         public static readonly Dictionary<string, string> SHARED_TAGS = new()
         {
             // FORMATTING
@@ -38,23 +40,23 @@ namespace Game.InfoPanel
 
         static readonly Dictionary<string, (BlueprintDescriptionFormatter.HandleTag, string)> BlueprintTags = new()
         {
-            { "NAM", (s => FormatStringStat(s.blueprint.name, s.original.name), "Name") },
-            { "RNG", (s => FormatFloatStat(Icon.Range, s.blueprint.range, s.original.range, s.original.HasRange, Improvement.More), "Range") },
-            { "DMG", (s => Damage.Damage.FormatDamage(s.blueprint.damage, s.original.damage, s.original.HasDamage, s.blueprint.damageType, Improvement.More), "Damage") },
-            { "DTL", (s => Damage.Damage.FormatDamageType(s.blueprint.damageType, s.original.damageType), "Damage type") },
-            { "DTI", (s => s.blueprint.damageType.ToHumanReadable(true), "Damage type") },
-            { "INT", (s => FormatTicksStat(Icon.Interval, s.blueprint.interval, s.original.interval, s.original.HasInterval, Improvement.Less), "Interval") },
-            { "DPS", (s => FormatFloatStat(Icon.Dps, s.blueprint.BaseDps, s.original.BaseDps, s.original.HasDamage && s.original.HasInterval, Improvement.More), "Damage/s") },
-            { "RAD", (s => FormatFloatStat(Icon.Radius, s.blueprint.radius, s.original.radius, s.original.HasRadius, Improvement.More), "Radius") },
-            { "DEL", (s => FormatTicksStat(Icon.Delay, s.blueprint.delay, s.original.delay, s.original.HasDelay, Improvement.Less), "Delay") },
-            { "DUR", (s => FormatDuration(s.blueprint.durationTicks, s.original.durationTicks, s.blueprint.durationWaves, s.original.durationWaves), "Duration") },
-            { "PRO", (s => FormatProduction(s.blueprint.fuelProduction, s.blueprint.materialProduction, s.blueprint.energyProduction, s.original.fuelProduction, s.original.materialProduction, s.original.energyProduction), "Production") },
-            { "SCD", (s => $"{s.blueprint.startingCooldown} waves", "Starting cooldown") },
-            { "CD", (s => $"{FormatIntStat(null, s.blueprint.cooldown, s.original.cooldown, true, Improvement.Less)} waves", "Cooldown") },
-            { "+CD", (s => FormatCooldownSuffix(s.blueprint.cooldown, s.original.cooldown), "Cooldown SUFFIX") },
-            { "FUE", (s => FormatIntStat(Icon.Fuel, s.blueprint.fuelProduction, s.original.fuelProduction, s.original.HasFuelProduction, Improvement.More), "Fuel production") },
-            { "MAT", (s => FormatIntStat(Icon.Materials, s.blueprint.materialProduction, s.original.materialProduction, s.original.HasMaterialProduction, Improvement.More), "Material production") },
-            { "ENE", (s => FormatIntStat(Icon.Energy, s.blueprint.energyProduction, s.original.energyProduction, s.original.HasEnergyProduction, Improvement.More), "Energy production") }
+            { "NAM", (s => FormatStringStat(s.getBlueprint().name, s.original.name), "Name") },
+            { "RNG", (s => FormatFloatStat(Icon.Range, s.getBlueprint().range, s.original.range, s.original.HasRange, Improvement.More), "Range") },
+            { "DMG", (s => Damage.Damage.FormatDamage(s.getBlueprint().damage, s.original.damage, s.original.HasDamage, s.getBlueprint().damageType, Improvement.More), "Damage") },
+            { "DTL", (s => Damage.Damage.FormatDamageType(s.getBlueprint().damageType, s.original.damageType), "Damage type") },
+            { "DTI", (s => s.getBlueprint().damageType.ToHumanReadable(true), "Damage type") },
+            { "INT", (s => FormatTicksStat(Icon.Interval, s.getBlueprint().interval, s.original.interval, s.original.HasInterval, Improvement.Less), "Interval") },
+            { "DPS", (s => FormatFloatStat(Icon.Dps, s.getBlueprint().BaseDps, s.original.BaseDps, s.original.HasDamage && s.original.HasInterval, Improvement.More), "Damage/s") },
+            { "RAD", (s => FormatFloatStat(Icon.Radius, s.getBlueprint().radius, s.original.radius, s.original.HasRadius, Improvement.More), "Radius") },
+            { "DEL", (s => FormatTicksStat(Icon.Delay, s.getBlueprint().delay, s.original.delay, s.original.HasDelay, Improvement.Less), "Delay") },
+            { "DUR", (s => FormatDuration(s.getBlueprint().durationTicks, s.original.durationTicks, s.getBlueprint().durationWaves, s.original.durationWaves), "Duration") },
+            { "PRO", (s => FormatProduction(s.getBlueprint().fuelProduction, s.getBlueprint().materialProduction, s.getBlueprint().energyProduction, s.original.fuelProduction, s.original.materialProduction, s.original.energyProduction), "Production") },
+            { "SCD", (s => $"{s.getBlueprint().startingCooldown} waves", "Starting cooldown") },
+            { "CD", (s => $"{FormatIntStat(null, s.getBlueprint().cooldown, s.original.cooldown, true, Improvement.Less)} waves", "Cooldown") },
+            { "+CD", (s => FormatCooldownSuffix(s.getBlueprint().cooldown, s.original.cooldown), "Cooldown SUFFIX") },
+            { "FUE", (s => FormatIntStat(Icon.Fuel, s.getBlueprint().fuelProduction, s.original.fuelProduction, s.original.HasFuelProduction, Improvement.More), "Fuel production") },
+            { "MAT", (s => FormatIntStat(Icon.Materials, s.getBlueprint().materialProduction, s.original.materialProduction, s.original.HasMaterialProduction, Improvement.More), "Material production") },
+            { "ENE", (s => FormatIntStat(Icon.Energy, s.getBlueprint().energyProduction, s.original.energyProduction, s.original.HasEnergyProduction, Improvement.More), "Energy production") }
         };
 
         static readonly Dictionary<string, (AttackerDescriptionFormatter.HandleTag, string)> AttackerTags = new()
@@ -68,7 +70,7 @@ namespace Game.InfoPanel
 
         static readonly Dictionary<string, (TileDescriptionFormatter.HandleTag, string)> TileTags = new();
 
-        public static BlueprintDescriptionFormatter Blueprint(Blueprint.Blueprint blueprint, Blueprint.Blueprint original) => new((blueprint, original), BlueprintTags);
+        public static BlueprintDescriptionFormatter Blueprint(BlueprintProvider getBlueprint, Blueprint.Blueprint original) => new((getBlueprint, original), BlueprintTags);
         public static AttackerDescriptionFormatter Attacker(AttackerStats.AttackerStats stats, AttackerStats.AttackerStats original, Attacker attacker) => new((stats, original, attacker), AttackerTags);
         public static TileDescriptionFormatter Tile(Tile tile) => new(tile, TileTags);
     }

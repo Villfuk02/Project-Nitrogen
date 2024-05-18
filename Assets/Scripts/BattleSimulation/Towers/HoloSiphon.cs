@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using BattleSimulation.Attackers;
 using BattleSimulation.Control;
-using Game.Damage;
 using UnityEngine;
 
 namespace BattleSimulation.Towers
@@ -18,20 +17,23 @@ namespace BattleSimulation.Towers
         {
             base.OnPlaced();
             wavesLeft = Blueprint.durationWaves;
-            WaveController.onWaveFinished.RegisterReaction(DecrementWaves, 100);
+            WaveController.ON_WAVE_FINISHED.RegisterReaction(DecrementWaves, 100);
 
             foreach (var a in targeting.GetValidTargets())
-                Hit(a);
+                if (a.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
+                    damageDealt += dmg;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             if (Placed)
-                WaveController.onWaveFinished.UnregisterReaction(DecrementWaves);
+                WaveController.ON_WAVE_FINISHED.UnregisterReaction(DecrementWaves);
         }
-        void FixedUpdate()
+
+        protected override void FixedUpdateInternal()
         {
+            base.FixedUpdateInternal();
             if (!Placed)
                 return;
 
@@ -59,7 +61,8 @@ namespace BattleSimulation.Towers
                 chargeTimer++;
                 if (chargeTimer >= Blueprint.delay)
                 {
-                    Hit(selectedTarget);
+                    if (selectedTarget.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
+                        damageDealt += dmg;
                     selectedTarget = null;
                 }
             }
@@ -84,18 +87,6 @@ namespace BattleSimulation.Towers
             wavesLeft--;
             if (wavesLeft <= 0)
                 Delete();
-        }
-
-        public void Hit(Attacker attacker)
-        {
-            if (attacker.IsDead)
-                return;
-            (Attacker a, Damage dmg) hitParam = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
-            if (!Attacker.HIT.InvokeRef(ref hitParam) || hitParam.dmg.amount <= 0)
-                return;
-            (Attacker a, Damage dmg) dmgParam = hitParam;
-            if (Attacker.DAMAGE.InvokeRef(ref dmgParam))
-                damageDealt += (int)dmgParam.dmg.amount;
         }
     }
 }

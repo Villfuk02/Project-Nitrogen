@@ -1,7 +1,6 @@
-using BattleSimulation.Attackers;
 using System;
+using BattleSimulation.Attackers;
 using UnityEngine;
-using Utils;
 
 namespace BattleSimulation.Projectiles
 {
@@ -28,6 +27,7 @@ namespace BattleSimulation.Projectiles
                 Destroy(gameObject);
                 return;
             }
+
             maxRange -= speed * Time.fixedDeltaTime;
 
             if (target != null)
@@ -58,7 +58,7 @@ namespace BattleSimulation.Projectiles
             if (hit)
                 return;
 
-            if (!source.Hit(this, attacker))
+            if (!source.TryHit(this, attacker))
                 return;
 
             hit = true;

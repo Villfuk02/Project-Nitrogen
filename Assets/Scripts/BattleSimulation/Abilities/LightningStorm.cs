@@ -1,16 +1,13 @@
+using System.Linq;
 using BattleSimulation.Attackers;
 using BattleSimulation.Control;
-using Game.Damage;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace BattleSimulation.Abilities
 {
-    public class LightningStorm : Ability
+    public class LightningStorm : TargetedAbility
     {
-        [Header("References")]
-        [SerializeField] Targeting.Targeting targeting;
         [Header("Settings")]
         [SerializeField] UnityEvent<Transform> onHit;
         public int strikes;
@@ -18,22 +15,20 @@ namespace BattleSimulation.Abilities
         [Header("Runtime variables")]
         int timer_;
 
-        protected override void OnInitBlueprint()
-        {
-            targeting.SetRange(Blueprint.radius);
-        }
-
         protected override void OnPlaced()
         {
-            WaveController.onWaveFinished.RegisterReaction(OnWaveFinished, 100);
+            WaveController.ON_WAVE_FINISHED.RegisterReaction(OnWaveFinished, 100);
         }
+
         protected void OnDestroy()
         {
             if (Placed)
-                WaveController.onWaveFinished.UnregisterReaction(OnWaveFinished);
+                WaveController.ON_WAVE_FINISHED.UnregisterReaction(OnWaveFinished);
         }
-        void FixedUpdate()
+
+        protected override void FixedUpdateInternal()
         {
+            base.FixedUpdateInternal();
             if (!Placed || strikes < 0)
                 return;
             if (strikes == 0)
@@ -42,6 +37,7 @@ namespace BattleSimulation.Abilities
                 Destroy(gameObject, 5f);
                 return;
             }
+
             if (timer_ == 0)
                 Strike();
             timer_--;
@@ -60,11 +56,7 @@ namespace BattleSimulation.Abilities
         void Hit(Attacker attacker)
         {
             onHit.Invoke(attacker.target);
-            (Attacker a, Damage dmg) hitParam = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
-            if (!Attacker.HIT.InvokeRef(ref hitParam) || hitParam.dmg.amount <= 0)
-                return;
-
-            Attacker.DAMAGE.Invoke(hitParam);
+            attacker.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out _);
         }
 
         void OnWaveFinished()

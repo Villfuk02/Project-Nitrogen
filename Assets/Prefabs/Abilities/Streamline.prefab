@@ -4977,6 +4977,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 905575d21b9e905439049840cd3415d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 2176082116091513945}
   onPlaced:
     m_PersistentCalls:
       m_Calls:

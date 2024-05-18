@@ -18,12 +18,12 @@ namespace BattleSimulation.Control
 
         void Awake()
         {
-            WaveController.onWaveFinished.RegisterReaction(Delete, 100);
+            WaveController.ON_WAVE_FINISHED.RegisterReaction(Delete, 100);
         }
 
         void OnDestroy()
         {
-            WaveController.onWaveFinished.UnregisterReaction(Delete);
+            WaveController.ON_WAVE_FINISHED.UnregisterReaction(Delete);
         }
 
         void Start()

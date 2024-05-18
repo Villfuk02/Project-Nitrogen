@@ -12,25 +12,25 @@ namespace BattleSimulation.Buildings
 
         protected override void OnPlaced()
         {
-            WaveController.onWaveFinished.RegisterReaction(Produce, 100);
+            WaveController.ON_WAVE_FINISHED.RegisterReaction(Produce, 100);
 
-            BattleController.updateMaterialsPerWave.RegisterModifier(ProvideMaterialsIncome, -100);
-            BattleController.updateEnergyPerWave.RegisterModifier(ProvideEnergyIncome, -100);
-            BattleController.updateFuelPerWave.RegisterModifier(ProvideFuelIncome, -100);
+            BattleController.UPDATE_MATERIALS_PER_WAVE.RegisterModifier(ProvideMaterialsIncome, -100);
+            BattleController.UPDATE_ENERGY_PER_WAVE.RegisterModifier(ProvideEnergyIncome, -100);
+            BattleController.UPDATE_FUEL_PER_WAVE.RegisterModifier(ProvideFuelIncome, -100);
 
-            BattleController.updateMaterialsPerWave.Invoke(0);
-            BattleController.updateEnergyPerWave.Invoke(0);
-            BattleController.updateFuelPerWave.Invoke(0);
+            BattleController.UPDATE_MATERIALS_PER_WAVE.Invoke(0);
+            BattleController.UPDATE_ENERGY_PER_WAVE.Invoke(0);
+            BattleController.UPDATE_FUEL_PER_WAVE.Invoke(0);
         }
 
         protected override void OnDestroy()
         {
             if (Placed)
             {
-                WaveController.onWaveFinished.UnregisterReaction(Produce);
-                BattleController.updateMaterialsPerWave.UnregisterModifier(ProvideMaterialsIncome);
-                BattleController.updateEnergyPerWave.UnregisterModifier(ProvideEnergyIncome);
-                BattleController.updateFuelPerWave.UnregisterModifier(ProvideFuelIncome);
+                WaveController.ON_WAVE_FINISHED.UnregisterReaction(Produce);
+                BattleController.UPDATE_MATERIALS_PER_WAVE.UnregisterModifier(ProvideMaterialsIncome);
+                BattleController.UPDATE_ENERGY_PER_WAVE.UnregisterModifier(ProvideEnergyIncome);
+                BattleController.UPDATE_FUEL_PER_WAVE.UnregisterModifier(ProvideFuelIncome);
             }
 
             base.OnDestroy();
@@ -41,21 +41,21 @@ namespace BattleSimulation.Buildings
             if (Blueprint.HasFuelProduction)
             {
                 (object, float amt) data = (this, Blueprint.fuelProduction);
-                if (BattleController.addFuel.InvokeRef(ref data))
+                if (BattleController.ADD_FUEL.InvokeRef(ref data))
                     fuelProduced += (int)data.amt;
             }
 
             if (Blueprint.HasMaterialProduction)
             {
                 (object, float amt) data = (this, Blueprint.materialProduction);
-                if (BattleController.addMaterial.InvokeRef(ref data))
+                if (BattleController.ADD_MATERIAL.InvokeRef(ref data))
                     materialsProduced += (int)data.amt;
             }
 
             if (Blueprint.HasEnergyProduction)
             {
                 (object, float amt) data = (this, Blueprint.energyProduction);
-                if (BattleController.addEnergy.InvokeRef(ref data))
+                if (BattleController.ADD_ENERGY.InvokeRef(ref data))
                     energyProduced += (int)data.amt;
             }
         }

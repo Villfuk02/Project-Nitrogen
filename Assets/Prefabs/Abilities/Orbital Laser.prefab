@@ -5500,21 +5500,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb6504236f617544845e5c480a3a007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 6460071162695101105}
   onPlaced:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6460071162695101105}
-        m_TargetAssemblyTypeName: BattleSimulation.Abilities.Ability, BattleSim.Abilities
-        m_MethodName: Place
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 6292483230763473537}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive

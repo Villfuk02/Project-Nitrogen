@@ -178,6 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf80ae33e9c66954c9f093be2ec780b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 3931985312381841842}
   onPlaced:
     m_PersistentCalls:
       m_Calls:
@@ -194,7 +195,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   selectedTile: {fileID: 0}
-  b: {fileID: 3931985312381841842}
   onSlants: 0
 --- !u!114 &4406567150349484477
 MonoBehaviour:

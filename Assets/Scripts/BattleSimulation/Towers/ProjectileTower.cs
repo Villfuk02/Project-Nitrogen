@@ -16,8 +16,9 @@ namespace BattleSimulation.Towers
         [Header("Runtime variables")]
         [SerializeField] protected int shotTimer;
 
-        protected virtual void FixedUpdate()
+        protected override void FixedUpdateInternal()
         {
+            base.FixedUpdateInternal();
             if (!Placed)
                 return;
 
@@ -40,20 +41,14 @@ namespace BattleSimulation.Towers
 
         protected abstract void ShootInternal(Attacker target);
 
-        public virtual bool Hit(Projectile projectile, Attacker attacker)
+        protected virtual Damage GetDamage(Attacker attacker) => new(Blueprint.damage, Blueprint.damageType, this);
+
+        public virtual bool TryHit(Projectile projectile, Attacker attacker)
         {
-            if (attacker.IsDead)
-                return false;
-            (Attacker a, Damage dmg) hitParam = (attacker, new(Blueprint.damage, Blueprint.damageType, this));
-            if (!Attacker.HIT.InvokeRef(ref hitParam))
-                return false;
-            if (hitParam.dmg.amount > 0)
-            {
-                (Attacker a, Damage dmg) dmgParam = hitParam;
-                if (Attacker.DAMAGE.InvokeRef(ref dmgParam))
-                    damageDealt += (int)dmgParam.dmg.amount;
-            }
-            return true;
+            bool hit = attacker.TryHit(GetDamage(attacker), out var dmg);
+            if (hit)
+                damageDealt += dmg;
+            return hit;
         }
     }
 }

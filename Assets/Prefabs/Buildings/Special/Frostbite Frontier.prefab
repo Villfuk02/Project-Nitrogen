@@ -344,7 +344,6 @@ MonoBehaviour:
   - {fileID: 475032647605434327}
   - {fileID: 3693982639042523578}
   permanent: 0
-  placed: 0
   targeting: {fileID: 475032647605434328}
   speedReduction: 0.25
   damageIncrease: 0.25
@@ -361,11 +360,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fab0ab09dbff02143af01e634b8f76f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blueprinted: {fileID: 3254437070283664067}
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
   selectedTile: {fileID: 0}
-  b: {fileID: 3254437070283664067}
   onSlants: 1
   allowedObstacles: 00000000
 --- !u!114 &2692797349279770925

@@ -1,6 +1,6 @@
-using Game.Run.Events;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Run.Events;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = Utils.Random.Random;
@@ -11,69 +11,54 @@ namespace Game.Run
     {
         [Header("References")]
         [SerializeField] LevelSetter worldSetter;
-        [SerializeField] RunEvents runEvents;
         [SerializeField] BlueprintRewardController blueprintRewards;
         [Header("Settings")]
         public ulong runSeed;
         public string seedString;
-        [SerializeField] int startMaxHull;
         [Header("Runtime variables")]
         public List<Blueprint.Blueprint> blueprints;
         public int level;
-        public int MaxHull { get; private set; }
-        public int Hull { get; private set; }
+        public int maxHull;
+        public int hull;
         Random random_;
-
-        [Header("Cheats")]
-        [SerializeField] bool cheatAddHull;
 
         void Awake()
         {
             DontDestroyOnLoad(gameObject);
 
-            runEvents.damageHull.RegisterHandler(DamageHull);
-            runEvents.repairHull.RegisterHandler(RepairHull);
-            runEvents.finishLevel.RegisterHandler(FinishLevelCommand);
-            runEvents.quit.RegisterHandler(Quit);
+            RunEvents.damageHull.RegisterHandler(DamageHull);
+            RunEvents.repairHull.RegisterHandler(RepairHull);
+            RunEvents.finishLevel.RegisterHandler(FinishLevelCommand);
+            RunEvents.quit.RegisterHandler(Quit);
         }
 
         public void Init(bool noStartingBlueprints)
         {
+            RunEvents.InitEvents();
             random_ = new(runSeed);
-            MaxHull = startMaxHull;
-            Hull = MaxHull;
+            hull = maxHull;
             blueprintRewards.Init(random_.NewSeed());
             if (!noStartingBlueprints)
                 blueprints = blueprintRewards.allBlueprints.Where(b => b.rarity == Blueprint.Blueprint.Rarity.Starter).ToList();
-        }
-
-        void Update()
-        {
-            if (cheatAddHull)
-            {
-                cheatAddHull = false;
-                MaxHull += 1000;
-                Hull += 1000;
-            }
         }
 
         bool DamageHull(ref int dmg)
         {
             if (dmg <= 0)
                 return false;
-            Hull -= dmg;
-            if (Hull <= 0)
-                runEvents.defeat.Invoke();
+            hull -= dmg;
+            if (hull <= 0)
+                RunEvents.defeat.Invoke();
             return true;
         }
 
         bool RepairHull(ref int r)
         {
-            if (MaxHull - Hull < r)
-                r = MaxHull - Hull;
+            if (maxHull - hull < r)
+                r = maxHull - hull;
             if (r <= 0)
                 return false;
-            Hull += r;
+            hull += r;
             return true;
         }
 
