@@ -1,4 +1,4 @@
-#WIP
+#MVP
 #system
 
 generate the level on which a [[Battle]] will take place

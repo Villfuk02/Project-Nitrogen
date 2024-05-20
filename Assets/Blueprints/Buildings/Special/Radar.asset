@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Radar
   prefab: {fileID: 475032649215164951, guid: 84699dbb5ac40a54ba515ea2d12d1c48, type: 3}
   icon: {fileID: 21300000, guid: 9a7625262363c4c4286e4bd1a60a98d3, type: 3}
-  rarity: 1
+  rarity: 2
   type: 2
   energyCost: 0
   materialCost: 15

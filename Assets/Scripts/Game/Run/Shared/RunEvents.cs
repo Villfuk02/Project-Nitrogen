@@ -1,6 +1,6 @@
 using Utils;
 
-namespace Game.Run.Events
+namespace Game.Run.Shared
 {
     public static class RunEvents
     {

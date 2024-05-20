@@ -1,4 +1,4 @@
-#WIP
+#MVP
 #system 
 
 handles planning and spawning waves of [[Attacker]]s during [[Battle]]

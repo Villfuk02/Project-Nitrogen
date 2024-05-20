@@ -1,6 +1,3 @@
-using BattleSimulation.World.WorldData;
-using Data.WorldGen;
-using Game.Run;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +5,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BattleSimulation.World.WorldData;
+using Data.WorldGen;
+using Game.Run;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -53,7 +53,14 @@ namespace WorldGen
 
         readonly AutoResetEvent waitForStepEvent_ = new(false);
 
-        public enum StepType { None, Phase, Step, MicroStep }
+        public enum StepType
+        {
+            None,
+            Phase,
+            Step,
+            MicroStep
+        }
+
         public static readonly StepType[] STEP_TYPES = (StepType[])Enum.GetValues(typeof(StepType));
 
         void Awake()
@@ -64,6 +71,7 @@ namespace WorldGen
             Random = new(worldSettings.seed);
             Tiles = null;
         }
+
         void Start()
         {
             if (benchmarkingMode)
@@ -143,6 +151,7 @@ namespace WorldGen
                 generatingTerrain.Wait();
                 Debug.Log($"generated world #{i + 1}");
             }
+
             Debug.LogError($"BENCHMARK COMPLETE!  worlds: {repeats}, attempts: {-tries}, WFC fails: {wfcFails_}, milliseconds: {s.ElapsedMilliseconds}");
         }
 
@@ -161,7 +170,10 @@ namespace WorldGen
 
                 pathEndPointPicker.PickEndPoints(worldSettings.maxHubDistFromCenter, worldSettings.pathLengths, out hubPosition, out pathStarts);
 
-                var paths = pathPlanner.PlanPaths(pathStarts, worldSettings.pathLengths, hubPosition);
+                pathPlanner.Init(pathStarts, worldSettings.pathLengths, hubPosition);
+
+                var pathPrototypes = pathPlanner.PrototypePaths();
+                var paths = pathPlanner.RefinePaths(pathPrototypes, false);
                 if (paths is null)
                     continue;
 
@@ -171,6 +183,13 @@ namespace WorldGen
                     wfcFails_++;
                     continue;
                 }
+
+                Tiles = new(terrain.GetCollapsedSlots(), terrain.GetPassageAtTile, paths);
+
+                WaitForStep(StepType.Phase);
+                paths = pathPlanner.RefinePaths(pathPlanner.GetPathLinkedListsFromTiles(), true);
+                if (paths is null)
+                    continue;
 
                 Tiles = new(terrain.GetCollapsedSlots(), terrain.GetPassageAtTile, paths);
                 break;
@@ -234,6 +253,7 @@ namespace WorldGen
             if (stepType <= instance_.stepType)
                 instance_.gizmos.Add(duration ?? stepType, objectProvider());
         }
+
         /// <summary>
         /// If we're going by steps of type 'stepType' or smaller, calls 'objectProvider' to generate a gizmo to draw until <see cref="ExpireGizmos"/> with 'duration' is called.
         /// If 'duration' is null, uses 'stepType' as duration.
@@ -244,6 +264,7 @@ namespace WorldGen
             if (stepType <= instance_.stepType)
                 instance_.gizmos.Add(duration ?? stepType, objectProvider());
         }
+
         /// <summary>
         /// If we're going by steps of type 'stepType', calls 'objectProvider' to generate gizmos to draw until <see cref="ExpireGizmos"/> with 'duration' is called.
         /// If 'duration' is null, uses 'stepType' as duration.
@@ -254,6 +275,7 @@ namespace WorldGen
             if (stepType == instance_.stepType)
                 instance_.gizmos.Add(duration ?? stepType, objectProvider());
         }
+
         /// <summary>
         /// Stops gizmos registered with duration 'duration' from drawing from now on.
         /// </summary>

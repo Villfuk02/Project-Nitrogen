@@ -1,4 +1,4 @@
-#IDEA 
+#MVP 
 #component 
 
 Part of [[Macroeconomy]] 

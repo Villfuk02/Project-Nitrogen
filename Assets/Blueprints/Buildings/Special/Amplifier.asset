@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Amplifier
   prefab: {fileID: 475032649215164951, guid: c457892fa1b1d1244b8edc800f8620fd, type: 3}
   icon: {fileID: 21300000, guid: f6457d8ecabdf4d418668a6e65eecfe6, type: 3}
-  rarity: 2
+  rarity: 3
   type: 2
   energyCost: 0
   materialCost: 40

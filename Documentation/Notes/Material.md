@@ -1,4 +1,4 @@
-#IDEA
+#MVP
 #component [[Microeconomy]]
 
 used mainly for [[Building]]s

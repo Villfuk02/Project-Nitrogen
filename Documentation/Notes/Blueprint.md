@@ -1,4 +1,4 @@
-#TODO
+#MVP
 #system 
 
 get them as rewards after a succesful [[Battle]] or in a [[Shop]] or [[Event]]

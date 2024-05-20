@@ -1,4 +1,4 @@
-#WIP
+#MVP
 #system 
 
 The level is divided into many square [[Tile]]s

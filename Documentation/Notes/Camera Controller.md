@@ -1,4 +1,4 @@
-#WIP 
+#MVP 
 #system 
 
 Make the camera controllable during [[Battle]]

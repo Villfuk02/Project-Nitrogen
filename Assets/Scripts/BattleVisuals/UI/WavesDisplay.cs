@@ -19,9 +19,12 @@ namespace BattleVisuals.UI
         [SerializeField] TextMeshProUGUI remainingText;
         [SerializeField] RectTransform wavesLayout;
         [SerializeField] RectTransform pathLabelHolder;
+        [SerializeField] TextMeshProUGUI nextWaveButtonText;
         [Header("Settings")]
         [SerializeField] Vector2 labelOffset;
         [SerializeField] float minimumWidth;
+        [SerializeField] string newAttackerText;
+        [SerializeField] string nextWaveText;
         [Header("Runtime variables")]
         readonly List<WaveDisplay> waves_ = new();
         [SerializeField] int displayedUpTo;
@@ -56,6 +59,7 @@ namespace BattleVisuals.UI
             ForceUpdate();
             waveNumber.text = wc.wave.ToString();
             remainingText.text = GetWavesLeftText();
+            nextWaveButtonText.text = wc.newAttacker ? newAttackerText : nextWaveText;
             if (wavesLayout.rect.width < minimumWidth)
                 DisplayNext();
 

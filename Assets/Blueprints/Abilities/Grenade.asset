@@ -22,10 +22,10 @@ MonoBehaviour:
   startingCooldown: 0
   cooldown: 0
   range: -1
-  damage: 12
+  damage: 6
   damageType: 8
   interval: -1
-  radius: 0.9
+  radius: 0.75
   delay: -1
   durationTicks: -1
   durationWaves: -1
@@ -35,6 +35,5 @@ MonoBehaviour:
   statsToDisplay:
   - '[$RAD]'
   - '[$DMG]'
-  statsToDisplayWhenUninitialized: []
   descriptions:
   - Deals damage to all attackers within radius.

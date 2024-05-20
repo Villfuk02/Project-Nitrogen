@@ -930,6 +930,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  showNewAttacker:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 793714038}
+        m_TargetAssemblyTypeName: BattleSimulation.Selection.SelectionController,
+          BattleSim.Selection
+        m_MethodName: ShowNewAttacker
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   spawnTimer: 0
   currentIndex: 0
   wave: 0
@@ -938,7 +954,9 @@ MonoBehaviour:
   spawning: 0
   waveStarted: 0
   currentWave:
+    newAttacker: {fileID: 0}
     batches: []
+  newAttacker: 0
 --- !u!114 &125072572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -959,8 +977,11 @@ MonoBehaviour:
   remainingText: {fileID: 1982684682}
   wavesLayout: {fileID: 644470258}
   pathLabelHolder: {fileID: 615496378}
+  nextWaveButtonText: {fileID: 226905159}
   labelOffset: {x: -2, y: -25}
-  minimumWidth: 430
+  minimumWidth: 700
+  newAttackerText: New Attacker
+  nextWaveText: Next Wave
   displayedUpTo: 0
 --- !u!1 &134019241
 GameObject:
@@ -1434,8 +1455,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -1.5, y: 0}
+  m_SizeDelta: {x: -55, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &226905159
 MonoBehaviour:
@@ -1487,9 +1508,9 @@ MonoBehaviour:
   m_fontSize: 28
   m_fontSizeBase: 28
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 28
   m_fontStyle: 33
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -3452,7 +3473,7 @@ MonoBehaviour:
   energy: 0
   maxEnergy: 50
   fuel: 0
-  fuelGoal: 150
+  fuelGoal: 120
   hullDmgTaken: 0
   won: 0
   lost: 0
@@ -3908,8 +3929,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -130}
-  m_SizeDelta: {x: 180, y: 50}
+  m_AnchoredPosition: {x: 0, y: -115}
+  m_SizeDelta: {x: 220, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &642822291
 MonoBehaviour:
@@ -4151,6 +4172,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f3107ba0393b9df4c9d2638f6091ad34, type: 2}
   - {fileID: 11400000, guid: e1e6bd25a230ebe43a1bd459e95727ce, type: 2}
   - {fileID: 11400000, guid: bf33175cf6b2d6e468f84a92b30cd45b, type: 2}
+  - {fileID: 11400000, guid: ed541132a9a3e584f90bbb58f96f9d71, type: 2}
+  - {fileID: 11400000, guid: a6625c81cdaf75347bc014cf45ec36a3, type: 2}
+  - {fileID: 11400000, guid: c11d1872e6862ff41928e450950f09eb, type: 2}
   maxWaveLengthTicks: 250
   parallelWaveChance: 0.25
   pathDropChance: 0.4
@@ -4165,6 +4189,8 @@ MonoBehaviour:
   paths: 4
   bufferLeft: 0
   waves: []
+  currentWaveMaxLength: 0
+  currentWaveMaxBatches: 0
 --- !u!1 &793714036
 GameObject:
   m_ObjectHideFlags: 0
@@ -4177,6 +4203,7 @@ GameObject:
   - component: {fileID: 793714038}
   - component: {fileID: 793714039}
   - component: {fileID: 793714040}
+  - component: {fileID: 793714041}
   m_Layer: 0
   m_Name: Selection Controller
   m_TagString: Untagged
@@ -4216,6 +4243,7 @@ MonoBehaviour:
   blueprintMenu: {fileID: 1234769087}
   infoPanel: {fileID: 884524845}
   pointHighlight: {fileID: 518856860}
+  dummySelectable: {fileID: 793714041}
   rotationHoldDelay: 0.6
   rotationInterval: 0.2
   resetVisuals:
@@ -4279,6 +4307,20 @@ MonoBehaviour:
   pixelsPerUnit: 16
   layers: 8
   areaSamplesPerFrameMultiplier: 1
+--- !u!114 &793714041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793714036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ac20147ac3ef854591957ae3f6079b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attacker: {fileID: 0}
+  tile: {fileID: 0}
 --- !u!1 &803329318
 GameObject:
   m_ObjectHideFlags: 0
@@ -5620,9 +5662,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   crowdingPenaltyByDistance: 0a0000000200000001000000
+  baseCrowdingByDistanceFromTheEdge: 060000000300000002000000010000000100000001000000010000000100000001000000
   startCrowdingPenalty: 20
   alignmentBonus: 0.15
-  startTemperature: 3
+  startTemperature: 4
   endTemperature: -5
   stepsPerLengthSquared: 0.45
   untanglingStepsPerLengthSquared: 0.05
@@ -8190,7 +8233,7 @@ MonoBehaviour:
   obstacleGenerator: {fileID: 987874899}
   pathFinalizer: {fileID: 1087793671}
   obstacleModelScatterer: {fileID: 449949343}
-  tries: 50
+  tries: 10
   onGeneratedTerrain:
     m_PersistentCalls:
       m_Calls:
@@ -9591,7 +9634,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 680, y: 250}
+  m_SizeDelta: {x: 1100, y: 250}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2060592720
 MonoBehaviour:
@@ -9642,7 +9685,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 0.5
+  m_PixelsPerUnitMultiplier: 0.35
 --- !u!222 &2060592722
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10469,7 +10512,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 330
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.y
@@ -10477,7 +10520,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 165
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.y

@@ -21,7 +21,7 @@ MonoBehaviour:
   materialCost: 60
   startingCooldown: 2
   cooldown: 2
-  range: 2.4
+  range: 2.9
   damage: 15
   damageType: 2
   interval: 24
@@ -37,7 +37,6 @@ MonoBehaviour:
   - '[$DMG]'
   - '[$INT]'
   - '[$DPS]'
-  statsToDisplayWhenUninitialized: []
   descriptions:
   - Shoots projectiles at attackers in line of sight.
   - Increases its damage by 1 with every kill.

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30d4d1898ecf507489487964fd9b2c39, type: 3}
+  m_Name: Green Space Jellyfish
+  m_EditorClassIdentifier: 
+  name: Green Space Jellyfish
+  prefab: {fileID: 5790283534461085225, guid: 761ba5a8a4e55664aa6b8957df4aea47, type: 3}
+  icon: {fileID: 21300000, guid: b770519b656f62548b54b3c9010dcf15, type: 3}
+  size: 0
+  minSpacing: 1
+  baseValue: 400
+  weight: 1
+  speed: 0.8
+  maxHealth: 200
+  descriptions:
+  - Takes 66% less [#DMT-PHY]Physical damage.

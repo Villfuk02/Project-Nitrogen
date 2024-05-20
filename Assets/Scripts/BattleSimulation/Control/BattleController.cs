@@ -1,6 +1,6 @@
 using System;
 using BattleSimulation.Attackers;
-using Game.Run.Events;
+using Game.Run.Shared;
 using UnityEngine;
 using Utils;
 

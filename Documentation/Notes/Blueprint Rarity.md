@@ -1,4 +1,4 @@
-#IDEA 
+#MVP 
 #system 
 
 each [[Blueprint]] has a rarity deonting how often it shows up

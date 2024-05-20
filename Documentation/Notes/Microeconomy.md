@@ -1,4 +1,4 @@
-#TODO
+#MVP
 #system 
 
 economy within one [[Battle]]

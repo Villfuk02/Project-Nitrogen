@@ -1,4 +1,5 @@
 using System.Linq;
+using Game.AttackerStats;
 using Game.Blueprint;
 using Game.InfoPanel;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace BattleSimulation.Selection
         [SerializeField] BlueprintMenu blueprintMenu;
         [SerializeField] InfoPanel infoPanel;
         [SerializeField] PointHighlight pointHighlight;
+        [SerializeField] Selectable dummySelectable;
         [Header("Settings")]
         [SerializeField] float rotationHoldDelay;
         [SerializeField] float rotationInterval;
@@ -258,6 +260,15 @@ namespace BattleSimulation.Selection
 
             infoPanel.Hide(true, true);
             blueprintMenu.Deselect();
+        }
+
+        public void ShowNewAttacker(AttackerStats stats)
+        {
+            DeselectFromMenu();
+            selected = dummySelectable;
+            resetVisuals.Invoke();
+            isSelectedBuilding_ = false;
+            infoPanel.ShowAttacker(stats, stats, true, false);
         }
     }
 }

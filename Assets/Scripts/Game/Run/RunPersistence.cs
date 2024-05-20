@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Game.Run.Events;
+using Game.Run.Shared;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = Utils.Random.Random;
@@ -26,6 +26,7 @@ namespace Game.Run
         {
             DontDestroyOnLoad(gameObject);
 
+            RunEvents.InitEvents();
             RunEvents.damageHull.RegisterHandler(DamageHull);
             RunEvents.repairHull.RegisterHandler(RepairHull);
             RunEvents.finishLevel.RegisterHandler(FinishLevelCommand);
@@ -34,7 +35,6 @@ namespace Game.Run
 
         public void Init(bool noStartingBlueprints)
         {
-            RunEvents.InitEvents();
             random_ = new(runSeed);
             hull = maxHull;
             blueprintRewards.Init(random_.NewSeed());

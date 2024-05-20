@@ -1,4 +1,4 @@
-#WIP 
+#MVP
 #system 
 
 They walk along paths during [[Battle]] and if they get to your [[Hub]], you lose some [[Hull]]
@@ -9,8 +9,3 @@ abilites can be passive (eg. resistant to fire), repeating periodically (eg. eve
 two sizes
 - small (target 0.15 units above ground)
 - large (target 0.3 units above ground)
-
-### ideas
-
-### List
-- 

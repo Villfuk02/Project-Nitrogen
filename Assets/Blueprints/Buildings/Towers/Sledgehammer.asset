@@ -22,7 +22,7 @@ MonoBehaviour:
   startingCooldown: 1
   cooldown: 1
   range: 1.6
-  damage: 25
+  damage: 16
   damageType: 8
   interval: 60
   radius: -1
@@ -37,7 +37,6 @@ MonoBehaviour:
   - '[$DMG]'
   - '[$INT]'
   - '[$DPS]'
-  statsToDisplayWhenUninitialized: []
   descriptions:
   - Cannot be paced on slanted tiles.
   - Smashes into the ground, dealing damage to all attackers in range.

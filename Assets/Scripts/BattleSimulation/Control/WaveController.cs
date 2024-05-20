@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BattleSimulation.Attackers;
 using Game.AttackerStats;
+using Game.Run.Shared;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -20,6 +21,7 @@ namespace BattleSimulation.Control
         public Button nextWaveButton;
         [Header("Settings")]
         [SerializeField] UnityEvent onSpawnedOnce;
+        [SerializeField] UnityEvent<AttackerStats> showNewAttacker;
         [Header("Runtime variables")]
         [SerializeField] int spawnTimer;
         [SerializeField] uint currentIndex;
@@ -30,6 +32,7 @@ namespace BattleSimulation.Control
         [SerializeField] bool waveStarted;
         [SerializeField] WaveGenerator.Wave currentWave;
         int paths_;
+        public bool newAttacker;
 
         struct QueuedAttacker
         {
@@ -49,6 +52,8 @@ namespace BattleSimulation.Control
             START_WAVE.RegisterHandler(StartNextWave);
 
             Attacker.spawnAttackersRelative = SpawnRelative;
+
+            newAttacker = waveGenerator.GetWave(wave + 1).newAttacker != null;
         }
 
         void OnDestroy()
@@ -84,6 +89,8 @@ namespace BattleSimulation.Control
             {
                 waveStarted = false;
                 nextWaveButton.interactable = true;
+                var attacker = waveGenerator.GetWave(wave + 1).newAttacker;
+                newAttacker = attacker != null && !PersistentData.IsAttackerKnown(attacker.name);
                 ON_WAVE_FINISHED.Broadcast();
             }
         }
@@ -195,6 +202,15 @@ namespace BattleSimulation.Control
 
         public void RequestWaveStart()
         {
+            if (newAttacker)
+            {
+                var attacker = waveGenerator.GetWave(wave + 1).newAttacker!;
+                showNewAttacker.Invoke(attacker);
+                PersistentData.RegisterKnownAttacker(attacker.name);
+                newAttacker = false;
+                return;
+            }
+
             if (attackersLeft == 0 && !spawning && spawnQueue_.Count == 0)
                 startNextWave = true;
         }

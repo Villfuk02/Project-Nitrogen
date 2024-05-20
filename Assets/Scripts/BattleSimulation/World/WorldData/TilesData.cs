@@ -1,5 +1,5 @@
-using Data.WorldGen;
 using System.Collections.Generic;
+using Data.WorldGen;
 using UnityEngine;
 using Utils;
 
@@ -17,6 +17,7 @@ namespace BattleSimulation.World.WorldData
         public delegate bool IsPassable(Vector2Int tile, int direction);
 
         readonly Array2D<TileData> tiles_;
+
         /// <summary>
         /// Creates an instance of <see cref="TilesData"/>, pre-filled with some base data.
         /// </summary>
@@ -32,7 +33,7 @@ namespace BattleSimulation.World.WorldData
 
             foreach (var path in paths)
                 for (int i = 0; i < path.Length; i++)
-                    tiles_[path[i]].dist = path.Length - i;
+                    tiles_[path[i]].dist = path.Length - i - 1;
         }
 
         void InitTile(IReadOnlyArray2D<CollapsedSlot> slots, IsPassable isPassable, Vector2Int pos)
@@ -59,16 +60,18 @@ namespace BattleSimulation.World.WorldData
         /// Gets the <see cref="TileData"/> at the given tile position.
         /// </summary>
         public TileData this[Vector2Int pos] => tiles_[pos];
+
         public IEnumerator<TileData> GetEnumerator() => tiles_.GetEnumerator();
 
         /// <summary>
-        /// Recalculates the distance of each tile to the hub, using only valid passages and passable tiles. Unreachable tiles have the distance <see cref="int.MaxValue"/>.
+        /// Recalculates the distance of each tile to the hub, using only valid passages and passable tiles.
+        /// Tiles which already have a distance (path tiles) will not be recalculated, and they will be treated as not passable from directions other than the path direction.
+        /// Unreachable tiles have the distance <see cref="int.MaxValue"/>.
         /// </summary>
-        public void RecalculateDistances(Vector2Int hubPosition)
+        /// <returns>maximum distance found</returns>
+        public int CalculateMinDistances(Vector2Int hubPosition)
         {
-            foreach (var node in tiles_)
-                node.dist = int.MaxValue;
-
+            int maxDist = 0;
             tiles_[hubPosition].dist = 0;
             Queue<TileData> queue = new();
             queue.Enqueue(tiles_[hubPosition]);
@@ -79,13 +82,20 @@ namespace BattleSimulation.World.WorldData
                 var node = queue.Dequeue();
                 foreach (var n in node.neighbors)
                 {
-                    if (n is null || n.dist != int.MaxValue || !n.passable)
+                    if (n is null || !n.passable)
                         continue;
 
-                    n.dist = node.dist + 1;
-                    queue.Enqueue(n);
+                    if (n.dist == int.MaxValue)
+                        n.dist = node.dist + 1;
+                    if (n.dist == node.dist + 1)
+                        queue.Enqueue(n);
+
+                    if (n.dist > maxDist)
+                        maxDist = n.dist;
                 }
             }
+
+            return maxDist;
         }
 
         /// <summary>
@@ -97,7 +107,7 @@ namespace BattleSimulation.World.WorldData
             pos = new(
                 Mathf.Clamp(pos.x, -border, WorldUtils.WORLD_SIZE.x - 1 + border),
                 Mathf.Clamp(pos.y, -border, WorldUtils.WORLD_SIZE.y - 1 + border)
-                );
+            );
             Vector2Int tilePos = pos.Round();
             return this[tilePos].GetHeight(pos - tilePos);
         }

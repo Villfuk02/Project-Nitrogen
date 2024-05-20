@@ -8,7 +8,8 @@
         "GUID:ebeb99c39dce7b942ac76a02512518c0",
         "GUID:0f1ba8400164f0941a2b1a6ced9276d9",
         "GUID:945199d47484cd4498ea562cf6114781",
-        "GUID:c71f0acfdbb5ac04c90893d9ffaba887"
+        "GUID:c71f0acfdbb5ac04c90893d9ffaba887",
+        "Game.Run.Events"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

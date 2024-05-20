@@ -1,39 +1,39 @@
 ## questions
 
 ## till next metting
-- [ ] stuff
+- [ ] implement
 - [ ] rewrite definition of towers and special buildings
+- [ ] rewrite path branches of length 4
 - [ ] add notes to ch3
     - [ ] separation of blueprints from behavior
 - [ ] prepare playtest questionnaire
 ## implementation 
-- [ ] limit wave generator to pull extras max once per wave
-- [ ] also make early waves shorter
-- [ ] make wave fade shorter
-- [ ] hover attackers from wave preview
-- [ ] check if tags are necessary
-- [ ] a few more simple terrain types - change up minerals, obstacles, terrain color, difficulty
-    - [ ] second terrain type (forest with rivers)
-        - [ ] terrain type colors
-        - [ ] terrain type types?
-        - [ ] trees
-        - [ ] modules
-        - [ ] select randomly
-- [ ] update lists in obsidian (and progress tags)
+- [x] limit wave generator to pull extras max once per wave
+- [x] also make early waves shorter
+- [x] make wave fade shorter
+- [x] jellyfish
+- [x] alert about new attackers
+- [x] save seen attackers
+- [x] check if tags are necessary
+- [x] fifth level always has one lomng path
+- [x] center blueprint selection
+- [x] paths dislike the edges
+- [x] pick paths again after wfc
 - [ ] balance stuff
-- [ ] center blueprint selection
+- [ ] fix comments in pathPlanner and obstacler
+- [ ] comment wave generator
 - [ ] tutorial
     - extra levels before the first, each with one more blueprint
     - slowly introduce concepts
     - fixed seed
     - [ ] remember if finished
     - [ ] option to play tutorial anyway
-- [ ] ready up for sharing
-    - [ ] global fade
-    - [ ] organize assets
+- [ ] global fade
+- [ ] organize assets
 - [ ] sound effects
 - [ ] box<> and visualsreference
 - [ ] use bitfields in wfc?
+- [ ] prepare build for sharing and test it
 - [ ] +polish
     - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)
     - [ ] increase shadow resolution

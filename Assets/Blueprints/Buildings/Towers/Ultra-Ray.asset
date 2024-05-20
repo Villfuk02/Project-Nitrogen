@@ -37,8 +37,8 @@ MonoBehaviour:
   - '[$DMG]'
   - '[$INT]'
   - '[$DPS]'
-  statsToDisplayWhenUninitialized: []
   descriptions:
   - Press [R] to rotate.
   - Can be placed on tiles with small obstacles.
-  - Fires a continuous beam in a fixed cardinal direction, piercing up to 3 attackers.
+  - Fires a continuous beam in a fixed cardinal direction, hitting up to 3 attackers
+    at once.

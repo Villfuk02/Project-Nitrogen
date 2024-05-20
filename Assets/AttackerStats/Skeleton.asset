@@ -17,7 +17,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 1e003412dd197e44dac8a93ec9511b57, type: 3}
   size: 0
   minSpacing: 0
-  baseValue: 32
+  baseValue: 20
   weight: 1
   speed: 1.6
   maxHealth: 20

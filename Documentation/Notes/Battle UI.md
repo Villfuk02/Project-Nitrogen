@@ -1,11 +1,11 @@
-#IDEA 
+#MVP 
 #system 
 
 displayed during [[Battle]]
 
 ## (potential) layout
 ![[Battle UI design.png]]
-Top right corner:
+Top left corner:
 - big countdown to next wave
 - below it, a preview of the next waves to come
     - [[Attacker]] type and count, spacing implied by the icon spacing

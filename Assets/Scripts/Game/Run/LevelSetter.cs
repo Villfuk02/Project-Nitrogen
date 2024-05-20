@@ -1,5 +1,6 @@
-using BattleSimulation.Control;
 using System.Collections.Generic;
+using System.Linq;
+using BattleSimulation.Control;
 using UnityEngine;
 using Utils;
 using WorldGen.WorldSettings;
@@ -12,13 +13,32 @@ namespace Game.Run
         public void SetupLevel(ulong randomSeed, int level)
         {
             Random rand = new(randomSeed);
-            int paths;
+            SetupWorldSettings(level, rand, out var pathCount, out var totalPathLength);
+
+            SetupWaveGenerator(level, pathCount, totalPathLength, rand);
+        }
+
+        static void SetupWorldSettings(int level, Random rand, out int pathCount, out int totalPathLength)
+        {
             WorldSettings ws = GameObject.FindGameObjectWithTag(TagNames.WORLD_SETTINGS).GetComponent<WorldSettings>();
             if (!ws.overrideRun)
             {
                 ws.seed = rand.NewSeed();
-                paths = rand.Int(1, Mathf.Clamp(1 + level / 2, 2, 6));
-                int minPathLength = Mathf.Max(27 - 3 * level, 9);
+                int paths;
+                int minPathLength;
+                if (level % 5 == 0)
+                {
+                    // every fifth level is just one long path
+                    paths = 1;
+                    minPathLength = Mathf.Min(50 + level * 2, 110);
+                }
+                else
+                {
+                    paths = rand.Int(1, Mathf.Clamp(1 + level / 2, 2, 6));
+                    // this formula was selected such that it's 30 for lvl1, 27 for lvl 2, and approaches 10 for lvl -> inf
+                    minPathLength = Mathf.RoundToInt(340f / (14 + 3 * level)) + 10;
+                }
+
                 List<int> pathLengths = new();
                 for (int i = 0; i < paths; i++)
                 {
@@ -29,23 +49,25 @@ namespace Game.Run
                 ws.pathLengths = pathLengths.ToArray();
                 ws.maxHubDistFromCenter = 1.5f + 5f / paths;
             }
-            else
-            {
-                paths = ws.pathLengths.Length;
-            }
 
+            pathCount = ws.pathLengths.Length;
+            totalPathLength = ws.pathLengths.Sum();
+        }
+
+        static void SetupWaveGenerator(int level, int pathCount, int totalPathLength, Random rand)
+        {
             WaveGenerator wg = GameObject.FindGameObjectWithTag(TagNames.WAVE_GENERATOR).GetComponent<WaveGenerator>();
-            wg.paths = paths;
-            if (!wg.overrideRunSettings)
-            {
-                wg.baseValueRate = 1.2f + 0.3f * level;
-                wg.baseEffectiveValueBuffer = 8 + 2 * level;
-                wg.linearScaling = 0.5f;
-                wg.quadraticScaling = 1 / 6f;
-                wg.cubicScaling = 1 / 60f;
-                wg.exponentialScalingBase = 1;
-                wg.random = new(rand.NewSeed());
-            }
+            wg.paths = pathCount;
+            if (wg.overrideRunSettings)
+                return;
+
+            wg.baseValueRate = 2f + 0.5f * level;
+            wg.baseEffectiveValueBuffer = (8 + 2 * level) * (20 + totalPathLength) * 0.02f;
+            wg.linearScaling = 0.35f;
+            wg.quadraticScaling = 1 / 16f;
+            wg.cubicScaling = 1 / 2000f;
+            wg.exponentialScalingBase = 1;
+            wg.random = new(rand.NewSeed());
         }
     }
 }

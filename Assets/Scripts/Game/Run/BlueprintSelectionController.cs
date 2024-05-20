@@ -1,6 +1,6 @@
-using Game.Blueprint;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Blueprint;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,18 +14,21 @@ namespace Game.Run
 
         [Header("References")]
         [SerializeField] GameObject blueprintPrefab;
-        [SerializeField] Transform offerHolder;
+        [SerializeField] RectTransform offerHolder;
         [SerializeField] Transform inventoryHolder;
         [SerializeField] TextMeshProUGUI offerText;
         [SerializeField] TextMeshProUGUI instructions;
         [SerializeField] Button confirmButton;
         [SerializeField] Button skipButton;
         [SerializeField] InfoPanel.InfoPanel infoPanel;
+        [SerializeField] ScrollRect scrollRect;
         [Header("Settings")]
         [SerializeField] Color activeColor;
         [SerializeField] Color selectedColor;
         [SerializeField] int maxBlueprints;
         [SerializeField] int maxBlueprintsOfOneKind;
+        [SerializeField] float offerHeightWithScrollbar;
+        [SerializeField] float offerHeightWithoutScrollbar;
         [Header("Runtime variables")]
         [SerializeField] List<BlueprintDisplay> offeredDisplays;
         [SerializeField] List<BlueprintDisplay> inventoryDisplays;
@@ -70,6 +73,9 @@ namespace Game.Run
             buildingLimited = inventory.Count(b => b.type != Blueprint.Blueprint.Type.Ability) >= maxBlueprintsOfOneKind;
             abilityLimited = inventory.Count(b => b.type == Blueprint.Blueprint.Type.Ability) >= maxBlueprintsOfOneKind;
             UpdateInterfaceState();
+
+            offerHolder.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, offer.Count > 6 ? offerHeightWithScrollbar : offerHeightWithoutScrollbar);
+            scrollRect.horizontalNormalizedPosition = 0;
         }
 
         BlueprintDisplay SetupItem(Blueprint.Blueprint blueprint, bool inventory)
@@ -133,6 +139,7 @@ namespace Game.Run
                     selected = null;
                 infoPanel.Hide(true, true);
             }
+
             UpdateInterfaceState();
         }
 

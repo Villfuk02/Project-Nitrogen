@@ -1,7 +1,7 @@
-using BattleSimulation.World.WorldData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BattleSimulation.World.WorldData;
 using UnityEngine;
 using Utils;
 using static WorldGen.WorldGenerator;
@@ -14,6 +14,7 @@ namespace WorldGen.Path
         Array2D<float> repulsion_;
         Array2D<bool> hasPath_;
         Array2D<bool> outlined_;
+
         /// <summary>
         /// Makes the final paths, taking into account terrain and obstacles. Then stores them directly in <see cref="Tiles"/>.
         /// </summary>
@@ -36,6 +37,25 @@ namespace WorldGen.Path
                         if (tile.neighbors[i] is null)
                             gizmos.Add(new GizmoManager.Cube(Color.red, (WorldUtils.TilePosToWorldPos(tile.pos + WorldUtils.CARDINAL_DIRS[i]) + pos) * 0.5f, new Vector3(0.4f, 0.1f, 0.4f)));
                     }
+                }
+
+                return gizmos;
+            });
+            // end debug
+
+            int maxDist = Tiles.CalculateMinDistances(hubPosition);
+            // debug
+            // draw the calculated distances as a gradient
+            RegisterGizmos(StepType.Phase, () =>
+            {
+                List<GizmoManager.GizmoObject> gizmos = new();
+                foreach (var tile in Tiles)
+                {
+                    if (tile.dist == int.MaxValue)
+                        continue;
+                    Vector3 pos = WorldUtils.TilePosToWorldPos(tile.pos);
+                    Color c = Color.Lerp(Color.blue, Color.green, tile.dist / (float)maxDist);
+                    gizmos.Add(new GizmoManager.Cube(c, pos, new Vector3(0.3f, 0.3f, 0.3f)));
                 }
 
                 return gizmos;
@@ -80,22 +100,23 @@ namespace WorldGen.Path
             //end debug
 
             bool foundAny = false;
-            LinkedList<(TileData tile, Vector2Int[] path)> stack = new();
-            stack.AddFirst((start, new[] { start.pos }));
+            LinkedList<(TileData tile, Vector2Int[] path, int dist)> stack = new();
+            stack.AddFirst((start, new[] { start.pos }, start.dist));
             bool lastFound = false;
             // basically DFS, but once a path is finalized, take the next step from the bottom of the stack
             while (extraPaths_ > 0 && stack.Count > 0)
             {
                 WaitForStep(StepType.MicroStep);
-                (TileData currentTile, var path) = lastFound ? stack.First.Value : stack.Last.Value;
+                (TileData currentTile, var path, int dist) = lastFound ? stack.First.Value : stack.Last.Value;
                 if (lastFound)
                     stack.RemoveFirst();
                 else
                     stack.RemoveLast();
-                lastFound = PathStep(currentTile, path, foundAny, stack);
+                lastFound = PathStep(currentTile, path, dist, foundAny, stack);
                 if (lastFound)
                     foundAny = true;
             }
+
             WaitForStep(StepType.MicroStep);
         }
 
@@ -103,7 +124,7 @@ namespace WorldGen.Path
         /// Joins a path to an existing one if possible and returns true.
         /// Otherwise, finds all valid one-tile continuations, ordered by how good they are and appends them to the stack.
         /// </summary>
-        bool PathStep(TileData tile, Vector2Int[] path, bool foundAny, LinkedList<(TileData tile, Vector2Int[] path)> stack)
+        bool PathStep(TileData tile, Vector2Int[] path, int dist, bool foundAny, LinkedList<(TileData tile, Vector2Int[] path, int dist)> stack)
         {
             // debug
             // draw the current position and all the path segments leading up to it
@@ -131,7 +152,7 @@ namespace WorldGen.Path
 
             // if this tile already has a path, check if the path can join to it
             if (hasPath_[tile.pos])
-                return TryJoinPath(path, !foundAny);
+                return TryJoinPath(tile, path, dist, !foundAny);
 
             // add valid neighbors to the stack
             foreach (var neighbor in FindValidContinuations(tile, path))
@@ -139,8 +160,9 @@ namespace WorldGen.Path
                 var newPath = new Vector2Int[path.Length + 1];
                 Array.Copy(path, newPath, path.Length);
                 newPath[^1] = neighbor.pos;
-                stack.AddLast((neighbor, newPath));
+                stack.AddLast((neighbor, newPath, dist - 1));
             }
+
             return false;
         }
 
@@ -149,30 +171,43 @@ namespace WorldGen.Path
         /// </summary>
         List<TileData> FindValidContinuations(TileData tile, Vector2Int[] path)
         {
-            // the next tile must be one closer to the hub
-            var validNeighborsTemp = tile.neighbors.Where(n => n is not null && n.dist == tile.dist - 1);
+            // the next tile must be closer to the hub
+            var validNeighborsTemp = tile.neighbors.Where(n => n is not null && n.dist < tile.dist);
             // order them by ascending repulsion (trying to avoid other paths)
             // however, order is reversed, because paths are added like to a stack
             var validNeighbors = validNeighborsTemp.OrderByDescending(n => repulsion_[n.pos]).ToList();
 
-            // if there is an option that goes straight, prioritize it (put it last)
             if (path.Length <= 1)
                 return validNeighbors;
 
+            // if there is an option that goes straight, prioritize it (put it last)
             var straight = validNeighbors.Find(n => n.pos.x == path[^2].x || n.pos.y == path[^2].y);
-            if (straight == null)
-                return validNeighbors;
+            if (straight != null)
+            {
+                validNeighbors.Remove(straight);
+                validNeighbors.Add(straight);
+            }
 
-            validNeighbors.Remove(straight);
-            validNeighbors.Add(straight);
+            // even more importantly, put first options where distance decreases exactly by one
+            var exact = validNeighbors.Where(n => n.dist == tile.dist - 1).ToArray();
+            foreach (var n in exact)
+            {
+                validNeighbors.Remove(n);
+                validNeighbors.Add(n);
+            }
 
             return validNeighbors;
         }
+
         /// <summary>
-        /// Check whether a path can be joined to a previous path and connect it. The first paths can always connect to the hub tile.
+        /// Check whether a path can be joined to a previous path and connect it. The first path can always connect to the hub tile, as long as it's the correct length.
         /// </summary>
-        bool TryJoinPath(Vector2Int[] path, bool isFirst)
+        bool TryJoinPath(TileData tile, Vector2Int[] path, int dist, bool isFirst)
         {
+            // check for correct length
+            if (tile.dist != dist)
+                return false;
+
             // reject the branch if it doesn't go through a tile that's not a neighbor of any other path
             // but only when we've already found a path
             if (!isFirst && path.All(p => outlined_[p]))

@@ -1,6 +1,6 @@
 using System.Collections;
 using BattleSimulation.Control;
-using Game.Run.Events;
+using Game.Run.Shared;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
