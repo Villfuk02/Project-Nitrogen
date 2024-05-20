@@ -1,9 +1,11 @@
 ## questions
+- název práce
 
 ## till next metting
 - [ ] implement
 - [ ] rewrite definition of towers and special buildings
 - [ ] rewrite path branches of length 4
+- [ ] design mention time controls
 - [ ] add notes to ch3
     - [ ] separation of blueprints from behavior
 - [ ] prepare playtest questionnaire
@@ -18,16 +20,33 @@
 - [x] fifth level always has one lomng path
 - [x] center blueprint selection
 - [x] paths dislike the edges
-- [x] pick paths again after wfc
-- [ ] balance stuff
-- [ ] fix comments in pathPlanner and obstacler
-- [ ] comment wave generator
+- [x] make pith finalizer respect path lengths
 - [ ] tutorial
-    - extra levels before the first, each with one more blueprint
-    - slowly introduce concepts
-    - fixed seed
+    - [ ] fixed seed
+    - [ ] fixed waves
+    - [ ] introduce stuff one by one
+        - [ ] camera controls
+        - [ ] next wave (first new attacker doesn't show)
+        - [ ] towers shoot attackers
+        - [ ] look at what comes next
+        - [ ] don't let them reach your hub
+        - [ ] energy
+        - [ ] use a grenade
+        - [ ] materials
+        - [ ] place a tower
+        - [ ] mine some materials
+        - [ ] new attacker (skeleton)
+        - [ ] fuel
+        - [ ] mine some fuel
+        - [ ] let them cook
+        - [ ] win level
+        - [ ] get mortar
     - [ ] remember if finished
-    - [ ] option to play tutorial anyway
+    - [ ] option to play tutorial anyway (and reset seen attackers)
+- [ ] fix comments in pathPlanner and obstacler and pathfinalizer
+- [ ] comment wave generator
+- [ ] balance stuff
+- [ ] restart butón
 - [ ] global fade
 - [ ] organize assets
 - [ ] sound effects

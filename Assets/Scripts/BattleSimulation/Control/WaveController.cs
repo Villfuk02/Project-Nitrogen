@@ -53,7 +53,7 @@ namespace BattleSimulation.Control
 
             Attacker.spawnAttackersRelative = SpawnRelative;
 
-            newAttacker = waveGenerator.GetWave(wave + 1).newAttacker != null;
+            newAttacker = !PersistentData.IsAttackerKnown(waveGenerator.GetWave(1).newAttacker!.name);
         }
 
         void OnDestroy()

@@ -58,12 +58,14 @@ namespace WorldGen.Path
             foreach (var offset in WorldUtils.ADJACENT_AND_ZERO)
                 crowdingPenaltyKernel_[offset + Vector2Int.one] += crowdingPenaltyByDistance[offset.ManhattanMagnitude()];
 
+            InitializeCrowding();
+
             distances_ = new(WorldUtils.WORLD_SIZE);
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
                 distances_[v] = v.ManhattanDistance(hubPosition);
         }
 
-        void InitializeCrowding(IEnumerable<Vector2Int> pathTiles)
+        void InitializeCrowding()
         {
             crowding_ = new(WorldUtils.WORLD_SIZE);
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
@@ -73,16 +75,12 @@ namespace WorldGen.Path
                 crowding_.Add(crowdingPenaltyKernel_, start + CrowdingPenaltyKernelOffset);
                 crowding_[start] += startCrowdingPenalty;
             }
-
-            foreach (var tile in pathTiles)
-                crowding_.Add(crowdingPenaltyKernel_, tile + CrowdingPenaltyKernelOffset);
         }
 
         public LinkedList<Vector2Int>[] PrototypePaths()
         {
             print("Prototyping paths");
 
-            InitializeCrowding(Enumerable.Empty<Vector2Int>());
             var paths = new LinkedList<Vector2Int>[pathCount_];
             for (int i = 0; i < pathCount_; i++)
             {
@@ -99,11 +97,11 @@ namespace WorldGen.Path
         }
 
         /// <summary>
-        /// Plan the paths, only as a guide for next generation steps.
+        /// Refine the paths using simulated annealing, still only as a guide for next generation steps.
         /// </summary>
-        public Vector2Int[][] RefinePaths(LinkedList<Vector2Int>[] prototypes, bool secondPass)
+        public Vector2Int[][] RefinePaths(LinkedList<Vector2Int>[] prototypes)
         {
-            untanglingStepsLeft = secondPass ? 0 : untanglingSteps_;
+            untanglingStepsLeft = untanglingSteps_;
             stepsLeft = mainPhaseSteps_ + untanglingStepsLeft;
             temperature = startTemperature;
 
@@ -114,18 +112,15 @@ namespace WorldGen.Path
             RegisterGizmos(StepType.MicroStep, () => prototypes.SelectMany(p => MakePathGizmos(p, Color.red)));
             // end debug
 
-            InitializeCrowding(prototypes.SelectMany(p => p));
-
-            // relax paths using simulated annealing
-            Vector2Int[][] lastValidPaths = secondPass ? prototypes.Select(p => p.ToArray()).ToArray() : null;
+            Vector2Int[][] lastValidPaths = null;
             while (stepsLeft > 0)
             {
                 // if unable to relax any more, return early (should only happen when the temperature is way too low)
-                if (!DoRelaxationStep(prototypes, secondPass))
+                if (!DoRelaxationStep(prototypes))
                     break;
 
                 // check if untangling was successful - any valid paths have been found. If not, fail early
-                if (!secondPass && untanglingStepsLeft == 0 && lastValidPaths == null)
+                if (untanglingStepsLeft == 0 && lastValidPaths == null)
                     break;
 
                 // if any path intersects with itself, check for any crossings and try to untwist them
@@ -238,7 +233,7 @@ namespace WorldGen.Path
         /// <summary>
         /// Randomly switch the position of one path node, with higher chance to switch it to a position that makes the path nodes more spread out.
         /// </summary>
-        bool DoRelaxationStep(IEnumerable<LinkedList<Vector2Int>> paths, bool checkPassages)
+        bool DoRelaxationStep(IEnumerable<LinkedList<Vector2Int>> paths)
         {
             // all the offsets with manhattan length of two
             var dirsToTry = WorldUtils.DIAGONAL_DIRS.Concat(WorldUtils.CARDINAL_DIRS.Select(d => 2 * d)).ToArray();
@@ -258,10 +253,6 @@ namespace WorldGen.Path
                         var newPos = pos + offset;
                         // all nodes still have to be 1 tile apart, so only consider switching when this holds
                         if (newPos.ManhattanDistance(prev.Value) != 1 || newPos.ManhattanDistance(next.Value) != 1)
-                            continue;
-
-                        // passable edges must exist between prev and newPos and next, if required
-                        if (checkPassages && (Tiles[prev.Value].neighbors.All(t => t == null || t.pos != newPos) || Tiles[next.Value].neighbors.All(t => t == null || t.pos != newPos)))
                             continue;
 
                         // only consider switching it when the new position is less crowded

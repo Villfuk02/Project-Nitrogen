@@ -173,7 +173,7 @@ namespace WorldGen
                 pathPlanner.Init(pathStarts, worldSettings.pathLengths, hubPosition);
 
                 var pathPrototypes = pathPlanner.PrototypePaths();
-                var paths = pathPlanner.RefinePaths(pathPrototypes, false);
+                var paths = pathPlanner.RefinePaths(pathPrototypes);
                 if (paths is null)
                     continue;
 
@@ -183,13 +183,6 @@ namespace WorldGen
                     wfcFails_++;
                     continue;
                 }
-
-                Tiles = new(terrain.GetCollapsedSlots(), terrain.GetPassageAtTile, paths);
-
-                WaitForStep(StepType.Phase);
-                paths = pathPlanner.RefinePaths(pathPlanner.GetPathLinkedListsFromTiles(), true);
-                if (paths is null)
-                    continue;
 
                 Tiles = new(terrain.GetCollapsedSlots(), terrain.GetPassageAtTile, paths);
                 break;

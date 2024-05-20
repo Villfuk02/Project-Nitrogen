@@ -3470,7 +3470,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   material: 20
-  energy: 0
+  energy: 10
   maxEnergy: 50
   fuel: 0
   fuelGoal: 120
@@ -4189,7 +4189,6 @@ MonoBehaviour:
   paths: 4
   bufferLeft: 0
   waves: []
-  currentWaveMaxLength: 0
   currentWaveMaxBatches: 0
 --- !u!1 &793714036
 GameObject:

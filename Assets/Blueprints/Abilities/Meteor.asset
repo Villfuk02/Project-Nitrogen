@@ -17,12 +17,12 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 15addddcc13488e46af0c99f24ffd745, type: 3}
   rarity: 1
   type: 3
-  energyCost: 20
+  energyCost: 25
   materialCost: 0
   startingCooldown: 0
   cooldown: 0
   range: -1
-  damage: 10
+  damage: 12
   damageType: 10
   interval: -1
   radius: 1.4

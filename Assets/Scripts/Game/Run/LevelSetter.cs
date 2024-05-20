@@ -61,11 +61,11 @@ namespace Game.Run
             if (wg.overrideRunSettings)
                 return;
 
-            wg.baseValueRate = 2f + 0.5f * level;
-            wg.baseEffectiveValueBuffer = (8 + 2 * level) * (20 + totalPathLength) * 0.02f;
-            wg.linearScaling = 0.35f;
-            wg.quadraticScaling = 1 / 16f;
-            wg.cubicScaling = 1 / 2000f;
+            wg.baseValueRate = 2f + 0.25f * level;
+            wg.baseEffectiveValueBuffer = (7 + 1 * level) * (20 + totalPathLength) * 0.02f;
+            wg.linearScaling = 1;
+            wg.quadraticScaling = 0.01f;
+            wg.cubicScaling = Mathf.Lerp(0, 1 / 80f, level / 6f);
             wg.exponentialScalingBase = 1;
             wg.random = new(rand.NewSeed());
         }
