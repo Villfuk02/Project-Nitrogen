@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Diagnostics;
 using BattleSimulation.Buildings;
+using BattleSimulation.Selection;
 using BattleSimulation.World.WorldData;
 using BattleVisuals.World;
 using Game.Blueprint;
@@ -17,13 +18,12 @@ namespace BattleSimulation.World.WorldBuilder
         [SerializeField] Transform tileHolder;
         [SerializeField] Transform terrain;
         [SerializeField] PathRenderer pathRenderer;
+        [SerializeField] GameObject slotPrefab;
+        [SerializeField] GameObject tilePrefab;
+        public Blueprint hubBlueprint;
         [Header("Settings")]
         [SerializeField] GameObject[] enableWhenReady;
         [SerializeField] UnityEvent onReady;
-        [Header("Setup")]
-        [SerializeField] GameObject slotPrefab;
-        [SerializeField] GameObject tilePrefab;
-        [SerializeField] Blueprint hubBlueprint;
         [Header("Runtime variables")]
         [SerializeField] int done;
         [SerializeField] bool ready;
@@ -147,15 +147,19 @@ namespace BattleSimulation.World.WorldBuilder
         {
             while (hubTile == null)
                 yield return null;
-            var hub = Instantiate(hubBlueprint.prefab, transform).GetComponent<Building>();
-            hub.InitBlueprint(hubBlueprint);
-            Transform myTransform = hub.transform;
-            myTransform.SetParent(hubTile.transform);
-            myTransform.localPosition = Vector3.zero;
-            hubTile.Building = hub;
-            hub.Place();
-            hub.permanent = true;
+            PlacePermanentBuilding(hubBlueprint, hubTile.pos);
             done++;
+        }
+
+        public void PlacePermanentBuilding(Blueprint blueprint, Vector2Int tilePos)
+        {
+            var tile = Tiles.TILES[tilePos];
+            var building = Instantiate(blueprint.prefab, transform).GetComponent<Building>();
+            building.InitBlueprint(blueprint);
+            var placement = building.GetComponent<Placement>();
+            placement.Setup(tile.GetComponentInChildren<Selectable>(), 0, null, null);
+            placement.Place();
+            building.permanent = true;
         }
     }
 }

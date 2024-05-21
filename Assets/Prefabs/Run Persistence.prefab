@@ -424,6 +424,7 @@ MonoBehaviour:
   blueprintRewards: {fileID: 6181154220736681315}
   runSeed: 0
   seedString: 
+  tutorialLevelSeed: 1011
   blueprints: []
   level: 0
   maxHull: 30
@@ -530,5 +531,6 @@ MonoBehaviour:
   blueprintsPerOffer: 3
   rareChanceIncrement: 0.1
   legendaryChanceIncrement: 0.02
+  mortar: {fileID: 11400000, guid: e91792428c7fbaf44b512304b52643e2, type: 2}
   rareChance: 0
   legendaryChance: 0

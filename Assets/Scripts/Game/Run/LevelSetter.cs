@@ -12,7 +12,14 @@ namespace Game.Run
     {
         public void SetupLevel(ulong randomSeed, int level)
         {
+            if (level == 0)
+            {
+                SetupTutorialSettings(randomSeed);
+                return;
+            }
+
             Random rand = new(randomSeed);
+
             SetupWorldSettings(level, rand, out var pathCount, out var totalPathLength);
 
             SetupWaveGenerator(level, pathCount, totalPathLength, rand);
@@ -68,6 +75,18 @@ namespace Game.Run
             wg.cubicScaling = Mathf.Lerp(0, 1 / 80f, level / 6f);
             wg.exponentialScalingBase = 1;
             wg.random = new(rand.NewSeed());
+        }
+
+        static void SetupTutorialSettings(ulong randomSeed)
+        {
+            WorldSettings ws = GameObject.FindGameObjectWithTag(TagNames.WORLD_SETTINGS).GetComponent<WorldSettings>();
+            ws.seed = randomSeed;
+            ws.pathLengths = new[] { 35 };
+            ws.maxHubDistFromCenter = 6;
+
+            WaveGenerator wg = GameObject.FindGameObjectWithTag(TagNames.WAVE_GENERATOR).GetComponent<WaveGenerator>();
+            wg.paths = 1;
+            wg.tutorial = true;
         }
     }
 }

@@ -29,11 +29,11 @@ namespace BattleSimulation.Selection
         [Header("References")]
         [SerializeField] SelectionController selectionController;
         [Header("Runtime variables")]
-        public MenuEntry[] abilities;
-        public MenuEntry[] buildings;
         public int selected;
         public bool waveStarted;
-        MenuEntry[] CurrentEntries => waveStarted ? abilities : buildings;
+        public List<MenuEntry> abilities;
+        public List<MenuEntry> buildings;
+        List<MenuEntry> CurrentEntries => waveStarted ? abilities : buildings;
 
         [Header("Cheats")]
         [SerializeField] bool cheatFinishCooldowns;
@@ -41,8 +41,8 @@ namespace BattleSimulation.Selection
         void Awake()
         {
             RunPersistence rp = GameObject.FindGameObjectWithTag(TagNames.RUN_PERSISTENCE).GetComponent<RunPersistence>();
-            abilities = rp.blueprints.Where(b => b.type == Blueprint.Type.Ability).Select((b, i) => new MenuEntry(b, i)).ToArray();
-            buildings = rp.blueprints.Where(b => b.type != Blueprint.Type.Ability).Select((b, i) => new MenuEntry(b, i)).ToArray();
+            abilities = rp.blueprints.Where(b => b.type == Blueprint.Type.Ability).Select((b, i) => new MenuEntry(b, i)).ToList();
+            buildings = rp.blueprints.Where(b => b.type != Blueprint.Type.Ability).Select((b, i) => new MenuEntry(b, i)).ToList();
 
             WaveController.ON_WAVE_FINISHED.RegisterReaction(OnWaveFinished, 10);
             WaveController.START_WAVE.RegisterReaction(OnWaveStarted, 10);
@@ -74,7 +74,7 @@ namespace BattleSimulation.Selection
             original = null;
             cooldown = null;
 
-            if (index < 0 || index >= CurrentEntries.Length)
+            if (index < 0 || index >= CurrentEntries.Count)
                 return false;
 
             blueprint = CurrentEntries[index].current;

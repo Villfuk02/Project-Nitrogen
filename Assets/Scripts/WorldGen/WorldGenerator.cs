@@ -94,6 +94,8 @@ namespace WorldGen
             if (stepType == StepType.None)
                 return;
 
+            // change the step type
+            // these only work when we're stepping already
             if (Input.GetKeyDown(KeyCode.N))
                 stepType = StepType.None;
             else if (Input.GetKeyDown(KeyCode.P))

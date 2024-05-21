@@ -33,6 +33,7 @@ namespace BattleSimulation.Control
         [SerializeField] WaveGenerator.Wave currentWave;
         int paths_;
         public bool newAttacker;
+        public bool disableNextWave;
 
         struct QueuedAttacker
         {
@@ -53,7 +54,7 @@ namespace BattleSimulation.Control
 
             Attacker.spawnAttackersRelative = SpawnRelative;
 
-            newAttacker = !PersistentData.IsAttackerKnown(waveGenerator.GetWave(1).newAttacker!.name);
+            CheckForNewAttacker();
         }
 
         void OnDestroy()
@@ -63,7 +64,7 @@ namespace BattleSimulation.Control
 
         void Update()
         {
-            if (Input.GetKeyUp(KeyCode.Return))
+            if (Input.GetKeyUp(KeyCode.N))
                 RequestWaveStart();
         }
 
@@ -89,8 +90,7 @@ namespace BattleSimulation.Control
             {
                 waveStarted = false;
                 nextWaveButton.interactable = true;
-                var attacker = waveGenerator.GetWave(wave + 1).newAttacker;
-                newAttacker = attacker != null && !PersistentData.IsAttackerKnown(attacker.name);
+                CheckForNewAttacker();
                 ON_WAVE_FINISHED.Broadcast();
             }
         }
@@ -200,8 +200,17 @@ namespace BattleSimulation.Control
             attackersLeft--;
         }
 
+        void CheckForNewAttacker()
+        {
+            var attacker = waveGenerator.GetWave(wave + 1)?.newAttacker;
+            newAttacker = attacker != null && !PersistentData.IsAttackerKnown(attacker.name);
+        }
+
         public void RequestWaveStart()
         {
+            if (disableNextWave)
+                return;
+
             if (newAttacker)
             {
                 var attacker = waveGenerator.GetWave(wave + 1).newAttacker!;

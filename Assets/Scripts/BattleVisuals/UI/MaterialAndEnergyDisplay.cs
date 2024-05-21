@@ -46,13 +46,13 @@ namespace BattleVisuals.UI
 
         bool UpdateMaterialsIncome(ref float income)
         {
-            materialIncomeText.text = $"+{Mathf.RoundToInt(income)}";
+            materialIncomeText.text = income == 0 ? "" : $"+{Mathf.RoundToInt(income)}";
             return true;
         }
 
         bool UpdateEnergyIncome(ref float income)
         {
-            energyIncomeText.text = $"+{Mathf.RoundToInt(income)}";
+            energyIncomeText.text = income == 0 ? "" : $"+{Mathf.RoundToInt(income)}";
             return true;
         }
     }

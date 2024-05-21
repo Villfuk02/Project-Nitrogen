@@ -1,5 +1,6 @@
 ## questions
 - název práce
+- *A game*
 
 ## till next metting
 - [ ] implement
@@ -21,31 +22,11 @@
 - [x] center blueprint selection
 - [x] paths dislike the edges
 - [x] make pith finalizer respect path lengths
-- [ ] tutorial
-    - [ ] fixed seed
-    - [ ] fixed waves
-    - [ ] introduce stuff one by one
-        - [ ] camera controls
-        - [ ] next wave (first new attacker doesn't show)
-        - [ ] towers shoot attackers
-        - [ ] look at what comes next
-        - [ ] don't let them reach your hub
-        - [ ] energy
-        - [ ] use a grenade
-        - [ ] materials
-        - [ ] place a tower
-        - [ ] mine some materials
-        - [ ] new attacker (skeleton)
-        - [ ] fuel
-        - [ ] mine some fuel
-        - [ ] let them cook
-        - [ ] win level
-        - [ ] get mortar
-    - [ ] remember if finished
-    - [ ] option to play tutorial anyway (and reset seen attackers)
+- [x] tutorial
 - [ ] fix comments in pathPlanner and obstacler and pathfinalizer
 - [ ] comment wave generator
 - [ ] balance stuff
+- [ ] remove freeplay
 - [ ] restart butón
 - [ ] global fade
 - [ ] organize assets

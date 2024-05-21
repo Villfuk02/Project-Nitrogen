@@ -1,0 +1,28 @@
+{
+    "name": "Game.Tutorial",
+    "rootNamespace": "",
+    "references": [
+        "GUID:bfbdbdd4061137041b161434e4da10de",
+        "GUID:90e81b1dcd88c294b9e0606301f4b2c4",
+        "GUID:6073d15ac0306a8499fd0cd1111f876f",
+        "GUID:c71f0acfdbb5ac04c90893d9ffaba887",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:8ef573751495a4f88822a98a88954a0b",
+        "GUID:4dfeade56dd373044905157d074d794a",
+        "GUID:c16294785e7a44148be2e5f8661f54ad",
+        "GUID:279dbe40f6076c6479f63b383bb7b96c",
+        "GUID:b55ad62d9779b864fafba17c87e0eed9",
+        "GUID:29dd693f0d4e4e24b994cd21e41ffe91",
+        "GUID:0f1ba8400164f0941a2b1a6ced9276d9",
+        "GUID:91515f9ed0682754aa99d77568952816"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

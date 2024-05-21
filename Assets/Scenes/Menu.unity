@@ -1189,7 +1189,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1128230857}
         m_TargetAssemblyTypeName: Game.Run.RunStarter, Game.Run
-        m_MethodName: StartRun
+        m_MethodName: StartRunDefault
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1284,6 +1284,7 @@ MonoBehaviour:
   runPersistencePrefab: {fileID: 3952241801299892883, guid: d0179ac661daaad47a8fdea902bcbc51, type: 3}
   seedString: 
   selectStartingBlueprints: 0
+  playTutorial: 0
 --- !u!1 &1286257885
 GameObject:
   m_ObjectHideFlags: 0

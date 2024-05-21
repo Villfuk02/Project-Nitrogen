@@ -15,6 +15,7 @@ namespace Game.Run
         [Header("Settings")]
         public ulong runSeed;
         public string seedString;
+        [SerializeField] ulong tutorialLevelSeed;
         [Header("Runtime variables")]
         public List<Blueprint.Blueprint> blueprints;
         public int level;
@@ -70,18 +71,24 @@ namespace Game.Run
 
         public void FinishLevel()
         {
-            blueprintRewards.MakeBlueprintReward();
+            if (level == 0)
+                blueprintRewards.MakeTutorialReward();
+            else
+                blueprintRewards.MakeBlueprintReward();
         }
 
         public void NextLevel()
         {
+            if (level == 0)
+                PersistentData.FinishedTutorial = true;
             level++;
             SceneManager.LoadScene("Battle");
         }
 
         public void SetupLevel()
         {
-            worldSetter.SetupLevel(random_.NewSeed(), level);
+            var levelSeed = level != 0 ? random_.NewSeed() : tutorialLevelSeed;
+            worldSetter.SetupLevel(levelSeed, level);
         }
 
         public bool Quit()

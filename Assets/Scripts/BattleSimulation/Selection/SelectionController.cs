@@ -93,7 +93,7 @@ namespace BattleSimulation.Selection
 
         void HandleDeselect()
         {
-            if (Input.GetKeyUp(KeyCode.Escape))
+            if (Input.GetKeyUp(KeyCode.Escape) || Input.GetKeyUp(KeyCode.Space))
             {
                 DeselectFromMenu();
                 DeselectInWorld();

@@ -1,5 +1,5 @@
-using BattleSimulation.Control;
 using System.Collections.Generic;
+using BattleSimulation.Control;
 using TMPro;
 using UnityEngine;
 
@@ -16,6 +16,12 @@ namespace BattleVisuals.UI
 
         public void Init(WaveGenerator.Wave wave, int waveNumber, WavesDisplay wd)
         {
+            if (wave.batches.Count == 0)
+            {
+                waveNumberText.text = "";
+                return;
+            }
+
             waveNumberText.text = waveNumber.ToString();
             foreach (var batch in wave.batches)
             {
@@ -35,6 +41,7 @@ namespace BattleVisuals.UI
                 Destroy(gameObject);
                 return true;
             }
+
             return false;
         }
     }

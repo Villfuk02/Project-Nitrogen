@@ -232,7 +232,7 @@ namespace BattleSimulation.Attackers
                 return false;
             if (hitParam.dmg.amount == 0)
                 return true;
-            if (DAMAGE.Invoke(hitParam))
+            if (DAMAGE.InvokeRef(ref hitParam))
                 damageDealt = (int)hitParam.dmg.amount;
             return true;
         }

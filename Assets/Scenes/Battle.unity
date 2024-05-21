@@ -250,6 +250,9 @@ MonoBehaviour:
   tileHolder: {fileID: 961600660}
   terrain: {fileID: 1281044095}
   pathRenderer: {fileID: 1455657881}
+  slotPrefab: {fileID: 3874263679433659877, guid: a3d794d9db79033458fe5418f7001169, type: 3}
+  tilePrefab: {fileID: 4614210074223665215, guid: 3dcdbc617cd4d5140b472b21427843f2, type: 3}
+  hubBlueprint: {fileID: 11400000, guid: d8c120b9b6f017843aa635bbbb54b549, type: 2}
   enableWhenReady:
   - {fileID: 125072569}
   - {fileID: 793714036}
@@ -280,9 +283,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  slotPrefab: {fileID: 3874263679433659877, guid: a3d794d9db79033458fe5418f7001169, type: 3}
-  tilePrefab: {fileID: 4614210074223665215, guid: 3dcdbc617cd4d5140b472b21427843f2, type: 3}
-  hubBlueprint: {fileID: 11400000, guid: d8c120b9b6f017843aa635bbbb54b549, type: 2}
+      - m_Target: {fileID: 865701826}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialController, Game.Tutorial
+        m_MethodName: TriggerPhase
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   done: 0
   ready: 0
   hubTile: {fileID: 0}
@@ -957,6 +969,7 @@ MonoBehaviour:
     newAttacker: {fileID: 0}
     batches: []
   newAttacker: 0
+  disableNextWave: 0
 --- !u!114 &125072572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1028,6 +1041,104 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backtrackingDepth: 2
+--- !u!1 &139230301
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 139230302}
+  - component: {fileID: 139230304}
+  - component: {fileID: 139230303}
+  - component: {fileID: 139230305}
+  m_Layer: 5
+  m_Name: Tutorial text panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &139230302
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139230301}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1426988469}
+  m_Father: {fileID: 592770694}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 200}
+  m_SizeDelta: {x: -800, y: 150}
+  m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &139230303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139230301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.392}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 0.5
+--- !u!222 &139230304
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139230301}
+  m_CullTransparentMesh: 1
+--- !u!95 &139230305
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139230301}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 37731b24970093942bd893ee1af75765, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &147639396
 GameObject:
   m_ObjectHideFlags: 0
@@ -3660,6 +3771,7 @@ RectTransform:
   - {fileID: 451139043}
   - {fileID: 2056032789}
   - {fileID: 1409472057}
+  - {fileID: 139230302}
   - {fileID: 1213696535}
   m_Father: {fileID: 0}
   m_RootOrder: 8
@@ -4180,6 +4292,95 @@ MonoBehaviour:
   pathDropChance: 0.4
   maxBatchCount: 3
   parallelMinCount: 3
+  tutorialWaves:
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
+      count: 4
+      spacing: 2
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
+      count: 8
+      spacing: 2
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
+      count: 8
+      spacing: 1
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
+      count: 10
+      spacing: 1
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
+      count: 20
+      spacing: 2
+  - newAttacker: {fileID: 11400000, guid: 4522003d97c1f7945a39066ff63e6c7f, type: 2}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: 4522003d97c1f7945a39066ff63e6c7f, type: 2}
+      count: 2
+      spacing: 4
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: 4522003d97c1f7945a39066ff63e6c7f, type: 2}
+      count: 2
+      spacing: 1
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: 4522003d97c1f7945a39066ff63e6c7f, type: 2}
+      count: 2
+      spacing: 2
+    - typePerPath:
+      - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
+      count: 4
+      spacing: 1
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
+      count: 4
+      spacing: 1
+    - typePerPath:
+      - {fileID: 11400000, guid: 4522003d97c1f7945a39066ff63e6c7f, type: 2}
+      count: 2
+      spacing: 2
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
+      count: 6
+      spacing: 0
+    - typePerPath:
+      - {fileID: 11400000, guid: 4522003d97c1f7945a39066ff63e6c7f, type: 2}
+      count: 2
+      spacing: 1
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
+      count: 4
+      spacing: 1
+    - typePerPath:
+      - {fileID: 11400000, guid: 4522003d97c1f7945a39066ff63e6c7f, type: 2}
+      count: 3
+      spacing: 4
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: 4522003d97c1f7945a39066ff63e6c7f, type: 2}
+      count: 7
+      spacing: 4
   baseValueRate: 5
   baseEffectiveValueBuffer: 25
   linearScaling: 1
@@ -4187,6 +4388,7 @@ MonoBehaviour:
   cubicScaling: 0
   exponentialScalingBase: 1
   paths: 4
+  tutorial: 0
   bufferLeft: 0
   waves: []
   currentWaveMaxBatches: 0
@@ -4716,6 +4918,804 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 851699901}
   m_CullTransparentMesh: 1
+--- !u!1 &865701824
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 865701827}
+  - component: {fileID: 865701826}
+  - component: {fileID: 865701825}
+  m_Layer: 0
+  m_Name: TutorialController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &865701825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 865701824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93d0e0e645de66f46be92d5ffac2ff18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 865701826}
+  tutorialText: {fileID: 1426988467}
+  tutorialTextAnimator: {fileID: 139230305}
+  worldBuilder: {fileID: 10349201}
+  budgetSentryBlueprint: {fileID: 11400000, guid: 376c6eb40ad25ad438f202cf9fd84f42, type: 2}
+  surfaceDrillBlueprint: {fileID: 11400000, guid: 3425f27343a18a24c88b3ec33a6ead8c, type: 2}
+  surfaceDrillWithoutFuel: {fileID: 2095912537687321736, guid: 296c341a8f1e0b14e8d76f8d4937f7c0, type: 3}
+  grenadeBlueprint: {fileID: 11400000, guid: fc7b1cb7632f69a4d994e6cd8bb4d639, type: 2}
+  wavesMask: {fileID: 2060592720}
+  wavesLabels: {fileID: 615496377}
+  cameraTransform: {fileID: 963194230}
+  waveController: {fileID: 125072571}
+  blueprintMenu: {fileID: 1234769087}
+  blueprintMenuDisplay: {fileID: 408895620}
+  battleController: {fileID: 568931855}
+  infoPanel: {fileID: 884524845}
+  shown: 0
+  newTutorialText: 
+--- !u!114 &865701826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 865701824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a15c7349eed5e2444966d14077c585ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actions: {fileID: 865701825}
+  eventsByPhase:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ModifyHubBlueprint
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1409472056}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 451139042}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1428933277}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 52235130}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 377693396}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: HideWavesPreview
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: SetDisableNextWave
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ChangeMaterials
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: -20
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Move around by dragging with <color=white>right-click</color>
+            or with <color=white>[W] [A] [S] [D]</color>.
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: PlaceBudgetSentry
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Zoom in and out by <color=white>scrolling</color>.
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Drag left and right with the <color=white>scroll wheel</color>
+            pressed, or press <color=white>[Q]</color> and <color=white>[E]</color><br>to
+            rotate the camera.
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: When ready, press the button <color=white>"Next Wave"</color>
+            or press <color=white>[N]</color> to begin the next wave.
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 377693396}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1982684680}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: SetDisableNextWave
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Here come the attackers!<br>Luckily, a single <color=white>Budget
+            Sentry</color> can deal with these attackers before they reach the <color=white>Hub</color>.
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: <- Here you can see the attackers that will come next.<br>Let's
+            start the next one!
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowWavesPreview
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: When an attacker reaches the <color=white>Hub</color>,<br>the
+            Hub loses some <color=white>hull</color>.<br>Once it runs out, <color=white>you
+            lose</color>!
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1428933277}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1770726282}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Here, have some <sprite=0><color=white>Materials</color>.<br>Build
+            another <color=white>Budget Sentry</color> to strengthen your defenses!
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 451139042}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2017868988}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: SetDisableNextWave
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: AddSentryBlueprint
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ChangeMaterials
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 10
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Let's try the next wave!
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: SetDisableNextWave
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: HideTutorialText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Let's try the next wave!
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Here's enough <sprite=0><color=white>Materials</color>
+            to build a <color=white>Surface Drill</color>.<br>Build it on a <sprite=0><color=white>mineral-rich
+            tile</color> to mine more materials!
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1409472056}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: AddDrillBlueprint
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: SetDisableNextWave
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ChangeMaterials
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 10
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Let's continue!
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: SetDisableNextWave
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: HideTutorialText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Let's continue!
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: The number in the blue circle represents <sprite=2><color=white>Energy</color>.<br>It
+            will be useful in the next wave.
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2017868988}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ChangeEnergy
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 15
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: AddGrenadeBlueprint
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: FixDrillBlueprint
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: '<sprite=2><color=white>Energy</color> can be spent on
+            abilities, like this <color=white>Grenade</color>.<br>When you''re out
+            of <sprite=2>Energy, you can still pay for abilities with <sprite=0>Materials. '
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: The next wave contains a new type of attacker!
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: You can hide the <color=white>info panel</color> and
+            deselect anything you have selected using <color=white>[Space]</color>,
+            or by clicking on empty space.
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: HideTutorialText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: In the top left, you can see how much <sprite=1><color=white>Fuel</color>
+            you have. Once you gather <color=white>120</color>, you <color=white>win</color>
+            this level!
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 52235130}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1982684680}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: ShowTutorialText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Good luck!
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: SetupRunBlueprints
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 865701825}
+        m_TargetAssemblyTypeName: Game.Tutorial.TutorialActions, Game.Tutorial
+        m_MethodName: HideTutorialTextAfterAWhile
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  phase: 0
+--- !u!4 &865701827
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 865701824}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &884524842 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1560906902632731582, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
@@ -6125,7 +7125,7 @@ RectTransform:
   - {fileID: 147639397}
   - {fileID: 960308601}
   m_Father: {fileID: 592770694}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -6740,6 +7740,141 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1423264477}
   m_CullTransparentMesh: 1
+--- !u!1 &1426988466
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1426988469}
+  - component: {fileID: 1426988468}
+  - component: {fileID: 1426988467}
+  m_Layer: 5
+  m_Name: Tutorial text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1426988467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426988466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: I am a tutorial text.
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 682caa0388737e7438835adcb5a6bd2b, type: 2}
+  m_sharedMaterial: {fileID: -1229538662994313405, guid: 682caa0388737e7438835adcb5a6bd2b, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4278246143
+  m_fontColor: {r: 1, g: 0.8537105, b: 0, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 11400000, guid: 7b64643395b26d649b1bdf15d5bf2bae, type: 2}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 42
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 18
+  m_fontSizeMax: 42
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1426988468
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426988466}
+  m_CullTransparentMesh: 1
+--- !u!224 &1426988469
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426988466}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 139230302}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -20, y: -20}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1428933277
 GameObject:
   m_ObjectHideFlags: 0
@@ -10511,7 +11646,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 330
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.y
@@ -10519,7 +11654,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 165
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.y

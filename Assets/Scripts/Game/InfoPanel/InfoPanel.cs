@@ -27,7 +27,7 @@ namespace Game.InfoPanel
         [SerializeField] Sprite tileIcon;
         [SerializeField] Color lowPriorityBackgroundColor;
         [Header("Runtime variables")]
-        [SerializeField] bool visible;
+        public bool visible;
         [SerializeField] bool allowInteraction;
         [SerializeField] bool priority;
         [SerializeField] bool rebuildLayout;

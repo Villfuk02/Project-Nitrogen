@@ -19,6 +19,7 @@ namespace BattleSimulation.Control
         [SerializeField] float pathDropChance;
         [SerializeField] int maxBatchCount;
         [SerializeField] int parallelMinCount;
+        [SerializeField] List<Wave> tutorialWaves;
         [Header("Settings - auto-assigned")]
         public float baseValueRate;
         public float baseEffectiveValueBuffer;
@@ -28,6 +29,7 @@ namespace BattleSimulation.Control
         public float exponentialScalingBase;
         public int paths;
         public Random random;
+        public bool tutorial;
         [Header("Runtime variables")]
         [SerializeField] float bufferLeft;
         [SerializeField] List<Wave> waves;
@@ -66,6 +68,10 @@ namespace BattleSimulation.Control
         public Wave GetWave(int number)
         {
             number--;
+
+            if (tutorial)
+                return tutorialWaves.Count > number ? tutorialWaves[number] : new(null);
+
             while (number >= waves.Count)
                 waves.Add(GenerateWave(waves.Count));
             return waves[number];

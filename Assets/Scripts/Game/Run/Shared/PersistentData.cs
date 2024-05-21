@@ -30,5 +30,13 @@ namespace Game.Run.Shared
                 PlayerPrefs.Save();
             }
         }
+
+        public static void ClearProgress()
+        {
+            PlayerPrefs.SetInt(FinishedTutorialKey, 0);
+            KnownAttackers.Clear();
+            PlayerPrefs.SetString(KnownAttackersKey, "");
+            PlayerPrefs.Save();
+        }
     }
 }

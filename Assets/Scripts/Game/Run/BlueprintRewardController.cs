@@ -18,6 +18,7 @@ namespace Game.Run
         [SerializeField] int blueprintsPerOffer;
         [SerializeField] float rareChanceIncrement;
         [SerializeField] float legendaryChanceIncrement;
+        [SerializeField] Blueprint.Blueprint mortar;
         [Header("Runtime variables")]
         [SerializeField] float rareChance;
         [SerializeField] float legendaryChance;
@@ -81,6 +82,12 @@ namespace Game.Run
                     currentOffer_.Add(b);
             }
 
+            StartCoroutine(SetupWhenReady(bsc => bsc.Setup(runPersistence.blueprints, currentOffer_, null, null, OnFinishedPickingReward, true)));
+        }
+
+        public void MakeTutorialReward()
+        {
+            currentOffer_ = new() { mortar };
             StartCoroutine(SetupWhenReady(bsc => bsc.Setup(runPersistence.blueprints, currentOffer_, null, null, OnFinishedPickingReward, true)));
         }
 

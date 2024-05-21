@@ -1,5 +1,5 @@
-using BattleSimulation.Selection;
 using System.Collections.Generic;
+using BattleSimulation.Selection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,8 +27,12 @@ namespace BattleVisuals.Selection
             UpdateItems();
         }
 
-        void InitItems()
+        public void InitItems()
         {
+            foreach (var item in menuItems)
+                Destroy(item.gameObject);
+            menuItems.Clear();
+
             foreach (var entry in menu.abilities)
                 InitItem(entry, abilityHotbar);
             foreach (var entry in menu.buildings)
