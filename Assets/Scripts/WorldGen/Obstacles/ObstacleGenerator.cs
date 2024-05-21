@@ -15,15 +15,14 @@ namespace WorldGen.Obstacles
         List<Vector2Int> emptyTiles_;
 
         /// <summary>
-        /// Places all the various obstacles on tiles according to their parameters and ensuring the shortest path from each path start is the specified length.
+        /// Places all the various obstacles on tiles according to their parameters.
+        /// Makes sure to not block paths.
         /// </summary>
-        public void PlaceObstacles(Vector2Int[] pathStarts, int[] pathLengths, Vector2Int hubPosition)
+        public void PlaceObstacles()
         {
             // debug
             WaitForStep(StepType.Phase);
             print("Picking Obstacles");
-            // draw paths starts and hub position
-            RegisterGizmos(StepType.Phase, () => new List<Vector2Int>(pathStarts) { hubPosition }.Select(p => new GizmoManager.Cube(Color.yellow, WorldUtils.TilePosToWorldPos(p), 0.5f)));
             // end debug
 
             var layers = WorldGenerator.TerrainType.Obstacles.Layers;
@@ -37,7 +36,6 @@ namespace WorldGen.Obstacles
                     emptyTiles_.Add(v);
             }
 
-            // first generate obstacles on random tiles that don't have a planned path going through them
             for (var layer = 0; layer < layers.Length; layer++)
             {
                 // debug
@@ -55,10 +53,11 @@ namespace WorldGen.Obstacles
         }
 
         /// <summary>
-        /// Places all obstacles of the given layer, ensuring a valid path still exists from each start.
+        /// Places all obstacles of the given layer randomly, based on their parameters.
         /// </summary>
         void GenerateLayer(IEnumerable<ObstacleData> layer, int index)
         {
+            // keep track of how many obstacles were placed of each type, but only keep those that have not reached the maximum count
             var obstacleCounts = layer.Where(o => o.Max > 0).ToDictionary(o => o, _ => 0);
             while (obstacleCounts.Count > 0)
             {
@@ -80,11 +79,12 @@ namespace WorldGen.Obstacles
         }
 
         /// <summary>
-        /// Tries to place an obstacle at the given tile.
+        /// Tries to place an obstacle at the given tile, selected from the given dictionary.
+        /// Removes the obstacle entry from the dictionary if the max count is reached.
         /// </summary>
         void TryPlace(Vector2Int pos, Dictionary<ObstacleData, int> available, int layer)
         {
-            var placeable = GetValidPlacements(pos, available.Keys, false);
+            var placeable = GetValidPlacements(pos, available.Keys);
             if (placeable.Count == 0)
                 return;
 
@@ -95,10 +95,9 @@ namespace WorldGen.Obstacles
         }
 
         /// <summary>
-        /// Checks whether each obstacle can be placed on this tile and returns the set along with their probabilities.
-        /// If forcePlace is true, all valid obstacles can be placed regardless of their chance.
+        /// For each obstacle, calculates its probability to be placed on this tile, and adds it to the resulting set with the calculated probability.
         /// </summary>
-        WeightedRandomSet<ObstacleData> GetValidPlacements(Vector2Int pos, IEnumerable<ObstacleData> available, bool forcePlace)
+        WeightedRandomSet<ObstacleData> GetValidPlacements(Vector2Int pos, IEnumerable<ObstacleData> available)
         {
             WeightedRandomSet<ObstacleData> placeable = new(WorldGenerator.Random.NewSeed());
             foreach (var o in available)
@@ -113,9 +112,7 @@ namespace WorldGen.Obstacles
                 }
 
                 probability = Mathf.Clamp01(probability);
-                if (forcePlace)
-                    placeable.AddOrUpdate(o, probability + 0.01f);
-                else if (WorldGenerator.Random.Bool(probability))
+                if (WorldGenerator.Random.Bool(probability))
                     placeable.AddOrUpdate(o, probability);
             }
 

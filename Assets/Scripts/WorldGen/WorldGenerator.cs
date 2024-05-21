@@ -119,7 +119,7 @@ namespace WorldGen
             // but some actions still have to run on the main thread
             onGeneratedTerrain.Invoke();
 
-            Task placingObstacles = Task.Run(() => obstacleGenerator.PlaceObstacles(worldData.firstPathTiles, worldSettings.pathLengths, worldData.hubPosition));
+            Task placingObstacles = Task.Run(() => obstacleGenerator.PlaceObstacles());
             yield return new WaitUntil(() => placingObstacles.IsCompleted);
             placingObstacles.Wait();
             Task finalizingPaths = Task.Run(() => pathFinalizer.FinalizePaths(worldData.firstPathTiles, worldSettings.maxExtraPaths, worldData.hubPosition));

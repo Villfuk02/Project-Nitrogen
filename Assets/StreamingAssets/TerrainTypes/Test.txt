@@ -213,7 +213,7 @@ obstacles {
     * Minerals {
         type m
         min 6
-        max 10
+        max 8
         base_probability 0.3
         on_slants false
         forces -2 0.5

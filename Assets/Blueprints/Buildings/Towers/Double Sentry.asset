@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed9e4bc5a30718f41968ff1efaf3e48d, type: 3}
-  m_Name: Mortar
+  m_Name: Double Sentry
   m_EditorClassIdentifier: 
-  name: Mortar
-  prefab: {fileID: 475032649215164951, guid: a11acf37e5edc6c48a65ae65f6663b35, type: 3}
-  icon: {fileID: 21300000, guid: 409f2dfc8747eb6429aeb1ec73686483, type: 3}
-  rarity: 0
+  name: Double Sentry
+  prefab: {fileID: 475032649215164951, guid: b6ca76beee97fbb49985aacd6df11d16, type: 3}
+  icon: {fileID: 21300000, guid: 0e4dbbc8b16f30544bfba7823532e720, type: 3}
+  rarity: 1
   type: 0
   energyCost: 0
-  materialCost: 25
+  materialCost: 15
   startingCooldown: 0
   cooldown: 0
-  range: 3.6
-  damage: 4
-  damageType: 8
-  interval: 40
-  radius: 1.2
-  delay: 20
+  range: 2.6
+  damage: 2
+  damageType: 2
+  interval: 8
+  radius: -1
+  delay: -1
   durationTicks: -1
   durationWaves: -1
   fuelProduction: -1
@@ -38,6 +38,4 @@ MonoBehaviour:
   - '[$INT]'
   - '[$DPS]'
   descriptions:
-  - Cannot be paced on slanted tiles.
-  - Shoots a cannonball over obstacles, impacting the ground after [DEL] and dealing
-    damage to attackers within [RAD] tiles.
+  - Shoots projectiles at attackers in line of sight.

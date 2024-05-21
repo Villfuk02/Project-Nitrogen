@@ -23,17 +23,20 @@
 - [x] paths dislike the edges
 - [x] make pith finalizer respect path lengths
 - [x] tutorial
-- [ ] fix comments in pathPlanner and obstacler and pathfinalizer
-- [ ] comment wave generator
-- [ ] balance stuff
-- [ ] remove freeplay
-- [ ] restart butón
+- [x] fix comments in pathPlanner and obstacler and pathfinalizer
+- [x] comment wave generator
+- [x] double sentry
+- [x] balance stuff
+- [x] zoom in hotkeys
+- [x] remove freeplay
+- [x] exit butón
 - [ ] global fade
+    - [ ] don't show level right on start
 - [ ] organize assets
-- [ ] sound effects
 - [ ] box<> and visualsreference
 - [ ] use bitfields in wfc?
 - [ ] prepare build for sharing and test it
+- [ ] sound effects
 - [ ] +polish
     - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)
     - [ ] increase shadow resolution
@@ -49,5 +52,3 @@
 - [ ] +more towers and attackers
 - [ ] +time controls
 - [ ] +optimisations
-    - [ ] ? parallelize WFC (constraint consistency)
-    - [ ] ? make WFC slots cache which interface features are provided by which modules

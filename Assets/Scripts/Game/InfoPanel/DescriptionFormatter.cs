@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using BattleSimulation.Attackers;
 using BattleSimulation.World;
+using Game.AttackerStats;
 using Game.Damage;
 using AttackerDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<(Game.AttackerStats.AttackerStats stats, Game.AttackerStats.AttackerStats original, BattleSimulation.Attackers.Attacker attacker)>;
 using BlueprintDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<(Game.InfoPanel.DescriptionFormat.BlueprintProvider getBlueprint, Game.Blueprint.Blueprint original)>;
@@ -61,7 +62,7 @@ namespace Game.InfoPanel
 
         static readonly Dictionary<string, (AttackerDescriptionFormatter.HandleTag, string)> AttackerTags = new()
         {
-            { "SIZ", (s => AttackerStats.AttackerStats.HumanReadableSize(s.stats.size, true), "Size") },
+            { "SIZ", (s => s.stats.size.ToHumanReadable(true, true), "Size") },
             { "SPD", (s => FormatFloatStat(Icon.Speed, s.stats.speed, s.original.speed, true, Improvement.More), "Speed") },
             { "HP", (s => FormatIntStat(Icon.Health, s.attacker.health, s.stats.maxHealth, true, Improvement.Undeclared), "Health") },
             { "MHP", (s => FormatIntStat(Icon.Health, s.stats.maxHealth, s.original.maxHealth, true, Improvement.More), "Health") },

@@ -184,7 +184,13 @@ namespace Game.Tutorial
             blueprintMenuDisplay.InitItems();
         }
 
-        public void ChangeMaterials(int materials)
+        public void RemoveResources()
+        {
+            battleController.material = 0;
+            battleController.energy = 0;
+        }
+
+        public void AddMaterials(int materials)
         {
             battleController.material += materials;
         }
@@ -198,7 +204,7 @@ namespace Game.Tutorial
             blueprintMenuDisplay.InitItems();
         }
 
-        public void ChangeEnergy(int energy)
+        public void AddEnergy(int energy)
         {
             battleController.energy += energy;
         }

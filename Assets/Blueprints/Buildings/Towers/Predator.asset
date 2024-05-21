@@ -18,11 +18,11 @@ MonoBehaviour:
   rarity: 3
   type: 0
   energyCost: 0
-  materialCost: 60
+  materialCost: 50
   startingCooldown: 2
   cooldown: 2
   range: 2.9
-  damage: 15
+  damage: 10
   damageType: 2
   interval: 24
   radius: -1

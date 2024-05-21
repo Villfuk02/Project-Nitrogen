@@ -84,7 +84,9 @@ namespace BattleSimulation.Control
             float scaling = linearScaling * number + quadraticScaling * number * number + cubicScaling * number * number * number + Mathf.Pow(exponentialScalingBase, number);
             float valueRate = baseValueRate * scaling;
             bufferLeft += baseEffectiveValueBuffer * scaling;
-            print($"scaling {scaling}, rate {valueRate}, buffer {bufferLeft}");
+
+            print($"Generating wave {number + 1}: scaling {scaling}, rate {valueRate}, buffer {bufferLeft}");
+
             if (random.Bool(parallelWaveChance))
             {
                 Wave? w = TryGenerateParallelWave(valueRate);
@@ -97,13 +99,13 @@ namespace BattleSimulation.Control
 
         Wave GenerateSequentialWave(float valueRate)
         {
-            SelectPaths(out var selectedPathCount, out var selectedPaths);
+            SelectPathsForSequentialWave(out var selectedPathCount, out var selectedPaths);
             List<Batch> batches = new();
             int durationLeft = maxWaveLengthTicks;
             for (int i = 0; i < currentWaveMaxBatches; i++)
             {
                 durationLeft -= Spacing.BatchSpacing.GetTicks();
-                Batch? b = TryMakeBatch(selectedPathCount, selectedPaths, valueRate, ref durationLeft, i == currentWaveMaxBatches - 1, batches.Select(b => b.typePerPath[0]));
+                Batch? b = TryMakeSequentialBatch(selectedPathCount, selectedPaths, valueRate, ref durationLeft, i == currentWaveMaxBatches - 1, batches.SelectMany(b => b.typePerPath).Where(a => a != null));
                 if (b == null)
                     break;
                 batches.Add(b);
@@ -112,9 +114,10 @@ namespace BattleSimulation.Control
             return new(newAttacker_, batches.ToArray());
         }
 
-        void SelectPaths(out int count, out bool[] selectedPaths)
+        void SelectPathsForSequentialWave(out int count, out bool[] selectedPaths)
         {
             selectedPaths = new bool[paths];
+            // always select at least one path
             int forcedPath = random.Int(paths);
             count = 0;
             for (int i = 0; i < paths; i++)
@@ -126,9 +129,9 @@ namespace BattleSimulation.Control
             }
         }
 
-        Batch? TryMakeBatch(int pathCount, bool[] selectedPaths, float valueRate, ref int durationLeft, bool forceMaxCount, IEnumerable<AttackerStats> usedAttackers)
+        Batch? TryMakeSequentialBatch(int pathCount, bool[] selectedPaths, float valueRate, ref int durationLeft, bool forceMaxCount, IEnumerable<AttackerStats> usedAttackers)
         {
-            var selection = PrepareBatchAttackerSelection(pathCount, valueRate, durationLeft);
+            var selection = PrepareSequentialBatchAttackerSelection(pathCount, valueRate, durationLeft);
             foreach (var usedAttacker in usedAttackers)
                 selection.Remove(usedAttacker);
             while (true)
@@ -136,7 +139,7 @@ namespace BattleSimulation.Control
                 if (selection.Count == 0)
                     return null;
                 var selected = selection.PopRandom();
-                var batch = TryMakeBatchOf(selected, pathCount, selectedPaths, valueRate, ref durationLeft, forceMaxCount || selection.Count == 0);
+                var batch = TryMakeSequentialBatchOf(selected, pathCount, selectedPaths, valueRate, ref durationLeft, forceMaxCount || selection.Count == 0);
 
                 if (batch == null)
                     continue;
@@ -146,9 +149,20 @@ namespace BattleSimulation.Control
             }
         }
 
-        Batch? TryMakeBatchOf(AttackerStats selected, int pathCount, bool[] selectedPaths, float valueRate, ref int durationLeft, bool forceMaxCount)
+        WeightedRandomSet<AttackerStats> PrepareSequentialBatchAttackerSelection(int pathCount, float valueRate, int durationLeft)
         {
-            if (!TryPickBatchSpacing(selected, pathCount, valueRate, durationLeft, forceMaxCount, out var spacing, out float totalValue, out int count))
+            IEnumerable<AttackerStats> selection = newAttacker_ != null ? usedAttackers_ : availableAttackers;
+            var filteredAttackers = selection.Where(a =>
+                a.MaxValueRate(pathCount) > valueRate
+                && a.MinEffectiveValue(valueRate, pathCount) < bufferLeft
+                && a.MaxEffectiveValue(valueRate, pathCount, durationLeft) >= bufferLeft / 2
+            );
+            return new(filteredAttackers.Select(a => (a, a.weight)), random.NewSeed());
+        }
+
+        Batch? TryMakeSequentialBatchOf(AttackerStats selected, int pathCount, bool[] selectedPaths, float valueRate, ref int durationLeft, bool forceMaxCount)
+        {
+            if (!TryPickSequentialBatchSpacing(selected, pathCount, valueRate, durationLeft, forceMaxCount, out var spacing, out float totalValue, out int count))
                 return null;
             bufferLeft -= totalValue;
             durationLeft -= (count - 1) * spacing.GetTicks();
@@ -156,16 +170,7 @@ namespace BattleSimulation.Control
             return new(count, spacing, types);
         }
 
-        void PickBatchAttackerCount(AttackerStats selected, int pathCount, float valueRate, int durationLeft, float bufferLeft, bool forceMaxCount, Spacing spacing, out int extraCount, out float unitValue)
-        {
-            unitValue = selected.GetEffectiveValue(spacing, pathCount, valueRate);
-            var maxExtraCount = 200;
-            maxExtraCount = Mathf.Min(maxExtraCount, durationLeft / spacing.GetTicks());
-            maxExtraCount = Mathf.Min(maxExtraCount, Mathf.FloorToInt(bufferLeft / unitValue));
-            extraCount = forceMaxCount ? maxExtraCount : random.Int(maxExtraCount + 1);
-        }
-
-        bool TryPickBatchSpacing(AttackerStats selected, int pathCount, float valueRate, int durationLeft, bool useUpBuffer, out Spacing spacing, out float totalValue, out int count)
+        bool TryPickSequentialBatchSpacing(AttackerStats selected, int pathCount, float valueRate, int durationLeft, bool useUpBuffer, out Spacing spacing, out float totalValue, out int count)
         {
             spacing = default;
             totalValue = 0;
@@ -180,7 +185,7 @@ namespace BattleSimulation.Control
             if (!useUpBuffer)
             {
                 spacing = (Spacing)random.Int((int)minSpacing, (int)maxSpacing + 1);
-                PickBatchAttackerCount(selected, pathCount, valueRate, durationLeft, bufferLeft - lastUnitValue, false, spacing, out var extraCount, out float unitValue);
+                PickSequentialBatchAttackerCount(selected, pathCount, valueRate, durationLeft, bufferLeft - lastUnitValue, false, spacing, out var extraCount, out float unitValue);
                 totalValue = lastUnitValue + extraCount * unitValue;
                 count = extraCount + 1;
                 return totalValue > 0;
@@ -188,7 +193,7 @@ namespace BattleSimulation.Control
 
             for (Spacing s = minSpacing; s <= maxSpacing; s++)
             {
-                PickBatchAttackerCount(selected, pathCount, valueRate, durationLeft, bufferLeft - lastUnitValue, true, s, out var extraCount, out float unitValue);
+                PickSequentialBatchAttackerCount(selected, pathCount, valueRate, durationLeft, bufferLeft - lastUnitValue, true, s, out var extraCount, out float unitValue);
                 float value = lastUnitValue + extraCount * unitValue;
 
                 if (value > totalValue)
@@ -202,15 +207,13 @@ namespace BattleSimulation.Control
             return totalValue > 0;
         }
 
-        WeightedRandomSet<AttackerStats> PrepareBatchAttackerSelection(int pathCount, float valueRate, int durationLeft)
+        void PickSequentialBatchAttackerCount(AttackerStats selected, int pathCount, float valueRate, int durationLeft, float bufferLeft, bool forceMaxCount, Spacing spacing, out int extraCount, out float unitValue)
         {
-            IEnumerable<AttackerStats> selection = newAttacker_ != null ? usedAttackers_ : availableAttackers;
-            var filteredAttackers = selection.Where(a =>
-                a.MaxValueRate(pathCount) > valueRate
-                && a.MinEffectiveValue(valueRate, pathCount) < bufferLeft
-                && a.MaxEffectiveValue(valueRate, pathCount, durationLeft) >= bufferLeft / 2
-            );
-            return new(filteredAttackers.Select(a => (a, a.weight)), random.NewSeed());
+            unitValue = selected.GetEffectiveValue(spacing, pathCount, valueRate);
+            var maxExtraCount = 200;
+            maxExtraCount = Mathf.Min(maxExtraCount, durationLeft / spacing.GetTicks());
+            maxExtraCount = Mathf.Min(maxExtraCount, Mathf.FloorToInt(bufferLeft / unitValue));
+            extraCount = forceMaxCount ? maxExtraCount : random.Int(maxExtraCount + 1);
         }
 
         Wave? TryGenerateParallelWave(float valueRate)
@@ -234,6 +237,13 @@ namespace BattleSimulation.Control
             return null;
         }
 
+        WeightedRandomSet<AttackerStats> PrepareParallelAttackerSelection(float valueRate)
+        {
+            var filteredAttackers = availableAttackers.Where(a => a.MinEffectiveValue(valueRate, 1) * parallelMinCount < bufferLeft);
+            WeightedRandomSet<AttackerStats> selection = new(filteredAttackers.Select(a => (a, a.weight)), random.NewSeed());
+            return selection;
+        }
+
         Batch? TryMakeParallelBatchOnce(float valueRate, int[] pathSelection, WeightedRandomSet<AttackerStats> selection)
         {
             newAttacker_ = null;
@@ -241,7 +251,8 @@ namespace BattleSimulation.Control
 
             if (mockStats.MaxValueRate(1) <= valueRate)
                 return null;
-            float maxEffectiveValue = mockStats.GetEffectiveValue(mockStats.minSpacing, paths, valueRate) * (maxWaveLengthTicks / mockStats.minSpacing.GetTicks());
+            int maxCount = maxWaveLengthTicks / mockStats.minSpacing.GetTicks();
+            float maxEffectiveValue = mockStats.GetEffectiveValue(mockStats.minSpacing, paths, valueRate) * maxCount;
             if (maxEffectiveValue < bufferLeft * 0.8f)
                 return null;
 
@@ -250,43 +261,6 @@ namespace BattleSimulation.Control
 
             bufferLeft -= count * unitValue;
             return new(count, spacing, types);
-        }
-
-        int PickParallelAttackerCount(Spacing spacing, float unitValue)
-        {
-            var count = 200;
-            count = Mathf.Min(count, maxWaveLengthTicks / spacing.GetTicks());
-            count = Mathf.Min(count, Mathf.FloorToInt(bufferLeft / unitValue));
-            return count;
-        }
-
-        bool TryPickParallelSpacing(float valueRate, AttackerStats mockStats, out Spacing spacing, out float unitValue, out int count)
-        {
-            spacing = default;
-            unitValue = 0;
-            count = 0;
-
-            var minSpacing = mockStats.MinFeasibleSpacing(valueRate, 1, bufferLeft);
-            var maxSpacing = mockStats.MaxFeasibleSpacing(valueRate, 1, maxWaveLengthTicks);
-            if (minSpacing > maxSpacing)
-                return false;
-
-            float best = 0;
-            for (Spacing s = minSpacing; s <= maxSpacing; s++)
-            {
-                var uv = mockStats.GetEffectiveValue(s, 1, valueRate);
-                var c = PickParallelAttackerCount(s, uv);
-                var value = uv * c;
-                if (value > best)
-                {
-                    best = value;
-                    spacing = s;
-                    unitValue = uv;
-                    count = c;
-                }
-            }
-
-            return true;
         }
 
         void PickParallelAttackerTypes(float valueRate, int[] pathSelection, WeightedRandomSet<AttackerStats> selection, out AttackerStats[] types, out AttackerStats mockStats)
@@ -325,35 +299,91 @@ namespace BattleSimulation.Control
             return newMockStats;
         }
 
-        WeightedRandomSet<AttackerStats> PrepareParallelAttackerSelection(float valueRate)
+        bool TryPickParallelSpacing(float valueRate, AttackerStats mockStats, out Spacing spacing, out float unitValue, out int count)
         {
-            var filteredAttackers = availableAttackers.Where(a => a.MinEffectiveValue(valueRate, 1) * parallelMinCount < bufferLeft);
-            WeightedRandomSet<AttackerStats> selection = new(filteredAttackers.Select(a => (a, a.weight)), random.NewSeed());
-            return selection;
+            spacing = default;
+            unitValue = 0;
+            count = 0;
+
+            var minSpacing = mockStats.MinFeasibleSpacing(valueRate, 1, bufferLeft);
+            var maxSpacing = mockStats.MaxFeasibleSpacing(valueRate, 1, maxWaveLengthTicks);
+            if (minSpacing > maxSpacing)
+                return false;
+
+            float best = 0;
+            for (Spacing s = minSpacing; s <= maxSpacing; s++)
+            {
+                var uv = mockStats.GetEffectiveValue(s, 1, valueRate);
+                var c = PickParallelAttackerCount(s, uv);
+                var value = uv * c;
+                if (value > best)
+                {
+                    best = value;
+                    spacing = s;
+                    unitValue = uv;
+                    count = c;
+                }
+            }
+
+            return true;
+        }
+
+        int PickParallelAttackerCount(Spacing spacing, float unitValue)
+        {
+            var count = 200;
+            count = Mathf.Min(count, maxWaveLengthTicks / spacing.GetTicks());
+            count = Mathf.Min(count, Mathf.FloorToInt(bufferLeft / unitValue));
+            return count;
         }
     }
 
     internal static class AttackerStatsCalculations
     {
-        public static float MaxValueRate(this AttackerStats stats, int paths) => stats.GetValueRate(stats.minSpacing, paths);
+        /// <summary>
+        /// Calculates the value rate of a given attacker type spawning with the given spacing on the given number of paths at once.
+        /// Value rate represents the damage per second the towers would need to deal to kill one attacker on each path in the time it takes before the next one spawns.
+        /// However, the value of an attacker is not equal to its health.
+        /// Some attackers might have greater value, because they are harder to kill, or because they have some powerful abilities.
+        /// Also, in the calculation, the sqrt of spacing time is used instead of the spacing time itself, because attackers closer together can be damaged at once by towers that deal damage in an area.
+        /// </summary>
         public static float GetValueRate(this AttackerStats stats, Spacing spacing, int paths) => paths * stats.baseValue / Mathf.Sqrt(spacing.GetSeconds());
-        public static float MinEffectiveValue(this AttackerStats stats, float valueRate, int paths) => stats.GetEffectiveValue(Spacing.BatchSpacing, paths, valueRate);
 
-        public static float MaxEffectiveValue(this AttackerStats stats, float valueRate, int paths, int maxDuration)
-        {
-            return stats.MinEffectiveValue(valueRate, paths) + stats.GetEffectiveValue(stats.minSpacing, paths, valueRate) * (maxDuration / stats.minSpacing.GetTicks());
-        }
+        /// <summary>
+        /// Calculates the maximum value rate (see <see cref="GetValueRate"/>) for the given attacker type.
+        /// </summary>
+        public static float MaxValueRate(this AttackerStats stats, int paths) => stats.GetValueRate(stats.minSpacing, paths);
 
+        /// <summary>
+        /// Calculates the effective value an attacker will have left after being exposed to valueRate of damage for spacing of time.
+        /// First, it calculates how much value will the attacker have left, assuming it gets sqrt(spacing) seconds of damage.
+        /// Sqrt is used, because even with faster spacing, some can damage multiple attackers at once.
+        /// Effective value is this value that's left multiplied by the attacker's sqrt(speed).
+        /// This reflects that faster attackers will get to the hub sooner, so the towers will have less time to deal with them.
+        /// The relation is not linear, because most abilities don't care about attacker speed.
+        /// </summary>
         public static float GetEffectiveValue(this AttackerStats stats, Spacing spacing, int paths, float valueRate)
         {
-            // how much value will the attacker have left, assuming it gets sqrt(spacing) seconds of damage
-            // sqrt is used, because even with faster spacing, splash damage can deal with multiple attackers at once
             float valueLeft = stats.baseValue * paths - valueRate * Mathf.Sqrt(spacing.GetSeconds());
-            // the remaining value gets multiplied by sqrt(speed) to get effective value
-            // this reflects that faster attackers are harder to damage
             return valueLeft * Mathf.Sqrt(stats.speed);
         }
 
+        /// <summary>
+        /// The minimum possible effective value (see <see cref="GetEffectiveValue"/>) if this attacker is selected.
+        /// </summary>
+        public static float MinEffectiveValue(this AttackerStats stats, float valueRate, int paths) => stats.GetEffectiveValue(Spacing.BatchSpacing, paths, valueRate);
+
+        /// <summary>
+        /// The maximum possible effective value (see <see cref="GetEffectiveValue"/>) if this attacker is selected.
+        /// </summary>
+        public static float MaxEffectiveValue(this AttackerStats stats, float valueRate, int paths, int maxDuration)
+        {
+            int maximumCount = maxDuration / stats.minSpacing.GetTicks();
+            return stats.MinEffectiveValue(valueRate, paths) + stats.GetEffectiveValue(stats.minSpacing, paths, valueRate) * maximumCount;
+        }
+
+        /// <summary>
+        /// The minimum feasible spacing given that the effective value (see <see cref="GetEffectiveValue"/>) cannot go over maxValue.
+        /// </summary>
         public static Spacing MinFeasibleSpacing(this AttackerStats stats, float valueRate, int paths, float maxValue)
         {
             for (Spacing s = stats.minSpacing; s < Spacing.Max; s++)
@@ -363,6 +393,9 @@ namespace BattleSimulation.Control
             return Spacing.Max;
         }
 
+        /// <summary>
+        /// The maximum feasible spacing given that the rate (see <see cref="GetValueRate"/>) must be at least valueRate, but the spacing must be at most maxTicks.
+        /// </summary>
         public static Spacing MaxFeasibleSpacing(this AttackerStats stats, float valueRate, int paths, int maxTicks)
         {
             for (Spacing s = Spacing.Max; s > stats.minSpacing; s--)

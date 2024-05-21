@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30d4d1898ecf507489487964fd9b2c39, type: 3}
-  m_Name: Space Jellyfish
+  m_Name: Forest Spirit
   m_EditorClassIdentifier: 
-  name: Space Jellyfish
-  prefab: {fileID: 4503194796023517286, guid: 5f2d9135708ede64d8a83d2d439fff55, type: 3}
-  icon: {fileID: 21300000, guid: 5fb67c8580703044dacc76d5e0dafcee, type: 3}
+  name: Forest Spirit
+  prefab: {fileID: 4503194796023517286, guid: 0fb701e40d4097c4fb5d111201ff6a9b, type: 3}
+  icon: {fileID: 21300000, guid: 9475a364bcd1d4b499541b1447fa5ec1, type: 3}
   size: 0
   minSpacing: 0
-  baseValue: 11
+  baseValue: 25
   weight: 1
-  speed: 0.8
-  maxHealth: 8
+  speed: 2
+  maxHealth: 15
   descriptions:
-  - Takes 40% less [#DMT-PHY]Physical damage.
+  - Takes 66% less [#DMT-EXP]Explosive damage.

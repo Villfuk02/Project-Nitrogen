@@ -9,10 +9,24 @@ namespace Game.AttackerStats
     [CreateAssetMenu(fileName = "New Attacker Stats", menuName = "Attacker Stats")]
     public class AttackerStats : ScriptableObject
     {
-        static readonly string[] HumanReadableSizeNames = { "Small", "Large", "Boss" };
-        static readonly TextUtils.Icon[] SizeIcons = { TextUtils.Icon.Small, TextUtils.Icon.Large, TextUtils.Icon.Boss };
-        public enum Size { Small, Large, Boss }
-        public enum Spacing { Tiny, Small, Medium, Sec, TwoSecs, Min = Tiny, Max = TwoSecs, BatchSpacing = Sec }
+        public enum Size
+        {
+            Small,
+            Large,
+            Boss
+        }
+
+        public enum Spacing
+        {
+            Tiny,
+            Small,
+            Medium,
+            Sec,
+            TwoSecs,
+            Min = Tiny,
+            Max = TwoSecs,
+            BatchSpacing = Sec
+        }
 
         public new string name;
         public GameObject prefab;
@@ -41,8 +55,6 @@ namespace Game.AttackerStats
 
             return copy;
         }
-
-        public static string HumanReadableSize(Size s, bool icons) => $"{(icons ? SizeIcons[(int)s].Sprite() : "")}{HumanReadableSizeNames[(int)s]}";
     }
 
     public static class SpacingExtensions
@@ -54,5 +66,25 @@ namespace Game.AttackerStats
         public static float GetSeconds(this Spacing spacing) => spacing.GetTicks() * TimeUtils.SECS_PER_TICK;
         public static float GetDisplaySpacing(this Spacing spacing) => DisplaySpacing[(int)spacing];
         public static int GetMaxDisplayCount(this Spacing spacing) => MaxDisplayCount[(int)spacing];
+    }
+
+    public static class SizeExtensions
+    {
+        static readonly string[] HumanReadableNames = { "Small", "Large", "Boss" };
+        static readonly TextUtils.Icon[] SizeIcons = { TextUtils.Icon.Small, TextUtils.Icon.Large, TextUtils.Icon.Boss };
+        static readonly int[] HullDamage = { 1, 3, 1000 };
+
+        public static string ToHumanReadable(this Size s, bool icons, bool hullDmg)
+        {
+            return $@"{
+                (icons ? SizeIcons[(int)s].Sprite() : "")
+            }{
+                HumanReadableNames[(int)s]
+            }{
+                (hullDmg ? $" ({TextUtils.Icon.Hull.Sprite()}{s.GetHullDamage()} hull)" : "")
+            }";
+        }
+
+        public static int GetHullDamage(this Size s) => HullDamage[(int)s];
     }
 }

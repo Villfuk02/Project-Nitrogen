@@ -1,5 +1,6 @@
 using System;
 using BattleSimulation.Attackers;
+using Game.AttackerStats;
 using Game.Run.Shared;
 using UnityEngine;
 using Utils;
@@ -150,13 +151,7 @@ namespace BattleSimulation.Control
 
         public static void AttackerReachedHub(Attacker attacker)
         {
-            RunEvents.damageHull.Invoke(attacker.stats.size switch
-            {
-                Game.AttackerStats.AttackerStats.Size.Small => 1,
-                Game.AttackerStats.AttackerStats.Size.Large => 3,
-                Game.AttackerStats.AttackerStats.Size.Boss => 1000,
-                _ => throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null)
-            });
+            RunEvents.damageHull.Invoke(attacker.stats.size.GetHullDamage());
         }
 
         void OnHullDmgTaken(int dmg)

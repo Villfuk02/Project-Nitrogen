@@ -4,8 +4,8 @@ using Utils;
 
 namespace BattleVisuals.Camera
 {
-	public class BattleCameraController : MonoBehaviour
-	{
+    public class BattleCameraController : MonoBehaviour
+    {
         LayerMask coarseTerrainMask_;
         [Header("References")]
         [SerializeField] BattleCameraTransform mainCamera;
@@ -18,7 +18,8 @@ namespace BattleVisuals.Camera
         [SerializeField] float minAngle;
         [SerializeField] float maxAngle;
         [SerializeField] float moveSpeed;
-        [SerializeField] float zoomSpeed;
+        [SerializeField] float scrollZoomSpeed;
+        [SerializeField] float keysZoomSpeed;
         [SerializeField] float interpolationSpeed;
         [SerializeField] float rotAcceleration;
         [SerializeField] float rotInertia;
@@ -145,10 +146,18 @@ namespace BattleVisuals.Camera
 
         void HandleZoom()
         {
+            float zoomChange = 0;
             if (!EventSystem.current.IsPointerOverGameObject() && Mathf.Abs(Input.mouseScrollDelta.y) > 0.01f)
+                zoomChange += Input.mouseScrollDelta.y * scrollZoomSpeed;
+            if (Input.GetKey(KeyCode.T))
+                zoomChange += Time.deltaTime * keysZoomSpeed;
+            if (Input.GetKey(KeyCode.G))
+                zoomChange -= Time.deltaTime * keysZoomSpeed;
+
+            if (zoomChange != 0)
             {
                 var prevWorldPos = CursorToWorldPos(mainCamera.camera, float.NaN);
-                UpdateTargetZoom(Input.mouseScrollDelta.y * zoomSpeed);
+                UpdateTargetZoom(zoomChange);
                 AlignPositionToCursor(prevWorldPos, true);
             }
         }
@@ -184,6 +193,10 @@ namespace BattleVisuals.Camera
                 AlignPositionToCursor(dragWorldPos, true);
         }
 
+        /// <summary>
+        /// Gets the approximate worldPosition the mouse cursor is over.
+        /// If intersectionPlaneHeight is NaN, the intersection plane is determined automatically.
+        /// </summary>
         Vector3 CursorToWorldPos(UnityEngine.Camera cam, float intersectionPlaneHeight)
         {
             var ray = cam.ScreenPointToRay(Input.mousePosition);

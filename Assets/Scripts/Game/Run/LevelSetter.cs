@@ -41,7 +41,7 @@ namespace Game.Run
                 }
                 else
                 {
-                    paths = rand.Int(1, Mathf.Clamp(1 + level / 2, 2, 6));
+                    paths = rand.Int(1, Mathf.Clamp(level, 2, 6));
                     // this formula was selected such that it's 30 for lvl1, 27 for lvl 2, and approaches 10 for lvl -> inf
                     minPathLength = Mathf.RoundToInt(340f / (14 + 3 * level)) + 10;
                 }
@@ -68,7 +68,7 @@ namespace Game.Run
             if (wg.overrideRunSettings)
                 return;
 
-            wg.baseValueRate = 2f + 0.25f * level;
+            wg.baseValueRate = 2.3f + 0.25f * level - 0.35f * pathCount;
             wg.baseEffectiveValueBuffer = (7 + 1 * level) * (20 + totalPathLength) * 0.02f;
             wg.linearScaling = 1;
             wg.quadraticScaling = 0.01f;

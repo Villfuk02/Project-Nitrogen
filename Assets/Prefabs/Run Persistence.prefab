@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -50, y: -50}
+  m_AnchoredPosition: {x: -73, y: -50}
   m_SizeDelta: {x: 300, y: 30}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &7078648949301782781
@@ -170,7 +170,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -50, y: 0}
+  m_AnchoredPosition: {x: -75, y: 0}
   m_SizeDelta: {x: 200, y: 60}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &3952241800014511802
@@ -528,6 +528,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4dfbaf1f687f2624e83851e2d7ce95b1, type: 2}
   - {fileID: 11400000, guid: c92e5d39a35739f478f4828bcae4ccc9, type: 2}
   - {fileID: 11400000, guid: 9766de7fc699eed44884e39994b84c75, type: 2}
+  - {fileID: 11400000, guid: 39e1c085faba53d4d95a9c19a741efb7, type: 2}
   blueprintsPerOffer: 3
   rareChanceIncrement: 0.1
   legendaryChanceIncrement: 0.02

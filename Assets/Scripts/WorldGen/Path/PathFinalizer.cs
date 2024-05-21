@@ -44,6 +44,7 @@ namespace WorldGen.Path
             // end debug
 
             int maxDist = Tiles.CalculateMinDistances(hubPosition);
+
             // debug
             // draw the calculated distances as a gradient
             RegisterGizmos(StepType.Phase, () =>
@@ -77,7 +78,7 @@ namespace WorldGen.Path
 
             for (int i = 0; i < targetCount; i++)
             {
-                // the method below doesn't differentiate between the first path and side branches, so we increment extraPaths to account for the first path
+                // the method below doesn't differentiate between the first path and side branches, so we increment extraPaths to account for the main path
                 extraPaths_++;
                 TracePath(paths[i]);
             }
@@ -167,20 +168,19 @@ namespace WorldGen.Path
         }
 
         /// <summary>
-        /// Find all valid continuations of the path, ordered by how preferable they are.
+        /// Find all valid continuations of the path, ordered by how preferable they are, most preferable last.
         /// </summary>
         List<TileData> FindValidContinuations(TileData tile, Vector2Int[] path)
         {
             // the next tile must be closer to the hub
             var validNeighborsTemp = tile.neighbors.Where(n => n is not null && n.dist < tile.dist);
-            // order them by ascending repulsion (trying to avoid other paths)
-            // however, order is reversed, because paths are added like to a stack
+            // order them by repulsion (trying to avoid other paths)
             var validNeighbors = validNeighborsTemp.OrderByDescending(n => repulsion_[n.pos]).ToList();
 
             if (path.Length <= 1)
                 return validNeighbors;
 
-            // if there is an option that goes straight, prioritize it (put it last)
+            // if there is an option that goes straight, prioritize it
             var straight = validNeighbors.Find(n => n.pos.x == path[^2].x || n.pos.y == path[^2].y);
             if (straight != null)
             {
@@ -188,7 +188,7 @@ namespace WorldGen.Path
                 validNeighbors.Add(straight);
             }
 
-            // even more importantly, put first options where distance decreases exactly by one
+            // even more importantly, prioritize options where distance decreases exactly by one
             var exact = validNeighbors.Where(n => n.dist == tile.dist - 1).ToArray();
             foreach (var n in exact)
             {
@@ -239,8 +239,11 @@ namespace WorldGen.Path
 
             extraPaths_--;
 
+            // debug
             WaitForStep(StepType.Step);
-            RegisterGizmos(StepType.Step, () => outlined_.IndexedEnumerable.Where(p => !p.value).Select(p => new GizmoManager.Cube(Color.green, WorldUtils.TilePosToWorldPos(p.index), 0.15f)));
+            // draw all the tiles which are not a neighbor of any path
+            RegisterGizmos(StepType.Step, () => outlined_.IndexedEnumerable.Where(p => !p.value).Select(p => new GizmoManager.Cube(Color.yellow, WorldUtils.TilePosToWorldPos(p.index), 0.15f)));
+            // end debug
             return true;
         }
 

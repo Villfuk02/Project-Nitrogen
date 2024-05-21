@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using BattleSimulation.World.WorldData;
 using UnityEngine;
 using Utils;
 using Utils.Random;
@@ -36,6 +35,9 @@ namespace WorldGen.Path
         int mainPhaseSteps_;
         int untanglingSteps_;
 
+        /// <summary>
+        /// Initialize the data structures.
+        /// </summary>
         public void Init(Vector2Int[] starts, int[] pathLengths, Vector2Int hubPosition)
         {
             // debug
@@ -77,6 +79,9 @@ namespace WorldGen.Path
             }
         }
 
+        /// <summary>
+        /// Create path prototypes.
+        /// </summary>
         public LinkedList<Vector2Int>[] PrototypePaths()
         {
             print("Prototyping paths");
@@ -329,7 +334,10 @@ namespace WorldGen.Path
                     straightY[pos] = current;
                     if (straightX.TryGetValue(pos, out var twistStart))
                     {
+                        // debug
+                        // draw where the untwisting happened
                         RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.cyan, WorldUtils.TilePosToWorldPos(pos), 0.4f));
+                        // end debug
                         path.Reverse(twistStart, current);
                         return;
                     }
@@ -339,7 +347,10 @@ namespace WorldGen.Path
                     straightX[pos] = current;
                     if (straightY.TryGetValue(pos, out var twistStart))
                     {
+                        // debug
+                        // draw where the untwisting happened
                         RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.cyan, WorldUtils.TilePosToWorldPos(pos), 0.4f));
+                        // end debug
                         path.Reverse(twistStart, current);
                         return;
                     }
@@ -390,31 +401,6 @@ namespace WorldGen.Path
             }
 
             return gizmos;
-        }
-
-        public LinkedList<Vector2Int>[] GetPathLinkedListsFromTiles()
-        {
-            var paths = new LinkedList<Vector2Int>[pathCount_];
-            for (int i = 0; i < pathCount_; i++)
-                paths[i] = GetPathLinkedListFromTiles(pathStarts_[i]);
-            return paths;
-        }
-
-        static LinkedList<Vector2Int> GetPathLinkedListFromTiles(Vector2Int pathStart)
-        {
-            LinkedList<Vector2Int> path = new();
-            path.AddFirst(pathStart);
-            Vector2Int current = pathStart;
-            while (true)
-            {
-                TileData? continuation = Tiles[current].neighbors.FirstOrDefault(t => t != null && t.dist == Tiles[current].dist - 1);
-                if (continuation == null)
-                    break;
-                current = continuation.pos;
-                path.AddLast(current);
-            }
-
-            return path;
         }
     }
 }
