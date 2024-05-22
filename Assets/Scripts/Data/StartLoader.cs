@@ -1,9 +1,9 @@
-using Data.Loader;
-using Data.WorldGen;
 using System.Collections;
 using System.IO;
+using Data.Loader;
+using Data.WorldGen;
+using Game.Run.Shared;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Data
 {
@@ -25,6 +25,7 @@ namespace Data
                 yield return null;
                 loader.LoadAll();
             }
+
             finishedLoading_ = true;
         }
 
@@ -35,7 +36,7 @@ namespace Data
 
             finishedLoading_ = false;
             print("Finished loading");
-            SceneManager.LoadScene("Menu");
+            SceneController.ChangeScene(SceneController.Scene.Menu, false, true);
         }
     }
 }

@@ -5557,7 +5557,6 @@ GameObject:
   - component: {fileID: 6041401780519848225}
   - component: {fileID: 3489025230400829838}
   - component: {fileID: 7814778574263784559}
-  - component: {fileID: 8754798472699495473}
   - component: {fileID: 493761280196980268}
   - component: {fileID: 7422965923549418924}
   m_Layer: 8
@@ -5600,6 +5599,7 @@ MonoBehaviour:
   highlight: {fileID: 2889322129966805703}
   highlightAnim: {fileID: 8553841701604109507}
   target: {fileID: 7394224186603689571}
+  visualTarget: {fileID: 3969959247938034492}
   onDamage:
     m_PersistentCalls:
       m_Calls: []
@@ -5702,19 +5702,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   a: {fileID: 4503194796023517280}
---- !u!114 &8754798472699495473
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4503194796023517286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2e820ec27add334abd170636fddb326, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  visuals: {fileID: 3969959247938034492}
 --- !u!114 &493761280196980268
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using BattleSimulation.Attackers;
 using BattleSimulation.Buildings;
 using BattleSimulation.Targeting;
@@ -7,7 +8,6 @@ using Game.Blueprint;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Utils;
 
 namespace Game.InfoPanel
 {
@@ -186,7 +186,7 @@ namespace Game.InfoPanel
             return false;
         }
 
-        public void ShowBlueprint(Blueprint.Blueprint blueprint, Blueprint.Blueprint original, Box<int>? cooldown, bool highPriority, bool fallback)
+        public void ShowBlueprint(Blueprint.Blueprint blueprint, Blueprint.Blueprint original, Func<int>? cooldown, bool highPriority, bool fallback)
         {
             Data d = new()
             {
@@ -198,7 +198,7 @@ namespace Game.InfoPanel
             DisplayData(d, highPriority, fallback);
         }
 
-        public void ShowBlueprinted(Blueprinted blueprinted, Box<int>? cooldown, bool highPriority, bool fallback)
+        public void ShowBlueprinted(Blueprinted blueprinted, Func<int>? cooldown, bool highPriority, bool fallback)
         {
             Data d = new()
             {

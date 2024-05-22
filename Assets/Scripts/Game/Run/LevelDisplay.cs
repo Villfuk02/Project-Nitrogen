@@ -12,6 +12,11 @@ namespace Game.Run
         [Header("Runtime variables")]
         [SerializeField] int displayed;
 
+        void Start()
+        {
+            displayed = -1;
+        }
+
         void Update()
         {
             if (string.IsNullOrEmpty(seedText.text))

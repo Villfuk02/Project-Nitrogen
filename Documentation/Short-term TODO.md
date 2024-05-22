@@ -1,6 +1,7 @@
 ## questions
 - název práce
 - *A game*
+- metadata
 
 ## till next metting
 - [ ] implement
@@ -9,7 +10,6 @@
 - [ ] design mention time controls
 - [ ] add notes to ch3
     - [ ] separation of blueprints from behavior
-- [ ] prepare playtest questionnaire
 ## implementation 
 - [x] limit wave generator to pull extras max once per wave
 - [x] also make early waves shorter
@@ -26,16 +26,14 @@
 - [x] fix comments in pathPlanner and obstacler and pathfinalizer
 - [x] comment wave generator
 - [x] double sentry
-- [x] balance stuff
 - [x] zoom in hotkeys
 - [x] remove freeplay
 - [x] exit butón
-- [ ] global fade
-    - [ ] don't show level right on start
-- [ ] organize assets
-- [ ] box<> and visualsreference
+- [x] balance scaling
+- [x] global fade
+- [x] prepare build for sharing and test it
+- [ ] questionnaire
 - [ ] use bitfields in wfc?
-- [ ] prepare build for sharing and test it
 - [ ] sound effects
 - [ ] +polish
     - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)

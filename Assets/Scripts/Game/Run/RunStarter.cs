@@ -1,6 +1,5 @@
 using Game.Run.Shared;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Game.Run
 {
@@ -51,7 +50,7 @@ namespace Game.Run
             }
         }
 
-        public void CustomRun() => SceneManager.LoadScene("Run Settings");
+        public void CustomRun() => SceneController.ChangeScene(SceneController.Scene.RunSettings, true, true);
 
         public void Exit() => Application.Quit();
 

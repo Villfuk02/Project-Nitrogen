@@ -34,13 +34,13 @@ namespace BattleVisuals.Selection
 
             display.selected = selected;
 
-            display.targetCooldownFill = entry.cooldown.value / (float)Mathf.Max(display.blueprint.cooldown, 1);
+            display.targetCooldownFill = entry.cooldown / (float)Mathf.Max(display.blueprint.cooldown, 1);
 
             var (affordable, _, _) = BattleController.CAN_AFFORD.Query((display.blueprint.energyCost, display.blueprint.materialCost));
 
-            display.UpdateText(display.blueprint.energyCost, display.blueprint.materialCost, GetTextColor(entry.cooldown.value > 0, affordable));
+            display.UpdateText(display.blueprint.energyCost, display.blueprint.materialCost, GetTextColor(entry.cooldown > 0, affordable));
 
-            bool ready = entry.cooldown.value == 0 && affordable != BattleController.Affordable.No;
+            bool ready = entry.cooldown == 0 && affordable != BattleController.Affordable.No;
             display.highlight.color = GetHighlightColor(ready, selected);
         }
 

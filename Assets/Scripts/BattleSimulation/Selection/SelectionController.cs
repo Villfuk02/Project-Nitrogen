@@ -265,10 +265,11 @@ namespace BattleSimulation.Selection
         public void ShowNewAttacker(AttackerStats stats)
         {
             DeselectFromMenu();
+            DeselectInWorld();
             selected = dummySelectable;
             resetVisuals.Invoke();
             isSelectedBuilding_ = false;
-            infoPanel.ShowAttacker(stats, stats, true, false);
+            infoPanel.ShowAttacker(stats, stats, true, true);
         }
     }
 }

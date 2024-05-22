@@ -50,8 +50,14 @@ namespace BattleVisuals.Camera
 
         void Update()
         {
+            UpdateTargetCameraAspectRatio();
             HandleInputs();
             Interpolate();
+        }
+
+        void UpdateTargetCameraAspectRatio()
+        {
+            targetCamera.camera.aspect = mainCamera.camera.aspect;
         }
 
         void Interpolate()

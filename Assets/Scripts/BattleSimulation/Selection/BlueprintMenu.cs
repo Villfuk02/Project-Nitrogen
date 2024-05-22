@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BattleSimulation.Control;
@@ -15,13 +16,13 @@ namespace BattleSimulation.Selection
             public readonly Blueprint original;
             public readonly Blueprint current;
             public readonly int index;
-            public Box<int> cooldown;
+            public int cooldown;
 
             public MenuEntry(Blueprint original, int index)
             {
                 this.original = original;
                 current = original.Clone();
-                cooldown = new(current.startingCooldown);
+                cooldown = current.startingCooldown;
                 this.index = index;
             }
         }
@@ -68,7 +69,7 @@ namespace BattleSimulation.Selection
             selected = -1;
         }
 
-        public bool TryGetBlueprints(int index, out Blueprint blueprint, out Blueprint original, out Box<int> cooldown)
+        public bool TryGetBlueprints(int index, out Blueprint blueprint, out Blueprint original, out Func<int>? cooldown)
         {
             blueprint = null;
             original = null;
@@ -77,13 +78,14 @@ namespace BattleSimulation.Selection
             if (index < 0 || index >= CurrentEntries.Count)
                 return false;
 
-            blueprint = CurrentEntries[index].current;
-            original = CurrentEntries[index].original;
-            cooldown = CurrentEntries[index].cooldown;
+            MenuEntry entry = CurrentEntries[index];
+            blueprint = entry.current;
+            original = entry.original;
+            cooldown = () => entry.cooldown;
             return true;
         }
 
-        public bool TrySelect(int index, out Blueprint blueprint, out Blueprint original, out Box<int> cooldown)
+        public bool TrySelect(int index, out Blueprint blueprint, out Blueprint original, out Func<int> cooldown)
         {
             if (!TryGetBlueprints(index, out blueprint, out original, out cooldown))
                 return false;
@@ -93,12 +95,12 @@ namespace BattleSimulation.Selection
 
         public bool TryPlace()
         {
-            if (CurrentEntries[selected].cooldown.value > 0)
+            if (CurrentEntries[selected].cooldown > 0)
                 return false;
             var blueprint = CurrentEntries[selected].current;
             if (!BattleController.AdjustAndTrySpend(blueprint.energyCost, blueprint.materialCost))
                 return false;
-            CurrentEntries[selected].cooldown.value = blueprint.cooldown;
+            CurrentEntries[selected].cooldown = blueprint.cooldown;
             return true;
         }
 
@@ -120,14 +122,14 @@ namespace BattleSimulation.Selection
         public void ReduceCooldowns()
         {
             foreach (var entry in abilities.Concat(buildings))
-                if (entry.cooldown.value > 0)
-                    entry.cooldown.value--;
+                if (entry.cooldown > 0)
+                    entry.cooldown--;
         }
 
         void FinishCooldowns()
         {
             foreach (var entry in abilities.Concat(buildings))
-                entry.cooldown.value = 0;
+                entry.cooldown = 0;
         }
 
         public IEnumerable<Blueprint> GetBlueprints()

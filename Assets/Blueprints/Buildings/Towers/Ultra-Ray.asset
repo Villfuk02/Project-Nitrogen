@@ -24,7 +24,7 @@ MonoBehaviour:
   range: 8.1
   damage: 1
   damageType: 4
-  interval: 4
+  interval: 3
   radius: -1
   delay: -1
   durationTicks: -1
@@ -40,5 +40,5 @@ MonoBehaviour:
   descriptions:
   - Press [R] to rotate.
   - Can be placed on tiles with small obstacles.
-  - Fires a continuous beam in a fixed cardinal direction, hitting up to 3 attackers
+  - Fires a continuous beam in a fixed cardinal direction, hitting up to 5 attackers
     at once.

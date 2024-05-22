@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 7543041883701561954}
   - component: {fileID: 797871332343298765}
   - component: {fileID: 6272021130042873644}
-  - component: {fileID: 4757578681801656178}
   - component: {fileID: 5264268843005977534}
   m_Layer: 8
   m_Name: Armored Skeleton
@@ -55,6 +54,7 @@ MonoBehaviour:
   highlight: {fileID: 1396667164961288580}
   highlightAnim: {fileID: 5605930389465575296}
   target: {fileID: 6765697404462028064}
+  visualTarget: {fileID: 892058725441804415}
   onDamage:
     m_PersistentCalls:
       m_Calls: []
@@ -186,19 +186,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   a: {fileID: 1371268028260157725}
---- !u!114 &4757578681801656178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 362422702515819301}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2e820ec27add334abd170636fddb326, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  visuals: {fileID: 892058725441804415}
 --- !u!136 &5264268843005977534
 CapsuleCollider:
   m_ObjectHideFlags: 0

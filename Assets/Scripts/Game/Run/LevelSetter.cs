@@ -41,15 +41,17 @@ namespace Game.Run
                 }
                 else
                 {
-                    paths = rand.Int(1, Mathf.Clamp(level, 2, 6));
-                    // this formula was selected such that it's 30 for lvl1, 27 for lvl 2, and approaches 10 for lvl -> inf
-                    minPathLength = Mathf.RoundToInt(340f / (14 + 3 * level)) + 10;
+                    paths = rand.Int(1, Mathf.Min(level / 2 + 1, 5));
+                    if (paths == 5 && level > 10)
+                        paths = 6;
+                    // this formula was selected such that it's 30 for lvl1, 25 for lvl 2, and approaches 10 for lvl -> inf
+                    minPathLength = Mathf.RoundToInt(60f / (2 + level)) + 10;
                 }
 
                 List<int> pathLengths = new();
                 for (int i = 0; i < paths; i++)
                 {
-                    pathLengths.Add(rand.Int(minPathLength, minPathLength + 5 + 2 * i));
+                    pathLengths.Add(rand.Int(minPathLength, minPathLength + 5));
                 }
 
                 pathLengths.Sort();
@@ -68,11 +70,11 @@ namespace Game.Run
             if (wg.overrideRunSettings)
                 return;
 
-            wg.baseValueRate = 2.3f + 0.25f * level - 0.35f * pathCount;
+            wg.baseValueRate = 2.6f + 0.2f * level - 0.6f * pathCount;
             wg.baseEffectiveValueBuffer = (7 + 1 * level) * (20 + totalPathLength) * 0.02f;
             wg.linearScaling = 1;
             wg.quadraticScaling = 0.01f;
-            wg.cubicScaling = Mathf.Lerp(0, 1 / 80f, level / 6f);
+            wg.cubicScaling = Mathf.Lerp(0, 1 / 160f, (level + 1) / 5f);
             wg.exponentialScalingBase = 1;
             wg.random = new(rand.NewSeed());
         }

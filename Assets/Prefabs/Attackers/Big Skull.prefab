@@ -5519,7 +5519,6 @@ GameObject:
   - component: {fileID: 4374977906458368141}
   - component: {fileID: 6848800921535965218}
   - component: {fileID: 221800519549437379}
-  - component: {fileID: 1594026893987583389}
   - component: {fileID: 8397317678417692145}
   m_Layer: 8
   m_Name: Big Skull
@@ -5561,6 +5560,7 @@ MonoBehaviour:
   highlight: {fileID: 5150071765153014635}
   highlightAnim: {fileID: 1861407652524293487}
   target: {fileID: 719971657807235023}
+  visualTarget: {fileID: 6374974148236659344}
   onDamage:
     m_PersistentCalls:
       m_Calls: []
@@ -5688,19 +5688,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   a: {fileID: 5845349189104484812}
---- !u!114 &1594026893987583389
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5845349189104484810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2e820ec27add334abd170636fddb326, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  visuals: {fileID: 6374974148236659344}
 --- !u!114 &8397317678417692145
 MonoBehaviour:
   m_ObjectHideFlags: 0

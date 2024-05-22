@@ -24,7 +24,7 @@ MonoBehaviour:
   range: 11.2
   damage: 10
   damageType: 2
-  interval: 55
+  interval: 66
   radius: -1
   delay: -1
   durationTicks: -1
@@ -37,7 +37,6 @@ MonoBehaviour:
   - '[$DMG]'
   - '[$INT]'
   - '[$DPS]'
-  statsToDisplayWhenUninitialized: []
   descriptions:
   - Shoots projectiles at attackers in line of sight.
   - Attackers further away take more damage, up to 200%.

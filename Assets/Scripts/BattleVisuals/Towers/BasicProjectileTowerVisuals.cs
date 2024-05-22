@@ -24,7 +24,7 @@ namespace BattleVisuals.Towers
             if (target != currentTarget)
             {
                 currentTarget = target;
-                currentTargetVisual = target == null ? null : target.GetComponent<VisualsReference>().visuals;
+                currentTargetVisual = target == null ? null : target.visualTarget;
             }
 
             if (currentTargetVisual != null)

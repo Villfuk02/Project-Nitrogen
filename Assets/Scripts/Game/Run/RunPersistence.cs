@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Run.Shared;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Random = Utils.Random.Random;
 
 namespace Game.Run
@@ -12,6 +11,7 @@ namespace Game.Run
         [Header("References")]
         [SerializeField] LevelSetter worldSetter;
         [SerializeField] BlueprintRewardController blueprintRewards;
+        [SerializeField] LevelDisplay levelDisplay;
         [Header("Settings")]
         public ulong runSeed;
         public string seedString;
@@ -65,16 +65,11 @@ namespace Game.Run
 
         bool FinishLevelCommand()
         {
-            Invoke(nameof(FinishLevel), 0.5f);
-            return true;
-        }
-
-        public void FinishLevel()
-        {
             if (level == 0)
                 blueprintRewards.MakeTutorialReward();
             else
                 blueprintRewards.MakeBlueprintReward();
+            return true;
         }
 
         public void NextLevel()
@@ -82,7 +77,7 @@ namespace Game.Run
             if (level == 0)
                 PersistentData.FinishedTutorial = true;
             level++;
-            SceneManager.LoadScene("Battle");
+            SceneController.ChangeScene(SceneController.Scene.Battle, true, false, "GENERATING...", () => levelDisplay.enabled = true);
         }
 
         public void SetupLevel()
@@ -93,8 +88,7 @@ namespace Game.Run
 
         public bool Quit()
         {
-            SceneManager.LoadScene("Loading");
-            Destroy(gameObject);
+            SceneController.ChangeScene(SceneController.Scene.Menu, true, true, "", () => Destroy(gameObject));
             return true;
         }
     }

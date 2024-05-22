@@ -324,6 +324,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visuals: {fileID: 475032649205546438}
+  lastBlueprintHash: 0
   rotateBack:
   - {fileID: 475032647605434327}
   - {fileID: 8744715610318524709}
@@ -332,7 +333,7 @@ MonoBehaviour:
   onShoot:
     m_PersistentCalls:
       m_Calls: []
-  hits: 3
+  hits: 5
   shotTimer: 0
 --- !u!114 &273440085101978293
 MonoBehaviour:

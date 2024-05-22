@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Run.Shared;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Utils.Random;
 using Random = Utils.Random.Random;
 
@@ -67,7 +67,7 @@ namespace Game.Run
         IEnumerator SetupWhenReady(Action<BlueprintSelectionController> callback)
         {
             currentBlueprintSelectionController_ = null;
-            SceneManager.LoadScene("Blueprint Select");
+            SceneController.ChangeScene(SceneController.Scene.BlueprintSelect, true, true);
             yield return new WaitUntil(() => currentBlueprintSelectionController_ != null);
             callback.Invoke(currentBlueprintSelectionController_);
         }

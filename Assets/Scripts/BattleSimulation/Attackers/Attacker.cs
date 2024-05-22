@@ -34,6 +34,7 @@ namespace BattleSimulation.Attackers
         [SerializeField] Image highlight;
         [SerializeField] Animator highlightAnim;
         public Transform target;
+        public Transform visualTarget;
         [Header("Settings")]
         [SerializeField] UnityEvent<Damage> onDamage;
         [SerializeField] UnityEvent<Damage> onDeath;

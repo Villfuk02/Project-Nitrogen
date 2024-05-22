@@ -81,7 +81,7 @@ namespace Game.AttackerStats
             }{
                 HumanReadableNames[(int)s]
             }{
-                (hullDmg ? $" ({TextUtils.Icon.Hull.Sprite()}{s.GetHullDamage()} hull)" : "")
+                (hullDmg ? $" ({s.GetHullDamage()} {TextUtils.Icon.Hull.Sprite()}hull)" : "")
             }";
         }
 

@@ -32,6 +32,7 @@ namespace Game.Tutorial
         [SerializeField] BlueprintMenuDisplay blueprintMenuDisplay;
         [SerializeField] BattleController battleController;
         [SerializeField] InfoPanel.InfoPanel infoPanel;
+        [SerializeField] TextMeshProUGUI infoPanelTitle;
         [Header("Runtime variables")]
         [SerializeField] bool shown;
         [SerializeField] string newTutorialText;
@@ -62,6 +63,8 @@ namespace Game.Tutorial
                 controller.TriggerPhase(12);
             if (!infoPanel.visible)
                 controller.TriggerPhase(18);
+            else if (infoPanelTitle.text == "Big Skull")
+                controller.TriggerPhase(21);
         }
 
         void OnWaveStarted()
@@ -116,6 +119,9 @@ namespace Game.Tutorial
                     break;
                 case 7:
                     controller.TriggerPhase(19);
+                    break;
+                case 10:
+                    controller.TriggerPhase(22);
                     break;
             }
         }
@@ -200,7 +206,7 @@ namespace Game.Tutorial
             var blueprint = surfaceDrillBlueprint.Clone();
             blueprint.prefab = surfaceDrillWithoutFuel;
             blueprintMenu.buildings.Add(new(blueprint, 1));
-            blueprintMenu.buildings[0].cooldown.value = 2;
+            blueprintMenu.buildings[0].cooldown = 2;
             blueprintMenuDisplay.InitItems();
         }
 

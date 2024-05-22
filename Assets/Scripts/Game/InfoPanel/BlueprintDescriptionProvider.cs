@@ -1,8 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Game.Blueprint;
-using UnityEngine;
-using Utils;
 
 namespace Game.InfoPanel
 {
@@ -11,37 +10,37 @@ namespace Game.InfoPanel
         readonly DescriptionFormat.BlueprintProvider getBlueprint_;
         readonly Blueprinted? blueprinted_;
         readonly DescriptionFormatter<(DescriptionFormat.BlueprintProvider, Blueprint.Blueprint)> descriptionFormatter_;
-        readonly Box<int> cooldown_;
+        readonly Func<int>? getCooldown_;
 
-        public BlueprintDescriptionProvider(Blueprinted blueprinted, Box<int>? cooldown = null)
+        public BlueprintDescriptionProvider(Blueprinted blueprinted, Func<int>? getCooldown = null)
         {
             blueprinted_ = blueprinted;
             getBlueprint_ = () => blueprinted.Blueprint;
             descriptionFormatter_ = DescriptionFormat.Blueprint(getBlueprint_, blueprinted.OriginalBlueprint);
-            cooldown_ = cooldown;
+            getCooldown_ = getCooldown;
         }
 
-        public BlueprintDescriptionProvider(Blueprint.Blueprint blueprint, Blueprint.Blueprint original, Box<int>? cooldown = null)
+        public BlueprintDescriptionProvider(Blueprint.Blueprint blueprint, Blueprint.Blueprint original, Func<int>? getCooldown = null)
         {
             getBlueprint_ = () => blueprint;
             descriptionFormatter_ = DescriptionFormat.Blueprint(getBlueprint_, original);
-            cooldown_ = cooldown;
+            getCooldown_ = getCooldown;
         }
 
         protected override string GenerateDescription() => descriptionFormatter_.Format(GenerateRawDescription());
 
         string GenerateRawDescription()
         {
-            bool initialized = blueprinted_ is MonoBehaviour mb && mb != null;
+            bool initialized = blueprinted_ != null;
             StringBuilder sb = new();
             List<string> statBlock = new();
             Blueprint.Blueprint blueprint = getBlueprint_();
 
 
-            if (cooldown_ is not null)
+            if (getCooldown_ is not null)
             {
-                if (cooldown_.value > 0 || blueprint.cooldown > 0)
-                    AppendStat($"Cooldown {cooldown_.value}[+CD]");
+                if (getCooldown_() > 0 || blueprint.cooldown > 0)
+                    AppendStat($"Cooldown {getCooldown_()}[+CD]");
             }
             else if (!initialized || !blueprinted_.Placed)
             {

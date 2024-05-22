@@ -5,6 +5,7 @@ using BattleSimulation.Selection;
 using BattleSimulation.World.WorldData;
 using BattleVisuals.World;
 using Game.Blueprint;
+using Game.Run.Shared;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -48,6 +49,7 @@ namespace BattleSimulation.World.WorldBuilder
         {
             ready = true;
             onReady.Invoke();
+            SceneController.FadeIn();
             foreach (var o in enableWhenReady)
                 o.SetActive(true);
         }
