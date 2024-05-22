@@ -5,6 +5,7 @@
 
 ## till next metting
 - [ ] implement
+- [x] questionnaire
 - [ ] rewrite definition of towers and special buildings
 - [ ] rewrite path branches of length 4
 - [ ] design mention time controls
@@ -32,9 +33,21 @@
 - [x] balance scaling
 - [x] global fade
 - [x] prepare build for sharing and test it
-- [ ] questionnaire
 - [ ] use bitfields in wfc?
 - [ ] sound effects
+    - [ ] button hover
+    - [ ] button unhover
+    - [ ] button click
+    - [ ] for each tower
+        - [ ] shoot
+        - [ ] impact
+    - [ ] build
+    - [ ] sound for each ability
+    - [ ] produce energy
+    - [ ] produce materials
+    - [ ] produce fuel
+    - [ ] victory
+    - [ ] defeat
 - [ ] +polish
     - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)
     - [ ] increase shadow resolution

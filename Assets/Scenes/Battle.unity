@@ -5582,8 +5582,8 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: When an attacker reaches the <color=white>Hub</color>,<br>the
-            Hub loses some <color=white>hull</color>.<br>Once it runs out, <color=white>you
+          m_StringArgument: When an attacker reaches the <color=white>Hub</color>,
+            the Hub loses some <color=white>hull</color>.<br>Once it runs out, <color=white>you
             lose</color>!
           m_BoolArgument: 0
         m_CallState: 2
