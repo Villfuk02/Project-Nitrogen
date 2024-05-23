@@ -87,8 +87,8 @@ namespace WorldGen
 
         void HandleDebugStepping()
         {
-            // T for tap, H for hold
-            if (Input.GetKeyDown(KeyCode.T) || Input.GetKey(KeyCode.H))
+            // Z for tap, H for hold
+            if (Input.GetKeyDown(KeyCode.Z) || Input.GetKey(KeyCode.H))
                 Step();
 
             if (stepType == StepType.None)

@@ -33,7 +33,8 @@
 - [x] balance scaling
 - [x] global fade
 - [x] prepare build for sharing and test it
-- [ ] use bitfields in wfc?
+- [x] use bitfields in wfc
+- [ ] array of modules instead of dict
 - [ ] sound effects
     - [ ] button hover
     - [ ] button unhover

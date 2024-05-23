@@ -1,27 +1,24 @@
-using Data.Parsers;
 using System.Collections.Generic;
-using System.Linq;
+using Data.Parsers;
+using Utils;
 using static Data.Parsers.Parsers;
 
 namespace Data.WorldGen
 {
     public record ObstaclesData(ObstacleData[][] Layers, Dictionary<string, ObstacleData> Obstacles)
     {
-        public static ObstaclesData Parse(ParseStream stream, IEnumerable<char> allSurfaces)
+        public static ObstaclesData Parse(ParseStream stream, IEnumerable<int> allSurfaces)
         {
             var pp = new PropertyParserWithNamedExtra<ObstacleData>();
             var getLayers = pp.Register("layers", Chain(ParseBlock, ParseList, ParseLine, ParseList, ParseWord));
-            pp.RegisterExtraParser((n, s) => ObstacleData.Parse(n, s, getLayers().Count, allSurfaces.ToArray()));
+            pp.RegisterExtraParser((n, s) => ObstacleData.Parse(n, s, getLayers().Count, allSurfaces));
 
             pp.Parse(stream);
 
             var obstacles = new Dictionary<string, ObstacleData>();
             foreach (var obstacle in pp.ParsedExtra)
-            {
-                if (obstacles.ContainsKey(obstacle.Name))
+                if (!obstacles.TryAdd(obstacle.Name, obstacle))
                     throw new ParseException(stream, $"Duplicate obstacle \"{obstacle.Name}\".");
-                obstacles[obstacle.Name] = obstacle;
-            }
 
             var parsedLayers = getLayers();
             var layers = new ObstacleData[parsedLayers.Count][];
@@ -42,10 +39,17 @@ namespace Data.WorldGen
         }
     }
 
-    public record ObstacleData(string Name, ObstacleData.Type ObstacleType, int Min, int Max, float BaseProbability, char[] ValidSurfaces, bool OnSlants, float[] Forces)
+    public record ObstacleData(string Name, ObstacleData.Type ObstacleType, int Min, int Max, float BaseProbability, BitSet32 ValidSurfaces, bool OnSlants, float[] Forces)
     {
-        public enum Type { Small, Large, Fuel, Minerals }
-        public static ObstacleData Parse(string name, ParseStream stream, int layerCount, char[] allSurfaces)
+        public enum Type
+        {
+            Small,
+            Large,
+            Fuel,
+            Minerals
+        }
+
+        public static ObstacleData Parse(string name, ParseStream stream, int layerCount, IEnumerable<int> allSurfaces)
         {
             using BlockParseStream blockStream = new(stream);
             PropertyParser pp = new();
@@ -53,7 +57,7 @@ namespace Data.WorldGen
             var min = pp.Register("min", ParseInt, 0);
             var max = pp.Register("max", ParseInt, int.MaxValue);
             var baseProbability = pp.Register("base_probability", ParseFloat);
-            var validSurfaces = pp.Register("valid_surfaces", s => Chain(ParseLine, ParseList, ParseChar)(s).ToArray(), allSurfaces);
+            var validSurfaces = pp.Register("valid_surfaces", Chain(ParseLine, ParseList, TerrainType.ParseSurface), allSurfaces);
             var onSlants = pp.Register("on_slants", ParseBool, true);
             var getForces = pp.Register("forces", Chain(ParseLine, ParseList, ParseFloat));
 
@@ -62,7 +66,7 @@ namespace Data.WorldGen
             float[] forces = new float[layerCount];
             getForces().CopyTo(forces);
 
-            return new(name, type(), min(), max(), baseProbability(), validSurfaces(), onSlants(), forces);
+            return new(name, type(), min(), max(), baseProbability(), BitSet32.FromBits(validSurfaces()), onSlants(), forces);
         }
 
         public static Type ParseType(ParseStream stream)

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Utils;
 
 namespace WorldGen.WFC
@@ -9,17 +7,17 @@ namespace WorldGen.WFC
     /// </summary>
     public class WFCTile
     {
-        public readonly HashSet<int> heights;
-        public readonly HashSet<char> surfaces;
-        public readonly HashSet<WorldUtils.Slant> slants;
+        public BitSet32 heights;
+        public BitSet32 surfaces;
+        public BitSet32 slants;
 
         public WFCTile(bool prefill)
         {
             if (prefill)
             {
-                heights = Enumerable.Range(0, WorldGenerator.TerrainType.MaxHeight + 1).ToHashSet();
-                surfaces = new(WorldGenerator.TerrainType.Surfaces);
-                slants = new(WorldUtils.ALL_SLANTS);
+                heights = BitSet32.LowestBitsSet(WorldGenerator.TerrainType.MaxHeight + 1);
+                surfaces = WorldGenerator.TerrainType.Surfaces;
+                slants = WorldUtils.ALL_SLANTS;
             }
             else
             {

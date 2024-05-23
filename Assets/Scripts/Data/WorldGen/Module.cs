@@ -1,6 +1,6 @@
-using Data.Parsers;
 using System.Collections.Generic;
 using System.Linq;
+using Data.Parsers;
 using UnityEngine;
 using Utils;
 using static Data.Parsers.Parsers;
@@ -61,18 +61,21 @@ namespace Data.WorldGen
                         throw new ParseException(stream, $"Invalid variant flag \'{c}\'.");
                 }
             }
+
             return (flipped, rotated);
         }
+
         Module[] MakeVariants()
         {
             IEnumerable<Module> m = new[] { this };
             if (Flipped)
             {
                 m = m.SelectMany(n =>
-                new[]{
-                    n with { Flipped = false, Weight = n.Weight / 2 },
-                    n with { Name = n.Name + " F", Weight = n.Weight / 2, Shape = n.Shape.Flipped() }
-                });
+                    new[]
+                    {
+                        n with { Flipped = false, Weight = n.Weight / 2 },
+                        n with { Name = n.Name + " F", Weight = n.Weight / 2, Shape = n.Shape.Flipped() }
+                    });
             }
 
             m = Rotated switch
@@ -96,14 +99,41 @@ namespace Data.WorldGen
         }
     }
 
-    public record ModuleShape(DiagonalDirs<char> Surfaces, DiagonalDirs<int> Heights, DiagonalDirs<WorldUtils.Slant> Slants, CardinalDirs<bool> Passable)
+    public record ModuleShape(DiagonalDirs<int> Surfaces, DiagonalDirs<int> Heights, DiagonalDirs<WorldUtils.Slant> Slants, CardinalDirs<bool> Passable)
     {
         public static ModuleShape Parse(ParseStream stream)
         {
-            DiagonalDirs<char> surfaces;
+            DiagonalDirs<int> surfaces;
             DiagonalDirs<int> heights;
             DiagonalDirs<WorldUtils.Slant> slants;
             CardinalDirs<bool> passable;
+
+            SkipWhitespace(stream);
+            surfaces.NW = TerrainType.ParseSurface(stream);
+            heights.NW = ParseHeight(stream.Read());
+            slants.NW = ParseSlant(stream.Read());
+            SkipWhitespace(stream);
+            passable.N = ParsePassable(stream.Read());
+            SkipWhitespace(stream);
+            surfaces.NE = TerrainType.ParseSurface(stream);
+            heights.NE = ParseHeight(stream.Read());
+            slants.NE = ParseSlant(stream.Read());
+            SkipWhitespace(stream);
+            passable.W = ParsePassable(stream.Read());
+            SkipWhitespace(stream);
+            passable.E = ParsePassable(stream.Read());
+            SkipWhitespace(stream);
+            surfaces.SW = TerrainType.ParseSurface(stream);
+            heights.SW = ParseHeight(stream.Read());
+            slants.SW = ParseSlant(stream.Read());
+            SkipWhitespace(stream);
+            passable.S = ParsePassable(stream.Read());
+            SkipWhitespace(stream);
+            surfaces.SE = TerrainType.ParseSurface(stream);
+            heights.SE = ParseHeight(stream.Read());
+            slants.SE = ParseSlant(stream.Read());
+
+            return new(surfaces, heights, slants, passable);
 
             int ParseHeight(char c) => c is >= '0' and <= '9'
                 ? c - '0'
@@ -125,33 +155,6 @@ namespace Data.WorldGen
                 'x' => false,
                 _ => throw new ParseException(stream, $"Invalid passable \'{c}\'.")
             };
-
-            SkipWhitespace(stream);
-            surfaces.NW = stream.Read();
-            heights.NW = ParseHeight(stream.Read());
-            slants.NW = ParseSlant(stream.Read());
-            SkipWhitespace(stream);
-            passable.N = ParsePassable(stream.Read());
-            SkipWhitespace(stream);
-            surfaces.NE = stream.Read();
-            heights.NE = ParseHeight(stream.Read());
-            slants.NE = ParseSlant(stream.Read());
-            SkipWhitespace(stream);
-            passable.W = ParsePassable(stream.Read());
-            SkipWhitespace(stream);
-            passable.E = ParsePassable(stream.Read());
-            SkipWhitespace(stream);
-            surfaces.SW = stream.Read();
-            heights.SW = ParseHeight(stream.Read());
-            slants.SW = ParseSlant(stream.Read());
-            SkipWhitespace(stream);
-            passable.S = ParsePassable(stream.Read());
-            SkipWhitespace(stream);
-            surfaces.SE = stream.Read();
-            heights.SE = ParseHeight(stream.Read());
-            slants.SE = ParseSlant(stream.Read());
-
-            return new(surfaces, heights, slants, passable);
         }
 
         public ModuleShape Rotated(int steps) => new(Surfaces.Rotated(steps), Heights.Rotated(steps), Slants.Rotated(steps, WorldUtils.RotateSlant), Passable.Rotated(steps));

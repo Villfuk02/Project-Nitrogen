@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 using Utils;
 using static WorldGen.WorldGenerator;
@@ -70,8 +69,7 @@ namespace WorldGen.WFC
             }
 
             WFCTile hubTile = state_.GetTileAt(hubPosition);
-            hubTile.slants.Clear();
-            hubTile.slants.Add(WorldUtils.Slant.None);
+            hubTile.slants = BitSet32.OneBit((int)WorldUtils.Slant.None);
 
             InitPassages(paths);
 
@@ -165,20 +163,20 @@ namespace WorldGen.WFC
             {
                 anythingDirty_ = false;
                 for (int x = 0; x < 2; x++)
-                    for (int y = 0; y < 2; y++)
+                for (int y = 0; y < 2; y++)
+                {
+                    // debug
+                    RegisterGizmos(StepType.MicroStep, MakeEntropyGizmos);
+                    WaitForStep(StepType.MicroStep);
+                    // end debug
+                    if (!TryUpdateConstraintsGroup(x, y))
                     {
-                        // debug
-                        RegisterGizmos(StepType.MicroStep, MakeEntropyGizmos);
-                        WaitForStep(StepType.MicroStep);
-                        // end debug
-                        if (!TryUpdateConstraintsGroup(x, y))
-                        {
-                            if (!TryBacktrack())
-                                return false;
-                            // break out of the for loops
-                            x = y = 2;
-                        }
+                        if (!TryBacktrack())
+                            return false;
+                        // break out of the for loops
+                        x = y = 2;
                     }
+                }
             }
 
             // debug
@@ -193,9 +191,20 @@ namespace WorldGen.WFC
         /// </summary>
         bool TryUpdateConstraintsGroup(int x, int y)
         {
-            var tasks = dirtySlots_.IndexedEnumerable.Where(p => p.index.x % 2 == x && p.index.y % 2 == y && p.value).Select(p => Task.Run(() => TryUpdateSlotConstraints(p.index))).ToArray();
+            /*
+            var tasks = dirtySlots_.IndexedEnumerable
+                .Where(p => p.index.x % 2 == x && p.index.y % 2 == y && p.value)
+                .Select(p => Task.Run(() => TryUpdateSlotConstraints(p.index))).ToArray();
             Task.WaitAll(tasks);
             return tasks.All(t => t.Result);
+            */
+            foreach (var slot in dirtySlots_.IndexedEnumerable.Where(p => p.index.x % 2 == x && p.index.y % 2 == y && p.value))
+            {
+                if (!TryUpdateSlotConstraints(slot.index))
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -216,6 +225,7 @@ namespace WorldGen.WFC
                 state_.slots[pos] = n;
                 state_.changedSlots[pos] = true;
             }
+
             return true;
         }
 
@@ -271,6 +281,7 @@ namespace WorldGen.WFC
                 float probability = w.Key / totalWeight;
                 totalEntropy -= probability * w.Value * Mathf.Log(probability, 2);
             }
+
             return totalEntropy;
         }
 
@@ -292,12 +303,14 @@ namespace WorldGen.WFC
                     size = entropy / MaxEntropy;
                     c += Color.blue;
                 }
+
                 gizmos.Add(new GizmoManager.Cube(
                     c,
                     WorldUtils.SlotPosToWorldPos(pos.x, pos.y),
                     size * 0.6f
-                    ));
+                ));
             }
+
             return gizmos;
         }
 

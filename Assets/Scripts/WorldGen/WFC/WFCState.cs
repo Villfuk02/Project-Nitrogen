@@ -1,6 +1,6 @@
-using BattleSimulation.World.WorldData;
 using System.Collections;
 using System.Linq;
+using BattleSimulation.World.WorldData;
 using UnityEngine;
 using Utils;
 using Utils.Random;
@@ -23,6 +23,7 @@ namespace WorldGen.WFC
         public Vector2Int lastCollapsedSlot;
         public TilesData.CollapsedSlot lastCollapsedTo;
         int id_;
+
         public WFCState()
         {
             Vector2Int slotWorldSize = WorldUtils.WORLD_SIZE + Vector2Int.one;
@@ -36,6 +37,7 @@ namespace WorldGen.WFC
             changedSlots = new(slotWorldSize);
             id_ = 0;
         }
+
         public WFCState(WFCState original)
         {
             uncollapsed = original.uncollapsed;
@@ -57,6 +59,7 @@ namespace WorldGen.WFC
                 uncollapsedSlots.UpdateWeight(slot, slots[slot].CalculateWeight());
                 changedSlots[slot] = false;
             }
+
             Vector2Int pos = uncollapsedSlots.PopRandom();
             WFCSlot s = slots[pos];
             lastCollapsedSlot = pos;
@@ -69,6 +72,7 @@ namespace WorldGen.WFC
 
         // FINAL GETTERS
         public Array2D<TilesData.CollapsedSlot> GetCollapsedSlots() => new(slots.Select(s => s.Collapsed).ToArray(), slots.Size);
+
         public bool GetPassageAtTile(Vector2Int pos, int direction)
         {
             (bool passable, bool _) = GetValidPassageAtSlot(pos + TileToSlotArrayOffsets[direction], 3 - direction);
@@ -83,8 +87,10 @@ namespace WorldGen.WFC
             {
                 ret[i] = GetValidPassageAtSlot(pos, i);
             }
+
             return ret;
         }
+
         (bool passable, bool impassable) GetValidPassageAtSlot(Vector2Int pos, int direction)
         {
             if (!slots.IsInBounds(pos + WorldUtils.CARDINAL_DIRS[direction]))
@@ -100,6 +106,7 @@ namespace WorldGen.WFC
                 SetValidPassageAtSlot(pos, i, p[i]);
             }
         }
+
         void SetValidPassageAtSlot(Vector2Int pos, int direction, (bool passable, bool impassable) p)
         {
             if (!slots.IsInBounds(pos + WorldUtils.CARDINAL_DIRS[direction]))
@@ -118,19 +125,22 @@ namespace WorldGen.WFC
         {
             return (slotPos.x + slotPos.y * (WorldUtils.WORLD_SIZE.x + 1)) * 4 + SlotToPassageArrayOffsets[direction];
         }
+
         // TILES
         public DiagonalDirs<WFCTile> GetValidTilesAtSlot(Vector2Int pos)
         {
             return SlotToTileArrayOffsets.Map(o => tiles_[pos + o]);
         }
+
         public void SetValidTilesAtSlot(Vector2Int pos, DiagonalDirs<WFCTile> newTiles)
         {
-            for (int i = 0; i < 4; i++)
+            for (int d = 0; d < 4; d++)
             {
-                Vector2Int tilePos = pos + SlotToTileArrayOffsets[i];
-                tiles_[tilePos] = newTiles[i];
+                Vector2Int tilePos = pos + SlotToTileArrayOffsets[d];
+                tiles_[tilePos] = newTiles[d];
             }
         }
+
         public WFCTile GetTileAt(Vector2Int pos) => tiles_[pos + Vector2Int.one];
 
 
