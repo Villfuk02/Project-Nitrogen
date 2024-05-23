@@ -66,6 +66,8 @@ namespace Utils
             return (int)(n >> 24);
         }
 
+        public readonly bool IsSubsetOf(BitSet32 other) => (bits_ & other.bits_) == bits_;
+
         public void SetBit(int bit) => bits_ |= 1u << bit;
         public void ResetBit(int bit) => bits_ &= ~(1u << bit);
         public void UnionWith(BitSet32 other) => bits_ |= other.bits_;

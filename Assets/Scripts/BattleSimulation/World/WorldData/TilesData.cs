@@ -10,8 +10,17 @@ namespace BattleSimulation.World.WorldData
         public struct CollapsedSlot
         {
             public Module module;
+            public int moduleIndex;
             public int height;
-            public static readonly CollapsedSlot NONE = new() { module = null, height = -1 };
+            public static readonly CollapsedSlot NONE = new(null, -1, -1);
+            public readonly bool IsNone => moduleIndex == -1;
+
+            public CollapsedSlot(Module module, int moduleIndex, int height)
+            {
+                this.module = module;
+                this.moduleIndex = moduleIndex;
+                this.height = height;
+            }
         }
 
         public delegate bool IsPassable(Vector2Int tile, int direction);

@@ -7,6 +7,9 @@ using Utils.Random;
 
 namespace WorldGen.WFC
 {
+    /// <summary>
+    /// Represents one state of the WFC algorithm. A new state is created from the previous state by collapsing one slot.
+    /// </summary>
     public class WFCState
     {
         static readonly DiagonalDirs<Vector2Int> SlotToTileArrayOffsets = new(Vector2Int.up, Vector2Int.one, Vector2Int.right, Vector2Int.zero);
@@ -56,7 +59,7 @@ namespace WorldGen.WFC
             {
                 if (!hasChanged)
                     continue;
-                uncollapsedSlots.UpdateWeight(slot, slots[slot].CalculateWeight());
+                uncollapsedSlots.UpdateWeight(slot, slots[slot].CalculateCollapseWeight());
                 changedSlots[slot] = false;
             }
 

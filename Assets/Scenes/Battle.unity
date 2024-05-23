@@ -1262,7 +1262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc540d5f1b9c79546b71136ca82b94df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backtrackingDepth: 2
+  backtrackingDepth: 1
 --- !u!1 &139230301
 GameObject:
   m_ObjectHideFlags: 0
@@ -5214,7 +5214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 697fa3911599b2643b6eaefbb22d3023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  overrideRun: 1
+  overrideRun: 0
   terrainType: Test
   seed: 9223372036854775808
   pathLengths: 180000001c00000021000000
@@ -9723,8 +9723,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  benchmarkingMode: 1
-  repeats: 100
+  benchmarkingMode: 0
+  repeats: 500
 --- !u!114 &1838770610
 MonoBehaviour:
   m_ObjectHideFlags: 0

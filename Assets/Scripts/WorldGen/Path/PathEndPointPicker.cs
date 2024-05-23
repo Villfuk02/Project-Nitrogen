@@ -12,7 +12,7 @@ namespace WorldGen.Path
         [Header("Settings")]
         [SerializeField] float startSpacingMultiplier;
 
-        [Header("runtime variables")]
+        [Header("Runtime variables")]
         float minDistanceSquared_;
         readonly List<Vector2Int> pickedStarts_ = new();
         RandomSet<Vector2Int> oddLengthCandidates_;
@@ -64,6 +64,7 @@ namespace WorldGen.Path
                 RegisterGizmos(StepType.Phase, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TilePosToWorldPos(startPosition), 0.4f));
                 // end debug
             }
+
             pathStarts = pickedStarts_.ToArray();
         }
 
@@ -78,6 +79,7 @@ namespace WorldGen.Path
                 if ((pos - WorldUtils.WORLD_CENTER).sqrMagnitude <= maxHubDistFromCenter * maxHubDistFromCenter)
                     validPositions.Add(pos);
             }
+
             return validPositions[WorldGenerator.Random.Int(validPositions.Count)];
         }
 
@@ -95,6 +97,7 @@ namespace WorldGen.Path
                 AddCandidateIfFarEnoughFromHub(new(x, 0), minDistFromHub);
                 AddCandidateIfFarEnoughFromHub(new(x, WorldUtils.WORLD_SIZE.y - 1), minDistFromHub);
             }
+
             for (int y = 0; y < WorldUtils.WORLD_SIZE.y; y++)
             {
                 AddCandidateIfFarEnoughFromHub(new(0, y), minDistFromHub);
@@ -145,6 +148,7 @@ namespace WorldGen.Path
                 if (pickedStarts_.All(t => (result - t).sqrMagnitude >= minDistanceSquared_))
                     break;
             }
+
             candidates.AddRange(tooFar);
             return result;
         }

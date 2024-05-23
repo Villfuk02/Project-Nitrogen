@@ -1,7 +1,7 @@
 ## questions
 - název práce
-- *A game*
-- metadata
+- název hry, a kde ho mám použít
+- metadata hry
 
 ## till next metting
 - [ ] implement
@@ -34,7 +34,11 @@
 - [x] global fade
 - [x] prepare build for sharing and test it
 - [x] use bitfields in wfc
-- [ ] array of modules instead of dict
+- [x] array of modules instead of dict
+- [x] rewrite WFCGenerator
+- [x] try different backtrack depths
+- [x] try uniform weights
+- [x] comment WFC (and name methods better)
 - [ ] sound effects
     - [ ] button hover
     - [ ] button unhover

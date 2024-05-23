@@ -9,7 +9,7 @@ namespace Game.Run
         static readonly char[] CharFromCode = { 'A', 'C', 'D', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'Y' };
         // translation table for chars 'A' to 'Z'
         static readonly ulong[] CodeFromChar = { 0, 16, 1, 2, 3, 4, 17, 18, 5, 19, 20, 6, 7, 8, 9, 10, 21, 11, 12, 13, 14, 22, 23, 24, 15, 25 };
-        static readonly ulong BaseSeed = 0xBA5E_5EED_1234_5678;
+        static readonly ulong BaseSeed = 0xBA5E_5EED_0000_1111;
         static readonly int RotationStep = 36;
 
         public static ulong GetSeedFromString(ref string seedString)
@@ -37,6 +37,7 @@ namespace Game.Run
                     seed ^= decoded >> (64 - rotation);
                 rotation = (rotation + RotationStep) % 64;
             }
+
             return seed;
         }
 
@@ -51,6 +52,7 @@ namespace Game.Run
                 if (i == 3)
                     sb.Append(' ');
             }
+
             return sb.ToString();
         }
     }

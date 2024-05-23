@@ -14,24 +14,23 @@ namespace WorldGen.WFC
     {
         public readonly Vector2Int pos;
 
-        readonly List<Module> validModules_;
-        readonly Dictionary<Module, BitSet32> validHeights_;
+        readonly List<int> validModules_;
+        readonly BitSet32[] validHeights_;
 
         TilesData.CollapsedSlot invalidModule_ = TilesData.CollapsedSlot.NONE;
 
         public TilesData.CollapsedSlot Collapsed { get; private set; } = TilesData.CollapsedSlot.NONE;
 
-        public WFCSlot(Vector2Int pos, ref WFCState state, int? limitHeight = null)
+        public WFCSlot(Vector2Int pos, ref WFCState state, int? forcedHeight = null)
         {
             int moduleCount = WorldGenerator.TerrainType.Modules.Length;
             validModules_ = new(moduleCount);
-            validHeights_ = new(moduleCount);
-            for (int i = 0; i < moduleCount; i++)
+            validHeights_ = new BitSet32[moduleCount];
+            for (int m = 0; m < moduleCount; m++)
             {
-                Module m = WorldGenerator.TerrainType.Modules[i];
                 validModules_.Add(m);
-                if (limitHeight is int limit)
-                    validHeights_[m] = BitSet32.OneBit(limit);
+                if (forcedHeight is int forced)
+                    validHeights_[m] = BitSet32.OneBit(forced);
                 else
                     validHeights_[m] = BitSet32.LowestBitsSet(WorldGenerator.TerrainType.MaxHeight + 1);
             }
@@ -45,7 +44,7 @@ namespace WorldGen.WFC
         {
             this.pos = pos;
             validModules_ = new();
-            validHeights_ = new();
+            validHeights_ = new BitSet32[WorldGenerator.TerrainType.Modules.Length];
         }
 
         /// <summary>
@@ -59,13 +58,16 @@ namespace WorldGen.WFC
             var possibilities = new WeightedRandomSet<TilesData.CollapsedSlot>(WorldGenerator.Random.NewSeed());
 
             foreach (var m in validModules_)
-            foreach (int h in validHeights_[m].GetBits())
-                possibilities.AddOrUpdate(new() { module = m, height = h }, m.Weight);
+            {
+                var module = WorldGenerator.TerrainType.Modules[m];
+                foreach (int h in validHeights_[m].GetBits())
+                    possibilities.AddOrUpdate(new(module, m, h), module.Weight);
+            }
 
             var slot = possibilities.PopRandom();
             n.Collapsed = slot;
-            n.validModules_.Add(slot.module);
-            n.validHeights_[slot.module] = BitSet32.OneBit(slot.height);
+            n.validModules_.Add(slot.moduleIndex);
+            n.validHeights_[slot.moduleIndex] = BitSet32.OneBit(slot.height);
             state.uncollapsed--;
             return n;
         }
@@ -82,7 +84,7 @@ namespace WorldGen.WFC
         /// Recalculates which modules and heights are allowed at this slot, based on their boundaries and the adjacent tiles and slots - makes this slot's domain consistent with its neighbors.
         /// When there are no valid modules left, signal the generator to backtrack.
         /// </summary>
-        /// <returns>newSlot - null if it didn't change or backtracking is needed, otherwise the updated slot. backtrack - true, if the generator needs to backtrack.</returns>
+        /// <returns>newSlot - null if it didn't change or backtracking is needed, otherwise the updated slot. backtrack - true if the generator needs to backtrack.</returns>
         public (WFCSlot newSlot, bool backtrack) UpdateValidModules(in WFCState state)
         {
             var vPassages = state.GetValidPassagesAtSlot(pos);
@@ -91,22 +93,23 @@ namespace WorldGen.WFC
             bool changed = false;
             WFCSlot n = new(pos);
 
-            foreach (var module in validModules_)
+            foreach (var m in validModules_)
             {
-                if (!CheckEdges(module, vPassages, vTiles))
+                ModuleShape moduleShape = WorldGenerator.TerrainType.Modules[m].Shape;
+                if (!AreEdgesConsistent(moduleShape, vPassages, vTiles))
                 {
                     changed = true;
                     continue;
                 }
 
-                var newHeights = CheckHeights(module, vTiles);
-                if (newHeights != validHeights_[module])
+                var newHeights = GetConsistentHeights(m, moduleShape, vTiles);
+                if (newHeights != validHeights_[m])
                     changed = true;
                 if (newHeights.IsEmpty)
                     continue;
 
-                n.validModules_.Add(module);
-                n.validHeights_[module] = newHeights;
+                n.validModules_.Add(m);
+                n.validHeights_[m] = newHeights;
             }
 
             if (!changed)
@@ -117,10 +120,10 @@ namespace WorldGen.WFC
             return (n, false);
         }
 
-        BitSet32 CheckHeights(Module module, DiagonalDirs<WFCTile> vTiles)
+        BitSet32 GetConsistentHeights(int moduleIndex, ModuleShape moduleShape, DiagonalDirs<WFCTile> vTiles)
         {
-            var newHeights = validHeights_[module];
-            var moduleCornerHeights = module.Shape.Heights;
+            var newHeights = validHeights_[moduleIndex];
+            var moduleCornerHeights = moduleShape.Heights;
             for (int d = 0; d < 4; d++)
             {
                 var realCornerHeights = newHeights << moduleCornerHeights[d];
@@ -128,15 +131,14 @@ namespace WorldGen.WFC
                 newHeights = alignsWithTile >> moduleCornerHeights[d];
             }
 
-            if (invalidModule_.module == module)
+            if (invalidModule_.moduleIndex == moduleIndex)
                 newHeights.ResetBit(invalidModule_.height);
 
             return newHeights;
         }
 
-        static bool CheckEdges(Module module, CardinalDirs<(bool passable, bool impassable)> vPassages, DiagonalDirs<WFCTile> vTiles)
+        static bool AreEdgesConsistent(ModuleShape moduleShape, CardinalDirs<(bool passable, bool impassable)> vPassages, DiagonalDirs<WFCTile> vTiles)
         {
-            var moduleShape = module.Shape;
             for (int d = 0; d < 4; d++)
             {
                 if (
@@ -156,51 +158,58 @@ namespace WorldGen.WFC
         /// <returns>Slots at which offsets should be updated (<see cref="UpdateValidModules"/>).</returns>
         public HashSet<Vector2Int> UpdateConstraints(WFCState state)
         {
-            // current
+            // values current modules support
             var passages = new CardinalDirs<(bool passable, bool impassable)>();
             var tiles = new DiagonalDirs<WFCTile>();
             for (int i = 0; i < 4; i++)
                 tiles[i] = new(false);
-            CalculateAvailableConstraints(ref passages, ref tiles);
+            GetSupportedConstraintValues(ref passages, ref tiles);
 
-            // previous
+            // previously allowed values
             var prevPassages = state.GetValidPassagesAtSlot(pos);
             var prevTiles = state.GetValidTilesAtSlot(pos);
 
-            // final
-            var toUpdate = MergeConstraints(prevPassages, prevTiles, ref passages, ref tiles);
+            // newly allowed values
+            var neighborsToUpdate = MergeConstraintValues(prevPassages, prevTiles, ref passages, ref tiles);
 
             // update state
             state.SetValidPassagesAtSlot(pos, passages);
             state.SetValidTilesAtSlot(pos, tiles);
 
-            return toUpdate;
+            return neighborsToUpdate;
         }
 
-        static HashSet<Vector2Int> MergeConstraints(CardinalDirs<(bool passable, bool impassable)> prevPassages, DiagonalDirs<WFCTile> prevTiles, ref CardinalDirs<(bool passable, bool impassable)> passages, ref DiagonalDirs<WFCTile> tiles)
+        /// <summary>
+        /// Computes the intersection of the previously allowed values with the currently supported values.
+        /// Returns neighbors at which offsets should be recalculated, due to some values changing.
+        /// </summary>
+        static HashSet<Vector2Int> MergeConstraintValues(CardinalDirs<(bool passable, bool impassable)> prevPassages, DiagonalDirs<WFCTile> prevTiles, ref CardinalDirs<(bool passable, bool impassable)> passages, ref DiagonalDirs<WFCTile> tiles)
         {
             var toUpdate = new HashSet<Vector2Int>();
-            for (int i = 0; i < 4; i++)
+            for (int d = 0; d < 4; d++)
             {
                 // cardinal constraints
-                if (prevPassages[i].passable != passages[i].passable || prevPassages[i].impassable != passages[i].impassable)
+                var prevPassage = prevPassages[d];
+                if (prevPassage.passable != passages[d].passable || prevPassage.impassable != passages[d].impassable)
                 {
-                    passages[i] = (prevPassages[i].passable && passages[i].passable, prevPassages[i].impassable && passages[i].impassable);
-                    toUpdate.Add(WorldUtils.CARDINAL_DIRS[i]);
+                    passages[d] = (prevPassage.passable && passages[d].passable, prevPassage.impassable && passages[d].impassable);
+                    toUpdate.Add(WorldUtils.CARDINAL_DIRS[d]);
                 }
 
                 // diagonal constraints
-                if (prevTiles[i].heights == (tiles[i].heights) && prevTiles[i].surfaces != tiles[i].surfaces && prevTiles[i].slants != tiles[i].slants)
+                var prevTile = prevTiles[d];
+                if (prevTile.heights.IsSubsetOf(tiles[d].heights) && prevTile.surfaces.IsSubsetOf(tiles[d].surfaces) && prevTile.slants.IsSubsetOf(tiles[d].slants))
                 {
-                    tiles[i] = prevTiles[i];
+                    // no new restriction
+                    tiles[d] = prevTile;
                 }
                 else
                 {
-                    tiles[i].heights.IntersectWith(prevTiles[i].heights);
-                    tiles[i].surfaces.IntersectWith(prevTiles[i].surfaces);
-                    tiles[i].slants.IntersectWith(prevTiles[i].slants);
-                    Vector2Int a = WorldUtils.CARDINAL_DIRS[(i + 3) % 4];
-                    Vector2Int b = WorldUtils.CARDINAL_DIRS[i];
+                    tiles[d].heights.IntersectWith(prevTile.heights);
+                    tiles[d].surfaces.IntersectWith(prevTile.surfaces);
+                    tiles[d].slants.IntersectWith(prevTile.slants);
+                    Vector2Int a = WorldUtils.CARDINAL_DIRS[(d + 3) % 4];
+                    Vector2Int b = WorldUtils.CARDINAL_DIRS[d];
                     toUpdate.Add(a);
                     toUpdate.Add(a + b);
                     toUpdate.Add(b);
@@ -210,16 +219,17 @@ namespace WorldGen.WFC
             return toUpdate;
         }
 
-        void CalculateAvailableConstraints(ref CardinalDirs<(bool passable, bool impassable)> aPassages, ref DiagonalDirs<WFCTile> aTiles)
+        void GetSupportedConstraintValues(ref CardinalDirs<(bool passable, bool impassable)> aPassages, ref DiagonalDirs<WFCTile> aTiles)
         {
             foreach (var m in validModules_)
             {
+                ModuleShape moduleShape = WorldGenerator.TerrainType.Modules[m].Shape;
                 for (int d = 0; d < 4; d++)
                 {
-                    aPassages[d] = (aPassages[d].passable || m.Shape.Passable[d], aPassages[d].impassable || !m.Shape.Passable[d]);
-                    aTiles[d].surfaces.SetBit(m.Shape.Surfaces[d]);
-                    aTiles[d].slants.SetBit((int)m.Shape.Slants[d]);
-                    aTiles[d].heights.UnionWith(validHeights_[m] << m.Shape.Heights[d]);
+                    aPassages[d] = (aPassages[d].passable || moduleShape.Passable[d], aPassages[d].impassable || !moduleShape.Passable[d]);
+                    aTiles[d].surfaces.SetBit(moduleShape.Surfaces[d]);
+                    aTiles[d].slants.SetBit((int)moduleShape.Slants[d]);
+                    aTiles[d].heights.UnionWith(validHeights_[m] << moduleShape.Heights[d]);
                 }
             }
         }
@@ -227,13 +237,13 @@ namespace WorldGen.WFC
         public float CalculateEntropy()
         {
             var weights = new Dictionary<float, int>();
-            foreach (var module in validModules_)
-                weights.Increment(module.Weight, validHeights_[module].PopCount());
+            foreach (var m in validModules_)
+                weights.Increment(WorldGenerator.TerrainType.Modules[m].Weight, validHeights_[m].PopCount());
 
             return WFCGenerator.CalculateEntropy(weights);
         }
 
-        public float CalculateWeight()
+        public float CalculateCollapseWeight()
         {
             float invalidModules = WorldGenerator.TerrainType.Modules.Length - validModules_.Count;
             return invalidModules + 1;

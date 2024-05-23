@@ -53,13 +53,7 @@ namespace WorldGen
 
         readonly AutoResetEvent waitForStepEvent_ = new(false);
 
-        public enum StepType
-        {
-            None,
-            Phase,
-            Step,
-            MicroStep
-        }
+        public enum StepType { None, Phase, Step, MicroStep }
 
         public static readonly StepType[] STEP_TYPES = (StepType[])Enum.GetValues(typeof(StepType));
 
@@ -141,6 +135,7 @@ namespace WorldGen
         {
             if (!worldSettings.overrideRun)
                 throw new WorldGeneratorException("World settings have to be be constant for benchmarking!");
+            Debug.LogWarning("RUNNING IN BENCHMARK MODE");
             tries = 0;
             Stopwatch s = new();
             s.Start();
@@ -151,7 +146,7 @@ namespace WorldGen
                 Task generatingTerrain = Task.Run(GenerateTerrain);
                 yield return new WaitUntil(() => generatingTerrain.IsCompleted);
                 generatingTerrain.Wait();
-                Debug.Log($"generated world #{i + 1}");
+                Debug.LogWarning($"generated world #{i + 1}");
             }
 
             Debug.LogError($"BENCHMARK COMPLETE!  worlds: {repeats}, attempts: {-tries}, WFC fails: {wfcFails_}, milliseconds: {s.ElapsedMilliseconds}");

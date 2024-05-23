@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Utils;
+using Utils.Random;
 using static WorldGen.WorldGenerator;
 
 namespace WorldGen.WFC
@@ -11,8 +12,7 @@ namespace WorldGen.WFC
         [Header("Settings")]
         [SerializeField] int backtrackingDepth;
         [Header("Runtime variables")]
-        Array2D<bool> dirtySlots_;
-        bool anythingDirty_;
+        RandomSet<Vector2Int> dirtySlots_;
         WFCState state_;
         FixedCapacityStack<WFCState> stateStack_;
         public static float MaxEntropy { get; private set; }
@@ -52,7 +52,7 @@ namespace WorldGen.WFC
             MaxEntropy = CalculateEntropy(TerrainType.Modules.GroupBy(m => m.Weight).ToDictionary(g => g.Key, g => g.Count() * heightCount));
 
             state_ = new();
-            dirtySlots_ = new(WorldUtils.WORLD_SIZE + Vector2Int.one);
+            dirtySlots_ = new(0);
             Vector2Int minHeightSlot = new(WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.x + 1), WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.y + 1));
             Vector2Int maxHeightSlot = new(WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.x + 1), WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.y + 1));
             foreach (var pos in WorldUtils.WORLD_SIZE + Vector2Int.one)
@@ -79,9 +79,9 @@ namespace WorldGen.WFC
 
 
         /// <summary>
-        /// Assigns which passages can or cannot be passable based on the planned paths.
-        /// A passage must exist from a tile on the edge of the world over the edge.
-        /// A passage can't exist between two tiles, which both have a path going through them but the paths' distances to the hub differ by more than one.
+        /// Sets which passages must be passable.
+        /// A passage must exist between two tiles where a path goes through.
+        /// A passage must exist from a path tile on the edge of the world over the edge.
         /// </summary>
         void InitPassages(Vector2Int[][] paths)
         {
@@ -95,6 +95,9 @@ namespace WorldGen.WFC
                 InitTilePassages(distance, pos, pathDistances);
         }
 
+        /// <summary>
+        /// Set which passages from this specific tile must be passable.
+        /// </summary>
         void InitTilePassages(int distance, Vector2Int pos, IReadOnlyArray2D<int> pathDistances)
         {
             if (distance == int.MaxValue)
@@ -112,7 +115,7 @@ namespace WorldGen.WFC
         }
 
         /// <summary>
-        /// Calculates whether a passage from a tile to its neighbor can be passable or impassable.
+        /// Decides whether a passage from a tile to its neighbor can be passable or impassable.
         /// </summary>
         static bool MustBePassable(int distance, bool hasNeighbor, int neighborDistance)
         {
@@ -159,24 +162,19 @@ namespace WorldGen.WFC
         /// <returns></returns>
         bool TryPropagateConstraints()
         {
-            while (anythingDirty_)
+            while (dirtySlots_.Count > 0)
             {
-                anythingDirty_ = false;
-                for (int x = 0; x < 2; x++)
-                for (int y = 0; y < 2; y++)
-                {
-                    // debug
-                    RegisterGizmos(StepType.MicroStep, MakeEntropyGizmos);
-                    WaitForStep(StepType.MicroStep);
-                    // end debug
-                    if (!TryUpdateConstraintsGroup(x, y))
-                    {
-                        if (!TryBacktrack())
-                            return false;
-                        // break out of the for loops
-                        x = y = 2;
-                    }
-                }
+                // debug
+                RegisterGizmos(StepType.MicroStep, MakeEntropyGizmos);
+                WaitForStep(StepType.MicroStep);
+                // end debug
+
+                var slot = dirtySlots_.PopRandom();
+                if (TryUpdateSlotConstraints(slot))
+                    continue;
+
+                if (!TryBacktrack())
+                    return false;
             }
 
             // debug
@@ -186,34 +184,11 @@ namespace WorldGen.WFC
         }
 
         /// <summary>
-        /// Propagates in parallel constraints of slots with x and y position of the given parity.
-        /// Returns false if any slot ends up in an unsolvable state.
-        /// </summary>
-        bool TryUpdateConstraintsGroup(int x, int y)
-        {
-            /*
-            var tasks = dirtySlots_.IndexedEnumerable
-                .Where(p => p.index.x % 2 == x && p.index.y % 2 == y && p.value)
-                .Select(p => Task.Run(() => TryUpdateSlotConstraints(p.index))).ToArray();
-            Task.WaitAll(tasks);
-            return tasks.All(t => t.Result);
-            */
-            foreach (var slot in dirtySlots_.IndexedEnumerable.Where(p => p.index.x % 2 == x && p.index.y % 2 == y && p.value))
-            {
-                if (!TryUpdateSlotConstraints(slot.index))
-                    return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
         /// Updates constraints of a given slot.
-        /// Returns false if the slot ends up in an unsolvable state.
+        /// Returns false if this creates an unsolvable state.
         /// </summary>
         bool TryUpdateSlotConstraints(Vector2Int pos)
         {
-            dirtySlots_[pos] = false;
             WFCSlot s = state_.slots[pos];
             (WFCSlot n, bool backtrack) = s.UpdateValidModules(state_);
             if (backtrack)
@@ -230,12 +205,12 @@ namespace WorldGen.WFC
         }
 
         /// <summary>
-        /// Backtracks to the previous state, but removes the option to collapse to the current state.
+        /// Backtracks to the previous state, but removes the option to collapse to the state that was just collapsed.
         /// Fails and returns false more backtracking isn't possible.
         /// </summary>
         bool TryBacktrack()
         {
-            dirtySlots_.Fill(false);
+            dirtySlots_.Clear();
             Vector2Int lastCollapsedSlot = state_.lastCollapsedSlot;
             var lastCollapsedTo = state_.lastCollapsedTo;
             if (stateStack_.Count == 0)
@@ -248,7 +223,7 @@ namespace WorldGen.WFC
         }
 
         /// <summary>
-        /// Marks dirty all slots that ate at the given offsets relative to the given slot.
+        /// Marks dirty all slots that are at the given offsets relative to the given slot.
         /// </summary>
         public void MarkNeighborsDirty(Vector2Int pos, IEnumerable<Vector2Int> offsets)
         {
@@ -263,12 +238,11 @@ namespace WorldGen.WFC
         {
             if (!state_.slots.TryGet(pos, out var s) || s.Collapsed.module is not null)
                 return;
-            anythingDirty_ = true;
-            dirtySlots_[s.pos] = true;
+            dirtySlots_.Add(pos);
         }
 
         /// <summary>
-        /// Calculates the entropy of the given weighted random set.
+        /// Calculates the entropy of a weighted random set, calculated from the weights.
         /// </summary>
         /// <param name="weights">Weights with their respective number of occurrences.</param>
         /// <returns></returns>
@@ -290,7 +264,7 @@ namespace WorldGen.WFC
             var gizmos = new List<GizmoManager.GizmoObject>();
             foreach ((Vector2Int pos, _) in state_.uncollapsedSlots)
             {
-                Color c = dirtySlots_[pos] ? Color.red : Color.black;
+                Color c = dirtySlots_.Contains(pos) ? Color.red : Color.black;
                 float entropy = state_.slots[pos].CalculateEntropy();
                 float size;
                 if (entropy <= MaxEntropy * 0.2f)
