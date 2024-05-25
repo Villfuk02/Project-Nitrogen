@@ -39,4 +39,4 @@ MonoBehaviour:
   - '[$DPS]'
   descriptions:
   - Shoots projectiles at attackers in line of sight.
-  - Attackers further away take more damage, up to 200%.
+  - The further away an attacker is, the more damage it takes, up to 200%.

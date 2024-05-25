@@ -11,6 +11,7 @@ namespace BattleSimulation.Buildings
 
         protected override void OnPlaced()
         {
+            base.OnPlaced();
             BattleController.ADD_MATERIAL.RegisterReaction(OnAddedMaterial, 1000);
         }
 

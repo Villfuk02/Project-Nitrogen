@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BattleSimulation.Attackers;
 using Game.AttackerStats;
-using Game.Run.Shared;
+using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -24,7 +24,7 @@ namespace BattleSimulation.Control
         [SerializeField] UnityEvent<AttackerStats> showNewAttacker;
         [Header("Runtime variables")]
         [SerializeField] int spawnTimer;
-        [SerializeField] uint currentIndex;
+        [SerializeField] uint[] currentIndexes;
         public int wave;
         public int attackersLeft;
         [SerializeField] bool startNextWave;
@@ -46,9 +46,14 @@ namespace BattleSimulation.Control
 
         void Awake()
         {
-            // only use half the range to prevent overflow
-            currentIndex = (uint)(World.WorldData.World.data.seed & 0x7FFFFFFF);
             paths_ = World.WorldData.World.data.firstPathTiles.Length;
+
+            // only use half the range to prevent overflow
+            var startIndex = (uint)(World.WorldData.World.data.seed & 0x7FFFFFFF);
+            // the extra entry is for attackers spawned during a wave
+            currentIndexes = new uint[paths_ + 1];
+            for (int i = 0; i < paths_; i++)
+                currentIndexes[i] = startIndex;
 
             START_WAVE.RegisterHandler(StartNextWave);
 
@@ -154,7 +159,7 @@ namespace BattleSimulation.Control
             Attacker a = Instantiate(attacker.prefab, transform).GetComponent<Attacker>();
             Vector2Int startingPoint = World.WorldData.World.data.pathStarts[path];
             Vector2Int firstTile = World.WorldData.World.data.firstPathTiles[path];
-            a.Init(attacker.Clone(), startingPoint, firstTile, ++currentIndex);
+            a.Init(attacker.Clone(), startingPoint, firstTile, ++currentIndexes[path]);
             a.onRemoved.AddListener(AttackerRemoved);
             a.onReachedHub.AddListener(BattleController.AttackerReachedHub);
         }
@@ -167,7 +172,7 @@ namespace BattleSimulation.Control
             a.onRemoved.AddListener(AttackerRemoved);
             a.onReachedHub.AddListener(BattleController.AttackerReachedHub);
             float progress = World.WorldData.World.data.tiles[attacker.firstNode].dist + 1 - attacker.GetDistanceToHub();
-            a.AddPathProgress(progress + progressOffset, ++currentIndex);
+            a.AddPathProgress(progress + progressOffset, ++currentIndexes[^1]);
         }
 
         public void SpawnRelative(Attacker attacker, AttackerStats stats, int count, float offsetRadius)
@@ -192,6 +197,7 @@ namespace BattleSimulation.Control
             waveStarted = true;
             currentWave = waveGenerator.GetWave(wave);
             nextWaveButton.interactable = false;
+            SoundController.PlaySound(SoundController.Sound.WaveStart, 0.25f, 1, 0, null, true);
             return true;
         }
 
@@ -217,6 +223,7 @@ namespace BattleSimulation.Control
                 showNewAttacker.Invoke(attacker);
                 PersistentData.RegisterKnownAttacker(attacker.name);
                 newAttacker = false;
+                SoundController.PlaySound(SoundController.Sound.Notification, 0.45f, 1, 0, null, true);
                 return;
             }
 

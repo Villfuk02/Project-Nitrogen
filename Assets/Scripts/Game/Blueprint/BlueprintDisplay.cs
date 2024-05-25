@@ -71,6 +71,7 @@ namespace Game.Blueprint
             hovered = false;
             onUnhover.Invoke();
         }
+
         public void OnPointerClick(PointerEventData eventData)
         {
             onClick.Invoke();
@@ -106,6 +107,7 @@ namespace Game.Blueprint
                 res += $"{energy}{TextUtils.Icon.Energy.Sprite()}";
                 parts++;
             }
+
             if (materials > 0)
             {
                 res += $"{materials}{TextUtils.Icon.Materials.Sprite()}";

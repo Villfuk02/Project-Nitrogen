@@ -2,6 +2,7 @@ using System;
 using BattleVisuals.Selection.Highlightable;
 using Game.AttackerStats;
 using Game.Damage;
+using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -195,6 +196,7 @@ namespace BattleSimulation.Attackers
             rb.detectCollisions = false;
 
             onDeath.Invoke(cause);
+            SoundController.PlaySound(SoundController.Sound.AttackerDie, 0.5f, 1, 0.2f, transform.position, false);
             if (removed_)
                 return;
             removed_ = true;

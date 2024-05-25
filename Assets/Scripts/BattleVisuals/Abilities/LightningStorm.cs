@@ -1,4 +1,5 @@
 using System;
+using Game.Shared;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -31,6 +32,7 @@ namespace BattleVisuals.Abilities
             particlesEmission.rateOverTimeMultiplier = particlesMultiplier * radius_ * radius_;
             particlesEmission.SetBurst(0, new(0, 3 * particlesMultiplier * radius_ * radius_));
         }
+
         void Update()
         {
             if (!sim.Placed)
@@ -54,10 +56,10 @@ namespace BattleVisuals.Abilities
             lightEffect.intensity = lightIntensity.Evaluate(t);
         }
 
-        public void Strike(Transform a)
+        public void Strike(Transform target)
         {
             boltTimer_ = 0;
-            Vector3 startPos = a.position;
+            Vector3 startPos = target.position;
             Vector3 endPos = transform.position + Vector3.Scale(Random.insideUnitSphere, new(radius_, 0.25f, radius_));
             var pos = new Vector3[lightningBoltSteps + 1];
             pos[0] = startPos;
@@ -70,9 +72,13 @@ namespace BattleVisuals.Abilities
                 offset = Vector3.Lerp(offset, dir, i / (float)lightningBoltSteps);
                 pos[i] = pos[i - 1] + offset;
             }
+
             boltRenderer.positionCount = lightningBoltSteps + 1;
             boltRenderer.SetPositions(pos);
             UpdateBolt();
+
+            SoundController.PlaySound(SoundController.Sound.Zap, 1, 0.7f, 0.1f, target.position, false);
+            SoundController.PlaySound(SoundController.Sound.ImpactHuge, 0.6f, 1, 0.1f, target.position, false);
         }
     }
 }

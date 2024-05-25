@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using BattleSimulation.Attackers;
 using BattleSimulation.Control;
 using Game.Damage;
+using Game.Shared;
 using UnityEngine;
 
 namespace BattleSimulation.Abilities
@@ -21,6 +22,8 @@ namespace BattleSimulation.Abilities
             Attacker.DIE.RegisterReaction(OnAttackerKilled, 100);
 
             afflicted_ = new(targeting.GetValidTargets());
+
+            SoundController.PlaySound(SoundController.Sound.Catalyst, 1, 1, 0.2f, transform.position, false);
         }
 
         protected void OnDestroy()

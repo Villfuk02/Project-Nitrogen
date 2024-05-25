@@ -1,4 +1,4 @@
-using Game.Run.Shared;
+using Game.Shared;
 using UnityEngine;
 
 namespace Game.Run

@@ -10,7 +10,8 @@
         "GUID:6073d15ac0306a8499fd0cd1111f876f",
         "GUID:bfbdbdd4061137041b161434e4da10de",
         "GUID:b55ad62d9779b864fafba17c87e0eed9",
-        "GUID:c71f0acfdbb5ac04c90893d9ffaba887"
+        "GUID:c71f0acfdbb5ac04c90893d9ffaba887",
+        "Game.Run.Shared"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

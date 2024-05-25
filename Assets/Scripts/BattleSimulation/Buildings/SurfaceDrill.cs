@@ -14,6 +14,7 @@ namespace BattleSimulation.Buildings
 
         protected override void OnPlaced()
         {
+            base.OnPlaced();
             if (onFuelTile)
             {
                 WaveController.ON_WAVE_FINISHED.RegisterReaction(ProduceFuel, 100);

@@ -75,9 +75,11 @@ namespace Game.Run
             UpdateInterfaceState();
 
             offerHolder.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, offer.Count > 6 ? offerHeightWithScrollbar : offerHeightWithoutScrollbar);
-            scrollRect.horizontalNormalizedPosition = 0;
             offerHolder.anchoredPosition = Vector2.zero;
+            Invoke(nameof(ResetPosition), 0.001f);
         }
+
+        void ResetPosition() => scrollRect.horizontalNormalizedPosition = 0;
 
         BlueprintDisplay SetupItem(Blueprint.Blueprint blueprint, bool inventory)
         {

@@ -1,5 +1,6 @@
 using System;
 using Game.Blueprint;
+using Game.Shared;
 using UnityEngine;
 
 namespace BattleSimulation.Buildings
@@ -10,6 +11,13 @@ namespace BattleSimulation.Buildings
         public Transform[] rotateBack;
         [Header("Settings")]
         public bool permanent;
+
+        protected override void OnPlaced()
+        {
+            if (!permanent)
+                SoundController.PlaySound(SoundController.Sound.Build, 0.8f, 1, 0.1f, transform.position, true);
+            base.OnPlaced();
+        }
 
         public void Delete()
         {

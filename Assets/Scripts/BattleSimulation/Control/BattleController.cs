@@ -1,7 +1,7 @@
 using System;
 using BattleSimulation.Attackers;
 using Game.AttackerStats;
-using Game.Run.Shared;
+using Game.Shared;
 using UnityEngine;
 using Utils;
 
@@ -9,12 +9,7 @@ namespace BattleSimulation.Control
 {
     public class BattleController : MonoBehaviour
     {
-        public enum Affordable
-        {
-            Yes,
-            UseMaterialsAsEnergy,
-            No
-        }
+        public enum Affordable { Yes, UseMaterialsAsEnergy, No }
 
         public static readonly ModifiableCommand<(object source, float amount)> ADD_MATERIAL = new();
         public static readonly ModifiableCommand<(object source, float amount)> ADD_ENERGY = new();
@@ -174,6 +169,7 @@ namespace BattleSimulation.Control
         bool Win()
         {
             won = true;
+            SoundController.PlaySound(SoundController.Sound.Victory, 0.4f, 1, 0, null, true);
             return true;
         }
 
@@ -190,6 +186,7 @@ namespace BattleSimulation.Control
         void Lose()
         {
             lost = true;
+            SoundController.PlaySound(SoundController.Sound.Defeat, 0.95f, 1, 0, null, true);
         }
     }
 }

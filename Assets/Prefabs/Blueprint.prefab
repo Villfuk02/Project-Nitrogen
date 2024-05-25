@@ -299,7 +299,7 @@ RectTransform:
   m_GameObject: {fileID: 1858415772116867443}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.05, y: 1.05, z: 1.05}
+  m_LocalScale: {x: 1.0541421, y: 1.0541421, z: 1.0541421}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4218543707378373620}
@@ -593,6 +593,7 @@ GameObject:
   - component: {fileID: 4218543707378373620}
   - component: {fileID: 1967025916351245736}
   - component: {fileID: 4536461187714232527}
+  - component: {fileID: 4611562701836543460}
   m_Layer: 5
   m_Name: Blueprint
   m_TagString: Untagged
@@ -666,7 +667,6 @@ MonoBehaviour:
   economicBuildingColor: {r: 0.2509804, g: 0.7254902, b: 0.6745098, a: 1}
   specialBuildingColor: {r: 0.49803922, g: 0.3882353, b: 0.78431374, a: 1}
   abilityColor: {r: 1, g: 0.6392157, b: 0.4745098, a: 1}
-  upgradeColor: {r: 0.49803922, g: 0.3882353, b: 0.78431374, a: 1}
   hoveredIconScale: 1.2
   highlightPeriod: 2
   highlightScale: 1.04
@@ -679,13 +679,49 @@ MonoBehaviour:
   targetCooldownFill: 0
   onClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4611562701836543460}
+        m_TargetAssemblyTypeName: Game.Shared.ButtonSounds, Game.Shared
+        m_MethodName: Click
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onHover:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4611562701836543460}
+        m_TargetAssemblyTypeName: Game.Shared.ButtonSounds, Game.Shared
+        m_MethodName: Hover
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onUnhover:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4611562701836543460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4001615102930323004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714b1ebb36d7e414f8f2957e342f07e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4941758838160123605
 GameObject:
   m_ObjectHideFlags: 0

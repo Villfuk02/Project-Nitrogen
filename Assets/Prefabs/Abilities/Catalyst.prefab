@@ -5150,8 +5150,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visuals: {fileID: 8451412570879125624}
+  lastBlueprintHash: 0
   targeting: {fileID: 3739967506293457857}
-  damageIncrease: 0.5
+  damageIncrease: 1
 --- !u!114 &-3423078672773161603
 MonoBehaviour:
   m_ObjectHideFlags: 0

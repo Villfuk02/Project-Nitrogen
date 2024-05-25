@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Game.Run.Shared;
+using Game.Shared;
 using UnityEngine;
 using Random = Utils.Random.Random;
 
@@ -12,6 +12,7 @@ namespace Game.Run
         [SerializeField] LevelSetter worldSetter;
         [SerializeField] BlueprintRewardController blueprintRewards;
         [SerializeField] LevelDisplay levelDisplay;
+        [SerializeField] GameObject muteButton;
         [Header("Settings")]
         public ulong runSeed;
         public string seedString;
@@ -48,8 +49,16 @@ namespace Game.Run
             if (dmg <= 0)
                 return false;
             hull -= dmg;
+
+
             if (hull <= 0)
                 RunEvents.defeat.Invoke();
+
+            else if (hull <= 5 && hull + dmg > 5)
+                SoundController.PlaySound(SoundController.Sound.Siren, 1, 1, 0, null, true);
+            else
+                SoundController.PlaySound(SoundController.Sound.HullLoss, 0.9f, 1, 0.05f, null, true);
+
             return true;
         }
 
@@ -77,7 +86,13 @@ namespace Game.Run
             if (level == 0)
                 PersistentData.FinishedTutorial = true;
             level++;
-            SceneController.ChangeScene(SceneController.Scene.Battle, true, false, "GENERATING...", () => levelDisplay.enabled = true);
+            SceneController.ChangeScene(SceneController.Scene.Battle, true, false, "GENERATING...", Ready);
+        }
+
+        void Ready()
+        {
+            levelDisplay.enabled = true;
+            muteButton.SetActive(true);
         }
 
         public void SetupLevel()

@@ -686,6 +686,7 @@ GameObject:
   - component: {fileID: 80749872}
   - component: {fileID: 80749871}
   - component: {fileID: 80749870}
+  - component: {fileID: 80749873}
   m_Layer: 5
   m_Name: Next
   m_TagString: Untagged
@@ -820,6 +821,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 80749868}
   m_CullTransparentMesh: 1
+--- !u!114 &80749873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 80749868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714b1ebb36d7e414f8f2957e342f07e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &90412344
 GameObject:
   m_ObjectHideFlags: 0
@@ -1181,7 +1194,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   spawnTimer: 0
-  currentIndex: 0
+  currentIndexes: 
   wave: 0
   attackersLeft: 0
   startNextWave: 0
@@ -3524,8 +3537,9 @@ GameObject:
   - component: {fileID: 552028519}
   - component: {fileID: 552028523}
   - component: {fileID: 552028522}
+  - component: {fileID: 552028524}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ExitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3598,7 +3612,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 552028523}
         m_TargetAssemblyTypeName: BattleSimulation.Control.ExitButton, BattleSim.Control
-        m_MethodName: Exit
+        m_MethodName: TryExit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3665,7 +3679,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 552028523}
           m_TargetAssemblyTypeName: BattleSimulation.Control.ExitButton, BattleSim.Control
-          m_MethodName: ShowPanel
+          m_MethodName: Hover
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -3681,7 +3695,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 552028523}
           m_TargetAssemblyTypeName: BattleSimulation.Control.ExitButton, BattleSim.Control
-          m_MethodName: HidePanel
+          m_MethodName: Unhover
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -3704,6 +3718,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 117339774}
+  exitDelay: 0.25
+  hideDelay: 2
+  activeTime: 0
+  active: 0
+  hover: 0
+--- !u!114 &552028524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 552028517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714b1ebb36d7e414f8f2957e342f07e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &557980671
 GameObject:
   m_ObjectHideFlags: 0
@@ -3716,6 +3747,7 @@ GameObject:
   - component: {fileID: 557980675}
   - component: {fileID: 557980674}
   - component: {fileID: 557980673}
+  - component: {fileID: 557980676}
   m_Layer: 5
   m_Name: Quit
   m_TagString: Untagged
@@ -3850,6 +3882,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 557980671}
   m_CullTransparentMesh: 1
+--- !u!114 &557980676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557980671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714b1ebb36d7e414f8f2957e342f07e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &565682422
 GameObject:
   m_ObjectHideFlags: 0
@@ -4471,6 +4515,7 @@ GameObject:
   - component: {fileID: 642822293}
   - component: {fileID: 642822292}
   - component: {fileID: 642822291}
+  - component: {fileID: 642822294}
   m_Layer: 5
   m_Name: WaveButton
   m_TagString: Untagged
@@ -4593,6 +4638,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 642822289}
   m_CullTransparentMesh: 1
+--- !u!114 &642822294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 642822289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714b1ebb36d7e414f8f2957e342f07e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &644470257
 GameObject:
   m_ObjectHideFlags: 0

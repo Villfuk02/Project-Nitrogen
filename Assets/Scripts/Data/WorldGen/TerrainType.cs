@@ -44,7 +44,7 @@ namespace Data.WorldGen
         {
             char c = ParseChar(stream);
             if (c is < 'A' or > 'Z')
-                throw new ParseException(stream, $"\"{c}\" is not a valid surface - must be an uppercase letter.");
+                throw new ParseException(stream, $"\"{c}\" is not a valid surface - it must be an uppercase letter.");
             return c - 'A';
         }
     }

@@ -1,4 +1,5 @@
 using System.Linq;
+using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,6 +14,12 @@ namespace BattleSimulation.Towers
         [SerializeField] protected int shotTimer;
         [SerializeField] protected int shotDelayTimer;
 
+        protected override void OnPlaced()
+        {
+            shotDelayTimer = shotDelay + 1;
+            base.OnPlaced();
+        }
+
         protected override void FixedUpdateInternal()
         {
             base.FixedUpdateInternal();
@@ -21,6 +28,10 @@ namespace BattleSimulation.Towers
 
             shotTimer--;
             shotDelayTimer++;
+
+            if (shotTimer == 1)
+                SoundController.PlaySound(SoundController.Sound.ShootProjectile, 0.75f, 0.5f, 0.2f, transform.position, false);
+
             if (shotTimer <= 0 && targeting.GetValidTargets().Any())
                 StartShot();
 
@@ -40,6 +51,7 @@ namespace BattleSimulation.Towers
             foreach (var target in targeting.GetValidTargets())
                 if (target.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
                     damageDealt += dmg;
+            SoundController.PlaySound(SoundController.Sound.ImpactHuge, 1, 1, 0.2f, transform.position, false);
         }
     }
 }

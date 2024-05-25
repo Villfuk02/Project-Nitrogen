@@ -845,8 +845,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 468.5, y: 0}
-  m_SizeDelta: {x: 937, y: 0}
+  m_AnchoredPosition: {x: 451.5, y: 0}
+  m_SizeDelta: {x: 903, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1560906903024010504
 CanvasRenderer:
@@ -1517,6 +1517,7 @@ GameObject:
   - component: {fileID: 1230985789633163332}
   - component: {fileID: 4684309271097583870}
   - component: {fileID: 1315526038134049962}
+  - component: {fileID: 8421589880553713943}
   m_Layer: 5
   m_Name: next
   m_TagString: Untagged
@@ -1638,6 +1639,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8421589880553713943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1715155259180691651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714b1ebb36d7e414f8f2957e342f07e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5287899808698889245
 GameObject:
   m_ObjectHideFlags: 0
@@ -1785,6 +1798,7 @@ GameObject:
   - component: {fileID: 4150398575526313469}
   - component: {fileID: 3446266567930274017}
   - component: {fileID: 5065466075562040367}
+  - component: {fileID: 4818393633642599193}
   m_Layer: 5
   m_Name: prev
   m_TagString: Untagged
@@ -1906,6 +1920,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4818393633642599193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7098070032835489120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714b1ebb36d7e414f8f2957e342f07e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7776314776703505969
 GameObject:
   m_ObjectHideFlags: 0
@@ -1918,6 +1944,7 @@ GameObject:
   - component: {fileID: 2392047224033435983}
   - component: {fileID: 4186498196411601741}
   - component: {fileID: 756066269280206045}
+  - component: {fileID: 2557667044545838114}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -2040,6 +2067,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2557667044545838114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7776314776703505969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714b1ebb36d7e414f8f2957e342f07e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7970963242270514547
 GameObject:
   m_ObjectHideFlags: 0

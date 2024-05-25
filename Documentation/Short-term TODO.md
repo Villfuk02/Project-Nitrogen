@@ -4,13 +4,16 @@
 - metadata hry
 
 ## till next metting
-- [ ] implement
+- [x] implement
 - [x] questionnaire
+- [ ] fix blueprint selection
+- [ ] fix orbital laser placement
 - [ ] rewrite definition of towers and special buildings
 - [ ] rewrite path branches of length 4
 - [ ] design mention time controls
 - [ ] add notes to ch3
     - [ ] separation of blueprints from behavior
+    - [ ] sounds
 ## implementation 
 - [x] limit wave generator to pull extras max once per wave
 - [x] also make early waves shorter
@@ -40,19 +43,45 @@
 - [x] try uniform weights
 - [x] comment WFC (and name methods better)
 - [ ] sound effects
-    - [ ] button hover
-    - [ ] button unhover
-    - [ ] button click
-    - [ ] for each tower
-        - [ ] shoot
-        - [ ] impact
-    - [ ] build
-    - [ ] sound for each ability
-    - [ ] produce energy
-    - [ ] produce materials
-    - [ ] produce fuel
-    - [ ] victory
-    - [ ] defeat
+    - [ ] sound controller
+        - [x] screen-space sounds
+        - [x] world-space sounds
+        - [ ] try pooling per clip, playOneShot
+        - [ ] first try without staggers and delays
+        - [ ] limit sound count - stagger same sounds by random amounts and accumulate them
+    - [x] shoot basic projectile
+    - [x] basic projectile impact
+    - [x] charge up
+    - [x] charged impact
+    - [x] mortar shoot
+    - [x] mortar impact
+    - [x] sledgehammer impact
+    - [x] static sparker spark
+    - [x] ultra-ray burn
+    - [x] predator upgrade
+    - [x] build
+    - [x] invalid placement
+    - [x] attacker reach hub
+    - [x] catalyst use
+    - [x] grenade explode
+    - [x] meteor explode
+    - [x] holosiphon siphon
+    - [x] lightning strike
+    - [x] streamline use
+    - [x] orbital laser
+    - [x] heal
+    - [x] die
+    - [x] blocked hit?
+    - [x] produce energy
+    - [x] produce materials
+    - [x] produce fuel
+    - [x] defeat
+    - [x] victory
+    - [x] button hover
+    - [x] button click
+    - [x] decompress on load
+- [x] blueprint selection starts centered
+- [x] mute/unmute
 - [ ] +polish
     - [ ] preview blueprint placement (to distinguish it from from not placing and make sure invalid placement is noticed)
     - [ ] increase shadow resolution

@@ -12,6 +12,7 @@ namespace BattleSimulation.Buildings
 
         protected override void OnPlaced()
         {
+            base.OnPlaced();
             WaveController.ON_WAVE_FINISHED.RegisterReaction(Produce, 100);
 
             BattleController.UPDATE_MATERIALS_PER_WAVE.RegisterModifier(ProvideMaterialsIncome, -100);

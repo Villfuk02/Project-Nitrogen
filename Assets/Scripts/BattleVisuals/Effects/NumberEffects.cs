@@ -4,6 +4,7 @@ using System.Globalization;
 using BattleSimulation.Attackers;
 using BattleSimulation.Control;
 using Game.Damage;
+using Game.Shared;
 using UnityEngine;
 using Utils;
 using Random = UnityEngine.Random;
@@ -62,47 +63,51 @@ namespace BattleVisuals.Effects
             float size = Mathf.Lerp(damageMinFontSize, damageMaxFontSize, Mathf.Log(param.damage.amount) / fullSizeDamageLog);
             Vector2 r = Random.insideUnitCircle;
             Vector3 vel = new(r.x, 2, r.y);
-            Spawn(param.damage.amount.ToString(CultureInfo.InvariantCulture), size, damageColor, damageTimeToLive, param.target.target.position + Vector3.up * 0.3f, vel, Vector3.down * 10);
+            Spawn(param.damage.amount.ToString(CultureInfo.InvariantCulture), size, damageColor, damageTimeToLive, param.target.target.position + Vector3.up * 0.3f, vel, Vector3.down * 10, null);
         }
 
         void SpawnHeal((Attacker target, float amount) param)
         {
             float size = Mathf.Lerp(damageMinFontSize, damageMaxFontSize, Mathf.Log(param.amount) / fullSizeDamageLog);
-            Spawn(param.amount.ToString(CultureInfo.InvariantCulture), size, healColor, damageTimeToLive, param.target.target.position + Vector3.up * 0.3f, Vector3.up * 1.5f, Vector3.down * 0.5f);
+            Spawn(param.amount.ToString(CultureInfo.InvariantCulture), size, healColor, damageTimeToLive, param.target.target.position + Vector3.up * 0.3f, Vector3.up * 1.5f, Vector3.down * 0.5f, null);
         }
 
-        void SpawnMaterial((object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Materials.Sprite()}", materialsColor);
-        void SpawnEnergy((object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Energy.Sprite()}", energyColor);
-        void SpawnFuel((object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Fuel.Sprite()}", fuelColor);
+        void SpawnMaterial((object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Materials.Sprite()}", materialsColor, SoundController.Sound.Materials);
 
-        void SpawnProduction(object source, string text, Color color)
+        void SpawnEnergy((object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Energy.Sprite()}", energyColor, SoundController.Sound.Energy);
+
+        void SpawnFuel((object source, float amount) param) => SpawnProduction(param.source, $"+{param.amount}{TextUtils.Icon.Fuel.Sprite()}", fuelColor, SoundController.Sound.Fuel);
+
+        void SpawnProduction(object source, string text, Color color, SoundController.Sound sound)
         {
-            if (source is not MonoBehaviour mb || mb == null)
+            if (source is not Component component || component == null)
                 return;
-            Vector3 pos = mb.transform.position + Vector3.up;
-            if (createdThisFrame_.ContainsKey(mb))
+            Vector3 pos = component.transform.position + Vector3.up;
+            if (createdThisFrame_.ContainsKey(component))
             {
-                StartCoroutine(SpawnLater(text, productionFontSize, color, productionTimeToLive, pos, Vector3.up * 1.5f, Vector3.down * 0.5f, createdThisFrame_[mb] * productionDelay));
-                createdThisFrame_[mb]++;
+                StartCoroutine(SpawnLater(text, productionFontSize, color, productionTimeToLive, pos, Vector3.up * 1.5f, Vector3.down * 0.5f, sound, createdThisFrame_[component] * productionDelay));
+                createdThisFrame_[component]++;
             }
             else
             {
-                Spawn(text, productionFontSize, color, productionTimeToLive, pos, Vector3.up * 1.5f, Vector3.down * 0.5f);
-                createdThisFrame_[mb] = 1;
+                Spawn(text, productionFontSize, color, productionTimeToLive, pos, Vector3.up * 1.5f, Vector3.down * 0.5f, sound);
+                createdThisFrame_[component] = 1;
             }
         }
 
-        void Spawn(string s, float textSize, Color color, float timeToLive, Vector3 position, Vector3 velocity, Vector3 acceleration)
+        void Spawn(string s, float textSize, Color color, float timeToLive, Vector3 position, Vector3 velocity, Vector3 acceleration, SoundController.Sound? sound)
         {
             NumberEffect ne = Instantiate(numberEffectPrefab, transform).GetComponent<NumberEffect>();
             ne.transform.localPosition = position;
             ne.Init(s, textSize, color, timeToLive, velocity, acceleration);
+            if (sound is not null)
+                SoundController.PlaySound(sound.Value, 0.25f, 1, 0.2f, position, false);
         }
 
-        IEnumerator SpawnLater(string s, float textSize, Color color, float timeToLive, Vector3 position, Vector3 velocity, Vector3 acceleration, float time)
+        IEnumerator SpawnLater(string s, float textSize, Color color, float timeToLive, Vector3 position, Vector3 velocity, Vector3 acceleration, SoundController.Sound? sound, float time)
         {
             yield return new WaitForSeconds(time);
-            Spawn(s, textSize, color, timeToLive, position, velocity, acceleration);
+            Spawn(s, textSize, color, timeToLive, position, velocity, acceleration, sound);
         }
     }
 }

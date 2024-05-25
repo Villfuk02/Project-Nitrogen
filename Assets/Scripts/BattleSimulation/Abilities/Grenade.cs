@@ -1,3 +1,5 @@
+using Game.Shared;
+
 namespace BattleSimulation.Abilities
 {
     public class Grenade : TargetedAbility
@@ -5,6 +7,7 @@ namespace BattleSimulation.Abilities
         protected override void OnPlaced()
         {
             Explode();
+            SoundController.PlaySound(SoundController.Sound.ExplosionSmall, 0.75f, 0.8f, 0.2f, transform.position, false);
         }
 
         void Explode()

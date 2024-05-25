@@ -1,5 +1,4 @@
 using BattleSimulation.World.WorldData;
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -10,6 +9,7 @@ namespace BattleVisuals.Abilities
     {
         [Header("References")]
         [SerializeField] BattleSimulation.Abilities.OrbitalLaser orbitalLaser;
+        [SerializeField] AudioSource audioSource;
         [Header("Settings")]
         [SerializeField] UnityEvent onEnd;
         [Header("Runtime variables")]
@@ -20,11 +20,13 @@ namespace BattleVisuals.Abilities
         void OnEnable()
         {
             transform.position = Vector3.one * 1000;
+            audioSource.Play();
         }
 
         void Start()
         {
             duration = orbitalLaser.Blueprint.durationTicks * TimeUtils.SECS_PER_TICK;
+            audioSource.pitch = audioSource.clip.length / duration;
         }
 
         void Update()

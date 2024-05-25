@@ -5,7 +5,7 @@ using BattleSimulation.Selection;
 using BattleSimulation.World.WorldData;
 using BattleVisuals.World;
 using Game.Blueprint;
-using Game.Run.Shared;
+using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -160,8 +160,8 @@ namespace BattleSimulation.World.WorldBuilder
             building.InitBlueprint(blueprint);
             var placement = building.GetComponent<Placement>();
             placement.Setup(tile.GetComponentInChildren<Selectable>(), 0, null, null);
-            placement.Place();
             building.permanent = true;
+            placement.Place();
         }
     }
 }

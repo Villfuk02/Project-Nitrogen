@@ -1,5 +1,6 @@
 using System.Linq;
 using BattleSimulation.Attackers;
+using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -35,7 +36,11 @@ namespace BattleSimulation.Towers
                 if (hitsLeft <= 0)
                     break;
                 if (target.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
+                {
                     damageDealt += dmg;
+                    SoundController.PlaySound(SoundController.Sound.RayBurn, 0.85f, 1, 0.1f, target.target.position, false);
+                }
+
                 hitsLeft--;
             }
         }

@@ -1,4 +1,6 @@
+using BattleSimulation.Attackers;
 using UnityEngine;
+using Utils;
 
 namespace BattleVisuals.Towers
 {
@@ -9,10 +11,12 @@ namespace BattleVisuals.Towers
         [SerializeField] ParticleSystem localParticles;
         [SerializeField] ParticleSystem targetParticles;
         [SerializeField] Transform particleHolder;
+        [SerializeField] AudioSource siphonSoundEffect;
         [Header("Settings")]
         [SerializeField] Gradient particleColor;
         [Header("Runtime variables")]
-        [SerializeField] bool playing;
+        [SerializeField] bool playingParticles;
+        [SerializeField] Attacker prevTarget;
 
         void Start()
         {
@@ -26,22 +30,35 @@ namespace BattleVisuals.Towers
             {
                 var shape = targetParticles.shape;
                 shape.position = sim.selectedTarget.target.position - targetParticles.transform.position;
-                if (!playing)
+                if (!playingParticles)
                 {
                     targetParticles.Play();
-                    playing = true;
+                    playingParticles = true;
                 }
             }
-            else if (playing)
+            else if (playingParticles)
             {
                 targetParticles.Stop();
-                playing = false;
+                playingParticles = false;
             }
+
             Color c = particleColor.Evaluate(hasTarget ? sim.chargeTimer / (float)sim.Blueprint.delay : 0);
             var main = localParticles.main;
             main.startColor = c;
             main = targetParticles.main;
             main.startColor = c;
+
+            if (hasTarget && sim.selectedTarget != prevTarget)
+            {
+                siphonSoundEffect.pitch = siphonSoundEffect.clip.length / (sim.Blueprint.delay * TimeUtils.SECS_PER_TICK);
+                siphonSoundEffect.Play();
+            }
+            else if (!hasTarget || sim.selectedTarget != prevTarget)
+            {
+                siphonSoundEffect.Stop();
+            }
+
+            prevTarget = sim.selectedTarget;
         }
     }
 }

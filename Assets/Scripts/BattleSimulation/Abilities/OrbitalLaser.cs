@@ -1,20 +1,30 @@
+using System.Collections.Generic;
 using BattleSimulation.Attackers;
 using BattleSimulation.Control;
+using Game.Shared;
 using UnityEngine;
 using Utils;
 
 namespace BattleSimulation.Abilities
 {
-    public class OrbitalLaser : TargetedAbility
+    public class OrbitalLaser : Ability
     {
+        static LayerMask attackerMask_;
+
         [Header("Settings")]
         [SerializeField] float radius;
-
         [Header("Runtime variables")]
         public Vector3 startPos;
         public Vector3 endPos;
         public int ticksLeft;
         [SerializeField] bool finished;
+        readonly HashSet<Attacker> alreadyHit_ = new();
+
+        void Awake()
+        {
+            if (attackerMask_ == 0)
+                attackerMask_ = LayerMask.GetMask(LayerNames.ATTACKER_TARGET);
+        }
 
         public override void OnSetupChanged()
         {
@@ -40,8 +50,6 @@ namespace BattleSimulation.Abilities
                 startPos = new(transform.position.x, 0, -dir.z * startOffset);
                 endPos = new(transform.position.x, 0, dir.z * startOffset);
             }
-
-            targeting.transform.position = startPos;
         }
 
         protected void OnDestroy()
@@ -53,18 +61,22 @@ namespace BattleSimulation.Abilities
         protected override void FixedUpdateInternal()
         {
             base.FixedUpdateInternal();
-            if (!Placed)
+            if (!Placed || finished)
                 return;
             if (ticksLeft == 0)
                 End();
+            Vector3 prevPosition = Vector3.Lerp(startPos, endPos, 1 - ticksLeft / (float)Blueprint.durationTicks);
             ticksLeft--;
-            targeting.transform.position = Vector3.Lerp(startPos, endPos, 1 - ticksLeft / (float)Blueprint.durationTicks);
-        }
-
-        public void OnAttackerEnter(Attacker a)
-        {
-            if (Placed && !finished)
-                a.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out _);
+            Vector3 newPosition = Vector3.Lerp(startPos, endPos, 1 - ticksLeft / (float)Blueprint.durationTicks);
+            Vector3 offset = newPosition - prevPosition;
+            foreach (var hit in Physics.CapsuleCastAll(prevPosition + Vector3.down * 10, prevPosition + Vector3.up * 10, radius, offset, offset.magnitude, attackerMask_))
+            {
+                Attacker a = hit.rigidbody.GetComponent<Attacker>();
+                if (!alreadyHit_.Add(a))
+                    continue;
+                if (a.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out _))
+                    SoundController.PlaySound(SoundController.Sound.LaserBurn, 1, 1, 0.2f, a.target.position, false);
+            }
         }
 
         void OnWaveFinished()

@@ -5,6 +5,7 @@ using BattleVisuals.Camera;
 using BattleVisuals.Selection;
 using Coffee.UISoftMask;
 using Game.Run;
+using Game.Shared;
 using TMPro;
 using UnityEngine;
 using Utils;
@@ -140,6 +141,7 @@ namespace Game.Tutorial
         void ChangeTutorialText()
         {
             tutorialText.text = newTutorialText;
+            SoundController.PlaySound(SoundController.Sound.Notification, 0.5f, 1, 0, null, true);
         }
 
         public void HideTutorialText()

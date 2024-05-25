@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using BattleSimulation.Attackers;
 using BattleSimulation.Control;
+using Game.Shared;
 using UnityEngine;
 
 namespace BattleSimulation.Towers
@@ -21,7 +22,10 @@ namespace BattleSimulation.Towers
 
             foreach (var a in targeting.GetValidTargets())
                 if (a.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
+                {
+                    SoundController.PlaySound(SoundController.Sound.SiphonFinish, 0.45f, 1, 0.2f, a.target.position, false);
                     damageDealt += dmg;
+                }
         }
 
         protected override void OnDestroy()
@@ -62,7 +66,11 @@ namespace BattleSimulation.Towers
                 if (chargeTimer >= Blueprint.delay)
                 {
                     if (selectedTarget.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
+                    {
+                        SoundController.PlaySound(SoundController.Sound.SiphonFinish, 0.6f, 1, 0.2f, selectedTarget.target.position, false);
                         damageDealt += dmg;
+                    }
+
                     selectedTarget = null;
                 }
             }

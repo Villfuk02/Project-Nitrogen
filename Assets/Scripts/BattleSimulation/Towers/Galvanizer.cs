@@ -3,6 +3,7 @@ using BattleSimulation.Attackers;
 using BattleSimulation.Control;
 using BattleSimulation.Projectiles;
 using Game.Damage;
+using Game.Shared;
 using UnityEngine;
 using Utils;
 
@@ -25,6 +26,8 @@ namespace BattleSimulation.Towers
         {
             base.OnPlaced();
             WaveController.START_WAVE.RegisterReaction(OnWaveStarted, 100);
+            ticksSinceLastShot = 1000;
+            PlayChargeUpSound();
         }
 
         protected override void OnDestroy()
@@ -36,22 +39,34 @@ namespace BattleSimulation.Towers
 
         protected override void FixedUpdateInternal()
         {
+            bool prevCharged = IsCharged;
             ticksSinceLastShot++;
+            if (Placed && !prevCharged && IsCharged)
+                PlayChargeUpSound();
             base.FixedUpdateInternal();
         }
 
         protected override void ShootInternal(Attacker target)
         {
             var p = Instantiate(IsCharged ? chargedProjectilePrefab : projectilePrefab, World.WorldData.World.instance.transform).GetComponent<LockOnProjectile>();
-            ticksSinceLastShot = 0;
             if (IsCharged)
                 lastChargedProjectile = p;
+            ticksSinceLastShot = 0;
             p.Init(projectileOrigin.position, this, target);
+            SoundController.PlaySound(SoundController.Sound.ShootProjectile, 0.35f, 1, 0.2f, projectileOrigin.position, false);
         }
 
         void OnWaveStarted()
         {
+            bool prevCharged = IsCharged;
             ticksSinceLastShot = 1000;
+            if (Placed && !prevCharged)
+                PlayChargeUpSound();
+        }
+
+        void PlayChargeUpSound()
+        {
+            SoundController.PlaySound(SoundController.Sound.ChargeUp, 0.75f, 1, 0.1f, transform.position, false);
         }
 
         public override bool TryHit(Projectile projectile, Attacker attacker)
@@ -74,14 +89,21 @@ namespace BattleSimulation.Towers
                 (object source, float amount) energyProductionParam = (this, Blueprint.energyProduction);
                 if (BattleController.ADD_ENERGY.InvokeRef(ref energyProductionParam))
                     energyProduced += (int)energyProductionParam.amount;
+                SoundController.PlaySound(SoundController.Sound.EnergizedImpact, 0.75f, 1, 0.1f, projectile.transform.position, false);
             }
 
+            int hitDmgDealt = 0;
             if (hitParam.dmg.amount > 0)
             {
                 (Attacker a, Damage dmg) dmgParam = hitParam;
                 if (Attacker.DAMAGE.InvokeRef(ref dmgParam))
-                    damageDealt += (int)dmgParam.dmg.amount;
+                {
+                    hitDmgDealt = (int)dmgParam.dmg.amount;
+                    damageDealt += hitDmgDealt;
+                }
             }
+
+            PlayHitSound(projectile, attacker, hitDmgDealt);
 
             return true;
         }

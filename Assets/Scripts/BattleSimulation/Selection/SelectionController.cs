@@ -2,6 +2,7 @@ using System.Linq;
 using Game.AttackerStats;
 using Game.Blueprint;
 using Game.InfoPanel;
+using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -79,7 +80,10 @@ namespace BattleSimulation.Selection
                     DeselectInWorld();
                     resetVisuals.Invoke();
                 }
-                // TODO: feedback for the player - sound effect
+                else
+                {
+                    SoundController.PlaySound(SoundController.Sound.Error, 1, 1, 0, null, true);
+                }
             }
             else if (hovered != null)
             {
@@ -93,7 +97,7 @@ namespace BattleSimulation.Selection
 
         void HandleDeselect()
         {
-            if (Input.GetKeyUp(KeyCode.Escape) || Input.GetKeyUp(KeyCode.Space))
+            if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Escape))
             {
                 DeselectFromMenu();
                 DeselectInWorld();
@@ -139,6 +143,7 @@ namespace BattleSimulation.Selection
                 KeyCode key = i == 9 ? KeyCode.Alpha0 : KeyCode.Alpha1 + i;
                 if (!Input.GetKeyDown(key))
                     continue;
+                ButtonSounds.Click();
                 if (blueprintMenu.selected == i)
                     DeselectFromMenu();
                 else

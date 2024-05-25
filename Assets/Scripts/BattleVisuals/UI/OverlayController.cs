@@ -1,5 +1,5 @@
 using BattleSimulation.Control;
-using Game.Run.Shared;
+using Game.Shared;
 using UnityEngine;
 
 namespace BattleVisuals.UI

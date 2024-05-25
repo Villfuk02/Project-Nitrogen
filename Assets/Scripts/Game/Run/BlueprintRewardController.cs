@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Game.Run.Shared;
+using Game.Shared;
 using UnityEngine;
 using Utils.Random;
 using Random = Utils.Random.Random;

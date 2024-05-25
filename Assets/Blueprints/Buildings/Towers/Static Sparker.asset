@@ -19,9 +19,9 @@ MonoBehaviour:
   type: 0
   energyCost: 0
   materialCost: 0
-  startingCooldown: 0
-  cooldown: 1
-  range: 1.1
+  startingCooldown: 1
+  cooldown: 2
+  range: 1.15
   damage: 1
   damageType: 4
   interval: -1
@@ -35,6 +35,5 @@ MonoBehaviour:
   statsToDisplay:
   - '[$RNG]'
   - '[$DMG]'
-  statsToDisplayWhenUninitialized: []
   descriptions:
   - Attackers take damage whenever they enter its range.

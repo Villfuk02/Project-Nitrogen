@@ -1,3 +1,4 @@
 {
-	"name": "BattleVis"
+	"name": "BattleVis",
+	"references":[ "GUID:c71f0acfdbb5ac04c90893d9ffaba887" ]
 }

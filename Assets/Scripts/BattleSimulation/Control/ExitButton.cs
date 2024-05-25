@@ -1,4 +1,4 @@
-using Game.Run.Shared;
+using Game.Shared;
 using UnityEngine;
 
 namespace BattleSimulation.Control
@@ -9,20 +9,68 @@ namespace BattleSimulation.Control
         static readonly int Hide = Animator.StringToHash("Hide");
         [Header("References")]
         [SerializeField] Animator animator;
+        [SerializeField] float exitDelay;
+        [SerializeField] float hideDelay;
+        [Header("Runtime variables")]
+        [SerializeField] float activeTime;
+        [SerializeField] bool active;
+        [SerializeField] bool hover;
 
-        public void ShowPanel()
+        public void Hover()
         {
+            hover = true;
+            ShowPanel();
+        }
+
+        public void Unhover()
+        {
+            hover = false;
+            HidePanel();
+        }
+
+        void ShowPanel()
+        {
+            if (active)
+                return;
+            active = true;
             animator.SetTrigger(Show);
         }
 
-        public void HidePanel()
+        void HidePanel()
         {
+            if (!active)
+                return;
+            active = false;
+            activeTime = 0;
             animator.SetTrigger(Hide);
         }
 
-        public void Exit()
+        public void TryExit()
         {
-            RunEvents.quit.Invoke();
+            if (activeTime > exitDelay)
+            {
+                RunEvents.quit.Invoke();
+            }
+            else
+            {
+                ButtonSounds.Hover();
+                ShowPanel();
+            }
+        }
+
+        void Update()
+        {
+            if (active)
+                activeTime += Time.deltaTime;
+            if (activeTime > hideDelay && !hover)
+                HidePanel();
+            /*
+            if (Input.GetKeyUp(KeyCode.Escape))
+            {
+                TryExit();
+                ButtonSounds.Click();
+            }
+            */
         }
     }
 }

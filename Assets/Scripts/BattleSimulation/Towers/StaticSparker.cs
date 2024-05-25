@@ -1,4 +1,5 @@
 using BattleSimulation.Attackers;
+using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -19,6 +20,7 @@ namespace BattleSimulation.Towers
 
             onShoot.Invoke(attacker);
             damageDealt += dmg;
+            SoundController.PlaySound(SoundController.Sound.Zap, 0.4f, 1.2f, 0.2f, transform.position, false);
         }
     }
 }

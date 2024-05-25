@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using BattleSimulation.Attackers;
 using Game.Damage;
+using Game.Shared;
 using UnityEngine;
 
 namespace BattleSimulation.Towers
@@ -29,6 +30,7 @@ namespace BattleSimulation.Towers
                 return;
             kills++;
             baseBlueprint.damage++;
+            SoundController.PlaySound(SoundController.Sound.Upgrade, 0.4f, 1, 0, transform.position, false);
         }
 
         public override IEnumerable<string> GetExtraStats()
