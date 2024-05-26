@@ -33,6 +33,5 @@ MonoBehaviour:
   materialProduction: -1
   energyProduction: 20
   statsToDisplay: []
-  statsToDisplayWhenUninitialized: []
   descriptions:
-  - Whenever you gain [#MAT]Materials, also gain [ENE]% as much Energy.
+  - Whenever you gain [#MAT]Materials, produces [ENE]% as much Energy.

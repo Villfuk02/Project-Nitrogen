@@ -430,7 +430,7 @@ MonoBehaviour:
   tutorialLevelSeed: 1011
   blueprints: []
   level: 0
-  maxHull: 40
+  maxHull: 25
   hull: 0
 --- !u!114 &3952241801299892886
 MonoBehaviour:

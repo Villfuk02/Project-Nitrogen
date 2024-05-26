@@ -18,7 +18,7 @@ MonoBehaviour:
   rarity: 2
   type: 1
   energyCost: 0
-  materialCost: 40
+  materialCost: 35
   startingCooldown: 1
   cooldown: 1
   range: -1
@@ -33,7 +33,6 @@ MonoBehaviour:
   materialProduction: -1
   energyProduction: -1
   statsToDisplay: []
-  statsToDisplayWhenUninitialized: []
   descriptions:
   - Produces [PRO] after every wave.
   - Must be built on tiles rich in [#FUE]fuel.

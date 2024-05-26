@@ -69,7 +69,7 @@ namespace BattleSimulation.Control
 
         void Update()
         {
-            if (Input.GetKeyUp(KeyCode.N))
+            if (Input.GetKeyUp(KeyCode.Space))
                 RequestWaveStart();
         }
 

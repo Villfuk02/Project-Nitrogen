@@ -95,6 +95,7 @@ namespace Game.Run
 
         public void Confirm()
         {
+            infoPanel.Hide(true, true);
             callback_.Invoke(selected, selectedFromInventory);
         }
 
@@ -119,7 +120,7 @@ namespace Game.Run
                 {
                     if (!blueprintLimited && !buildingLimited && !abilityLimited)
                         return;
-                    if (!ValidInventorySelection(self.blueprint))
+                    if (!ValidInventorySelection(selected, self.blueprint))
                         return;
                     selectedFromInventory = self.blueprint;
                     infoPanel.ShowBlueprint(self.blueprint, self.blueprint, null, true, true);
@@ -128,10 +129,7 @@ namespace Game.Run
                 {
                     selected = self.blueprint;
                     infoPanel.ShowBlueprint(self.blueprint, self.blueprint, null, true, true);
-                    if (!blueprintLimited && !buildingLimited && !abilityLimited)
-                        selectedFromInventory = null;
-                    else if (selectedFromInventory != null && !ValidInventorySelection(selectedFromInventory))
-                        selectedFromInventory = null;
+                    selectedFromInventory = null;
                 }
             }
             else
@@ -178,7 +176,7 @@ namespace Game.Run
                     instructions.text = $"Select a blueprint to exchange from your inventory\n(You can have at most {limitingFactorText})";
                     confirmButton.interactable = false;
                     foreach (var display in inventoryDisplays)
-                        display.highlight.color = ValidInventorySelection(display.blueprint) ? activeColor : Color.clear;
+                        display.highlight.color = ValidInventorySelection(selected, display.blueprint) ? activeColor : Color.clear;
                 }
                 else
                 {
@@ -196,6 +194,8 @@ namespace Game.Run
                     display.highlight.color = Color.clear;
             }
 
+            skipButton.interactable = selected == null && selectedFromInventory == null;
+
             foreach (var display in offeredDisplays)
             {
                 display.selected = display.blueprint == selected;
@@ -211,13 +211,15 @@ namespace Game.Run
             }
         }
 
-        bool ValidInventorySelection(Blueprint.Blueprint blueprint)
+        bool ValidInventorySelection(Blueprint.Blueprint selected, Blueprint.Blueprint blueprint)
         {
-            if (buildingLimited && blueprint.type == Blueprint.Blueprint.Type.Ability)
-                return false;
-            if (abilityLimited && blueprint.type != Blueprint.Blueprint.Type.Ability)
-                return false;
-            return true;
+            if (buildingLimited && selected.type != Blueprint.Blueprint.Type.Ability && blueprint.type != Blueprint.Blueprint.Type.Ability)
+                return true;
+            if (abilityLimited && selected.type == Blueprint.Blueprint.Type.Ability && blueprint.type == Blueprint.Blueprint.Type.Ability)
+                return true;
+            if (blueprintLimited)
+                return true;
+            return false;
         }
     }
 }

@@ -6,8 +6,11 @@
 ## till next metting
 - [x] implement
 - [x] questionnaire
-- [ ] fix blueprint selection
-- [ ] fix orbital laser placement
+- [x] fix orbital laser placement
+- [x] fix blueprint selection
+- [x] version text
+- [x] highlight cooldown
+- [x] fix X behavior
 - [ ] rewrite definition of towers and special buildings
 - [ ] rewrite path branches of length 4
 - [ ] design mention time controls

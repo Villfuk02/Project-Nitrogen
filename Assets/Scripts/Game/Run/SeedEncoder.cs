@@ -9,7 +9,7 @@ namespace Game.Run
         static readonly char[] CharFromCode = { 'A', 'C', 'D', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'Y' };
         // translation table for chars 'A' to 'Z'
         static readonly ulong[] CodeFromChar = { 0, 16, 1, 2, 3, 4, 17, 18, 5, 19, 20, 6, 7, 8, 9, 10, 21, 11, 12, 13, 14, 22, 23, 24, 15, 25 };
-        static readonly ulong BaseSeed = 0xBA5E_5EED_0101_1010;
+        static readonly ulong BaseSeed = 0xBA5E_5EED_0123_1004;
         static readonly int RotationStep = 36;
 
         public static ulong GetSeedFromString(ref string seedString)

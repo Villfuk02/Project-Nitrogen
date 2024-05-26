@@ -13,6 +13,7 @@ namespace BattleSimulation.Selection
     public class SelectionController : MonoBehaviour
     {
         LayerMask selectionMask_;
+        LayerMask selectionMaskNoAttackers_;
         LayerMask coarseTerrainMask_;
         [Header("References")]
         [SerializeField] Camera mainCamera;
@@ -36,16 +37,17 @@ namespace BattleSimulation.Selection
 
         void Awake()
         {
-            selectionMask_ = LayerMask.GetMask(LayerNames.SELECTION);
+            selectionMask_ = LayerMask.GetMask(LayerNames.SELECTION, LayerNames.SELECTION_ATTACKER);
+            selectionMaskNoAttackers_ = LayerMask.GetMask(LayerNames.SELECTION);
             coarseTerrainMask_ = LayerMask.GetMask(LayerNames.COARSE_TERRAIN);
         }
 
         void Update()
         {
-            UpdateHover();
             HandleNumberKeys();
             HandleRotation();
             HandleDeselect();
+            UpdateHover();
 
             if (placing != null && placing.Setup(hovered, rotation, hoverTilePosition, transform))
             {
@@ -97,7 +99,7 @@ namespace BattleSimulation.Selection
 
         void HandleDeselect()
         {
-            if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Escape))
+            if (Input.GetKeyUp(KeyCode.Escape))
             {
                 DeselectFromMenu();
                 DeselectInWorld();
@@ -155,7 +157,8 @@ namespace BattleSimulation.Selection
         {
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             Selectable newHover;
-            if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out RaycastHit selectionHit, 100, selectionMask_))
+            bool selectAttackers = placing == null || placing.selectAttackers;
+            if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out RaycastHit selectionHit, 100, selectAttackers ? selectionMask_ : selectionMaskNoAttackers_))
                 newHover = selectionHit.transform.GetComponent<Selectable>();
             else
                 newHover = null;

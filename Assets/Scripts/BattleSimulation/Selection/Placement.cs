@@ -10,6 +10,7 @@ namespace BattleSimulation.Selection
         public Blueprinted blueprinted;
         [Header("Settings")]
         public UnityEvent onPlaced;
+        public bool selectAttackers;
 
         public abstract bool Setup(Selectable? selected, int rotation, Vector3? pos, Transform defaultParent);
         public abstract bool IsValid();

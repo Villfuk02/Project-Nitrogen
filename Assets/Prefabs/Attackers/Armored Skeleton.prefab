@@ -5330,7 +5330,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6932994913997153550}
   - component: {fileID: 147592280580018349}
-  m_Layer: 7
+  m_Layer: 13
   m_Name: Selection (Attacker)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

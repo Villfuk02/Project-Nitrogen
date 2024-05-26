@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6579733137688061517}
   - component: {fileID: 1832952320954181}
-  m_Layer: 7
+  m_Layer: 13
   m_Name: Selection (Attacker)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

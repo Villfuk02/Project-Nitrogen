@@ -21,7 +21,7 @@ MonoBehaviour:
   materialCost: 0
   startingCooldown: 1
   cooldown: 2
-  range: 1.15
+  range: 1.2
   damage: 1
   damageType: 4
   interval: -1

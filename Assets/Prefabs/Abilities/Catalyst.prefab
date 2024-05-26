@@ -5184,6 +5184,7 @@ MonoBehaviour:
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
+  selectAttackers: 1
 --- !u!1 &8451412570879125624
 GameObject:
   m_ObjectHideFlags: 0

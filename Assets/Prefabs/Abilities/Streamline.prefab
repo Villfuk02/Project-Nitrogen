@@ -4960,6 +4960,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visuals: {fileID: 8451412570879125624}
+  lastBlueprintHash: 0
   costReduction: 2
   radiusIncrease: 0.0500001
   intervalDecrease: 0.0999999
@@ -5005,6 +5006,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  selectAttackers: 1
 --- !u!114 &1780129367635529681
 MonoBehaviour:
   m_ObjectHideFlags: 0

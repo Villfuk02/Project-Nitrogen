@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Game.Blueprint;
+using Utils;
 
 namespace Game.InfoPanel
 {
@@ -39,7 +40,9 @@ namespace Game.InfoPanel
 
             if (getCooldown_ is not null)
             {
-                if (getCooldown_() > 0 || blueprint.cooldown > 0)
+                if (getCooldown_() > 0)
+                    AppendStat($"Cooldown {getCooldown_()}[+CD]".Colored(TextUtils.CHANGED_COLOR));
+                else if (blueprint.cooldown > 0)
                     AppendStat($"Cooldown {getCooldown_()}[+CD]");
             }
             else if (!initialized || !blueprinted_.Placed)

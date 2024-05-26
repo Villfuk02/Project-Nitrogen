@@ -366,6 +366,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visuals: {fileID: 8451412570879125624}
+  lastBlueprintHash: 0
   targeting: {fileID: 3739967506293457857}
   onHit:
     m_PersistentCalls:
@@ -414,6 +415,7 @@ MonoBehaviour:
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
+  selectAttackers: 1
 --- !u!1 &7968616451989447347
 GameObject:
   m_ObjectHideFlags: 0

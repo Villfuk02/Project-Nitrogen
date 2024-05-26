@@ -41,20 +41,21 @@ namespace Game.Run
             hull = maxHull;
             blueprintRewards.Init(random_.NewSeed());
             if (!noStartingBlueprints)
-                blueprints = blueprintRewards.allBlueprints.Where(b => b.rarity == Blueprint.Blueprint.Rarity.Starter).ToList();
+                blueprints = blueprintRewards.allBlueprints.Where(b => b.rarity == Blueprint.Blueprint.Rarity.Starter).OrderBy(b => (b.type, b.materialCost, b.energyCost)).ToList();
         }
 
         bool DamageHull(ref int dmg)
         {
             if (dmg <= 0)
                 return false;
+            var prevHull = hull;
             hull -= dmg;
 
 
-            if (hull <= 0)
+            if (hull <= 0 && prevHull > 0)
                 RunEvents.defeat.Invoke();
 
-            else if (hull <= 5 && hull + dmg > 5)
+            else if (hull <= 5 && prevHull > 5)
                 SoundController.PlaySound(SoundController.Sound.Siren, 1, 1, 0, null, true);
             else
                 SoundController.PlaySound(SoundController.Sound.HullLoss, 0.9f, 1, 0.05f, null, true);

@@ -1,4 +1,3 @@
-
 namespace Utils
 {
     public static class LayerNames
@@ -15,5 +14,6 @@ namespace Utils
         public const string ATTACKER_TARGET = "AttackerTarget";
         public const string COARSE_OBSTACLE = "CoarseObstacle";
         public const string PROJECTILE = "Projectile";
+        public const string SELECTION_ATTACKER = "SelectionAttacker";
     }
 }
