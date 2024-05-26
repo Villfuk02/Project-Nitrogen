@@ -164,14 +164,14 @@ namespace BattleSimulation.Control
             a.onReachedHub.AddListener(BattleController.AttackerReachedHub);
         }
 
-        public void SpawnRelative(Attacker attacker, AttackerStats stats, float progressOffset)
+        public void SpawnRelative(Attacker parent, AttackerStats stats, float progressOffset)
         {
             attackersLeft++;
             Attacker a = Instantiate(stats.prefab, transform).GetComponent<Attacker>();
-            a.Init(stats.Clone(), attacker.startPosition, attacker.firstNode, attacker.startPathSplitIndex);
+            a.Init(stats.Clone(), parent.startPosition, parent.firstNode, parent.startPathSplitIndex);
             a.onRemoved.AddListener(AttackerRemoved);
             a.onReachedHub.AddListener(BattleController.AttackerReachedHub);
-            float progress = World.WorldData.World.data.tiles[attacker.firstNode].dist + 1 - attacker.GetDistanceToHub();
+            float progress = World.WorldData.World.data.tiles[parent.firstNode].dist + 1 - parent.GetDistanceToHub();
             a.AddPathProgress(progress + progressOffset, ++currentIndexes[^1]);
         }
 

@@ -62,7 +62,11 @@ namespace BattleSimulation.Selection
         void HandleDelete()
         {
             if (Input.GetKeyDown(KeyCode.Delete) && selected != null && selected.tile != null && selected.tile.Building != null && selected.tile.Building is { permanent: false } b)
+            {
                 b.Delete();
+                ButtonSounds.Click();
+            }
+
             if (isSelectedBuilding_ && selected != null && selected.tile != null && selected.tile.Building == null)
                 DeselectInWorld();
         }

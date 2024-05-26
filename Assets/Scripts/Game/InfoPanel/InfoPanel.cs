@@ -5,6 +5,7 @@ using BattleSimulation.Targeting;
 using BattleSimulation.Towers;
 using BattleSimulation.World;
 using Game.Blueprint;
+using Game.Shared;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -53,6 +54,15 @@ namespace Game.InfoPanel
             {
                 rebuildLayout = false;
                 LayoutRebuilder.ForceRebuildLayoutImmediate(root);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Tab) && allowInteraction && current_?.blueprinted is Tower { Placed: true } t && t.targeting.CanChangePriority)
+            {
+                if (!Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.RightControl) && !Input.GetKey(KeyCode.LeftCommand) && !Input.GetKey(KeyCode.RightCommand))
+                    NextPriority();
+                else
+                    PrevPriority();
+                ButtonSounds.Click();
             }
 
             if (!visible || current_?.descriptionProvider == null || !current_.descriptionProvider.HasDescriptionChanged(out var desc))

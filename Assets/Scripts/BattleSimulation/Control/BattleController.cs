@@ -169,7 +169,7 @@ namespace BattleSimulation.Control
         bool Win()
         {
             won = true;
-            SoundController.PlaySound(SoundController.Sound.Victory, 0.35f, 1, 0, null, true);
+            SoundController.PlaySound(SoundController.Sound.Victory, 0.3f, 1, 0, null, true);
             return true;
         }
 

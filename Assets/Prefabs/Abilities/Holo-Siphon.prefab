@@ -431,7 +431,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visuals: {fileID: 475032649205546438}
   lastBlueprintHash: 0
-  rotateBack: []
+  rotateBack:
+  - {fileID: 475032647605434327}
   permanent: 0
   targeting: {fileID: 475032647605434328}
   retargetTimer: 0
@@ -454,6 +455,7 @@ MonoBehaviour:
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
+  selectAttackers: 0
   selectedTile: {fileID: 0}
   onSlants: 1
   allowedObstacles: 00000000020000000400000005000000

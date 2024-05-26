@@ -1,6 +1,6 @@
-using BattleSimulation.Attackers;
 using System.Collections.Generic;
 using System.Linq;
+using BattleSimulation.Attackers;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -36,6 +36,7 @@ namespace BattleSimulation.Targeting
                 visibilityMask = LayerMask.GetMask(LayerNames.COARSE_TERRAIN, LayerNames.COARSE_OBSTACLE);
                 layerMaskInit_ = true;
             }
+
             InitComponents();
             targetingComponent.SetParent(this);
         }
@@ -57,6 +58,7 @@ namespace BattleSimulation.Targeting
                 Retarget();
             onTargetFound.Invoke(t);
         }
+
         public void TargetLost(Attacker t)
         {
             inRange.Remove(t);
@@ -64,11 +66,13 @@ namespace BattleSimulation.Targeting
                 DropCurrentTarget();
             onTargetLost.Invoke(t);
         }
+
         public void DropCurrentTarget()
         {
             target = null;
             Retarget();
         }
+
         bool IsValidTarget(Attacker t)
         {
             return t != null && !t.IsDead && IsValidTargetPosition(t.target.position);
@@ -110,8 +114,19 @@ namespace BattleSimulation.Targeting
             return a != null && inRange.Contains(a) && IsValidTarget(a);
         }
 
-        public void NextPriority() => selectedPriority = (selectedPriority + 1) % Priorities.Length;
-        public void PrevPriority() => selectedPriority = MathUtils.Mod(selectedPriority - 1, Priorities.Length);
+        public void NextPriority()
+        {
+            if (!CanChangePriority)
+                return;
+            selectedPriority = (selectedPriority + 1) % Priorities.Length;
+        }
+
+        public void PrevPriority()
+        {
+            if (!CanChangePriority)
+                return;
+            selectedPriority = MathUtils.Mod(selectedPriority - 1, Priorities.Length);
+        }
 
         void OnDrawGizmosSelected()
         {
@@ -123,7 +138,5 @@ namespace BattleSimulation.Targeting
                 Gizmos.DrawLine(transform.position, attacker.target.position);
             }
         }
-
     }
 }
-
