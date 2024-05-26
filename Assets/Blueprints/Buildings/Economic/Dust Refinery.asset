@@ -33,7 +33,6 @@ MonoBehaviour:
   materialProduction: 5
   energyProduction: -1
   statsToDisplay: []
-  statsToDisplayWhenUninitialized: []
   descriptions:
   - Produces [PRO] after every wave.
   - Cannot be placed on slants and adjacent to another [NAM].

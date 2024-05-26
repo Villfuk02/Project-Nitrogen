@@ -340,14 +340,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visuals: {fileID: 475032649205546438}
+  lastBlueprintHash: 0
   rotateBack:
   - {fileID: 475032647605434327}
   - {fileID: 3693982639042523578}
   permanent: 0
   targeting: {fileID: 475032647605434328}
   speedReduction: 0.25
-  damageIncrease: 0.25
-  damageType: 16
+  damageIncrease: 0.5
+  damageType: 4
 --- !u!114 &6429560897734910944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -364,6 +365,7 @@ MonoBehaviour:
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
+  selectAttackers: 0
   selectedTile: {fileID: 0}
   onSlants: 1
   allowedObstacles: 00000000

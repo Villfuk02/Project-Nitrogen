@@ -170,9 +170,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visuals: {fileID: 475032649205546438}
+  lastBlueprintHash: 0
   rotateBack: []
   permanent: 0
-  rangeIncrease: 0.2
+  rangeIncrease: 0.3
 --- !u!114 &7630465577204664705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,6 +190,7 @@ MonoBehaviour:
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
+  selectAttackers: 0
   selectedTile: {fileID: 0}
   onSlants: 1
 --- !u!114 &5607050298894656141

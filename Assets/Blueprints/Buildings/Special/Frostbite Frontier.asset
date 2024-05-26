@@ -18,7 +18,7 @@ MonoBehaviour:
   rarity: 3
   type: 2
   energyCost: 0
-  materialCost: 30
+  materialCost: 25
   startingCooldown: 0
   cooldown: 0
   range: 2.1
@@ -35,5 +35,5 @@ MonoBehaviour:
   statsToDisplay:
   - '[$RNG]'
   descriptions:
-  - Freezes attackers in range, making them move 25% slower and take 25% more [#DMT-ENE]Energy
+  - Freezes attackers in range, making them move 25% slower and take 50% more [#DMT-ENE]Energy
     damage.

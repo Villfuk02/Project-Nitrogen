@@ -47,22 +47,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkLineOfSight: 0
-  availablePriorities: 0
+  availablePriorities: -1
   onTargetFound:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 704491585352354903}
-        m_TargetAssemblyTypeName: BattleSimulation.Towers.StaticSparker, BattleSim.Towers
-        m_MethodName: Spark
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   onTargetLost:
     m_PersistentCalls:
       m_Calls: []
@@ -259,7 +247,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sparkPrefab: {fileID: 1910604118470966330, guid: 3bdd2d1cdacd4834592dbbb8e9059d58, type: 3}
-  sparkOrigin: {fileID: 7285897790606572092}
   sparkDuration: 0.15
   sparkColor:
     serializedVersion: 2
@@ -290,7 +277,7 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 7
     m_NumAlphaKeys: 2
-  vertices: 4
+  vertices: 8
 --- !u!1 &475032649215164951
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,10 +328,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visuals: {fileID: 475032649205546438}
+  lastBlueprintHash: 0
   rotateBack:
   - {fileID: 475032647605434327}
   permanent: 0
   targeting: {fileID: 475032647605434328}
+  maxBranches: 3
   onShoot:
     m_PersistentCalls:
       m_Calls:
@@ -360,6 +349,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  shotTimer: 0
 --- !u!114 &6429560897734910944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -376,6 +366,7 @@ MonoBehaviour:
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
+  selectAttackers: 0
   selectedTile: {fileID: 0}
   onSlants: 1
   allowedObstacles: 00000000

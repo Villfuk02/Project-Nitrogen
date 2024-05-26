@@ -18,7 +18,7 @@ MonoBehaviour:
   rarity: 2
   type: 2
   energyCost: 0
-  materialCost: 15
+  materialCost: 10
   startingCooldown: 0
   cooldown: 0
   range: -1
@@ -34,4 +34,4 @@ MonoBehaviour:
   energyProduction: -1
   statsToDisplay: []
   descriptions:
-  - Increases the range of adjacent buildings by [#RNG]20%.
+  - Increases the range of adjacent buildings by [#RNG]30%.

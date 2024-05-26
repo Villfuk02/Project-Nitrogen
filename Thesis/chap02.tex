@@ -607,12 +607,13 @@ Each building costs some amount of \emph{materials} to build.
 The player will be able to delete a building at any time, mainly to make way for other buildings.
 
 There are three building types defined by their primary function: \emph{towers}, \emph{economic} and \emph{special}.
-Towers kill or otherwise impede attackers, and economic buildings produce resources.
-The next section goes into more detail.
+Towers deal damage and kill attackers, and they are described in more detail in the next section.
+Economic buildings produce resources, often at the end of every wave, just in time for the player to use them to build more buildings.
+Some economic buildings produce resources at other times, often as a reaction to some other event, for example an attacker dying.
+
 Special buildings are the buildings that don't fit in either category.
-They usually have a unique ability, for example for increasing the effectiveness of other buildings.
-Economic buildings often produce resources at the end of every wave, just in time for the player to use them to build more buildings.
-However, some economic buildings produce resources at other times, often as a reaction to some other event, for example an attacker dying.
+They have a unique ability that usually increases the effectiveness of other buildings.
+One special building could make economic buildings produce more, another could increase your towers' range, yet another might slow attackers down.
 
 One notable special building is the \emph{Hub}, since the player starts each level with one for free, and they cannot build more.
 The goal of the attackers is to reach the \emph{Hub}, and when they do, the player loses some \emph{hull} (see section~\ref{sec:design-hull}).
@@ -621,7 +622,7 @@ These resources are further described in their respective sections.
 
 \subsection{Towers}
 
-Towers are the buildings which kill or otherwise impede attackers.
+Towers are the buildings which deal damage to attackers in order to kill them.
 There are many properties that distinguish towers from each other.
 There is a lot of freedom to allow for many unique designs.
 Combining towers with different properties is supposed to be a fun and interesting part of the game.
@@ -756,6 +757,8 @@ Another option would be to have the player start each battle with full hull, but
         \item The next $x$ projectiles an \textbf{Electrified} tower shoots deal additional \emph{energy} damage, possibly applied by a support building.
     \end{itemize}
 \end{notindemo}
+
+\section{Time controls}
 
 \section{Battle Graphical User Interface}
 

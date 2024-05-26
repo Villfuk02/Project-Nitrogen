@@ -12,12 +12,9 @@
 - [x] highlight cooldown
 - [x] fix X behavior
 - [x] spacebar bug
-- [ ] rewrite definition of towers and special buildings
-- [ ] design mention time controls
-- [ ] add notes to ch3
-    - [ ] separation of blueprints from behavior
-    - [ ] sounds
 - [ ] rewrite path branches of length 4
+- [ ] reorganize ch2
+- [ ] initialize layermasks
 ## implementation 
 - [x] limit wave generator to pull extras max once per wave
 - [x] also make early waves shorter

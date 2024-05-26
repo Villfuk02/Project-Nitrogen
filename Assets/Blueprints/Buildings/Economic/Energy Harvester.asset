@@ -31,7 +31,7 @@ MonoBehaviour:
   durationWaves: -1
   fuelProduction: -1
   materialProduction: -1
-  energyProduction: 20
+  energyProduction: 40
   statsToDisplay: []
   descriptions:
   - Whenever you gain [#MAT]Materials, produces [ENE]% as much Energy.

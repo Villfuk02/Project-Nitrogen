@@ -10,7 +10,6 @@ namespace BattleVisuals.Towers
     {
         [Header("References")]
         [SerializeField] GameObject sparkPrefab;
-        [SerializeField] Transform sparkOrigin;
         [Header("Settings")]
         [SerializeField] float sparkDuration;
         [SerializeField] Gradient sparkColor;
@@ -52,12 +51,12 @@ namespace BattleVisuals.Towers
         }
 
 
-        public void Spark(Attacker a)
+        public void Spark((Transform origin, Attacker a) param)
         {
             var spark = Instantiate(sparkPrefab, transform).GetComponent<LineRenderer>();
             var positions = new Vector3[vertices];
-            var origin = sparkOrigin.position;
-            var target = a.target.position;
+            var origin = param.origin.position;
+            var target = param.a.target.position;
             for (int i = 0; i < vertices; i++)
             {
                 positions[i] = Vector3.Lerp(origin, target, i / (float)(vertices - 1));

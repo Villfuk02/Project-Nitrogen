@@ -198,6 +198,7 @@ namespace BattleSimulation.Selection
             isSelectedBuilding_ = select.tile != null && select.tile.Building != null;
 
             DisplayInfoSelectedInWorld(select, false);
+            ButtonSounds.Click();
         }
 
         void DisplayInfoSelectedInWorld(Selectable select, bool hover)

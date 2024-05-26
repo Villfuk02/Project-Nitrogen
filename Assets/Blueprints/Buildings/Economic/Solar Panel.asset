@@ -31,9 +31,8 @@ MonoBehaviour:
   durationWaves: -1
   fuelProduction: -1
   materialProduction: -1
-  energyProduction: 1
+  energyProduction: 2
   statsToDisplay: []
-  statsToDisplayWhenUninitialized: []
   descriptions:
   - Cannot be paced on slanted tiles.
   - 'The higher it''s placed, the more [#ENE] it produces after every wave: [PRO]
