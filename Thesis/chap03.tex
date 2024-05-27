@@ -75,14 +75,13 @@ From here we took the parameters for our LCG implementation.
 
 \section{Path Generation}
 
-\xxx{I should probably write the design part first so I can build on it here}
 - how to make paths with the required qualities?
 
 \subsection{Initial Paths}
 
-- generate fixed number of paths with given lengths
+- inputs: hub position, path count, path lengths
 
-- these are just plans to ensure paths of required length exist
+- generate fixed number of paths with given lengths
 
 - first pick *start points* from along the edges of the level (all paths end in the center of the level)
 
@@ -105,12 +104,6 @@ From here we took the parameters for our LCG implementation.
 - guaranteed shortest length
 
 - DFS, find all branches, but continue from bottom of the stack when a paths is found
-
-\subsection{Path Visualization}
-
-- line renderer \checkmark
-
-- why does it look this way
 
 \section{Terrain Generation}
 
@@ -205,9 +198,13 @@ From here we took the parameters for our LCG implementation.
 
 - in the end, tiles with less entropy are preferred
 
+- provide data
+
 - Limited backtracking depth
 
 - usually when more backtracking is required, the search would take too long and it's faster to restart the algorithm
+
+- provide data
 
 \section{Resources and Obstacles}
 
@@ -217,11 +214,11 @@ From here we took the parameters for our LCG implementation.
 
 - just rocks for variety - the player cant build on these
 
-- set up as a few stages
+- set up as a few layers
 
 - each stage has:
 
-- one type of blocker (e.g. ore, small rocks, big rocks)
+- one or more types of blocker (e.g. ore, small rocks, big rocks)
 
 - *min* and *max* amounts
 
@@ -229,7 +226,7 @@ From here we took the parameters for our LCG implementation.
 
 - whether they can be placed on slanted tiles
 
-- which Terrain Types they can be on (currently there is only one)
+- which surface Types they can be on (currently there is only one)
 
 - *forces* - effect on chance based on already placed blockers
 
@@ -247,7 +244,7 @@ From here we took the parameters for our LCG implementation.
 
 - if there are max blockers (placed in this stage), end the stage
 
-- scattering
+- scattering models
 
 - unity physics engine X
 
@@ -313,6 +310,8 @@ For the blockers, I didn't want repetitive obstacle models, so they are generate
 
 - fit such that as much of buffer gets used without going over
 
+- branching
+
 \section{Simulation}
 
 - use fixed updates for game logic
@@ -348,6 +347,8 @@ For the blockers, I didn't want repetitive obstacle models, so they are generate
 - possibly ensure a trajectory
 
 - preferred target (configurable)
+
+- composite colliders
 
 \section{Range Visualization}
 
@@ -399,7 +400,7 @@ For the blockers, I didn't want repetitive obstacle models, so they are generate
 
 - interpolation could work with more than one channel and without mipmaps
 
-\section{Game Commnds}
+\section{Game Commands}
 
 - we want various components to modify how other components function
 

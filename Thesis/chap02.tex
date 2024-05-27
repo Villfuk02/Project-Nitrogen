@@ -535,8 +535,9 @@ The player cannot place towers on paths, so these paths greatly limit the player
     \label{fig:path-spacing}
 \end{center}
 
-In relation to this, we will also ban all path branches that join back to the original path after less than 4 path segments.
-They necessarily produce paths right next to each other, as illustrated on figure~\ref{fig:too-short-path-splits}, which don't express the properties that make path splits interesting, and just take up more space unnecessarily.
+Similarly, we don't want to produce side branches that just take up more space, but don't deviate meaningfully from the original path, like on figure \ref{fig:bad-path-splits}.
+To make this desire into a rule, we can define it in the following way:
+Every side branch must go through at least one tile that is not adjacent (by an edge or by a corner) to any already existing path.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -545,17 +546,14 @@ They necessarily produce paths right next to each other, as illustrated on figur
                         markings,
                         mark=between positions 0.25cm and -0.01cm step 0.5cm with {\arrow{>}};
                     }]
-            \draw[postaction={decorate},shift={(0.5,0.5)}] (0,2)--(2,2)--(2,1)--(5,1)--(5,2)--(6,2)--(6,1)--(7,1)--(7,2)--(8,2);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (0,2)--(2,2)--(2,1)--(7,1)--(7,2)--(8,2)--(8,1)--(9,1)--(9,2)--(10,2);
             \draw[postaction={decorate},shift={(0.5,0.5)}] (1,2)--(1,1)--(2,1);
-            \draw[postaction={decorate},shift={(0.5,0.5)}] (3,1)--(3,2)--(5,2);
-            \draw[postaction={decorate},shift={(0.5,0.5)}] (6,2)--(6,3)--(7,3)--(7,2);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (3,1)--(3,2)--(7,2);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (8,2)--(8,3)--(9,3)--(9,2);
         \end{scope}
-        \draw[blue] (2,2) node{\textbf{2}};
-        \draw[blue] (4.5,2) node{\textbf{3}};
-        \draw[blue] (7,2.5) node{\textbf{3}};
     \end{tikzpicture}
-    \caption{All the path splits which join back after less than 4 path segments.}
-    \label{fig:too-short-path-splits}
+    \caption{A path with undesirable side branches.}
+    \label{fig:bad-path-splits}
 \end{center}
 
 To summarize, these are the rules the paths should follow:
@@ -564,10 +562,10 @@ To summarize, these are the rules the paths should follow:
     \item Paths start just outside the playable portion of the world, and there can be one or more path starts in each level.
     \item Paths can split or join.
     \item All paths must end on the tile with the \emph{Hub}, no other dead ends can exist.
-    \item Each tile on a path has to be the same distance from the \emph{Hub}, no matter which path an attacker would take.
+    \item Each tile with a path going through it has to be the same distance from the \emph{Hub} no matter which path an attacker would take.
     \item Paths should be spread throughout the playable world, not bunched up.
     \item Paths right next to each other and sharp U-turns (see figure~\ref{fig:path-spacing}) should be rare.
-    \item No path branches can join back to the original path after less than 4 path segments.
+    \item Every side branch must go through at least one tile that is not adjacent to any already existing path.
 \end{itemize}
 
 \subsection{Attacker Types}\label{sec:attacker-types}
@@ -758,7 +756,35 @@ Another option would be to have the player start each battle with full hull, but
     \end{itemize}
 \end{notindemo}
 
-\section{Time controls}
+\subsection{Time controls}
+
+- pause, speed up
+
+- what this means for the simulation
+
+- what this means for the animations
+
+\section{Blueprints}
+
+- separation of stats and behavior - why?
+
+- what they represent
+
+- limited number
+
+- cost and cooldowns
+
+- rarities
+
+- how are they obtained
+
+- make them unique
+
+- break the rules (build on paths, ability to make buildings ...)
+
+- lenticular design
+
+- blueprint upgrades
 
 \section{Battle Graphical User Interface}
 
@@ -796,29 +822,9 @@ Another option would be to have the player start each battle with full hull, but
 
 - zoom to look closely, rotate so the terrain doesn't hide stuff
 
-\section{Blueprints}
+\section{Blueprint acquisition screen}
 
-- separate blueprint menu and blueprint design
-
-- what they represent
-
-- limited number
-
-- cost and cooldowns
-
-- rarities
-
-- how are they obtained
-
-- make them unique
-
-- break the rules (build on paths, ability to make buildings ...)
-
-- lenticular design
-
-- blueprint upgrades
-
-\subsection{Blueprint acquisition screen}
+\section{Demo Tutorial}
 
 \section{Future Features}
 

@@ -24,7 +24,7 @@ MonoBehaviour:
   range: 3.3
   damage: 4
   damageType: 4
-  interval: 32
+  interval: 34
   radius: 2.2
   delay: -1
   durationTicks: -1

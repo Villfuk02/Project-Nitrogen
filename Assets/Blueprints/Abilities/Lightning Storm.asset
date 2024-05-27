@@ -24,7 +24,7 @@ MonoBehaviour:
   range: -1
   damage: 25
   damageType: 4
-  interval: 30
+  interval: 20
   radius: 2.5
   delay: -1
   durationTicks: -1
@@ -37,4 +37,4 @@ MonoBehaviour:
   - '[$DMG]'
   - '[$INT]'
   descriptions:
-  - Strikes 4 times, each time hitting a random attacker within radius.
+  - Strikes 6 times, each time hitting a random attacker within radius.

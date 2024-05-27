@@ -2,6 +2,9 @@
 - název práce
 - název hry, a kde ho mám použít
 - metadata hry
+- co s playtestem teda??
+    - co tam mám napsat
+    - kolik chci lidí
 
 ## till next metting
 - [x] implement
@@ -13,9 +16,10 @@
 - [x] fix X behavior
 - [x] spacebar bug
 - [x] initialize layermasks
-- [ ] rewrite path branches of length 4
-- [ ] reorganize ch2
-- [ ] write some ch3?
+- [x] rewrite path branches of length 4
+- [x] reorganize ch2
+- [x] targeting alignment
+- [x] script execution order
 ## implementation 
 - [x] limit wave generator to pull extras max once per wave
 - [x] also make early waves shorter

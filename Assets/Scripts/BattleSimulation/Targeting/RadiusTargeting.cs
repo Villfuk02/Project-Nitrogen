@@ -18,7 +18,7 @@ namespace BattleSimulation.Targeting
             targetingComponent = new IntersectionTargetingComponent(
                 radiusTrigger.GetComponent<TargetingCollider>(),
                 heightTrigger.GetComponent<TargetingCollider>()
-                );
+            );
         }
 
         public override void SetRange(float range)
@@ -28,11 +28,10 @@ namespace BattleSimulation.Targeting
             radiusTrigger.radius = range;
             radiusTrigger.height = 10 + range * 2;
 
-            float startHeight = canTargetDownwards ? -5 : -0.25f;
-            float endHeight = canTargetUpwards ? 5 : 0.25f;
+            float startHeight = canTargetDownwards ? -5 : 0.1f;
+            float endHeight = canTargetUpwards ? 5 : 0.6f;
             heightTrigger.size = new(2 * range, endHeight - startHeight, 2 * range);
             heightTrigger.center = (startHeight + endHeight) * 0.5f * Vector3.up;
         }
     }
 }
-

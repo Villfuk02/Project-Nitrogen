@@ -7,6 +7,8 @@ namespace BattleSimulation.Towers
 {
     public class StaticSparker : Tower
     {
+        [Header("References")]
+        [SerializeField] Transform sparkOrigin;
         [Header("Settings")]
         [SerializeField] int maxBranches;
         [SerializeField] UnityEvent<(Transform, Attacker)> onShoot;
@@ -34,7 +36,7 @@ namespace BattleSimulation.Towers
             shotTimer = Blueprint.interval;
             SoundController.PlaySound(SoundController.Sound.Zap, 0.4f, 1.2f, 0.2f, transform.position, false);
             var damage = Blueprint.damage;
-            ShootOne(targeting.transform, primaryTarget, damage);
+            ShootOne(sparkOrigin, primaryTarget, damage);
 
             var potentialSecondaryHits = Physics.SphereCastAll(primaryTarget.target.position + Vector3.down * 5, Blueprint.radius, Vector3.up, 10, LayerMasks.attackerTargets);
             int found = 0;
