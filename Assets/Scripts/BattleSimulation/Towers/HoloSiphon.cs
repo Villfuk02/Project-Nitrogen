@@ -51,7 +51,6 @@ namespace BattleSimulation.Towers
             if (retargetTimer > 0)
                 return;
 
-            targeting.Retarget();
             selectedTarget = targeting.target;
             chargeTimer = 0;
             if (selectedTarget != null)

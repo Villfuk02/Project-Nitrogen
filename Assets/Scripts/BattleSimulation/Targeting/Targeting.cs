@@ -24,7 +24,8 @@ namespace BattleSimulation.Targeting
         [SerializeField] UnityEvent<Attacker> onTargetLost;
         [Header("Runtime values")]
         public Attacker target;
-        protected HashSet<Attacker> inRange = new();
+        protected HashSet<Attacker> attackersInRange = new();
+        protected List<Attacker> partiallySortedAttackersInRange = new();
 
         void Awake()
         {
@@ -37,7 +38,7 @@ namespace BattleSimulation.Targeting
 
         void FixedUpdate()
         {
-            if (target == null && inRange.Count > 0)
+            if (attackersInRange.Count > 0)
                 Retarget();
             else if (!IsValidTarget(target))
                 DropCurrentTarget();
@@ -45,7 +46,8 @@ namespace BattleSimulation.Targeting
 
         public void TargetFound(Attacker t)
         {
-            inRange.Add(t);
+            if (attackersInRange.Add(t))
+                partiallySortedAttackersInRange.Add(t);
             if (target == null)
                 Retarget();
             onTargetFound.Invoke(t);
@@ -53,7 +55,7 @@ namespace BattleSimulation.Targeting
 
         public void TargetLost(Attacker t)
         {
-            inRange.Remove(t);
+            attackersInRange.Remove(t);
             if (target == t)
                 DropCurrentTarget();
             onTargetLost.Invoke(t);
@@ -77,11 +79,8 @@ namespace BattleSimulation.Targeting
 
         public void Retarget()
         {
-            var validTargets = GetValidTargets().EmptyToNull();
-            if (Priorities.Length == 0)
-                target = validTargets?.First();
-            else
-                target = validTargets?.ArgMax(a => Priorities[selectedPriority].GetPriority(a, transform.position));
+            UpdatePartiallySortedAttackers();
+            target = partiallySortedAttackersInRange.FirstOrDefault(IsValidTarget);
         }
 
         bool HasLineOfSight(Vector3 pos)
@@ -96,14 +95,30 @@ namespace BattleSimulation.Targeting
 
         public IEnumerable<Attacker> GetValidTargets()
         {
-            return inRange.Where(a => a != null && IsValidTarget(a));
+            return attackersInRange.Where(a => a != null && IsValidTarget(a));
         }
 
-        public bool IsAmongTargets(Attacker a) => a != null && IsValidTarget(a) && inRange.Contains(a);
+        public bool IsAmongTargets(Attacker a) => a != null && IsValidTarget(a) && attackersInRange.Contains(a);
 
         public bool IsInRangeAndValid(Attacker a)
         {
-            return a != null && inRange.Contains(a) && IsValidTarget(a);
+            return a != null && attackersInRange.Contains(a) && IsValidTarget(a);
+        }
+
+        (float, float, uint) CalculateAttackerPriority(Attacker a)
+        {
+            if (Priorities.Length == 0)
+                return (0, 0, a.startPathSplitIndex);
+            var (x, y) = Priorities[selectedPriority].GetPriority(a, transform.position);
+            return (x, y, a.pathSplitIndex);
+        }
+
+        void UpdatePartiallySortedAttackers()
+        {
+            partiallySortedAttackersInRange = partiallySortedAttackersInRange
+                .Where(a => a != null && attackersInRange.Contains(a))
+                .OrderBy(CalculateAttackerPriority)
+                .ToList();
         }
 
         public void NextPriority()
@@ -122,7 +137,7 @@ namespace BattleSimulation.Targeting
 
         void OnDrawGizmosSelected()
         {
-            foreach (Attacker attacker in inRange)
+            foreach (Attacker attacker in attackersInRange)
             {
                 if (!IsValidTarget(attacker))
                     continue;

@@ -27,8 +27,6 @@ namespace BattleSimulation.Towers
             if (shotTimer > 0)
                 return;
 
-            if (targeting.target == null)
-                targeting.Retarget();
             if (targeting.target != null)
                 Shoot(targeting.target);
         }
