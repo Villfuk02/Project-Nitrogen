@@ -2,7 +2,8 @@
     "name": "BattleVis.Camera",
     "rootNamespace": "",
     "references": [
-        "GUID:c16294785e7a44148be2e5f8661f54ad"
+        "GUID:c16294785e7a44148be2e5f8661f54ad",
+        "GUID:c71f0acfdbb5ac04c90893d9ffaba887"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

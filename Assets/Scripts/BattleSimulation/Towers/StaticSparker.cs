@@ -2,25 +2,16 @@ using BattleSimulation.Attackers;
 using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
-using Utils;
 
 namespace BattleSimulation.Towers
 {
     public class StaticSparker : Tower
     {
-        static LayerMask attackerMask_;
-
         [Header("Settings")]
         [SerializeField] int maxBranches;
         [SerializeField] UnityEvent<(Transform, Attacker)> onShoot;
         [Header("Runtime variables")]
         [SerializeField] protected int shotTimer;
-
-        void Awake()
-        {
-            if (attackerMask_ == 0)
-                attackerMask_ = LayerMask.GetMask(LayerNames.ATTACKER_TARGET);
-        }
 
         protected override void FixedUpdateInternal()
         {
@@ -45,7 +36,7 @@ namespace BattleSimulation.Towers
             var damage = Blueprint.damage;
             ShootOne(targeting.transform, primaryTarget, damage);
 
-            var potentialSecondaryHits = Physics.SphereCastAll(primaryTarget.target.position + Vector3.down * 5, Blueprint.radius, Vector3.up, 10, attackerMask_);
+            var potentialSecondaryHits = Physics.SphereCastAll(primaryTarget.target.position + Vector3.down * 5, Blueprint.radius, Vector3.up, 10, LayerMasks.attackerTargets);
             int found = 0;
             for (int upperBound = potentialSecondaryHits.Length; upperBound > 0; upperBound--)
             {
@@ -55,7 +46,7 @@ namespace BattleSimulation.Towers
                 var potentialHit = potentialSecondaryHits[r];
                 (potentialSecondaryHits[r], potentialSecondaryHits[upperBound - 1]) = (potentialSecondaryHits[upperBound - 1], potentialSecondaryHits[r]);
                 Attacker a = potentialHit.rigidbody.GetComponent<Attacker>();
-                if (a == primaryTarget)
+                if (a.IsDead || a == primaryTarget)
                     continue;
                 found++;
                 ShootOne(primaryTarget.target, a, damage / 2);

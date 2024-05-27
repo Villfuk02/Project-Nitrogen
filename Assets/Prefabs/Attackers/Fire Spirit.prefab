@@ -5295,7 +5295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attacker: {fileID: 4503194796023517280}
   damageType: 4
-  fractionReduction: 0.75
+  fractionReduction: 0.5
   flatReduction: 0
 --- !u!65 &8874815309850050976
 BoxCollider:

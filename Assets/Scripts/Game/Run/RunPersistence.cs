@@ -56,9 +56,9 @@ namespace Game.Run
                 RunEvents.defeat.Invoke();
 
             else if (hull <= 5 && prevHull > 5)
-                SoundController.PlaySound(SoundController.Sound.Siren, 1, 1, 0, null, true);
-            else
-                SoundController.PlaySound(SoundController.Sound.HullLoss, 0.9f, 1, 0.05f, null, true);
+                SoundController.PlaySound(SoundController.Sound.Siren, 0.3f, 1, 0, null, true);
+            else if (hull > 0)
+                SoundController.PlaySound(SoundController.Sound.HullLoss, 0.4f, 1, 0.05f, null, true);
 
             return true;
         }

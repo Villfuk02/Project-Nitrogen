@@ -31,7 +31,7 @@ MonoBehaviour:
   durationWaves: -1
   fuelProduction: -1
   materialProduction: -1
-  energyProduction: 3
+  energyProduction: 5
   statsToDisplay:
   - '[$RNG]'
   - '[$DMG]'

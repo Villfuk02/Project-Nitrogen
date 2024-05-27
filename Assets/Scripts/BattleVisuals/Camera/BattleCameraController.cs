@@ -1,12 +1,11 @@
+using Game.Shared;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Utils;
 
 namespace BattleVisuals.Camera
 {
     public class BattleCameraController : MonoBehaviour
     {
-        LayerMask coarseTerrainMask_;
         [Header("References")]
         [SerializeField] BattleCameraTransform mainCamera;
         [SerializeField] BattleCameraTransform targetCamera;
@@ -30,11 +29,6 @@ namespace BattleVisuals.Camera
         [SerializeField] float rotationVelocity;
         [SerializeField] bool rotationDragging;
         [SerializeField] float rotationDragStartPos;
-
-        void Awake()
-        {
-            coarseTerrainMask_ = LayerMask.GetMask(LayerNames.COARSE_TERRAIN);
-        }
 
         void Start()
         {
@@ -209,7 +203,7 @@ namespace BattleVisuals.Camera
 
             if (float.IsNaN(intersectionPlaneHeight))
             {
-                if (Physics.Raycast(ray, out RaycastHit selectionHit, 100, coarseTerrainMask_))
+                if (Physics.Raycast(ray, out RaycastHit selectionHit, 100, LayerMasks.coarseTerrain))
                     return selectionHit.point;
                 intersectionPlaneHeight = 0;
             }

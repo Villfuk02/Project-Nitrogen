@@ -1,3 +1,4 @@
+using Game.Shared;
 using UnityEngine;
 
 namespace BattleSimulation.Targeting
@@ -26,10 +27,8 @@ namespace BattleSimulation.Targeting
             {
                 var position = transform.position;
                 Vector3 dir = transform.rotation * Vector3.forward;
-                if (Physics.Raycast(position, dir, out RaycastHit hit, range - forwardsOffset, visibilityMask))
-                {
+                if (Physics.Raycast(position, dir, out RaycastHit hit, range - forwardsOffset, LayerMasks.coarseTerrainAndObstacles))
                     range = hit.distance + forwardsOffset;
-                }
             }
 
             currentRange = range;

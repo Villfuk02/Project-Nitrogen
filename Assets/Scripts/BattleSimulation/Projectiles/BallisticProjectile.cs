@@ -1,4 +1,5 @@
 using BattleSimulation.Attackers;
+using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -7,7 +8,6 @@ namespace BattleSimulation.Projectiles
 {
     public class BallisticProjectile : Projectile
     {
-        static LayerMask attackerMask_;
         [Header("Settings")]
         public UnityEvent onImpact;
         public float timeToLiveAfterImpact;
@@ -15,12 +15,6 @@ namespace BattleSimulation.Projectiles
         public float impactRadius;
         public Vector3 velocity;
         public bool hit;
-
-        void Awake()
-        {
-            if (attackerMask_ == 0)
-                attackerMask_ = LayerMask.GetMask(LayerNames.ATTACKER_TARGET);
-        }
 
         public void Init(Vector3 position, IProjectileSource source, Vector3 target, float delay, float impactRadius)
         {
@@ -54,7 +48,7 @@ namespace BattleSimulation.Projectiles
                 return;
             hit = true;
 
-            var hits = Physics.SphereCastAll(transform.position, impactRadius, Vector3.up, 0.01f, attackerMask_);
+            var hits = Physics.SphereCastAll(transform.position, impactRadius, Vector3.up, 0.01f, LayerMasks.attackerTargets);
             foreach (var hit in hits)
             {
                 Attacker a = hit.rigidbody.GetComponent<Attacker>();

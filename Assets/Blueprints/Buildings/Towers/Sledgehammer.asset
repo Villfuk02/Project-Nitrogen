@@ -39,4 +39,5 @@ MonoBehaviour:
   - '[$DPS]'
   descriptions:
   - Cannot be paced on slanted tiles.
+  - Can be placed on tiles with small obstacles.
   - Smashes into the ground, dealing damage to all attackers in range.

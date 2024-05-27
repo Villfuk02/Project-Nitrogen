@@ -12,9 +12,6 @@ namespace BattleSimulation.Selection
 {
     public class SelectionController : MonoBehaviour
     {
-        LayerMask selectionMask_;
-        LayerMask selectionMaskNoAttackers_;
-        LayerMask coarseTerrainMask_;
         [Header("References")]
         [SerializeField] Camera mainCamera;
         [SerializeField] BlueprintMenu blueprintMenu;
@@ -34,13 +31,6 @@ namespace BattleSimulation.Selection
         float rotationHoldTime_;
         float lastRotationTime_;
         bool isSelectedBuilding_;
-
-        void Awake()
-        {
-            selectionMask_ = LayerMask.GetMask(LayerNames.SELECTION, LayerNames.SELECTION_ATTACKER);
-            selectionMaskNoAttackers_ = LayerMask.GetMask(LayerNames.SELECTION);
-            coarseTerrainMask_ = LayerMask.GetMask(LayerNames.COARSE_TERRAIN);
-        }
 
         void Update()
         {
@@ -162,7 +152,7 @@ namespace BattleSimulation.Selection
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             Selectable newHover;
             bool selectAttackers = placing == null || placing.selectAttackers;
-            if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out RaycastHit selectionHit, 100, selectAttackers ? selectionMask_ : selectionMaskNoAttackers_))
+            if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out RaycastHit selectionHit, 100, selectAttackers ? LayerMasks.selection : LayerMasks.selectionWithoutAttackers))
                 newHover = selectionHit.transform.GetComponent<Selectable>();
             else
                 newHover = null;
@@ -176,7 +166,7 @@ namespace BattleSimulation.Selection
                     DisplayInfoSelectedInWorld(hovered, true);
             }
 
-            if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out RaycastHit terrainHit, 100, coarseTerrainMask_))
+            if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out RaycastHit terrainHit, 100, LayerMasks.coarseTerrain))
                 hoverTilePosition = WorldUtils.WorldPosToTilePos(terrainHit.point);
             else
                 hoverTilePosition = hovered == null ? null : hovered.transform.position;

@@ -12,9 +12,10 @@
 - [x] highlight cooldown
 - [x] fix X behavior
 - [x] spacebar bug
+- [x] initialize layermasks
 - [ ] rewrite path branches of length 4
 - [ ] reorganize ch2
-- [ ] initialize layermasks
+- [ ] write some ch3?
 ## implementation 
 - [x] limit wave generator to pull extras max once per wave
 - [x] also make early waves shorter

@@ -9,8 +9,6 @@ namespace BattleSimulation.Abilities
 {
     public class OrbitalLaser : Ability
     {
-        static LayerMask attackerMask_;
-
         [Header("Settings")]
         [SerializeField] float radius;
         [Header("Runtime variables")]
@@ -19,12 +17,6 @@ namespace BattleSimulation.Abilities
         public int ticksLeft;
         [SerializeField] bool finished;
         readonly HashSet<Attacker> alreadyHit_ = new();
-
-        void Awake()
-        {
-            if (attackerMask_ == 0)
-                attackerMask_ = LayerMask.GetMask(LayerNames.ATTACKER_TARGET);
-        }
 
         public override void OnSetupChanged()
         {
@@ -69,7 +61,7 @@ namespace BattleSimulation.Abilities
             ticksLeft--;
             Vector3 newPosition = Vector3.Lerp(startPos, endPos, 1 - ticksLeft / (float)Blueprint.durationTicks);
             Vector3 offset = newPosition - prevPosition;
-            foreach (var hit in Physics.CapsuleCastAll(prevPosition + Vector3.down * 10, prevPosition + Vector3.up * 10, radius, offset, offset.magnitude, attackerMask_))
+            foreach (var hit in Physics.CapsuleCastAll(prevPosition + Vector3.down * 10, prevPosition + Vector3.up * 10, radius, offset, offset.magnitude, LayerMasks.attackerTargets))
             {
                 Attacker a = hit.rigidbody.GetComponent<Attacker>();
                 if (!alreadyHit_.Add(a))

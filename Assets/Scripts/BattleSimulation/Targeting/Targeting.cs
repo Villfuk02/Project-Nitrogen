@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BattleSimulation.Attackers;
+using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -11,9 +12,6 @@ namespace BattleSimulation.Targeting
     {
         [Header("References")]
         protected ITargetingChild targetingComponent;
-        // Constants
-        protected static LayerMask visibilityMask;
-        static bool layerMaskInit_;
         [Header("Settings")]
         [SerializeField] protected bool checkLineOfSight;
 
@@ -31,12 +29,6 @@ namespace BattleSimulation.Targeting
         void Awake()
         {
             Priorities = availablePriorities.ToArray();
-            if (!layerMaskInit_)
-            {
-                visibilityMask = LayerMask.GetMask(LayerNames.COARSE_TERRAIN, LayerNames.COARSE_OBSTACLE);
-                layerMaskInit_ = true;
-            }
-
             InitComponents();
             targetingComponent.SetParent(this);
         }
@@ -96,7 +88,7 @@ namespace BattleSimulation.Targeting
         {
             var position = transform.position;
             Vector3 dir = pos - position;
-            return !Physics.Raycast(position, dir, out RaycastHit _, dir.magnitude, visibilityMask);
+            return !Physics.Raycast(position, dir, out RaycastHit _, dir.magnitude, LayerMasks.coarseTerrainAndObstacles);
         }
 
         public bool IsInBounds(Vector3 pos) => targetingComponent != null && targetingComponent.IsInBounds(pos);
