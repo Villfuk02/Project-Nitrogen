@@ -9,11 +9,11 @@ namespace Game.Shared
         [SerializeField] float pitch;
         [SerializeField] float pitchVariance;
         [SerializeField] bool worldSpace;
-        [SerializeField] bool highPriority;
+        [SerializeField] SoundController.Priority priority;
 
         public void Play()
         {
-            SoundController.PlaySound(sound, volume, pitch, pitchVariance, worldSpace ? transform.position : null, highPriority);
+            SoundController.PlaySound(sound, volume, pitch, pitchVariance, worldSpace ? transform.position : null, priority);
         }
     }
 }

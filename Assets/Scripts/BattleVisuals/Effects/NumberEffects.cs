@@ -101,7 +101,7 @@ namespace BattleVisuals.Effects
             ne.transform.localPosition = position;
             ne.Init(s, textSize, color, timeToLive, velocity, acceleration);
             if (sound is not null)
-                SoundController.PlaySound(sound.Value, 0.25f, 1, 0.2f, position, false);
+                SoundController.PlaySound(sound.Value, 0.25f, 1, 0.2f, position);
         }
 
         IEnumerator SpawnLater(string s, float textSize, Color color, float timeToLive, Vector3 position, Vector3 velocity, Vector3 acceleration, SoundController.Sound? sound, float time)

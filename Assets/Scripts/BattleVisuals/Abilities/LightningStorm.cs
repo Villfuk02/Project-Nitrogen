@@ -77,8 +77,8 @@ namespace BattleVisuals.Abilities
             boltRenderer.SetPositions(pos);
             UpdateBolt();
 
-            SoundController.PlaySound(SoundController.Sound.Zap, 1, 0.7f, 0.1f, target.position, false);
-            SoundController.PlaySound(SoundController.Sound.ImpactHuge, 0.6f, 1, 0.1f, target.position, false);
+            SoundController.PlaySound(SoundController.Sound.Zap, 1, 0.7f, 0.1f, target.position);
+            SoundController.PlaySound(SoundController.Sound.ImpactHuge, 0.6f, 1, 0.1f, target.position);
         }
     }
 }

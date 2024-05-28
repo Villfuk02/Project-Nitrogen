@@ -196,7 +196,7 @@ namespace BattleSimulation.Attackers
             rb.detectCollisions = false;
 
             onDeath.Invoke(cause);
-            SoundController.PlaySound(SoundController.Sound.AttackerDie, 0.5f, 1, 0.2f, transform.position, false);
+            SoundController.PlaySound(SoundController.Sound.AttackerDie, 0.5f, 1, 0.2f, transform.position, SoundController.Priority.Low);
             if (removed_)
                 return;
             removed_ = true;

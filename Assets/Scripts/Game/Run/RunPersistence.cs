@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using BattleSimulation.Control;
 using Game.Shared;
 using UnityEngine;
 using Random = Utils.Random.Random;
@@ -17,12 +18,14 @@ namespace Game.Run
         public ulong runSeed;
         public string seedString;
         [SerializeField] ulong tutorialLevelSeed;
+        [SerializeField] int maxHullLostPerWave;
         [Header("Runtime variables")]
         public List<Blueprint.Blueprint> blueprints;
         public int level;
         public int maxHull;
         public int hull;
         Random random_;
+        [SerializeField] int hullLostThisWave;
 
         void Awake()
         {
@@ -33,6 +36,13 @@ namespace Game.Run
             RunEvents.repairHull.RegisterHandler(RepairHull);
             RunEvents.finishLevel.RegisterHandler(FinishLevelCommand);
             RunEvents.quit.RegisterHandler(Quit);
+
+            WaveController.ON_WAVE_FINISHED.RegisterReaction(OnWaveFinished, 100);
+        }
+
+        void OnDestroy()
+        {
+            WaveController.ON_WAVE_FINISHED.UnregisterReaction(OnWaveFinished);
         }
 
         public void Init(bool noStartingBlueprints)
@@ -46,21 +56,28 @@ namespace Game.Run
 
         bool DamageHull(ref int dmg)
         {
+            dmg = Mathf.Min(dmg, maxHullLostPerWave - hullLostThisWave);
             if (dmg <= 0)
                 return false;
             var prevHull = hull;
             hull -= dmg;
 
-
             if (hull <= 0 && prevHull > 0)
                 RunEvents.defeat.Invoke();
 
-            else if (hull <= 5 && prevHull > 5)
-                SoundController.PlaySound(SoundController.Sound.Siren, 0.3f, 1, 0, null, true);
+            else if (hull <= 5 && (prevHull > 5 || hullLostThisWave == 0))
+                SoundController.PlaySound(SoundController.Sound.Siren, 0.3f, 1, 0, null, SoundController.Priority.High);
             else if (hull > 0)
-                SoundController.PlaySound(SoundController.Sound.HullLoss, 0.4f, 1, 0.05f, null, true);
+                SoundController.PlaySound(SoundController.Sound.HullLoss, 0.4f, 1, 0.05f, null, SoundController.Priority.High);
+
+            hullLostThisWave += dmg;
 
             return true;
+        }
+
+        void OnWaveFinished()
+        {
+            hullLostThisWave = 0;
         }
 
         bool RepairHull(ref int r)

@@ -32,7 +32,7 @@ namespace BattleSimulation.Towers
         void Shoot(Attacker primaryTarget)
         {
             shotTimer = Blueprint.interval;
-            SoundController.PlaySound(SoundController.Sound.Zap, 0.4f, 1.2f, 0.2f, transform.position, false);
+            SoundController.PlaySound(SoundController.Sound.Zap, 0.4f, 1.2f, 0.2f, transform.position);
             var damage = Blueprint.damage;
             ShootOne(sparkOrigin, primaryTarget, damage);
 

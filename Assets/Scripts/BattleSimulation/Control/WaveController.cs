@@ -197,7 +197,7 @@ namespace BattleSimulation.Control
             waveStarted = true;
             currentWave = waveGenerator.GetWave(wave);
             nextWaveButton.interactable = false;
-            SoundController.PlaySound(SoundController.Sound.WaveStart, 0.25f, 1, 0, null, true);
+            SoundController.PlaySound(SoundController.Sound.WaveStart, 0.25f, 1, 0, null, SoundController.Priority.High);
             return true;
         }
 
@@ -223,7 +223,7 @@ namespace BattleSimulation.Control
                 showNewAttacker.Invoke(attacker);
                 PersistentData.RegisterKnownAttacker(attacker.name);
                 newAttacker = false;
-                SoundController.PlaySound(SoundController.Sound.Notification, 0.45f, 1, 0, null, true);
+                SoundController.PlaySound(SoundController.Sound.Notification, 0.45f, 1, 0, null, SoundController.Priority.High);
                 return;
             }
 

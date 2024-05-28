@@ -7,7 +7,7 @@ namespace BattleSimulation.Abilities
         protected override void OnPlaced()
         {
             Explode();
-            SoundController.PlaySound(SoundController.Sound.ExplosionSmall, 0.75f, 0.8f, 0.2f, transform.position, false);
+            SoundController.PlaySound(SoundController.Sound.ExplosionSmall, 0.75f, 0.8f, 0.2f, transform.position);
         }
 
         void Explode()

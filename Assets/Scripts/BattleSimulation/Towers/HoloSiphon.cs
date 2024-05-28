@@ -23,7 +23,7 @@ namespace BattleSimulation.Towers
             foreach (var a in targeting.GetValidTargets())
                 if (a.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
                 {
-                    SoundController.PlaySound(SoundController.Sound.SiphonFinish, 0.45f, 1, 0.2f, a.target.position, false);
+                    SoundController.PlaySound(SoundController.Sound.SiphonFinish, 0.45f, 1, 0.2f, a.target.position);
                     damageDealt += dmg;
                 }
         }
@@ -66,7 +66,7 @@ namespace BattleSimulation.Towers
                 {
                     if (selectedTarget.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
                     {
-                        SoundController.PlaySound(SoundController.Sound.SiphonFinish, 0.6f, 1, 0.2f, selectedTarget.target.position, false);
+                        SoundController.PlaySound(SoundController.Sound.SiphonFinish, 0.6f, 1, 0.2f, selectedTarget.target.position);
                         damageDealt += dmg;
                     }
 

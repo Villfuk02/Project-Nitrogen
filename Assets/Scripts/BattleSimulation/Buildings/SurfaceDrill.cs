@@ -37,11 +37,13 @@ namespace BattleSimulation.Buildings
                 {
                     WaveController.ON_WAVE_FINISHED.UnregisterReaction(ProduceFuel);
                     BattleController.UPDATE_FUEL_PER_WAVE.UnregisterModifier(ProvideFuelIncome);
+                    BattleController.UPDATE_FUEL_PER_WAVE.Invoke(0);
                 }
                 else
                 {
                     WaveController.ON_WAVE_FINISHED.UnregisterReaction(ProduceMaterials);
                     BattleController.UPDATE_MATERIALS_PER_WAVE.UnregisterModifier(ProvideMaterialsIncome);
+                    BattleController.UPDATE_MATERIALS_PER_WAVE.Invoke(0);
                 }
             }
 

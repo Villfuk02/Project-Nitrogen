@@ -38,7 +38,7 @@ namespace BattleSimulation.Towers
                 if (target.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
                 {
                     damageDealt += dmg;
-                    SoundController.PlaySound(SoundController.Sound.RayBurn, 0.85f, 1, 0.1f, target.target.position, false);
+                    SoundController.PlaySound(SoundController.Sound.RayBurn, 0.85f, 1, 0.1f, target.target.position, SoundController.Priority.Low);
                 }
 
                 hitsLeft--;

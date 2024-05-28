@@ -14,6 +14,8 @@ namespace Game.Shared
             Notification, WaveStart
         }
 
+        public enum Priority { Low = 80, Normal = 64, High = 48 }
+
         static SoundController instance_;
 
         [System.Serializable]
@@ -43,16 +45,16 @@ namespace Game.Shared
             PersistentData.Muted = PersistentData.Muted;
         }
 
-        public static void PlaySound(Sound sound, float volume, float pitch, float pitchVariance, Vector3? position, bool highPriority)
+        public static void PlaySound(Sound sound, float volume, float pitch, float pitchVariance, Vector3? position, Priority priority = Priority.Normal)
         {
             pitch *= Mathf.Pow(1 + pitchVariance, Random.Range(-1f, 1f));
             if (position is not null)
-                instance_.PlayWorldSound(sound, volume, pitch, position.Value, highPriority);
+                instance_.PlayWorldSound(sound, volume, pitch, position.Value, priority);
             else
-                instance_.PlayScreenSound(sound, volume, pitch, highPriority);
+                instance_.PlayScreenSound(sound, volume, pitch, priority);
         }
 
-        void PlayWorldSound(Sound sound, float volume, float pitch, Vector3 position, bool highPriority)
+        void PlayWorldSound(Sound sound, float volume, float pitch, Vector3 position, Priority priority)
         {
             transform.position = position;
             var source = GetSource();
@@ -60,12 +62,12 @@ namespace Game.Shared
             source.spatialBlend = 1;
             source.volume = volume;
             source.pitch = pitch;
-            source.priority = highPriority ? 96 : 128;
+            source.priority = (int)priority + 64;
             source.Play();
             StartCoroutine(ReturnSource(source, source.clip.length / pitch + 0.05f));
         }
 
-        void PlayScreenSound(Sound sound, float volume, float pitch, bool highPriority)
+        void PlayScreenSound(Sound sound, float volume, float pitch, Priority priority)
         {
             transform.localPosition = Vector3.zero;
             var source = GetSource();
@@ -73,7 +75,7 @@ namespace Game.Shared
             source.spatialBlend = 0;
             source.volume = volume;
             source.pitch = pitch;
-            source.priority = highPriority ? 32 : 64;
+            source.priority = (int)priority;
             source.Play();
             StartCoroutine(ReturnSource(source, source.clip.length / pitch + 0.05f));
         }

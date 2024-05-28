@@ -67,7 +67,7 @@ namespace BattleSimulation.Abilities
                 if (!alreadyHit_.Add(a))
                     continue;
                 if (a.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out _))
-                    SoundController.PlaySound(SoundController.Sound.LaserBurn, 1, 1, 0.2f, a.target.position, false);
+                    SoundController.PlaySound(SoundController.Sound.LaserBurn, 1, 1, 0.2f, a.target.position);
             }
         }
 

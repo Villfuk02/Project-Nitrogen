@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Ultra-Ray
   prefab: {fileID: 475032649215164951, guid: 34c239ce92db17f4e93c54a0be263032, type: 3}
   icon: {fileID: 21300000, guid: 5554019f7ce4c3c47af2b22022426d98, type: 3}
-  rarity: 1
+  rarity: 2
   type: 0
   energyCost: 0
   materialCost: 30

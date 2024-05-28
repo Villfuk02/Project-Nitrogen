@@ -32,6 +32,10 @@ namespace BattleSimulation.Buildings
                 BattleController.UPDATE_MATERIALS_PER_WAVE.UnregisterModifier(ProvideMaterialsIncome);
                 BattleController.UPDATE_ENERGY_PER_WAVE.UnregisterModifier(ProvideEnergyIncome);
                 BattleController.UPDATE_FUEL_PER_WAVE.UnregisterModifier(ProvideFuelIncome);
+
+                BattleController.UPDATE_MATERIALS_PER_WAVE.Invoke(0);
+                BattleController.UPDATE_ENERGY_PER_WAVE.Invoke(0);
+                BattleController.UPDATE_FUEL_PER_WAVE.Invoke(0);
             }
 
             base.OnDestroy();

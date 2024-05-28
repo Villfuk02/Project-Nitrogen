@@ -4079,7 +4079,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: 25
   energy: 10
-  maxEnergy: 50
+  maxEnergy: 75
   fuel: 0
   fuelGoal: 120
   hullDmgTaken: 0
@@ -4887,8 +4887,52 @@ MonoBehaviour:
     batches:
     - typePerPath:
       - {fileID: 11400000, guid: 4522003d97c1f7945a39066ff63e6c7f, type: 2}
-      count: 7
+      count: 6
       spacing: 4
+    - typePerPath:
+      - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
+      count: 6
+      spacing: 2
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: 4522003d97c1f7945a39066ff63e6c7f, type: 2}
+      count: 10
+      spacing: 4
+    - typePerPath:
+      - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
+      count: 20
+      spacing: 1
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
+      count: 30
+      spacing: 0
+    - typePerPath:
+      - {fileID: 11400000, guid: 4bf67bdee33531741bb82b3fc252c246, type: 2}
+      count: 3
+      spacing: 4
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: 4522003d97c1f7945a39066ff63e6c7f, type: 2}
+      count: 50
+      spacing: 0
+    - typePerPath:
+      - {fileID: 11400000, guid: 2bd72d87afda7f04baa5880867d83f90, type: 2}
+      count: 50
+      spacing: 0
+  - newAttacker: {fileID: 0}
+    batches:
+    - typePerPath:
+      - {fileID: 11400000, guid: 2bd72d87afda7f04baa5880867d83f90, type: 2}
+      count: 60
+      spacing: 0
+    - typePerPath:
+      - {fileID: 11400000, guid: cce42b626625438479a1c859190c2c3c, type: 2}
+      count: 60
+      spacing: 0
   baseValueRate: 5
   baseEffectiveValueBuffer: 25
   linearScaling: 1
@@ -4970,10 +5014,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  rightClickDeselectTravelLimit: 0.001
   selected: {fileID: 0}
   hovered: {fileID: 0}
   placing: {fileID: 0}
   rotation: 0
+  rightClickTraveled: 0
 --- !u!114 &793714039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5991,8 +6037,8 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: You can hide the <color=white>info panel</color> and
-            deselect anything you have selected using <color=white>[Esc]</color>,
-            or by clicking on empty space.
+            deselect anything you have selected using <color=white>[Esc]</color>
+            or by <color=white>right-clicking</color>.
           m_BoolArgument: 0
         m_CallState: 2
   - m_PersistentCalls:
@@ -6021,7 +6067,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: In the top left, you can see how much <sprite=1><color=white>Fuel</color>
-            you have. Once you gather <color=white>120</color>, you <color=white>win</color>
+            you have. Once you gather <color=white>110</color>, you <color=white>win</color>
             this level!
           m_BoolArgument: 0
         m_CallState: 2

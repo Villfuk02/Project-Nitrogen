@@ -145,7 +145,7 @@ MonoBehaviour:
   pitch: 0.6
   pitchVariance: 0.1
   worldSpace: 1
-  highPriority: 0
+  priority: 64
 --- !u!114 &2678148101866634892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,7 +163,7 @@ MonoBehaviour:
   pitch: 1
   pitchVariance: 0.2
   worldSpace: 1
-  highPriority: 0
+  priority: 64
 --- !u!1 &3209432709654288124
 GameObject:
   m_ObjectHideFlags: 0

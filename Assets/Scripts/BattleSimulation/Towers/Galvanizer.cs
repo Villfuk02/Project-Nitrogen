@@ -53,7 +53,7 @@ namespace BattleSimulation.Towers
                 lastChargedProjectile = p;
             ticksSinceLastShot = 0;
             p.Init(projectileOrigin.position, this, target);
-            SoundController.PlaySound(SoundController.Sound.ShootProjectile, 0.35f, 1, 0.2f, projectileOrigin.position, false);
+            SoundController.PlaySound(SoundController.Sound.ShootProjectile, 0.35f, 1, 0.2f, projectileOrigin.position);
         }
 
         void OnWaveStarted()
@@ -66,7 +66,7 @@ namespace BattleSimulation.Towers
 
         void PlayChargeUpSound()
         {
-            SoundController.PlaySound(SoundController.Sound.ChargeUp, 0.75f, 1, 0.1f, transform.position, false);
+            SoundController.PlaySound(SoundController.Sound.ChargeUp, 0.75f, 1, 0.1f, transform.position);
         }
 
         public override bool TryHit(Projectile projectile, Attacker attacker)
@@ -89,7 +89,7 @@ namespace BattleSimulation.Towers
                 (object source, float amount) energyProductionParam = (this, Blueprint.energyProduction);
                 if (BattleController.ADD_ENERGY.InvokeRef(ref energyProductionParam))
                     energyProduced += (int)energyProductionParam.amount;
-                SoundController.PlaySound(SoundController.Sound.EnergizedImpact, 0.75f, 1, 0.1f, projectile.transform.position, false);
+                SoundController.PlaySound(SoundController.Sound.EnergizedImpact, 0.75f, 1, 0.1f, projectile.transform.position);
             }
 
             int hitDmgDealt = 0;

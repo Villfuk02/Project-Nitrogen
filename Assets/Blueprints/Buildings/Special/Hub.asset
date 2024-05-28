@@ -33,7 +33,7 @@ MonoBehaviour:
   materialProduction: 10
   energyProduction: 10
   statsToDisplay: []
-  statsToDisplayWhenUninitialized: []
   descriptions:
   - Produces [PRO] after every wave.
-  - When an enemy reaches this building, you lose [#HUL]Hull. Protect at all costs!
+  - When an enemy reaches this building, you lose [#HUL]Hull, up to 5 per wave. Protect
+    at all costs!

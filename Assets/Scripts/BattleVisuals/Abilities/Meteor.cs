@@ -22,7 +22,7 @@ namespace BattleVisuals.Abilities
             var t = transform;
             t.localPosition = (Vector3.up + Random.onUnitSphere * 0.3f) * startHeight;
             speed_ = -t.localPosition / sim.Blueprint.delay * TimeUtils.TICKS_PER_SEC;
-            SoundController.PlaySound(SoundController.Sound.Fall, 0.75f, 0.63f / (sim.Blueprint.delay * TimeUtils.SECS_PER_TICK), 0, transform.position, false);
+            SoundController.PlaySound(SoundController.Sound.Fall, 0.75f, 0.63f / (sim.Blueprint.delay * TimeUtils.SECS_PER_TICK), 0, transform.position);
         }
 
         void Update()
@@ -40,7 +40,7 @@ namespace BattleVisuals.Abilities
             body.SetActive(false);
             flightParticles.Stop();
             explosionParticles.Play();
-            SoundController.PlaySound(SoundController.Sound.ExplosionBig, 0.75f, 1, 0.1f, transform.position, false);
+            SoundController.PlaySound(SoundController.Sound.ExplosionBig, 0.75f, 1, 0.1f, transform.position);
         }
     }
 }

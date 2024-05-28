@@ -202,12 +202,12 @@ obstacles {
 
     * Fuel {
         type f
-        min 5
-        max 6
+        min 8
+        max 8
         base_probability 1
-        # valid_surfaces D (default value is all of them)
+        # valid_surfaces D (default value is all surfaces)
         on_slants false
-        forces -10
+        forces -6
     }
 
     * Minerals {
@@ -216,7 +216,7 @@ obstacles {
         max 8
         base_probability 0.3
         on_slants false
-        forces -2 0.5
+        forces -1.5 0.3
     }
 
     * BigRocks {
@@ -274,7 +274,7 @@ scatterer {
                 fractal_noise {
                     octaves 2
                     bias 0
-                    base_amplitude 0.4
+                    base_amplitude 0.25
                     amplitude_mult 0.777
                     base_frequency 0.61
                     frequency_mult 2.137

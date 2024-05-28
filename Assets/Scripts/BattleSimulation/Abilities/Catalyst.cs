@@ -23,7 +23,7 @@ namespace BattleSimulation.Abilities
 
             afflicted_ = new(targeting.GetValidTargets());
 
-            SoundController.PlaySound(SoundController.Sound.Catalyst, 1, 1, 0.2f, transform.position, false);
+            SoundController.PlaySound(SoundController.Sound.Catalyst, 1, 1, 0.2f, transform.position);
         }
 
         protected void OnDestroy()

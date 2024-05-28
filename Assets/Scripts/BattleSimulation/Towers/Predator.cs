@@ -30,7 +30,7 @@ namespace BattleSimulation.Towers
                 return;
             kills++;
             baseBlueprint.damage++;
-            SoundController.PlaySound(SoundController.Sound.Upgrade, 0.4f, 1, 0, transform.position, false);
+            SoundController.PlaySound(SoundController.Sound.Upgrade, 0.4f, 1, 0, transform.position);
         }
 
         public override IEnumerable<string> GetExtraStats()

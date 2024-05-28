@@ -15,7 +15,7 @@ namespace BattleSimulation.Buildings
         protected override void OnPlaced()
         {
             if (!permanent)
-                SoundController.PlaySound(SoundController.Sound.Build, 0.8f, 1, 0.1f, transform.position, true);
+                SoundController.PlaySound(SoundController.Sound.Build, 0.8f, 1, 0.1f, transform.position, SoundController.Priority.High);
             base.OnPlaced();
         }
 

@@ -23,6 +23,8 @@ namespace Game.Run
             SetupWorldSettings(level, rand, out var pathCount, out var totalPathLength);
 
             SetupWaveGenerator(level, pathCount, totalPathLength, rand);
+
+            SetupBattleController(level);
         }
 
         static void SetupWorldSettings(int level, Random rand, out int pathCount, out int totalPathLength)
@@ -75,9 +77,16 @@ namespace Game.Run
             wg.baseEffectiveValueBuffer = (7 + 1 * level) * (20 + totalPathLength) * 0.02f;
             wg.linearScaling = 1;
             wg.quadraticScaling = 0.01f;
-            wg.cubicScaling = Mathf.Lerp(0, 0.01f, (level + 1) / 5f);
+            wg.cubicScaling = 0.009f;
             wg.exponentialScalingBase = 1;
             wg.random = new(rand.NewSeed());
+        }
+
+        static void SetupBattleController(int level)
+        {
+            BattleController bc = GameObject.FindGameObjectWithTag(TagNames.BATTLE_CONTROLLER).GetComponent<BattleController>();
+
+            bc.fuelGoal = 90 + level * 10;
         }
 
         static void SetupTutorialSettings(ulong randomSeed)
@@ -90,6 +99,10 @@ namespace Game.Run
             WaveGenerator wg = GameObject.FindGameObjectWithTag(TagNames.WAVE_GENERATOR).GetComponent<WaveGenerator>();
             wg.paths = 1;
             wg.tutorial = true;
+
+            BattleController bc = GameObject.FindGameObjectWithTag(TagNames.BATTLE_CONTROLLER).GetComponent<BattleController>();
+
+            bc.fuelGoal = 110;
         }
     }
 }

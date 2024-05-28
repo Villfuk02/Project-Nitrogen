@@ -62,7 +62,7 @@ namespace BattleSimulation.Towers
                     break;
             }
 
-            SoundController.PlaySound(sound, volume, 1, 0.2f, projectile.transform.position, false);
+            SoundController.PlaySound(sound, volume, 1, 0.2f, projectile.transform.position);
         }
 
         public virtual bool TryHit(Projectile projectile, Attacker attacker)

@@ -30,7 +30,7 @@ namespace BattleSimulation.Towers
             shotDelayTimer++;
 
             if (shotTimer == 1)
-                SoundController.PlaySound(SoundController.Sound.ShootProjectile, 0.75f, 0.5f, 0.2f, transform.position, false);
+                SoundController.PlaySound(SoundController.Sound.ShootProjectile, 0.75f, 0.5f, 0.2f, transform.position);
 
             if (shotTimer <= 0 && targeting.GetValidTargets().Any())
                 StartShot();
@@ -51,7 +51,7 @@ namespace BattleSimulation.Towers
             foreach (var target in targeting.GetValidTargets())
                 if (target.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
                     damageDealt += dmg;
-            SoundController.PlaySound(SoundController.Sound.ImpactHuge, 1, 1, 0.2f, transform.position, false);
+            SoundController.PlaySound(SoundController.Sound.ImpactHuge, 1, 1, 0.2f, transform.position);
         }
     }
 }

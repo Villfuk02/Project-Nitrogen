@@ -10,7 +10,7 @@ namespace BattleSimulation.Towers
         {
             var p = Instantiate(projectilePrefab, World.WorldData.World.instance.transform).GetComponent<LockOnProjectile>();
             p.Init(projectileOrigin.position, this, target);
-            SoundController.PlaySound(SoundController.Sound.ShootProjectile, 0.35f, 1, 0.2f, projectileOrigin.position, false);
+            SoundController.PlaySound(SoundController.Sound.ShootProjectile, 0.35f, 1, 0.2f, projectileOrigin.position);
         }
     }
 }

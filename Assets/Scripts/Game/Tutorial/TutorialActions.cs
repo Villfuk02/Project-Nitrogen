@@ -52,7 +52,7 @@ namespace Game.Tutorial
 
         void Update()
         {
-            if (cameraTransform.camSpacePos.XZ().sqrMagnitude > 10)
+            if (cameraTransform.camSpacePos.XZ().sqrMagnitude > 4)
                 controller.TriggerPhase(2);
             if (cameraTransform.camSpacePos.y < 5.5f)
                 controller.TriggerPhase(3);
@@ -141,7 +141,7 @@ namespace Game.Tutorial
         void ChangeTutorialText()
         {
             tutorialText.text = newTutorialText;
-            SoundController.PlaySound(SoundController.Sound.Notification, 0.5f, 1, 0, null, true);
+            SoundController.PlaySound(SoundController.Sound.Notification, 0.5f, 1, 0, null, SoundController.Priority.High);
         }
 
         public void HideTutorialText()
@@ -166,7 +166,7 @@ namespace Game.Tutorial
 
         public void PlaceBudgetSentry()
         {
-            worldBuilder.PlacePermanentBuilding(budgetSentryBlueprint, new(6, 6));
+            worldBuilder.PlacePermanentBuilding(budgetSentryBlueprint, new(4, 8));
         }
 
         public void HideWavesPreview()

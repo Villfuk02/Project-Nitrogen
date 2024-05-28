@@ -22,6 +22,7 @@ namespace BattleSimulation.Selection
         [SerializeField] float rotationHoldDelay;
         [SerializeField] float rotationInterval;
         [SerializeField] UnityEvent resetVisuals;
+        [SerializeField] float rightClickDeselectTravelLimit;
         [Header("Runtime variables")]
         public Selectable selected;
         public Selectable hovered;
@@ -31,6 +32,8 @@ namespace BattleSimulation.Selection
         float rotationHoldTime_;
         float lastRotationTime_;
         bool isSelectedBuilding_;
+        Vector3 lastMousePosition_;
+        [SerializeField] float rightClickTraveled;
 
         void Update()
         {
@@ -78,7 +81,7 @@ namespace BattleSimulation.Selection
                 }
                 else
                 {
-                    SoundController.PlaySound(SoundController.Sound.Error, 1, 1, 0, null, true);
+                    SoundController.PlaySound(SoundController.Sound.Error, 1, 1, 0, null, SoundController.Priority.High);
                 }
             }
             else if (hovered != null)
@@ -93,7 +96,16 @@ namespace BattleSimulation.Selection
 
         void HandleDeselect()
         {
-            if (Input.GetKeyUp(KeyCode.Escape))
+            var normalizedMousePosition = Input.mousePosition / Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height);
+
+            if (Input.GetMouseButtonDown(1))
+                rightClickTraveled = 0;
+            else if (Input.GetMouseButton(1))
+                rightClickTraveled += (normalizedMousePosition - lastMousePosition_).magnitude;
+
+            lastMousePosition_ = normalizedMousePosition;
+
+            if (Input.GetKeyUp(KeyCode.Escape) || (Input.GetMouseButtonUp(1) && rightClickTraveled < rightClickDeselectTravelLimit))
             {
                 DeselectFromMenu();
                 DeselectInWorld();

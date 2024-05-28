@@ -17,7 +17,7 @@ namespace BattleSimulation.Towers
             var p = Instantiate(projectilePrefab, World.WorldData.World.instance.transform).GetComponent<LockOnProjectile>();
             var origin = (useSecondBarrel ? projectileOrigin2 : projectileOrigin).position;
             p.Init(origin, this, target);
-            SoundController.PlaySound(SoundController.Sound.ShootProjectile, 0.35f, 1, 0.2f, origin, false);
+            SoundController.PlaySound(SoundController.Sound.ShootProjectile, 0.35f, 1, 0.2f, origin);
             useSecondBarrel = !useSecondBarrel;
         }
     }

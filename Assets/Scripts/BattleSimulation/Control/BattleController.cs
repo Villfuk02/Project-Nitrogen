@@ -169,7 +169,7 @@ namespace BattleSimulation.Control
         bool Win()
         {
             won = true;
-            SoundController.PlaySound(SoundController.Sound.Victory, 0.1f, 1, 0, null, true);
+            SoundController.PlaySound(SoundController.Sound.Victory, 0.1f, 1, 0, null, SoundController.Priority.High);
             return true;
         }
 
@@ -186,7 +186,7 @@ namespace BattleSimulation.Control
         void Lose()
         {
             lost = true;
-            SoundController.PlaySound(SoundController.Sound.Defeat, 0.9f, 1, 0, null, true);
+            SoundController.PlaySound(SoundController.Sound.Defeat, 0.9f, 1, 0, null, SoundController.Priority.High);
         }
     }
 }

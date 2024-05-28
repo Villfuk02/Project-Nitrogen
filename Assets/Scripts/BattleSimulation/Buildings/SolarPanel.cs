@@ -28,6 +28,8 @@ namespace BattleSimulation.Buildings
             {
                 WaveController.ON_WAVE_FINISHED.UnregisterReaction(Produce);
                 BattleController.UPDATE_ENERGY_PER_WAVE.UnregisterModifier(ProvideEnergyIncome);
+
+                BattleController.UPDATE_ENERGY_PER_WAVE.Invoke(0);
             }
 
             base.OnDestroy();

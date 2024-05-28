@@ -21,8 +21,8 @@ namespace Game.Shared
                 input.onSelect.AddListener(_ => Click());
         }
 
-        public static void Click() => SoundController.PlaySound(SoundController.Sound.ButtonClick, 0.3f, 1, 0, null, false);
-        public static void Hover() => SoundController.PlaySound(SoundController.Sound.ButtonSelect, 0.1f, 1, 0, null, false);
+        public static void Click() => SoundController.PlaySound(SoundController.Sound.ButtonClick, 0.3f, 1, 0, null);
+        public static void Hover() => SoundController.PlaySound(SoundController.Sound.ButtonSelect, 0.1f, 1, 0, null);
 
         public void OnPointerEnter(PointerEventData eventData)
         {
