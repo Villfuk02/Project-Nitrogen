@@ -82,7 +82,7 @@ It is also suboptimal when the player plays out all the cards they've drawn, but
 Balancing these aspects of the deck leads to some difficult decisions when picking cards to add.
 For example, should the player pick a good defensive card because they are lacking in defense, or should they pick an attack that's just very strong.
 
-We want to balance the battles in a way, which requires the player to have strong blueprints with various qualities.
+We want to balance the battles in a way, which requires the player to have strong blueprints (see section~\ref{sec:design-blueprints}) with various qualities.
 The players should need good economic buildings, fuel-producing buildings, abilities and towers good at dealing with various kinds of attackers.
 They should also have some cheaper towers to build in the first few waves and more expensive towers to build once they produce a lot of material.
 
@@ -383,6 +383,8 @@ This option also really works only in hand-crafted levels, because it is importa
 However, each level being just a big square of tiles with rectilinear paths on top wouldn't be very interesting.
 That's why some tiles will contain obstacles that block the player from building on these tiles.
 Some obstacles will be \emph{small} and some will be \emph{large}~--- they will also block the line-of-sight of towers that require a straight line between them and the attacker they want to shoot.
+Some small obstacles will make the tile rich in \emph{minerals} (see section~\ref{sec:design-materials-and-energy}) or \emph{fuel} (see~\ref{sec:design-fuel}).
+These will be used by some economic buildings (see~\ref{sec:design-buildings}), and also act as \emph{small} obstacles.
 
 Another great way to make the levels more interesting, that is also intuitive for the player, is having tiles at different heights.
 The heights will be in multiples of $0.5$ units, where one unit is the edge length of a tile.
@@ -597,7 +599,7 @@ To make the stakes more equal, \emph{small} attackers cost the player only 1 hul
     Each boss will bend the rules of the game a bit as one of their abilities, but most of them will have the same target height as \emph{large} attackers.
 \end{notindemo}
 
-\subsection{Buildings}
+\subsection{Buildings}\label{sec:design-buildings}
 
 The player will be able to build buildings, but only between waves of attackers.
 They will be able to build one building per tile, if the tile has no obstacles and an attacker path is not going through it.
@@ -618,7 +620,7 @@ The goal of the attackers is to reach the \emph{Hub}, and when they do, the play
 Additionally, the \emph{Hub} produces some amount of \emph{fuel}, \emph{materials} and \emph{energy} at the end of each wave.
 These resources are further described in their respective sections.
 
-\subsection{Towers}
+\subsection{Towers}\label{sec:design-towers}
 
 Towers are the buildings which deal damage to attackers in order to kill them.
 There are many properties that distinguish towers from each other.
@@ -758,86 +760,424 @@ Another option would be to have the player start each battle with full hull, but
 
 \subsection{Time controls}
 
-- pause, speed up
+\begin{notindemo}
+    We want the player to be able to pause the game.
+    This is a quality-of-life feature, common among other real-time games.
+    In our game, the waves are short, and the player can just not start the next wave until ready.
+    However, pausing will be very useful during the waves for lining up ability placement.
+    Some attackers move fast and hitting them can be difficult, and we don't want our game to focus on dexterity or reaction time.
+    What's even more difficult is clicking on a fast moving attacker to inspect its details (described in section~\ref{sec:design-info-panel}).
 
-- what this means for the simulation
+    We will also let the player speed up the game to play at double speed.
+    This is useful for less eventful portions of gameplay, for example when a slow-moving attacker travels along a long empty stretch of path.
 
-- what this means for the animations
+    It is important that the game plays out the same no matter at which speed it's playing, and that pausing doesn't interfere with the game.
+    For example, it would be bad if the towers sometimes missed their targets when playing at double speed.
+    What happens in the game should also be frame rate independent.
 
-\section{Blueprints}
+    On the other hand, everything should look as smooth as possible given the frame rate at which is the game currently rendered.
+    Some animations will have to speed up when the game speeds up, others will still play at the same speed, even when the game is paused.
+\end{notindemo}
 
-- separation of stats and behavior - why?
+The demo version will be developed in a way that allows for this separation of game logic and game visuals.
+However, the time controls themselves will not be available in the demo.
 
-- what they represent
+\section{Blueprints}\label{sec:design-blueprints}
 
-- limited number
+A blueprint represents a building the player can build or an ability they can use during battles.
+Each blueprint will include a description that explains its function, including the exact values of important statistics -- for example the amount of damage a tower deals with each hit.
+The player will start each run with few predefined blueprints, and they will collect more blueprints throughout the run, giving them access to more buildings and abilities.
 
-- cost and cooldowns
+The player will only be able to have a limited number of blueprints at any given time.
+Whenever they want to acquire a new blueprint while at the limit, they'll have to give up one of the blueprints they already have.
+This way it is impossible to make a build that is just good at everything.
+They will have to consider carefully which blueprints they need to cover their weaknesses and which blueprints are the most synergistic with the rest.
 
-- rarities
+Each blueprint costs some \emph{materials} and/or \emph{energy} (see section~\ref{sec:design-materials-and-energy}) to use, though there could be some blueprints that are free.
+The player must pay this cost every time they want to build the given building or use the given ability.
 
-- how are they obtained
+Most blueprints will have no cooldown, so the player will be able to use them as of ten as they want.
+Some will have a cooldown given as a number of waves.
+This means some will be usable only once per wave, some only once per two waves, etc.
 
-- make them unique
+As we already mentioned a few times, the player will acquire new blueprints mainly after every battle.
+The player will be presented with a selection of three different blueprints they have not picked in this run yet.
+They can choose one of these to add to their collection, acquiring it for the rest of the run.
+\begin{notindemo}
+    Similar blueprint rewards will appear during some events the player might encounter.
+    Some events will offer blueprints randomly selected from the same pool as battle card rewards, other events will offer predefined blueprints, which don't appear in the regular blueprint rewards.
+    Some shops will also sell blueprints chosen randomly from the reward pool.
+\end{notindemo}
 
-- break the rules (build on paths, ability to make buildings ...)
+In the regular blueprint rewards, some blueprints will be more rare than others.
+Each blueprint will have one \emph{rarity}, which determines how often it will appear.
+The rarities are
+\begin{itemize}
+    \item \textbf{common},
+    \item \textbf{rare},
+    \item and \textbf{legendary}.
+    \item Additionally, there is \textbf{starter} -- the player starts each run with these. Thus, they do not appear as rewards.
+    \item And also \textbf{special} -- these blueprints also do not appear in the regular blueprint rewards, but they can be obtained on other ways, usually in events.
+\end{itemize}
 
-- lenticular design
+As their name suggests, \emph{common} blueprints will be more common than \emph{rare} blueprints, and \emph{legendary} blueprints will be even more rare.
+At first, the player will encounter a \emph{rare} blueprint about once per a few rewards with the rest being \emph{common}.
+However, towards the end of the run, most blueprints on offer will be \emph{rare}.
+Additionally, some rewards, for example after harder battles or boss battles (see section~\ref{sec:attacker-types}), will contain more rare blueprints more often.
+The exact proportions are yet to be determined based on playtesting.
 
-- blueprint upgrades
+\subsection{Design}
+
+The blueprints should be designed in such a way, that it is not great to always take the blueprint with the highest rarity.
+Of course, rarer blueprints will usually be stronger, but they will usually be more specific in their use.
+\emph{Rare} blueprints should be similarly good to \emph{common} blueprints in most cases, but potentially much stronger when used in the right way or in combination with the right blueprints.
+\emph{Legendary} blueprints should have the greatest potential power, but in even more specific circumstances.
+This power should however be so great, it is worth it to sacrifice some of the build's other aspects in order to get the most out of this blueprint.
+The overall strategy of a given build could be defined by a few \emph{legendary} blueprints, with the rest built to support them.
+Of course, some \emph{legendary} blueprints will be useful in more builds than others.
+It should also be possible to make a strong build just with a good set of \emph{common} and \emph{rare} blueprints.
+
+As we already mentioned in sections~\ref{sec:design-buildings}, \ref{sec:design-towers} and \ref{sec:design-abilities}, each blueprint should be unique in its own way.
+The most exciting designs are often those that somehow break the rules.
+For example, we could design a building that costs energy, or a tower that has to be placed on a path, or even an ability that manipulates your blueprints or the waves of attackers that are yet to come.
+However, most of these are hard to balance properly, and most important is whether they lead to fun gameplay or not.
+
+It is also important to design a good set of starter blueprints.
+It should be as small as possible, but somewhat balanced in most aspects.
+Specifically, it should provide a way to gather minerals and fuel.
+There should be at least two towers that can deal with the early levels, and they are distinct from each other, so there are still decisions to make even in the first levels.
+There should also be a starter ability, since abilities are a core of the design (see section~\ref{sec:design-abilities}).
+The individual blueprints should be as simple to use and understand as possible.
+Their power should be sufficient for the early levels, but they should be worse than other, even \emph{common} blueprints.
+
+\subsection{Augments}
+\begin{notindemo}
+    The player will also be able to upgrade their blueprints with \emph{augments}.
+    Each blueprint will be able to take up to 2 augments.
+    Each augment will be a slight improvement, applicable to many blueprints.
+    For example, one augment might increase damage, another might change the damage type, yet another might make the blueprint cheaper.
+
+    The augments will also have different rarities, determining how often they appear.
+    Similarly to blueprints, they will usually appear as a reward in battles or events and the player will choose one of three.
+    It will also be possible to buy them or get them in events.
+    Sometimes, blueprints will appear in rewards with an augment already applied.
+\end{notindemo}
 
 \section{Battle Graphical User Interface}
 
-\xxx{specify controls, use images}
+In this section, we will describe the graphical user interface that will be overlaid over the game world during a battle.
+The goal of the GUI is to display all the information the player might need, that is not present within the world itself, and to let the player access all the game controls without the need for a keyboard.
+However, for each of the controls accessible through the GUI, there will also be a hotkey the power users can use.
 
-\subsection{Waves Left and Fuel}
+In figure~\ref{fig:battle-ui} is a mockup of the GUI with red numbers in circles, marking each of the components.
+We will describe each component in its separate subsection with the last number corresponding to the number in the figure.
 
-- and time controls
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=\textwidth]{img/Battle UI design.pdf}
+    \caption{A mockup of the GUI during a battle. Red numbers in circles marking the individual components.}
+    \label{fig:battle-ui}
+\end{center}
 
-\subsection{Hull}
+\subsection{Waves and time controls}
+
+In the top left corner is displayed the number of the current wave in big white text.
+Above it is the remaining number of waves in green.
+This amount is calculated from the current amount of fuel and the fuel production per wave.
+
+Below this, there is a panel with time controls.
+Here, the player can start the next wave, or pause or speed up the game.
+The pause button will change into play when the game is paused or between waves.
+The speed button will change between one arrow and two arrows, based on the currently selected speed.
+
+\subsection{Fuel and Hull}
+
+Immediately to the right of the wave s display is displayed fuel and hull.
+The green progress bar displays how much fuel the player has out of the total required to finish the level.
+It also displays these values in text.
+Additionally, it shows the amount of fuel produced per wave and light green marks previewing the fuel values after each of the upcoming waves.
+
+Below is a red progress bar showing the player's hull out of the maximum amount.
 
 \subsection{Wave Preview}
 
+Below the fuel and hull displays it the wave preview.
+It shows the composition of the current and upcoming waves.
+Each wave has an arrow with its number and the batches of attackers that will come.
+Each batch shows one or more icons of the attacker type it's composed of along with a count.
+The icon spacing represents the spacing of the attackers in the wave itself.
+
 \subsection{Materials and Energy}
 
-\section{Blueprint Menu}
+At the bottom of the screen is the materials and energy display.
+In the orange hexagon is shown the current amount of materials the player has, along with a smaller number below it representing the material production per wave.
+Similarly, the blue circle shows the current amount of energy and the energy limit, with the energy production below.
+The circle is partially filled with a lighter blue to visually show how much energy the player has out of the maximum.
 
-\subsection{Info Panel and Selection}
+\subsection{Blueprint Menu}
 
-- what it looks like and what's on it
+To the right of materials and energy is the blueprint menu.
+Here the player can select their blueprints to use them.
+Between waves, only buildings are shown, and during a wave, only abilities are shown.
 
-- select blueprints
+Each blueprint is shown as a colored square of paper with an icon over it.
+The color represents the type of the blueprint:
+\begin{itemize}
+    \item blue for towers,
+    \item green for economic buildings,
+    \item purple for special buildings
+    \item and orange for abilities.
+\end{itemize}
+Overlaid over the lower portion of the blueprint is its cost.
+This is what the blueprints look like everywhere in the game, for example in blueprint rewards.
 
-- select buildings
+The cost number turns red when the player has insufficient resources.
+The cooldown is also shown as a partial dark transparent overlay over the blueprint paper.
+The portion it covers represents the portion of the cooldown that's left until the blueprint can be used again.
 
-- select attackers
+By clicking on a blueprint in the blueprint menu, the player will select it.
+To use it, they will have to click somewhere in the world to specify at which position do they want to use it.
+The player will also be able to select the blueprints using the number keys \textbf{1} to \textbf{9} on their keyboard, based on the blueprint's position in the blueprint menu.
 
-- dynamic values
+\subsection{Settings Button}
 
-\subsection{Highlights and Range Visualization}
+In the top right is a button which lets the player access a settings screen.
+Here the player will be able to access some game settings like sound and music volume.
+They will also be able to exit back to menu from this screen.
+When the settings screen is opened during a wave, the game pauses.
 
-\subsection{Attacker HP}
+\subsection{Info Panel}\label{sec:design-info-panel}
 
-\section{Camera controls}
+At the right edge of the screen is the info panel.
+It shows up only when the player has selected something, and it displays information about the selected thing.
+It also shows up when the player has not selected anything, but only hovered over something selectable with the cursor.
+In this mode, the panel is semi-transparent and no buttons are showing (more information below).
+This panel will appear whenever the player selects a relevant object, even on other screens, not just in battle.
+For example, when the player selects a blueprint in a shop.
 
-- zoom to look closely, rotate so the terrain doesn't hide stuff
+At the top is the name of the currently selected object.
+For now, let's assume it's a tower, as shown in the picture.
+The name is over a large icon of the tower's blueprint.
 
-\section{Blueprint acquisition screen}
+Over the lower portion of the icon is the targeting priority selector.
+It is displayed only when there are targeting options to choose from.
+Usually, only towers can have a targeting priority, and not all of them have it.
+The targeting priority selector consists of the name of the currently selected priority, and arrows to the left and right of it to switch to the next or previous priority.
+The priorities are usually a subset of those described in section~\ref{sec:design-towers}.
 
-\section{Demo Tutorial}
+The main portion of the info box is taken up by the description.
+The contents of the description depend on the selected object and will be specified later.
+However, there is a few special features the description has that can appear no matter the selected object type.
+
+First of them are icons in the text.
+These icons are used for important stats or quantities that appear often.
+For example there is an icon associated with damage, one for range, one for materials, etc.
+The icon usually appears before the mention of the thing it's associated with or before the stat.
+Examples of this use can be seen in figure~\ref{fig:battle-ui}.
+
+Most of the quantities in the description can be modified in various ways.
+If there is some sort of original version which differs from the current version, we can highlight the changed quantities using colors.
+Red means the quantity is now worse than before, green means it's better.
+Note that for some statistics, higher is better, and for others, lower is better.
+Additionally, it is possible something added a new description that wasn't in the original version.
+For example, a special building could add new abilities to neighboring towers.
+This new description is highlighted in orange.
+
+Below the description is a button that allows the player to delete the selected building.
+Of course, this button only appears when the selected object is a building that it is not permanent, unlike for example, the Hub.
+
+As mentioned, the info panel will display the description of \textbf{blueprints}.
+A blueprint's description contains sentences that explain what the thing, which the blueprint represents, does.
+Additional quantities that don't fit into these sentences are summarized at the top, as shown in figure~\ref{fig:battle-ui}.
+Also, when a blueprint is selected from the blueprint menu, it will show the remaining cooldown if any.
+
+The descriptions of \textbf{buildings} are basically the same as their blueprints.
+However, buildings can also provide some additional information of their own, for example the total amount of damage a tower has dealt or the amount of materials a building has produced.
+
+Similarly, \textbf{attacker stats} can be displayed, for example when you encounter a given attacker type for the first time.
+The format is the very similar to blueprints with base stats (see section~\ref{sec:attacker-types}) at the top and additional abilities described in sentences below.
+Attackers can also be selected during a wave.
+The changes are the same as with buildings and blueprints, but also the attackers always show their current HP in addition to their max HP.
+
+The player can also inspect an empty \textbf{tiles}.
+Here only little information is provided.
+Whether the tile has some obstacles, or is rich in minerals or fuel, whether it is slanted and whether a path runs across it.
+If the tile has a building on it, the details of the building are displayed instead.
+
+\section{Attacker HP Indicators}
+
+During a wave, we want the attackers in the world to have HP indicators above them to communicate to the player how much more damage they need to deal to a given attacker to kill it.
+These indicators should be overlaid over the attackers and always face the camera.
+Their purpose is to let the player know how much HP the attacker has left.
+There is going to be a lot of attackers on the screen, and thus a lot of HP indicators.
+They should be simple in order to be legible when viewed when the camera is zoomed out and not too noisy in large quantities.
+
+Thus, we will use the design displayed in figure~\ref{fig:attacker-hp}.
+It has a rectangular shape, and it should be one size for all small attackers and one size for all large attackers.
+The rectangle is filled in with a colored fill on a dark gray background.
+This fill represents the portion of the attacker's HP that's left out of their maximum HP.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.5\textwidth]{img/Attacker HP.pdf}
+    \caption{Two attackers with HP indicators. The one on the left has 4/5\,HP, the one on the right has about 150/250\,HP.}
+    \label{fig:attacker-hp}
+\end{center}
+
+Over the colored fill, there are black vertical lines dividing the indicator into sections.
+Each section represents the same amount of HP.
+In the HP indicator above the attacker on the left, each section represents 1\,HP.
+Thus, we can count that the attacker has 4\,HP out of a maximum of 5.
+However, some attackers will have a lot of HP, and section of just 1\,HP would be impractical for those.
+So each section will represent a power of 10 of HP, and we will distinguish them by the color of the fill.
+Orange for 1\,HP sections, red for 10\,HP sections, dark red for 100\,HP sections, and potentially also magenta and purple if larger values are needed.
+
+We always choose the largest section size that leads to the indicator having more than one section, so there is always 2 to 10 sections.
+It is also important to note, that the rightmost section will not necessarily represent the amount of HP it should.
+For example when an attacker has 250\,HP, their indicator will consist of two 100\,HP sections and one 50\,HP section.
+This last section will be scaled accordingly, in this case it will be only half as wide as the whole sections, as seen in figure~\ref{fig:attacker-hp}.
+
+\section{Selection and Highlighting}
+
+In section~\ref{sec:design-info-panel} we've mentioned that the player will be able to select blueprints, buildings, tiles and attackers.
+We want to communicate to the player what is currently selected.
+We can accomplish this by displaying a blue outline around the selected object.
+Similarly, we can show what's the player's cursor hovering over with a lighter shade of blue.
+
+During a battle, buildings can often affect other objects, for example, towers usually have a big impact on the HP of surrounding attackers.
+We can use similar highlights to show these relations.
+All attackers within the range of a tower should be highlighted in yellow when that tower is selected.
+Similarly, when placing an ability that immediately affects attackers, we should highlight the attackers that would be affected.
+As another example, while the player is placing a building that affects other buildings, or when the player selects this building, all the affected buildings should be highlighted.
+For some objects, for example most attackers, we don't even want to highlight anything else.
+However, what to highlight will have to be decided on a case by case basis, because the objects in our game can have all sorts of unique behaviors.
+Additionally, when the player hasn't selected anything, but has hovered over some object, we can also display its relevant highlights, since we're not displaying the highlights of any selected object.
+
+Relevant objects won't be highlighted only based on what's selected.
+As we indicated, when the player has selected a blueprint in order to use it, we can preview what would be affected if the player used it right now.
+We should also highlight as hovered only the object relevant to the blueprint's placement.
+When placing a building, we don't want to highlight the attacker the player's cursor is over, because building are not used on attackers.
+They are built on tiles, so we should highlight the tile the attacker is on.
+Similarly, when the player is about to use an ability that can be placed at any point on the surface of the world, we shouldn't highlight tiles or attackers, but only highlight the exact point the ability is about to be placed at.
+This placement highlight can also indicate when a placement is invalid by turning red instead of being blue.
+
+When placing something that can only be placed on specific tiles, we can also highlight these tiles.
+For example, most towers cannot be placed on tiles with obstacles or a path.
+There is usually going to be a lot of valid tiles, so this highlight should be a bit more subtle.
+We think the best way to show this is to tint the terrain of the valid tiles in blue.
+
+We also want to show the range of the ability or tower the player is currently placing (or a tower that's selected).
+The player needs to see the range in the context of the world, just a number is not enough.
+The most clear way to do this is to also draw this range visualization directly on the terrain.
+This is because the situation could be viewed from different angles.
+In most cases, this would be just a simple circle, however, some towers or abilities can have an unusual range shape, for example a straight line.
+Most importantly, a lot of towers will only be able to shoot at attackers in line of sight, which will create all sorts of unusual range shapes.
+We definitely need to communicate to the player where the tower can hit attackers and where it cannot.
+
+In figure~\ref{fig:range-visualization} is an example range visualization for a tower that requires line of sight.
+This situation is showed from a top-down view, however in game, this would take place on a 3D terrain and this range visualization would have to be drawn correctly even from a different angle.
+In the figure, the tower is represented by the blue square in the center.
+The black lines separate different levels of the terrain, the lowest level is colored with the darkest shade of gray.
+In the top part of the figure, we can see the tower's line of sight is being blocked by a higher terrain.
+The visualization also shows that this tower cannot shoot uphill, since there is nothing drawn on the higher level of the terrain.
+In the top left quadrant we can see the tower's line of sight by some large obstacles.
+The tile immediately to the right of the tower is slanted, transitioning to a lower level.
+On the lower level, we can see some unusual shapes emerge.
+This gap in the range appears, because the terrain level the tower is on is in the way when the tower wants to shoot at attackers close to the base of the overhang.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.9\textwidth]{img/Range visualisation.pdf}
+    \caption{Example visualization of the range of a tower represented by the blue square.}
+    \label{fig:range-visualization}
+\end{center}
+
+Here, we can also see a portion of the range colored in yellow.
+This means that if an attacker was at this point, the tower would only be able to shoot at it over the ledge if it was a \emph{large} attacker.
+In section~\ref{sec:attacker-types} we have explained that there will be two sizes of attackers.
+This means that there will be a region where a tower can't see any attackers, a region where the tower can see any attackers (green), a region where the tower can only see \emph{large} attackers (yellow), but also a region where the tower can only see \emph{small} attackers.
+The last case is, however, very rare, so we can draw this region also in green.
+
+Calculating the exact shape of the region the tower can see can be expensive.
+We could simplify this by only computing the range visualization where an attacker could appear -- on a path.
+However, we think it is important to show at least an approximation of the whole picture, to make it easier for the player to see what's blocking the line of sight and where.
+
+\section{Battle Camera Controls}
+
+During a battle, the world will be rendered onto the player's screen using an orthographic camera at an angle that mimics isometric graphics~\cite{IsometricWiki}.
+The world is pretty large, so we want to let the player zoom in.
+They will be able to do so using the mouse scroll wheel.
+Most of the time, the world will be viewed at an angle in to clearly convey the various heights of the 3D terrain.
+However, in some cases it would be useful to have a top-down view, for example when inspecting whether a path intersects with a tower's range.
+We can blend these functions by slowly tilting the camera to look straight down at the maximum zoom level.
+This is the zoom level at which it's best to inspect details anyway.
+
+Since the camera can be zoomed in, the whole world won't necessarily be on the screen at once.
+The player will have to be able to move the camera around.
+Additionally, high terrain can sometimes obstruct what's behind it, so we will allow the player to rotate the camera around the vertical axis, bot only in 90 degree steps to preserve the isometric look.
 
 \section{Future Features}
 
-- setting
+In this section, we would like to mention other features that will be in the full game, and we've not described them earlier in this chapter.
+These features will also have to be designed eventually, but they will not be in the demo, so only rough descriptions are provided.
 
-- run structure
+\begin{notindemo}
 
-- map
+    \subsection{Setting and Story}
 
-- events and shops
+    From the names we've given to various game components, it might be clear that we're leaning towards some kind of sci-fi setting.
+    The player would travel across a galaxy using a spaceship, stopping on various planets along the way to refuel for further travels.
+    But what is the main character's story?
+    What is their ultimate goal?
+    Well, the story has not been decided yet.
+    However, the story should be an important part of the game, and it will inform a big portion of the game's further design.
+    Any game can always benefit from an engaging story, especially single-player games.
 
-- saving the game
+    \subsection{Run Structure}
 
-- unlocks
+    We want each run of the game to last at most 2 hours, since we want the players to be able to complete each run in on sitting.
+    Each run will probably consist of three acts, each ending in a boss level.
+    This is the same structure as in \emph{Slay the Spire} or \emph{Monster Train}~\cite{MonsterTrain}, which are both roguelike deck-building games.
+    It seems to work very well for them, so it is where we'll start.
+    However, the final run structure will heavily depend on playtesting.
 
-- difficulty levels
+    One thing that is clear even now, is that each battle will take substantially longer than in \emph{Slay the Spire}.
+    \emph{Monster Train} also has longer levels, so each run consists only of 9 fights.
+    It is reassuring that a roguelike of this kind can work even with fewer levels.
+    Even though \emph{Monster Train} has fewer levels than \emph{Slay the Spire}, it has a similar amount of rewards and shops throughout the run, letting the players customize their build to a similar degree, if not greater.
+
+    \subsection{Saving the Game}
+
+    Even though we want the players to be able to play a run in one sitting, saving their progress is still a very useful feature.
+
+    Ideally, we would save the game after every choice the player makes and after every tick of simulation during a battle.
+    However, this is technically unfeasible.
+    We could save the game whenever they explicitly choose to save, for example when they exit the game.
+    This would still be pretty difficult, since we would need to serialize the state of all towers, attackers and projectiles, and then we would need to be able to load and initialize everything correctly again.
+
+    We could take the approach both \emph{Slay the Spire} and \emph{Monster Train} use and save the game whenever the player makes a decision outside of battle, and during battle only at the start and the end.
+    This would definitely work and be usable.
+    However, we will aim to save the game at the start and end of every wave.
+    In \emph{Bloons TD 6}, the game is saved at the end of every wave only, and the player can build towers even during a wave.
+    This means that a player can exit the game right before they would lose and redo the wave, with a different strategy.
+    In our game this sort of save scumming would be less effective, since the player can only use abilities, which are meant to be used reactively anyway, and change tower targeting.
+
+    \subsection{Money}
+
+    We that it would be good to add another resource, one that persists throughout the entire run.
+    The main use of this resource, for simplicity called money, would be to pay for items in shops.
+    This would allow the player to make more decisions than for example, if they got one thing in every shop for free and nothing more.
+    This way they can save up their money when a shop doesn't offer anything they'd like to buy, and spend more at shops with things they like.
+    Of course, money would be acquired mainly by winning battles and sometimes in events.
+
+    \subsection{Permanent Unlocks}
+
+    The most strict definitions of a \emph{rogue-like} mandate that the game doesn't let the player unlock any permanent improvements which persist between runs.
+    The players themselves should improve by playing the game, not their in-game characters.
+    We like this idea and wish to preserve it even within our game.
+    However, it is possible the player will be able to unlock more of our game's content as they play, in a way that is similar to \emph{Slay the Spire}.
+    In \emph{Slay the Spire}, the player starts off as a character called \emph{The Ironclad} and only after playing one game they unlock the second character.
+    Furthermore, for each character, the game offers five sets of new cards and relics to unlock.
+    These unlock serve mainly to not overwhelm a new player with choices or items which are harder to understand.
+
+\end{notindemo}

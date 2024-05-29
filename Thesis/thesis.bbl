@@ -346,6 +346,64 @@
       \verb https://en.wikipedia.org/w/index.php?title=Desktop_Tower_Defense&oldid=1220758442
       \endverb
     \endentry
+    \entry{IsometricWiki}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=b6aea1a416c89509a7df1cbb69249cb6}{%
+           family={{Wikipedia contributors}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{fullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{bibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \field{extraname}{5}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Isometric video game graphics --- {Wikipedia}{,} The Free Encyclopedia}
+      \field{urlday}{29}
+      \field{urlmonth}{5}
+      \field{urlyear}{2024}
+      \field{year}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/w/index.php?title=Isometric_video_game_graphics&oldid=1224963052
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/w/index.php?title=Isometric_video_game_graphics&oldid=1224963052
+      \endverb
+    \endentry
+    \entry{MonsterTrain}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=82b502c02d98316d31c6627e42c35565}{%
+           family={{Shiny Shoe}},
+           familyi={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{82b502c02d98316d31c6627e42c35565}
+      \strng{fullhash}{82b502c02d98316d31c6627e42c35565}
+      \strng{bibnamehash}{82b502c02d98316d31c6627e42c35565}
+      \strng{authorbibnamehash}{82b502c02d98316d31c6627e42c35565}
+      \strng{authornamehash}{82b502c02d98316d31c6627e42c35565}
+      \strng{authorfullhash}{82b502c02d98316d31c6627e42c35565}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Monster Train}
+      \field{urlday}{29}
+      \field{urlmonth}{5}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.themonstertrain.com/
+      \endverb
+      \verb{url}
+      \verb https://www.themonstertrain.com/
+      \endverb
+    \endentry
     \entry{UnityDocs}{manual}{}
       \name{author}{1}{}{%
         {{hash=3f56ad8f8e05fcad24de3fcf878fb50b}{%
@@ -477,8 +535,8 @@
       \strng{authorbibnamehash}{a1c93f9899ec4b90bbfd7591be21dba4}
       \strng{authornamehash}{a1c93f9899ec4b90bbfd7591be21dba4}
       \strng{authorfullhash}{a1c93f9899ec4b90bbfd7591be21dba4}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Mathematics of Computation}
