@@ -40,6 +40,7 @@ namespace Game.Run
                     // every fifth level is just one long path
                     paths = 1;
                     minPathLength = Mathf.Min(50 + level * 2, 110);
+                    ws.maxExtraPaths = 0;
                 }
                 else
                 {
@@ -49,6 +50,7 @@ namespace Game.Run
                         paths = 6;
                     // this formula was selected such that it's 30 for lvl1, 25 for lvl 2, and approaches 10 for lvl -> inf
                     minPathLength = Mathf.RoundToInt(60f / (2 + level)) + 10;
+                    ws.maxExtraPaths = level - 1;
                 }
 
                 List<int> pathLengths = new();
@@ -73,7 +75,7 @@ namespace Game.Run
             if (wg.overrideRunSettings)
                 return;
 
-            wg.baseValueRate = 2.7f + 0.35f * level - 0.9f * pathCount;
+            wg.baseValueRate = 2.85f + 0.35f * level - pathCount;
             wg.baseEffectiveValueBuffer = (7 + 1 * level) * (20 + totalPathLength) * 0.02f;
             wg.linearScaling = 1;
             wg.quadraticScaling = 0.01f;

@@ -48,12 +48,13 @@ namespace BattleSimulation.Control
         {
             paths_ = World.WorldData.World.data.firstPathTiles.Length;
 
-            // only use half the range to prevent overflow
-            var startIndex = (uint)(World.WorldData.World.data.seed & 0x7FFFFFFF);
             // the extra entry is for attackers spawned during a wave
             currentIndexes = new uint[paths_ + 1];
-            for (int i = 0; i < paths_; i++)
-                currentIndexes[i] = startIndex;
+            // divide the uint range among up to 15 "paths"
+            // (the one starting with F would be invalid, because it could easily overflow which we don't want)
+            var baseStartIndex = (uint)(World.WorldData.World.data.seed & 0x0FFFFFFF);
+            for (int i = 0; i < currentIndexes.Length; i++)
+                currentIndexes[i] = baseStartIndex | ((uint)i << 28);
 
             START_WAVE.RegisterHandler(StartNextWave);
 

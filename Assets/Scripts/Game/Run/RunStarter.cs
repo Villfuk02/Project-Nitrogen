@@ -29,16 +29,24 @@ namespace Game.Run
         {
             RunPersistence runPersistence = Instantiate(runPersistencePrefab).GetComponent<RunPersistence>();
 
+            string runTypeIndicator = "";
+            if (selectStartingBlueprints)
+                runTypeIndicator = " [custom]";
+            else if (seedString != "")
+                runTypeIndicator = " [set]";
+
             if (playTutorial)
             {
                 seedString = "TUTO RIAL";
                 selectStartingBlueprints = false;
                 runPersistence.level = -1;
                 PersistentData.ClearProgress();
+
+                runTypeIndicator = "";
             }
 
-            runPersistence.seedString = seedString;
-            runPersistence.runSeed = SeedEncoder.GetSeedFromString(ref runPersistence.seedString);
+            runPersistence.runSeed = SeedEncoder.GetSeedFromString(ref seedString);
+            runPersistence.seedString = seedString + runTypeIndicator;
             runPersistence.Init(playTutorial || selectStartingBlueprints);
             if (selectStartingBlueprints)
             {
@@ -56,5 +64,6 @@ namespace Game.Run
 
         public void SetSeedString(string seedString) => this.seedString = seedString;
         public void SetSelectStartingBlueprints(bool selectStartingBlueprints) => this.selectStartingBlueprints = selectStartingBlueprints;
+        public void GoToMenu() => SceneController.ChangeScene(SceneController.Scene.Menu, true, true);
     }
 }

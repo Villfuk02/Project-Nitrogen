@@ -15,7 +15,7 @@ namespace BattleSimulation.Towers
         public GameObject projectilePrefab;
         [SerializeField] protected UnityEvent<Attacker> onShoot;
         [Header("Runtime variables")]
-        [SerializeField] protected int shotTimer;
+        public int shotTimer;
 
         protected override void FixedUpdateInternal()
         {

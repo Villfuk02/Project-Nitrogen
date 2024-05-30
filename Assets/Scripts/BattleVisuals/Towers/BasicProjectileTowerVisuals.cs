@@ -1,6 +1,6 @@
-using BattleSimulation.Attackers;
 using BattleSimulation.Towers;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace BattleVisuals.Towers
 {
@@ -11,31 +11,38 @@ namespace BattleVisuals.Towers
         [SerializeField] ProjectileTower t;
         [SerializeField] Animator shootAnim;
         [SerializeField] Transform turretPivot;
-        [Header("Runtime variables")]
-        [SerializeField] Attacker currentTarget;
-        [SerializeField] Transform currentTargetVisual;
+        [FormerlySerializedAs("rotationSmoothing")]
+        [Header("Settings")]
+        [SerializeField] float rotationSpeed;
+        [SerializeField] float rotationLockRatio;
 
         void Update()
         {
             if (!t.Placed)
                 return;
 
-            var target = t.targeting.target;
-            if (target != currentTarget)
-            {
-                currentTarget = target;
-                currentTargetVisual = target == null ? null : target.visualTarget;
-            }
+            if (1 - t.shotTimer / (float)t.Blueprint.interval < rotationLockRatio)
+                return;
 
-            if (currentTargetVisual != null)
-            {
-                turretPivot.LookAt(currentTargetVisual);
-            }
+            var targetRotation = GetTargetRotation();
+            turretPivot.rotation = Quaternion.Slerp(turretPivot.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
 
         public void Shoot()
         {
             shootAnim.SetTrigger(ShootTrigger);
+            turretPivot.rotation = GetTargetRotation();
+        }
+
+        Quaternion GetTargetRotation()
+        {
+            var target = t.targeting.target;
+            var currentTargetVisual = target == null ? null : target.visualTarget;
+
+            if (currentTargetVisual != null)
+                return Quaternion.LookRotation(currentTargetVisual.position - turretPivot.position);
+
+            return turretPivot.rotation;
         }
     }
 }

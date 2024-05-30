@@ -248,8 +248,8 @@ MonoBehaviour:
   t: {fileID: 584954861310610428}
   shootAnim: {fileID: 2590110370913795968}
   turretPivot: {fileID: 5823852758749464696}
-  currentTarget: {fileID: 0}
-  currentTargetVisual: {fileID: 0}
+  rotationSpeed: 20
+  rotationLockRatio: 0.4
 --- !u!1 &475032649215164951
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using System;
 using Game.Blueprint;
+using Game.Shared;
 using UnityEngine;
 using Utils;
 
@@ -24,7 +25,6 @@ namespace BattleSimulation.Abilities
                     continue;
 
                 blueprint.materialCost = Math.Max(0, blueprint.materialCost - costReduction);
-                blueprint.energyCost = Math.Max(0, blueprint.energyCost - costReduction);
 
                 if (blueprint.HasRadius)
                     blueprint.radius *= 1 + radiusIncrease;
@@ -36,6 +36,8 @@ namespace BattleSimulation.Abilities
 
                 Destroy(gameObject, destroyAfter);
             }
+
+            SoundController.PlaySound(SoundController.Sound.Catalyst, 1, 0.6f, 0.1f, transform.position);
         }
     }
 }

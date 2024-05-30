@@ -33,9 +33,8 @@ MonoBehaviour:
   materialProduction: -1
   energyProduction: -1
   statsToDisplay: []
-  statsToDisplayWhenUninitialized: []
   descriptions:
   - 'Improves other bluperints for the rest of the battle:'
-  - Makes them [#ENE]2[#MAT]2 cheaper.
+  - Makes them [#MAT]2 cheaper.
   - Increases [#RNG]Range and [#RAD]Radius by 5%.
   - Decreases [#INT]Interval by 10%, to a minimum of 0.25s.

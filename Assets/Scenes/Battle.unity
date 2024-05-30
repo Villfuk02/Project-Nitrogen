@@ -271,6 +271,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 568931855}
+        m_TargetAssemblyTypeName: BattleSimulation.Control.BattleController, BattleSim.Control
+        m_MethodName: InitRandom
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 865701826}
         m_TargetAssemblyTypeName: Game.Tutorial.TutorialController, Game.Tutorial
         m_MethodName: TriggerPhase
@@ -4800,6 +4812,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c11d1872e6862ff41928e450950f09eb, type: 2}
   - {fileID: 11400000, guid: 41b21d00b30f2304b94dbe125c704605, type: 2}
   maxWaveLengthTicks: 250
+  maxAttackersPerWave: 120
   parallelWaveChance: 0.25
   pathDropChance: 0.4
   maxBatchCount: 3

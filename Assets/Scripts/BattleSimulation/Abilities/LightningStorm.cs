@@ -3,6 +3,7 @@ using BattleSimulation.Attackers;
 using BattleSimulation.Control;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = Utils.Random.Random;
 
 namespace BattleSimulation.Abilities
 {
@@ -11,13 +12,15 @@ namespace BattleSimulation.Abilities
         [Header("Settings")]
         [SerializeField] UnityEvent<Transform> onHit;
         public int strikes;
-
         [Header("Runtime variables")]
         int timer_;
+        Random random_;
 
         protected override void OnPlaced()
         {
+            base.OnPlaced();
             WaveController.ON_WAVE_FINISHED.RegisterReaction(OnWaveFinished, 100);
+            random_ = BattleController.GetNewRandom();
         }
 
         protected void OnDestroy()
@@ -50,7 +53,8 @@ namespace BattleSimulation.Abilities
             var targets = targeting.GetValidTargets().ToArray();
             if (targets.Length <= 0)
                 return;
-            Hit(targets[Random.Range(0, targets.Length)]);
+            targets = targets.OrderBy(a => a.startPathSplitIndex).ToArray();
+            Hit(targets[random_.Int(targets.Length)]);
         }
 
         void Hit(Attacker attacker)

@@ -4,6 +4,7 @@ using Game.AttackerStats;
 using Game.Shared;
 using UnityEngine;
 using Utils;
+using Random = Utils.Random.Random;
 
 namespace BattleSimulation.Control
 {
@@ -20,6 +21,8 @@ namespace BattleSimulation.Control
         public static readonly ModifiableCommand<float> UPDATE_ENERGY_PER_WAVE = new();
         public static readonly ModifiableCommand<float> UPDATE_FUEL_PER_WAVE = new();
         public static readonly ModifiableCommand WIN_LEVEL = new();
+
+        static Random battleRandom_;
 
         [Header("Runtime variables")]
         public int material;
@@ -188,5 +191,8 @@ namespace BattleSimulation.Control
             lost = true;
             SoundController.PlaySound(SoundController.Sound.Defeat, 0.9f, 1, 0, null, SoundController.Priority.High);
         }
+
+        public void InitRandom() => battleRandom_ = new(World.WorldData.World.data.seed ^ 0x0F0F0F0F0F0F0F0F);
+        public static Random GetNewRandom() => new(battleRandom_.NewSeed());
     }
 }

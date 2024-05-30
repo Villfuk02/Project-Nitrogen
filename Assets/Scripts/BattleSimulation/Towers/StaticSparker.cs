@@ -1,7 +1,10 @@
+using System.Linq;
 using BattleSimulation.Attackers;
+using BattleSimulation.Control;
 using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = Utils.Random.Random;
 
 namespace BattleSimulation.Towers
 {
@@ -14,6 +17,13 @@ namespace BattleSimulation.Towers
         [SerializeField] UnityEvent<(Transform, Attacker)> onShoot;
         [Header("Runtime variables")]
         [SerializeField] protected int shotTimer;
+        Random random_;
+
+        protected override void OnPlaced()
+        {
+            base.OnPlaced();
+            random_ = BattleController.GetNewRandom();
+        }
 
         protected override void FixedUpdateInternal()
         {
@@ -37,19 +47,18 @@ namespace BattleSimulation.Towers
             ShootOne(sparkOrigin, primaryTarget, damage);
 
             var potentialSecondaryHits = Physics.SphereCastAll(primaryTarget.target.position + Vector3.down * 5, Blueprint.radius, Vector3.up, 10, LayerMasks.attackerTargets);
+            var attackers = potentialSecondaryHits.Select(h => h.rigidbody.GetComponent<Attacker>()).OrderBy(a => a.startPathSplitIndex).ToArray();
+            random_.Shuffle(attackers);
+
             int found = 0;
-            for (int upperBound = potentialSecondaryHits.Length; upperBound > 0; upperBound--)
+            foreach (var attacker in attackers)
             {
                 if (found >= maxBranches)
                     break;
-                int r = Random.Range(0, upperBound);
-                var potentialHit = potentialSecondaryHits[r];
-                (potentialSecondaryHits[r], potentialSecondaryHits[upperBound - 1]) = (potentialSecondaryHits[upperBound - 1], potentialSecondaryHits[r]);
-                Attacker a = potentialHit.rigidbody.GetComponent<Attacker>();
-                if (a.IsDead || a == primaryTarget)
+                if (attacker.IsDead || attacker == primaryTarget)
                     continue;
                 found++;
-                ShootOne(primaryTarget.target, a, damage / 2);
+                ShootOne(primaryTarget.target, attacker, damage / 2);
             }
         }
 
