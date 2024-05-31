@@ -112,7 +112,7 @@ namespace WorldGen.Path
         {
             if ((position - hubPosition_).sqrMagnitude < minDistFromHub * minDistFromHub)
                 return;
-            if ((position.x + position.y - hubPosition_.x - hubPosition_.y) % 2 == 0)
+            if ((position - hubPosition_).ManhattanMagnitude() % 2 == 0)
                 evenLengthCandidates_.Add(position);
             else
                 oddLengthCandidates_.Add(position);
@@ -138,7 +138,7 @@ namespace WorldGen.Path
                 RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.yellow, WorldUtils.TilePosToWorldPos(result), 0.2f));
                 // end debug
 
-                // if the candidate is too far from the center, reject it, but don't forget to add it back into the set of available starts
+                // if the candidate is too far from the hub, reject it, but don't forget to add it back into the set of available starts
                 if (result.ManhattanDistance(hubPosition_) > length)
                 {
                     tooFar.Add(result);

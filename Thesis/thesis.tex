@@ -82,6 +82,19 @@
 % Packages for computer science theses
 \usepackage{algpseudocode}  % part of algorithmicx package
 \usepackage{algorithm}
+\usepackage{algorithmicx}
+% MY ALGO MACROS
+\algnewcommand\algorithmicforeach{\textbf{for each}}
+\algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
+
+\algblock{Input}{EndInput}
+\algnotext{EndInput}
+
+\algblock{Output}{EndOutput}
+\algnotext{EndOutput}
+
+\newcommand{\Desc}[2]{\State \makebox[2em][l]{#1}#2}
+
 \usepackage{fancyvrb}       % improved verbatim environment
 \usepackage{listings}       % pretty-printer of source code
 
@@ -93,6 +106,7 @@
 \tikzset{cross/.style={cross out, draw=black, minimum size=2*(#1-\pgflinewidth), inner sep=0pt, outer sep=0pt},
 cross/.default={1pt}}
 \usepackage[framemethod=tikz]{mdframed}
+\usepackage{amssymb}
 
 % You might want to use cleveref for references
 % \usepackage{cleveref}

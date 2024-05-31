@@ -546,6 +546,51 @@
       \field{volume}{68}
       \field{year}{1999}
     \endentry
+    \entry{SimulatedAnnealing}{article}{}
+      \name{author}{3}{}{%
+        {{hash=7872b231407c202bb66a9588eac3de57}{%
+           family={Kirkpatrick},
+           familyi={K\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=e003731305cfe4ccfbfc1e00b8d98686}{%
+           family={Gelatt},
+           familyi={G\bibinitperiod},
+           given={C.\bibnamedelimi D.},
+           giveni={C\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=3d96d611a1c8ced8032677fa2b5020b6}{%
+           family={Vecchi},
+           familyi={V\bibinitperiod},
+           given={M.\bibnamedelimi P.},
+           giveni={M\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+      }
+      \strng{namehash}{96f9af867710312e870a066ebaf3b314}
+      \strng{fullhash}{4e64604b17f2f25156bbf67444c2ae54}
+      \strng{bibnamehash}{4e64604b17f2f25156bbf67444c2ae54}
+      \strng{authorbibnamehash}{4e64604b17f2f25156bbf67444c2ae54}
+      \strng{authornamehash}{96f9af867710312e870a066ebaf3b314}
+      \strng{authorfullhash}{4e64604b17f2f25156bbf67444c2ae54}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Science}
+      \field{number}{4598}
+      \field{title}{Optimization by Simulated Annealing}
+      \field{volume}{220}
+      \field{year}{1983}
+      \field{pages}{671\bibrangedash 680}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1126/science.220.4598.671
+      \endverb
+      \verb{urlraw}
+      \verb https://www.science.org/doi/abs/10.1126/science.220.4598.671
+      \endverb
+      \verb{url}
+      \verb https://www.science.org/doi/abs/10.1126/science.220.4598.671
+      \endverb
+    \endentry
   \enddatalist
 \endrefsection
 \endinput

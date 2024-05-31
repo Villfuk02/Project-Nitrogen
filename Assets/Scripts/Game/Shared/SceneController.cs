@@ -9,7 +9,6 @@ namespace Game.Shared
 {
     public class SceneController : MonoBehaviour
     {
-        [Serializable]
         public enum Scene { Loading, Menu, RunSettings, Battle, BlueprintSelect }
 
         static SceneController instance_;

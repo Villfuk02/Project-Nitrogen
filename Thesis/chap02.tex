@@ -62,7 +62,7 @@ Fights also vary a lot because the player draws their cards in a different order
 All this means that the player has something to think about every turn.
 
 Our game will also have economic buildings and instant abilities, so the player has to balance economy and short-term versus long-term defense.
-The player will have to survive some number of waves, but they will be able to spend extra materials to mine fuel faster and end the battle sooner.
+The player will have to survive some number of waves, but they will be able to spend extra \emph{materials} to mine \emph{fuel} faster and end the battle sooner.
 This is similar to being more offensive in \emph{Slay the Spire}, since the waves of attackers should get stronger at a faster pace than the player's defense.
 Each battle will require a different approach, since the waves will be composed of a different set of attackers every time.
 We can also vary the nature of a battle by changing up the terrain and making attacker paths different lengths or more numerous.
@@ -78,13 +78,13 @@ In \emph{Slay the Spire}, the player needs to improve many aspects of their deck
 They need to have great defensive cards, cards that can deal with enemies that have a lot of health, cards that can attack multiple enemies at once and more.
 The player should also care about the average cost of the cards in their deck.
 It is bad when the player wants to both defend and attack on a given turn, but they've drawn only an expensive attack and an expensive defensive card.
-It is also suboptimal when the player plays out all the cards they've drawn, but they have leftover energy they didn't spend.
+It is also suboptimal when the player plays out all the cards they've drawn, but they have leftover \emph{energy} they didn't spend.
 Balancing these aspects of the deck leads to some difficult decisions when picking cards to add.
 For example, should the player pick a good defensive card because they are lacking in defense, or should they pick an attack that's just very strong.
 
 We want to balance the battles in a way, which requires the player to have strong blueprints (see section~\ref{sec:design-blueprints}) with various qualities.
-The players should need good economic buildings, fuel-producing buildings, abilities and towers good at dealing with various kinds of attackers.
-They should also have some cheaper towers to build in the first few waves and more expensive towers to build once they produce a lot of material.
+The players should need good economic buildings, \emph{fuel}-producing buildings, abilities and towers good at dealing with various kinds of attackers.
+They should also have some cheaper towers to build in the first few waves and more expensive towers to build once they produce a lot of \emph{materials}.
 
 In \emph{Slay the Spire}, the player comes across the interesting trade-off between short-term and long-term power even in building their deck.
 The player wants cards which will have a great potential to be strong in the future, having great synergy with other cards.
@@ -98,8 +98,8 @@ However, it does almost the same thing as \emph{Defend} \textbf{and} \emph{Strik
 Picking this card can help a lot in the early fights, but it doesn't really grow stronger later in the run.
 The card \emph{Double Tap}, on the other hand, is not great at the start.
 In essence, it acts like another \emph{Strike} most of the time, and is useful only when the player draws another attack alongside it.
-It is however very strong when the deck contains many attacks that cost a lot of energy but deal much more damage.
-Then it allows the player to play a powerful attack twice at the cost of only one more energy.
+It is however very strong when the deck contains many attacks that cost a lot of \emph{energy} but deal much more damage.
+Then it allows the player to play a powerful attack twice at the cost of only one more \emph{energy}.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -408,7 +408,7 @@ To summarize:
     \item Each world will be generated according to a randomly selected terrain type, which determines what the world will be like.
 \end{itemize}
 
-\subsection{Attacker Paths}
+\subsection{Attacker Paths}\label{sec:design-paths}
 
 In section~\ref{sec:design-attacker-waves} we decided that the attackers will travel on predefined paths generated with the world.
 If we designed each level of our game by hand, we could create paths that just feel like they would be fun to play around.
@@ -427,7 +427,7 @@ The player will start each level with one building already built~--- the \emph{H
 It is the goal the attackers are trying to reach to destroy it.
 Hence, all attacker paths will converge to the tile the \emph{Hub} is on.
 The attackers will come from outside the world the battle takes place on.
-The worlds are bigger, but the playable area represents just a small safe neighborhood around the \emph{Hub}.
+In the game's universe, the worlds are bigger, but the playable area is just a small neighborhood around the \emph{Hub}.
 It would be weird if the attackers just appeared on the edge tiles, so their paths will start on tiles just outside the playable world.
 
 In figure~\ref{fig:valid-path-example} we can see an example of a valid path network drawn in blue on a world of square tiles.
@@ -496,6 +496,7 @@ Most towers will have limited range, and they will be most effective near the at
 We want the paths to be spread out throughout the game world in order to not have tiles that are just way too far from any paths to be useful.
 This is illustrated in figure~\ref{fig:path-spacing}, where we can see a path network with bad features on the left, and on the right, one with the same path lengths and starting positions, but nicer and more spread out.
 We have marked tiles whose center is 2 or more tiles from the nearest path with a small cross.
+
 In the right figure, we can also see a red point on one tile, marking a great spot for a tower.
 This spot allows even a tower with shorter range, illustrated by the red ring around it, to target attackers on a large portion of the path.
 On the left we have circled another U-turn in the path that is, however, undesirable.
@@ -503,6 +504,11 @@ This is because there is no empty tile between the paths, so the player can't pl
 We don't want many sharp turns like these, but they can occur from time to time for variety.
 Similarly, paths going right next to each other (marked in red) are bad.
 The player cannot place towers on paths, so these paths greatly limit the player's access to each other, making for an unpleasant experience.
+A similar situation occurs when a path goes through tiles at the edge of the world, blocking access to the path from one side, so paths should not go through these tiles very often.
+
+The \emph{Hub} should be several tiles away from the edges of the playable area, so the player has good access to the path segments near it.
+It should be very close to the center in levels with many paths, so the paths can come towards it from different sides of the world.
+It can be more off-center in levels with only one or two long paths, where the path can snake through the world from the side furthest away from the \emph{Hub}, also covering the world somewhat evenly.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -566,7 +572,7 @@ To summarize, these are the rules the paths should follow:
     \item All paths must end on the tile with the \emph{Hub}, no other dead ends can exist.
     \item Each tile with a path going through it has to be the same distance from the \emph{Hub} no matter which path an attacker would take.
     \item Paths should be spread throughout the playable world, not bunched up.
-    \item Paths right next to each other and sharp U-turns (see figure~\ref{fig:path-spacing}) should be rare.
+    \item Paths right next to each other or the edge of the world, and sharp U-turns (see figure~\ref{fig:path-spacing}), should be rare.
     \item Every side branch must go through at least one tile that is not adjacent to any already existing path.
 \end{itemize}
 
@@ -590,7 +596,7 @@ To make things simple for the player, there are only two heights of the targetin
 
 Whenever an attacker reaches the \emph{Hub}, the player will lose some \emph{hull}.
 The \emph{small} attackers will come in greater numbers than \emph{large} attackers.
-To make the stakes more equal, \emph{small} attackers cost the player only 1 hull, whereas the \emph{large} attackers cost 3 hull.
+To make the stakes more equal, \emph{small} attackers cost the player only 1~\emph{hull}, whereas the \emph{large} attackers cost 3~\emph{hull}.
 
 \begin{notindemo}
     The player will encounter only few \emph{boss} attackers in every run.
@@ -785,7 +791,7 @@ However, the time controls themselves will not be available in the demo.
 \section{Blueprints}\label{sec:design-blueprints}
 
 A blueprint represents a building the player can build or an ability they can use during battles.
-Each blueprint will include a description that explains its function, including the exact values of important statistics -- for example the amount of damage a tower deals with each hit.
+Each blueprint will include a description that explains its function, including the exact values of important statistics~--- for example the amount of damage a tower deals with each hit.
 The player will start each run with few predefined blueprints, and they will collect more blueprints throughout the run, giving them access to more buildings and abilities.
 
 The player will only be able to have a limited number of blueprints at any given time.
@@ -816,8 +822,8 @@ The rarities are
     \item \textbf{common},
     \item \textbf{rare},
     \item and \textbf{legendary}.
-    \item Additionally, there is \textbf{starter} -- the player starts each run with these. Thus, they do not appear as rewards.
-    \item And also \textbf{special} -- these blueprints also do not appear in the regular blueprint rewards, but they can be obtained on other ways, usually in events.
+    \item Additionally, there is \textbf{starter}~--- the player starts each run with these. Thus, they do not appear as rewards.
+    \item And also \textbf{special}~--- these blueprints also do not appear in the regular blueprint rewards, but they can be obtained on other ways, usually in events.
 \end{itemize}
 
 As their name suggests, \emph{common} blueprints will be more common than \emph{rare} blueprints, and \emph{legendary} blueprints will be even more rare.
@@ -839,12 +845,12 @@ It should also be possible to make a strong build just with a good set of \emph{
 
 As we already mentioned in sections~\ref{sec:design-buildings}, \ref{sec:design-towers} and \ref{sec:design-abilities}, each blueprint should be unique in its own way.
 The most exciting designs are often those that somehow break the rules.
-For example, we could design a building that costs energy, or a tower that has to be placed on a path, or even an ability that manipulates your blueprints or the waves of attackers that are yet to come.
+For example, we could design a building that costs \emph{energy}, or a tower that has to be placed on a path, or even an ability that manipulates your blueprints or the waves of attackers that are yet to come.
 However, most of these are hard to balance properly, and most important is whether they lead to fun gameplay or not.
 
 It is also important to design a good set of starter blueprints.
 It should be as small as possible, but somewhat balanced in most aspects.
-Specifically, it should provide a way to gather minerals and fuel.
+Specifically, it should provide a way to gather \emph{materials} and \emph{fuel}.
 There should be at least two towers that can deal with the early levels, and they are distinct from each other, so there are still decisions to make even in the first levels.
 There should also be a starter ability, since abilities are a core of the design (see section~\ref{sec:design-abilities}).
 The individual blueprints should be as simple to use and understand as possible.
@@ -883,7 +889,7 @@ We will describe each component in its separate subsection with the last number 
 
 In the top left corner is displayed the number of the current wave in big white text.
 Above it is the remaining number of waves in green.
-This amount is calculated from the current amount of fuel and the fuel production per wave.
+This amount is calculated from the current amount of \emph{fuel} and the \emph{fuel} production per wave.
 
 Below this, there is a panel with time controls.
 Here, the player can start the next wave, or pause or speed up the game.
@@ -892,16 +898,16 @@ The speed button will change between one arrow and two arrows, based on the curr
 
 \subsection{Fuel and Hull}
 
-Immediately to the right of the wave s display is displayed fuel and hull.
-The green progress bar displays how much fuel the player has out of the total required to finish the level.
+Immediately to the right of the wave s display is displayed \emph{fuel} and \emph{hull}.
+The green progress bar displays how much \emph{fuel} the player has out of the total required to finish the level.
 It also displays these values in text.
-Additionally, it shows the amount of fuel produced per wave and light green marks previewing the fuel values after each of the upcoming waves.
+Additionally, it shows the amount of \emph{fuel} produced per wave and light green marks previewing the \emph{fuel} values after each of the upcoming waves.
 
-Below is a red progress bar showing the player's hull out of the maximum amount.
+Below is a red progress bar showing the player's \emph{hull} out of the maximum amount.
 
 \subsection{Wave Preview}
 
-Below the fuel and hull displays it the wave preview.
+Below the \emph{fuel} and \emph{hull} displays it the wave preview.
 It shows the composition of the current and upcoming waves.
 Each wave has an arrow with its number and the batches of attackers that will come.
 Each batch shows one or more icons of the attacker type it's composed of along with a count.
@@ -909,14 +915,14 @@ The icon spacing represents the spacing of the attackers in the wave itself.
 
 \subsection{Materials and Energy}
 
-At the bottom of the screen is the materials and energy display.
-In the orange hexagon is shown the current amount of materials the player has, along with a smaller number below it representing the material production per wave.
-Similarly, the blue circle shows the current amount of energy and the energy limit, with the energy production below.
-The circle is partially filled with a lighter blue to visually show how much energy the player has out of the maximum.
+At the bottom of the screen is the \emph{materials} and \emph{energy} display.
+In the orange hexagon is shown the current amount of \emph{materials} the player has, along with a smaller number below it representing the \emph{material} production per wave.
+Similarly, the blue circle shows the current amount of \emph{energy} and the \emph{energy} limit, with the \emph{energy} production below.
+The circle is partially filled with a lighter blue to visually show how much \emph{energy} the player has out of the maximum.
 
 \subsection{Blueprint Menu}
 
-To the right of materials and energy is the blueprint menu.
+To the right of \emph{materials} and \emph{energy} is the blueprint menu.
 Here the player can select their blueprints to use them.
 Between waves, only buildings are shown, and during a wave, only abilities are shown.
 
@@ -971,7 +977,7 @@ However, there is a few special features the description has that can appear no 
 
 First of them are icons in the text.
 These icons are used for important stats or quantities that appear often.
-For example there is an icon associated with damage, one for range, one for materials, etc.
+For example there is an icon associated with damage, one for range, one for \emph{materials}, etc.
 The icon usually appears before the mention of the thing it's associated with or before the stat.
 Examples of this use can be seen in figure~\ref{fig:battle-ui}.
 
@@ -984,7 +990,7 @@ For example, a special building could add new abilities to neighboring towers.
 This new description is highlighted in orange.
 
 Below the description is a button that allows the player to delete the selected building.
-Of course, this button only appears when the selected object is a building that it is not permanent, unlike for example, the Hub.
+Of course, this button only appears when the selected object is a building that it is not permanent, unlike for example, the \emph{Hub}.
 
 As mentioned, the info panel will display the description of \textbf{blueprints}.
 A blueprint's description contains sentences that explain what the thing, which the blueprint represents, does.
@@ -992,7 +998,7 @@ Additional quantities that don't fit into these sentences are summarized at the 
 Also, when a blueprint is selected from the blueprint menu, it will show the remaining cooldown if any.
 
 The descriptions of \textbf{buildings} are basically the same as their blueprints.
-However, buildings can also provide some additional information of their own, for example the total amount of damage a tower has dealt or the amount of materials a building has produced.
+However, buildings can also provide some additional information of their own, for example the total amount of damage a tower has dealt or the amount of \emph{materials} a building has produced.
 
 Similarly, \textbf{attacker stats} can be displayed, for example when you encounter a given attacker type for the first time.
 The format is the very similar to blueprints with base stats (see section~\ref{sec:attacker-types}) at the top and additional abilities described in sentences below.
@@ -1001,7 +1007,7 @@ The changes are the same as with buildings and blueprints, but also the attacker
 
 The player can also inspect an empty \textbf{tiles}.
 Here only little information is provided.
-Whether the tile has some obstacles, or is rich in minerals or fuel, whether it is slanted and whether a path runs across it.
+Whether the tile has some obstacles, or is rich in \emph{minerals} or \emph{fuel}, whether it is slanted and whether a path runs across it.
 If the tile has a building on it, the details of the building are displayed instead.
 
 \section{Attacker HP Indicators}
@@ -1029,7 +1035,7 @@ Each section represents the same amount of HP.
 In the HP indicator above the attacker on the left, each section represents 1\,HP.
 Thus, we can count that the attacker has 4\,HP out of a maximum of 5.
 However, some attackers will have a lot of HP, and section of just 1\,HP would be impractical for those.
-So each section will represent a power of 10 of HP, and we will distinguish them by the color of the fill.
+So each section will represent a power of~10 of HP, and we will distinguish them by the color of the fill.
 Orange for 1\,HP sections, red for 10\,HP sections, dark red for 100\,HP sections, and potentially also magenta and purple if larger values are needed.
 
 We always choose the largest section size that leads to the indicator having more than one section, so there is always 2 to 10 sections.
@@ -1099,7 +1105,7 @@ This means that there will be a region where a tower can't see any attackers, a 
 The last case is, however, very rare, so we can draw this region also in green.
 
 Calculating the exact shape of the region the tower can see can be expensive.
-We could simplify this by only computing the range visualization where an attacker could appear -- on a path.
+We could simplify this by only computing the range visualization where an attacker could appear~--- on a path.
 However, we think it is important to show at least an approximation of the whole picture, to make it easier for the player to see what's blocking the line of sight and where.
 
 \section{Battle Camera Controls}
@@ -1114,7 +1120,7 @@ This is the zoom level at which it's best to inspect details anyway.
 
 Since the camera can be zoomed in, the whole world won't necessarily be on the screen at once.
 The player will have to be able to move the camera around.
-Additionally, high terrain can sometimes obstruct what's behind it, so we will allow the player to rotate the camera around the vertical axis, bot only in 90 degree steps to preserve the isometric look.
+Additionally, high terrain can sometimes obstruct what's behind it, so we will allow the player to rotate the camera around the vertical axis, bot only in 90~degree steps to preserve the isometric look.
 
 \section{Future Features}
 
@@ -1135,14 +1141,14 @@ These features will also have to be designed eventually, but they will not be in
 
     \subsection{Run Structure}
 
-    We want each run of the game to last at most 2 hours, since we want the players to be able to complete each run in on sitting.
+    We want each run of the game to last at most 2~hours, since we want the players to be able to complete each run in on sitting.
     Each run will probably consist of three acts, each ending in a boss level.
     This is the same structure as in \emph{Slay the Spire} or \emph{Monster Train}~\cite{MonsterTrain}, which are both roguelike deck-building games.
     It seems to work very well for them, so it is where we'll start.
     However, the final run structure will heavily depend on playtesting.
 
     One thing that is clear even now, is that each battle will take substantially longer than in \emph{Slay the Spire}.
-    \emph{Monster Train} also has longer levels, so each run consists only of 9 fights.
+    \emph{Monster Train} also has longer levels, so each run consists only of 9~fights.
     It is reassuring that a roguelike of this kind can work even with fewer levels.
     Even though \emph{Monster Train} has fewer levels than \emph{Slay the Spire}, it has a similar amount of rewards and shops throughout the run, letting the players customize their build to a similar degree, if not greater.
 

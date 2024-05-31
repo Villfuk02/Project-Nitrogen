@@ -48,11 +48,11 @@ Since we will create many instances of the RNG, it should be lightweight and fas
 Some of them, for example the ones used by the reward system, will persist throughout the whole run, so we need an easy way to save the RNG's current state.
 So, what options do we have?
 
-Since we are using Unity, the first RNG that comes to mind is Unity class \texttt{Random}~\cite{UnityRandom}.
+Since we are using Unity, the first RNG that comes to mind is Unity class \mono{Random}~\cite{UnityRandom}.
 It is designed to be easy to use, but it is very limited~--- for example, we have access to only one instance of the class and the same instance is used for other systems within the game engine.
 This is a dealbreaker for us, because we want to create more instances, and we want to have complete control over them to ensure determinism.
 
-Another option that's on-hand is .NET \texttt{System.Random}~\cite{SystemRandom}.
+Another option that's on-hand is .NET \mono{System.Random}~\cite{SystemRandom}.
 According to the documentation, instantiating a random number generator is fairly expensive.
 Furthermore, there are no methods to read and set the internal state of the generator.
 This becomes a problem when we want to save the state of an instance to restore it later, for example when loading a save file.
@@ -68,42 +68,436 @@ Johnston describes in their book~\cite{johnston2018random} some most commonly us
     \item XORSHIFT,
     \item Permuted congruential generators (PCG).
 \end{itemize}
-All of these are random enough for our use-case, given we use the right parameter values, so we chose an LCG, because it seemed the most simple to implement.
+All of these are random enough for our use-case, provided we use the right parameter values, so we chose an LCG, because it seemed the most simple to implement.
 In the article \citetitle{LCGTables}~\cite{LCGTables}, the author explains the statistical tests they used to measure the randomness of the LCGs and tabulates the best-performing parameter combinations.
-From here we took the parameters for our LCG implementation.
+From there we took the parameters for our LCG implementation.
+
+\section{Path Generation}\label{sec:analysis-path-generation}
+
+The worlds we want to generate for the battles in our game are composed of three somewhat distinct parts~--- paths, terrain and obstacles.
+It would make the most sense to generate each part separately, one after another.
+We should start with the part that is most restricted, because each part is additionally restricted by what was generated before it.
+Thus, the world generation algorithm will start by generating paths.
+There is a lot of rules the paths should follow, as described in section~\ref{sec:design-paths}.
+Additionally, the number of paths and their lengths heavily influence the difficulty of the battle.
+A battle's difficulty should be decided by its position in the run, and it should be known to the player even before they select it, so they can decide which battle to fight.
+This means, that the number of paths and their lengths will be given to the world generation algorithm as an input, further restricting the paths that will generate.
+
+One of the features the paths will have is that they can split into more and join together.
+When one path splits into two branches that go in separate directions, the battle would play out similarly to a battle with two distinct paths.
+However, for the player, branching paths are not as difficult to manage as distinct paths.
+They are usually closer together, because they have in common both the end point and the start point.
+Furthermore, there is a stretch of path before it split into two branches, and a few tiles after the split, the branches are still pretty close together.
+The player can concentrate their defenses around this portion of the level, partially mitigating the disadvantages of the split.
+Additionally, these splits in paths can vary widely in length.
+
+This all means that it's hard to quantify the relative difficulty of various path networks.
+We believe that it's enough to specify the number of path starts, the lengths of each path, and the maximum number of extra branches to sufficiently define the difficulty range of the path network that will be generated.
+
+We can split the path generation process into three stages:
+\begin{enumerate}
+    \item Select sufficiently spaced out positions for the path starts, in order to spread the individual paths apart as much as possible.
+    \item Generate the main branch of each path.
+    \item Refine the paths in order to make them split into branches and join together.
+\end{enumerate}
+We feel it's a good idea split stages 2 and 3 mainly because it is simpler to treat them as two separate problems.
+We believe this leads to simpler and faster algorithms without failing the requirements set in section~\ref{sec:design-paths}.
+How to accomplish the goal of each of these stages will be described in the following subsections of this section.
+
+\subsection{Path Starts}
+
+In the first stage of path generation, we need to pick the path start positions.
+
+One thing we should notice is that starts of paths of even length have to have an even \emph{Manhattan distance} (also called \emph{taxicab distance} or \emph{$L^1$~metric}) from the \emph{Hub}, and starts of paths of odd length have to be an odd distance from the \emph{Hub}.
+This parity holds, because by going from one tile to another that shares an edge with it, the Manhattan distance always changes by 1.
+When a path goes from a tile to another tile $l$ times, its Manhattan distance changes parity $l$ times.
+The distance of the final tile must be 0, which is even, so the parity of the path distance and Manhattan distance must match on every tile, including the starting tile.
+
+So, in the first step we will find all tiles along the edge of the world, and separate them into two sets~--- even and odd.
+Now, we could just pick a random tile from the corresponding set for each of the starts.
+However, there is one problem: a path of length $l$ can start at most $l$ tiles from the \emph{Hub} in Manhattan distance, since the distance equals the length of the shortest path between the two tiles.
+We also want the path starts to be sufficiently spread out from each other, so that individual paths come from different directions.
+And we don't want the paths to start too close to the \emph{Hub}, especially in levels with just one long path~--- it should ideally start as far from the \emph{Hub} as possible, in order to fill the world more evenly.
+
+We can simply use rejection sampling to pick starts that satisfy these conditions.
+When we select a candidate tile, we accept it only if it satisfies all of these conditions, otherwise we throw it away.
+One exception is when a candidate tile is too far from the \emph{Hub}.
+Then we return it into the set after we're done with picking the start for this path, because other paths can be longer than this one, so the tiles might be valid for those.
+
+If the minimum distances between path starts and from the \emph{Hub} are small enough, this approach always yields a valid collection of path starts.
+However, with stricter parameters it is possible that the first few starts invalidate all other start positions.
+In that case we could use rejection sampling again~--- trying to randomly select collections of starts, until we get one that's valid.
+If the failure rate is great enough, it would be wise to select a different algorithm.
+
+We choose the parameters based on the number of paths and their lengths, such that the path starts are sufficiently spread out for our use-case, and start picking never fails for 1 to 8 paths of lengths 10 to 100, which is a wide enough range for our needs.
+
+\subsection{Random Walks}\label{sec:analysis-random-walks}
+
+In the current and the next~(\ref{sec:analysis-points-in-between}) section, we will describe two approaches we tried to use for generating the main paths.
+The one we ended up using will be described in the section~\ref{sec:analysis-simulated-annealing}.
+
+For generating the main paths, the simplest approach that comes to mind is to just do a random walk from the start to the end.
+Of course, we have some rules the paths need to follow, so we need to tweak the algorithm.
+First, the path cannot intersect itself, so we have to ban moves onto a tile where we've already been.
+We also need to ensure the path is the correct length.
+To do so, we can count how long is the part of the path that is yet to be generated, and ban the option to go on a tile that's further away from the \emph{Hub} than the remaining length.
+This means we have to recalculate the shortest distance to the \emph{Hub} for every potential step we would take, since the path creates walls for itself.
+
+Then there are all the suggestions about path spacing, which we can try to solve by introducing a \emph{crowding} penalty.
+Whenever we mark a tile as containing path, we also increase the \emph{crowding} penalty of tiles around it by an amount decreasing with distance from the original tile.
+The more crowded a tile is, the less likely it is to be selected during the random direction selection.
+We can also add a small amount of \emph{crowding} penalty around the edges of the world to steer the paths away from the edges.
+
+We have tried this approach and did many more tweaks, but the paths were always problematic.
+They were always too bunched up either at the start or at the end.
+With multiple paths, two often stranded the path in between them.
+This approach also did not work for long paths, where the path usually blocked itself off from getting to the \emph{Hub}.
+So, we tried a different approach.
+
+\subsection{Selecting Points in Between}\label{sec:analysis-points-in-between}
+
+The previous approach selected the first tile of a path, then the next, and so on.
+We thought it might be better to select some tiles that will be in the middle of the path, then select tiles in between those, and continue refining the path until all of its tiles are selected.
+
+In the algorithm we used, the path network can be viewed as a graph.
+Each node has a distance $dist$ and a tile position $pos$.
+No two nodes can share a tile.
+The $length$ of an edge connecting nodes $a$ and $b$ is defined as $\abs{a.dist - b.dist}$.
+A simplified version is described in pseudocode as algorithm~\ref{alg:points-in-between}.
+
+The procedure \textsc{GetValidPositions}$(a$, $b$, $d)$ returns a set of valid positions for a new node with $dist = d$ that would connect to nodes $a$ and $b$.
+For simplicity, let's say that a position $p$ is valid, if we could travel from $a.pos$ to $p$ in $\abs{a.dist - d}$ steps, and from $p$ to $b.pos$ in $\abs{d - b.dist}$ steps, without going on a tile which already has a node on it.
+The details of how to determine this are omitted.
+The procedure \textsc{Remove}$(n)$ connects the two neighbors of $n$ with an edge and removes $n$.
+The procedure \textsc{Subdivide}$(e$, $n)$ takes the nodes $a,b$ connected by $e$ and connects each of them to $n$ with new edges.
+Then it removes the edge $e$.
+
+\begin{algorithm}[H]
+    \caption{Generating paths by selecting points in between.}
+    \label{alg:points-in-between}
+    \begin{algorithmic}[0]
+        \State $h \gets$ create a node  with $pos \gets hub\_pos; dist \gets 0$
+        \ForEach{path $p$}
+        \State $s_p \gets$ create a node with $pos \gets p.start\_pos; dist \gets p.length$
+        \State create an edge between $s_p$ and $h$
+        \EndFor
+        \State $initial \gets \{h,$ all $s_p\}$
+        \Statex
+        \While{$\exists$ edge with $length > 1$}
+        \State $e \gets$ random edge with $length > 1$
+        \State $a, b \gets$ nodes connected by $e$
+        \State $d \gets$ random integer strictly between $a.pos$ and $b.pos$
+        \State $valid\_positions \gets$ \Call{GetValidPositions}{$a$, $b$, $d$}
+        \Statex
+        \If{$valid\_positions = \varnothing$}
+        \If{$a \notin initial$ \textbf{or} $b \notin initial$}
+        \State $n \gets$ random node from $\{a, b\} \smallsetminus initial$
+        \State \Call{Remove}{$n$}
+        \EndIf
+        \Else
+        \State $p \gets$ random position from $valid\_positions$
+        \State $n \gets$ create a node with $pos \gets p; dist \gets d$
+        \State \Call{Subdivide}{$e$, $n$}
+        \EndIf
+        \EndWhile
+        \Statex
+    \end{algorithmic}
+\end{algorithm}
+
+This algorithm inserts new path nodes between others, incrementally refining the paths.
+But once a new node cannot be inserted, it backs up by removing one of the nodes that are already present.
+This way, it can try different configurations, until it is finally able to complete the paths.
+
+However, it is possible for this algorithm to never finish when it gets to a state from which a valid path cannot be created.
+For example, this will happen when two paths completely separate another path's start from the \emph{Hub}.
+We can partially mitigate this issue by letting the algorithm run only for a limited number of steps.
+If it doesn't finish before then, we restart the whole process, including picking new path starts.
+
+We have used this algorithm and extended it for various heuristics to make it produce better paths (according to the design requirements) and succeed more often.
+It worked somewhat well, but it really struggled with long paths, being unable to create paths over 50 in reasonable time.
+This lead us to search for a simpler and better alternative.
+
+\subsection{Simulated Annealing}\label{sec:analysis-simulated-annealing}
+
+The algorithm we ended up using is based on an optimization technique called \emph{simulated annealing}.
+A great description of this technique can be found in the article \citetitle{SimulatedAnnealing}~\cite{SimulatedAnnealing}.
+Here, we will describe the main ideas, and then we will describe the algorithm we used to generate paths.
+
+Simulated annealing can be used to find an approximation of the global optimum much faster than it would take to find the exact global optimum.
+The problems it can be used on have to be formulated as follows:
+From the set of all states $S$, find a state $s^*$ that minimizes the cost function $f \colon S \to \R$, given a neighbor function $n \colon S \to \mathcal{P}(S)$ which gives the \emph{neighbor states} of each state.
+For example, in the \emph{travelling salesman problem}, each state is usually defined as a permutation of the cities to be visited.
+The cost function gives the length of the salesman's path, and the neighbor function gives all the states that can be acquired by swapping two cities in the original state.
+
+The process of simulated annealing is described in pseudocode in algorithm~\ref{alg:simulated-annealing}.
+It starts in an initial state $s_0$ and runs for $max\_steps$ steps.
+For each step, a temperature $t$ is computed, slowly decreasing from 1 in the first step, to 0 at the final step.
+In each step, a random neighbor $s'$ of the current state $s$ is selected, and an acceptance probability $p$ is computed, based on the values of $f(s)$, $f(s')$ and the current temperature $t$.
+The new state $s'$ is then set as the current state with probability $p$.
+This acceptance probability function always accepts a better new state ($s'$ such that $f(s') < f(s)$), but it can also give a non-zero probability when the new state is worse that the current state ($f(s') > f(s)$).
+How often a worse state is accepted depends on the temperature.
+At high temperatures, almost any state is accepted, at temperatures near zero, worse states are accepted very rarely.
+Overall, the algorithm explores widely different states at the start, but settles into a local minimum over time, which is hopefully a global minimum thanks to the exploration at the start.
+
+\begin{algorithm}[H]
+    \caption{Simulated annealing}
+    \label{alg:simulated-annealing}
+    \begin{algorithmic}[0]
+        \State $s \gets s_0$
+        \For{$k$ from $0$ to $max\_steps-1$}
+        \State $t \gets 1 - k/(max\_steps-1)$
+        \State $s' \gets$ random neighbor from $n(s)$
+        \State $p \gets$ \Call{AcceptanceProbability}{$f(s)$, $f(s')$, $t$}
+        \State with probability $p$: $s \gets s'$
+        \EndFor\\
+        \Return $s$
+        \Statex
+    \end{algorithmic}
+\end{algorithm}
+
+To generate paths using simulated annealing, we need to define what is a state, a cost function and a neighbor function.
+Each state will be a path network, where each path is a sequence of nodes.
+Each node has a tile position, and each tile can contain multiple nodes.
+Two consecutive nodes must be on neighboring tiles.
+Additionally, each path starts at the given path start, has the given length, and ends at the tile with the \emph{Hub}.
+Since we are going to change the paths only by a small amount at every step, we chose not to check for intersections.
+Otherwise, we would lose too much freedom during the simulated annealing, and the final state would always end up close to the initial state.
+
+The neighbors of a state are the states we obtain by changing the position of single node to a different position, such that the result is still a valid state.
+This set is not too difficult to generate.
+First, we can notice that the first and last node of every path can never change position.
+Additionally, any node can only ever change its position to a diagonally adjacent one, or horizontally by two tiles, based on the nodes immediately before and after, as shown in figure~\ref{fig:path-node-swaps}.
+We only draw the nodes before and after the node which we want to modify, because the other nodes are not relevant.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{tikzpicture}
+        \draw[step=1.0,black,thin,shift={(0,0.5)}] (0,0) grid (2,2);
+        \draw[step=1.0,black,thin,shift={(0,0.5)}] (4,0) grid (6,2);
+        \draw[step=1.0,black,thin] (8,0) grid (9,3);
+        \draw[step=1.0,black,thin] (11,0) grid (12,3);
+        \begin{scope}[blue,very thick,decoration={
+                        markings,
+                        mark=between positions 0.25cm and -0.15cm step 0.5cm with {\arrow{>}};
+                    }]
+            \draw[postaction={decorate},shift={(0.5,1)}] (0,1)--(0,0)--(1,0);
+            \draw[postaction={decorate},shift={(0.5,1)}] (4,1)--(5,1)--(5,0);
+        \end{scope}
+        \begin{scope}[blue,very thick,decoration={
+                        markings,
+                        mark=between positions 0.3cm and -0.15cm step 0.5cm with {\arrow{>}};
+                    }]
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (7.8,1)--(8,2);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (8,2)--(8.2,1);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (10.8,1)--(11,0);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (11,0)--(11.2,1);
+        \end{scope}
+        \filldraw[black,shift={(0.5,1)}] (0,1) circle (3pt);
+        \filldraw[red,shift={(0.5,1)}] (0,0) circle (3pt);
+        \filldraw[black,shift={(0.5,1)}] (1,0) circle (3pt);
+        \filldraw[black,shift={(0.5,1)}] (4,1) circle (3pt);
+        \filldraw[red,shift={(0.5,1)}] (5,1) circle (3pt);
+        \filldraw[black,shift={(0.5,1)}] (5,0) circle (3pt);
+        \draw[red,->,very thick,shift={(0.5,0.5)}] (2,1) -- (3,1);
+        \filldraw[black,shift={(0.5,0.5)}] (7.8,1) circle (3pt);
+        \filldraw[red,shift={(0.5,0.5)}] (8,2) circle (3pt);
+        \filldraw[black,shift={(0.5,0.5)}] (8.2,1) circle (3pt);
+        \filldraw[black,shift={(0.5,0.5)}] (10.8,1) circle (3pt);
+        \filldraw[red,shift={(0.5,0.5)}] (11,0) circle (3pt);
+        \filldraw[black,shift={(0.5,0.5)}] (11.2,1) circle (3pt);
+        \draw[red,->,very thick,shift={(0.5,0.5)}] (9,1) -- (10,1);
+    \end{tikzpicture}
+    \caption{Possible node position changes to create a neighbor state.}
+    \label{fig:path-node-swaps}
+\end{center}
+
+Now we select a cost function that gives a better score to paths that are more desirable.
+A great starting point is to calculate a crowding penalty for each tile as we did for our random walks algorithm (see section~\ref{sec:analysis-random-walks}).
+We could then calculate the cost function of a state as the sum of the crowding penalties of each tile for each node on it.
+However, to save on computation, we don't compare the values of the current and next state.
+Instead, we only calculate the \emph{relative improvement} of the position change as $crowding($crurrent position$) - crowding($future position$)$ without even calculating the new crowding penalties.
+We only recalculate the crowding penalties for a state after we select it as the new state.
+This means that the relative improvement is a very crude approximation of the real relative improvement, and it is biased towards switching the position, because the current position has greater crowding penalty from the node itself, while the future position is not affected as much.
+Later, we will show how we changed the algorithm to mitigate this bias.
+
+All that's left is to produce an initial state.
+This is not trivial, because of our constraints on what's considered a valid state.
+However, we can easily produce a valid initial state using a random walk, as described in section~\ref{sec:analysis-random-walks}.
+This time we don't even have to check for self-intersection.
+
+We used a slightly different version of the algorithm, as seen in algorithm~\ref{alg:annealing-paths}.
+Before (algorithm~\ref{alg:simulated-annealing}), temperature went from 1 to 0, however it can have any initial and final value without loss of generality.
+Here, we specify this explicitly, because we use the temperature directly in the calculation of the \emph{improvement} a change would lead to.
+We use the temperature to offset the bias in our \emph{improvement} function, by setting the final temperature to an adequate negative value.
+This value does not have to be exact, because the temperature changes, so it will always be too high or too low anyway.
+Furthermore, we always move to a new random state, but better states are more likely to be selected.
+This is almost equivalent to doing multiple steps of the original algorithm until it moves to a new state, without actually doing them.
+
+\begin{algorithm}[H]
+    \caption{Simulated annealing for generating paths}
+    \label{alg:annealing-paths}
+    \begin{algorithmic}[0]
+        \State $s \gets$ \Call{GenerateInitialPaths}{}
+        \State $crowding \gets$ \Call{CalculateCrowding}{$s$}
+        \Statex
+        \For{$k$ from $0$ to $max\_steps-1$}
+        \State $t \gets$ \Call{LinearInterpolation}{$t_{initial}$, $t_{final}$, $k/(max\_steps-1)$}
+        \Statex
+        \State $candidates \gets \varnothing$
+        \ForEach{change $c = ($node $x$ moved from $a$ to $b)$ in $n(s)$}
+        \State $improvement \gets crowding(a) - crowding(b) + t$
+        \If{$improvement > 0$}
+        \State to $candidates$ add ($c$, $improvement$)
+        \EndIf
+        \EndFor\\
+        \State $c \gets$ random change from $candidates$ weighted by $improvement$
+        \State $s \gets s$ with $c$ applied
+        \State $crowding \gets$ \Call{UpdateCrowding}{$crowding$, $c$}
+        \EndFor\\
+        \Return $s$
+        \Statex
+    \end{algorithmic}
+\end{algorithm}
+
+However, this algorithm still sometimes produces paths that intersect themselves.
+This is because it is difficult for the algorithm to fix a loop in the path, as shown in figure~\ref{fig:untwisting-paths}.
+However, we can add a step that \emph{untwists} crossings by reversing the section of the path that forms a loop, as shown in the figure.
+This still leaves two nodes on the same tile, but annealing can drive these apart without any issue.
 
 
-\section{Path Generation}
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{tikzpicture}
+        \draw[step=1.0,black,thin] (0,0) grid (4,4);
+        \draw[step=1.0,black,thin] (6,0) grid (10,4);
+        \begin{scope}[blue,very thick,decoration={
+                        markings,
+                        mark=between positions 0.25cm and -0.05cm step 0.5cm with {\arrow{>}};
+                    }]
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (-1,1)--(3,1);
+            \draw[white,line width=4pt,shift={(0.5,0.5)}] (1,0.6)--(1,1.4);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (3,1)--(3,3)--(1,3)--(1,-1);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (5,1)--(6.95,1.05);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (6.95,1.05)--(7,3);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (7,3)--(9,3)--(9,1);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (9,1)--(7.05,0.95);
+            \draw[postaction={decorate},shift={(0.5,0.5)}] (7.05,0.95)--(7,-1);
+        \end{scope}
+        \draw[red,->,very thick,shift={(0.5,0.5)}] (4,1.5) -- (5,1.5);
+    \end{tikzpicture}
+    \caption{Untwisting a self-intersecting path.}
+    \label{fig:untwisting-paths}
+\end{center}
 
-- how to make paths with the required qualities?
+To only accept valid path networks, we can modify the algorithm to return the last valid path network, if any.
+In case no valid network is generated, we can restart the path generation algorithm, including picking the starting positions.
 
-\subsection{Initial Paths}
-
-- inputs: hub position, path count, path lengths
-
-- generate fixed number of paths with given lengths
-
-- first pick *start points* from along the edges of the level (all paths end in the center of the level)
-
-- choose randomly from positions with the correct parity (even / odd path length)
-
-- spread them out by removing all positions near already chosen one
-
-- then generate paths
-
-- first trace it randomly, with bias away from the start and from path tiles
-
-- simulated annealing
-
-- there are just plans to make sure the paths exist and the terrain in a way that ensures that the paths are not blocked
+This leaves us with an algorithm that can generate high quality path networks often, even with long paths.
+From our testing, $0.5l^2$ steps, where $l$ is the total length of all paths, is usually enough for high quality paths.
+Usually, when the algorithm is unable to create a valid path network in $0.05l^2$ steps, it will fail to do so even in $0.5l^2$ steps, given the same initial state.
+We modified the algorithm to fail early if it doesn't find a valid path network in $0.05l^2$ steps, and try again without wasting more time.
 
 \subsection{Final Paths}
 
-- after terrain generation, the paths are traced for real
+Now, that we can generate the main paths, we just have to generate the side branches.
+It is useful we don't have many requirements on the count or length.
+We can generate the rest of the world first, and fill in more paths after that.
+Since the world generation is random enough, our algorithm can be relatively simple and still lead to widely varying results.
 
-- guaranteed shortest length
+After generating the world, some tiles are blocked by obstacles, so a path cannot go through them.
+Additionally, some edges between tiles are also blocked, usually because the two tiles are at different height levels, separated by a cliff.
+The rest of the world generation has made sure that at least the main paths are still traversable, however we don't have to adhere to them completely.
+In fact, we can try to make the paths follow the rules even better, but we can always fall back on the previously generated ones.
 
-- DFS, find all branches, but continue from bottom of the stack when a paths is found
+The first step of the algorithm we came up with, is to compute the shortest distance from each tile to the \emph{Hub}, respecting the blocked tiles and passages.
+For this, we use breadth first search from the \emph{Hub} tile, but the paths start with the path distances already filled in, and we disallow the algorithm from visiting these tile sooner than their already marked distance.
+The result can be seen in figure~\ref{fig:path-distances}.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/Path Distances.pdf}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/Generated Paths.pdf}
+    \end{minipage}
+    \caption{Calculated tile distances compared to the originally generated paths.}
+    \label{fig:path-distances}
+\end{center}
+
+It then traces paths one by one from the start, basically doing a depth first search.
+At every step, it pops the last item on a stack of path prototypes, then it finds all valid one-step continuations, and it pushes them onto the stack.
+Which continuations are valid and how they are ordered will be explained later.
+Once it reaches the \emph{Hub} or an already existing path, it checks whether it is valid to finish the current path.
+If this check fails, it pops the last item on the stack and continues from there.
+If the check succeeds, it marks the new path section and continues by making another branch, this time taking the first item in the stack.
+We do this to minimize the length of path the new branch shares with the branch it came from.
+This process is described with pseudocode in algorithm~\ref{alg:path-finalizing}.
+
+\begin{algorithm}[H]
+    \caption{Finalizing paths}
+    \label{alg:path-finalizing}
+    \begin{algorithmic}[0]
+        \ForEach{path start $start$}
+        \State $stack$.\Call{PushLast}{path prototype containing only $start$}
+        \State $success \gets$ \mono{false}
+        \Statex
+        \While{$stack$ is not empty}
+        \If{$success$}
+        \State $p \gets stack$.\Call{PopFirst}{}
+        \Else
+        \State $p \gets stack$.\Call{PopLast}{}
+        \EndIf
+        \Statex
+        \If{last position in $p$ contains a path or the Hub}
+        \State $success \gets$ \Call{TryFinishPath}{$p$}
+        \Else
+        \State $success \gets$ \mono{false}
+        \ForEach{position $c$ from \Call{GetValidContinuations}{$p$}}
+        \State $stack$.\Call{PushLast}{$p$ extended by $c$}
+        \EndFor
+        \EndIf
+        \EndWhile
+        \EndFor
+        \Statex
+    \end{algorithmic}
+\end{algorithm}
+
+For valid continuations of a path prototype, we consider the neighbors of the last position in the path prototype.
+A tile is a neighbor of another tile, only if the passage between them is not blocked and the tile itself is not blocked.
+Additionally, the distance we computed for this tile before, must be less than the target path length minus the length of the current prototype.
+In other words, if the path prototype has to go $n$ more tiles before it can connect to the \emph{Hub}, this tile's distance from the \emph{Hub} must be at most $n$.
+To generate the best paths, we order the valid continuations such that the most preferable one is popped from the stack first.
+Again, we can use crowding penalties to encourage paths to spread out.
+However, above that we will prioritize the continuation that goes straight~--- in the same direction as the last step in the path prototype so far.
+With this ordering, the algorithm usually reaches the \emph{Hub} too soon, and then it has to backtrack many times, before producing a path that is the right length.
+To fix this, we prioritize above all the tiles with exactly the right distance to the \emph{Hub}, which was denoted as $n$ in out previous example.
+
+Now, How do we know when it's valid to finish a path prototype when it connects to an existing path or the \emph{Hub}?
+First, it must have the correct length.
+If it does, and the path start this prototype originates from is not connected to the network yet, it is valid.
+However, for branches other than the first, the requirements are stricter.
+As per the last rule in the summary of section~\ref{sec:design-paths}, every side branch must go through at least one tile that is not adjacent to any already existing path.
+
+As we mentioned at the start of section~\ref{sec:analysis-path-generation}, we also get a maximum number of extra branches as a parameter for path generation.
+Thus, once the algorithm reaches the maximum count, it stops.
+The results of the algorithm are displayed in figure~\ref{fig:final-paths}, again, compared to the initially generated paths.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/Final Paths.pdf}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/Generated Paths.pdf}
+    \end{minipage}
+    \caption{Final paths compared to the originally generated paths.}
+    \label{fig:final-paths}
+\end{center}
 
 \section{Terrain Generation}
 
@@ -289,6 +683,8 @@ For the blockers, I didn't want repetitive obstacle models, so they are generate
 \section{World Builder}
 
 - builds the world from the generated data, it needs to be done in the main thread
+
+- the rest will be in background threads
 
 \section{Attacker Wave Generation}
 

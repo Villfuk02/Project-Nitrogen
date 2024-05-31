@@ -112,7 +112,7 @@ namespace WorldGen.Path
 
             // debug
             WaitForStep(StepType.Step);
-            print($"Relaxing paths in {stepsLeft} steps");
+            print($"Annealing paths in {stepsLeft} steps");
             // draw path prototypes
             RegisterGizmos(StepType.MicroStep, () => prototypes.SelectMany(p => MakePathGizmos(p, Color.red)));
             // end debug
@@ -120,8 +120,8 @@ namespace WorldGen.Path
             Vector2Int[][] lastValidPaths = null;
             while (stepsLeft > 0)
             {
-                // if unable to relax any more, return early (should only happen when the temperature is way too low)
-                if (!DoRelaxationStep(prototypes))
+                // if unable to change anything anymore, return early (should only happen when the temperature is way too low)
+                if (!DoAnnealingStep(prototypes))
                     break;
 
                 // check if untangling was successful - any valid paths have been found. If not, fail early
@@ -238,7 +238,7 @@ namespace WorldGen.Path
         /// <summary>
         /// Randomly switch the position of one path node, with higher chance to switch it to a position that makes the path nodes more spread out.
         /// </summary>
-        bool DoRelaxationStep(IEnumerable<LinkedList<Vector2Int>> paths)
+        bool DoAnnealingStep(IEnumerable<LinkedList<Vector2Int>> paths)
         {
             // all the offsets with manhattan length of two
             var dirsToTry = WorldUtils.DIAGONAL_DIRS.Concat(WorldUtils.CARDINAL_DIRS.Select(d => 2 * d)).ToArray();
