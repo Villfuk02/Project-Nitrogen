@@ -2,8 +2,7 @@
 
 
 ## tweaks
-- [ ] show remaining fuel
-- [ ] show level and seed even during generating
+
 
 ## till next metting
 - [x] ch2

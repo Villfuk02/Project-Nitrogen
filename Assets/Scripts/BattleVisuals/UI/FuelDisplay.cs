@@ -43,8 +43,6 @@ namespace BattleVisuals.UI
 
         void Update()
         {
-            goalText.text = bc.fuelGoal.ToString();
-
             UpdateFill();
             UpdateFuelText();
             UpdateIncomeTextColor();
@@ -73,6 +71,8 @@ namespace BattleVisuals.UI
         {
             MathUtils.StepTowards(ref fuelDisplay, bc.fuel, convergenceDivisor);
             fuelText.text = fuelDisplay.ToString();
+
+            goalText.text = (bc.fuelGoal - fuelDisplay).ToString();
         }
 
         void UpdateIncomeTextColor()

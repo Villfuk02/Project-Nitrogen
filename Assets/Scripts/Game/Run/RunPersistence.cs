@@ -104,12 +104,12 @@ namespace Game.Run
             if (level == 0)
                 PersistentData.FinishedTutorial = true;
             level++;
+            levelDisplay.StartedGenerating();
             SceneController.ChangeScene(SceneController.Scene.Battle, true, false, "GENERATING...", Ready);
         }
 
         void Ready()
         {
-            levelDisplay.enabled = true;
             muteButton.SetActive(true);
         }
 
