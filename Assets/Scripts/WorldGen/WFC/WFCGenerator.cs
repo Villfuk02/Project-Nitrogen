@@ -54,7 +54,10 @@ namespace WorldGen.WFC
             state_ = new();
             dirtySlots_ = new(0);
             Vector2Int minHeightSlot = new(WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.x + 1), WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.y + 1));
-            Vector2Int maxHeightSlot = new(WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.x + 1), WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.y + 1));
+            Vector2Int maxHeightSlot = minHeightSlot;
+            //while (maxHeightSlot.ManhattanDistance(minHeightSlot) < 5)
+            maxHeightSlot = new(WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.x + 1), WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.y + 1));
+
             foreach (var pos in WorldUtils.WORLD_SIZE + Vector2Int.one)
             {
                 WFCSlot s;
@@ -108,14 +111,19 @@ namespace WorldGen.WFC
                 Vector2Int neighbor = pos + WorldUtils.CARDINAL_DIRS[direction];
                 bool hasNeighbor = pathDistances.TryGet(neighbor, out int neighborDistance);
                 bool passable = MustBePassable(distance, hasNeighbor, neighborDistance);
-                state_.SetValidPassageAtTile(pos, direction, (true, !passable));
                 if (passable)
+                {
+                    state_.RemoveImpassableEdgeTypesAtTile(pos, direction);
+                    // debug
+                    // draw edges that must be passable
                     RegisterGizmos(StepType.Step, () => MakePassageGizmos(pos, direction, (true, false)));
+                    // end debug
+                }
             }
         }
 
         /// <summary>
-        /// Decides whether a passage from a tile to its neighbor can be passable or impassable.
+        /// Decides whether a passage from a tile to its neighbor must be passable.
         /// </summary>
         static bool MustBePassable(int distance, bool hasNeighbor, int neighborDistance)
         {

@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using BattleSimulation.World.WorldData;
 using UnityEngine;
@@ -14,12 +14,15 @@ namespace WorldGen.WFC
     {
         static readonly DiagonalDirs<Vector2Int> SlotToTileArrayOffsets = new(Vector2Int.up, Vector2Int.one, Vector2Int.right, Vector2Int.zero);
         static readonly CardinalDirs<Vector2Int> TileToSlotArrayOffsets = new(Vector2Int.one, Vector2Int.one, Vector2Int.zero, Vector2Int.zero);
-        static readonly CardinalDirs<int> SlotToPassageArrayOffsets = new(0, 2, -4 * (WorldUtils.WORLD_SIZE.x + 1), -2);
+        static readonly CardinalDirs<Vector2Int> SlotToEdgeArrayOffsets = new(Vector2Int.zero, Vector2Int.zero, Vector2Int.down, Vector2Int.left);
 
         public int uncollapsed;
         public readonly Array2D<WFCSlot> slots;
         readonly Array2D<WFCTile> tiles_;
-        readonly BitArray passages_;
+        // vertical = even slot directions, odd tile directions
+        readonly Array2D<BitSet32> verticalEdges_;
+        // horizontal = odd slot directions, even tile directions
+        readonly Array2D<BitSet32> horizontalEdges_;
         public readonly WeightedRandomSet<Vector2Int> uncollapsedSlots;
         public readonly Array2D<bool> changedSlots;
 
@@ -35,7 +38,14 @@ namespace WorldGen.WFC
             tiles_ = new(slotWorldSize + Vector2Int.one);
             foreach (var (index, _) in tiles_.IndexedEnumerable)
                 tiles_[index] = new(true);
-            passages_ = new(slotWorldSize.x * slotWorldSize.y * 4, true);
+
+            var validEdgeTypes = WorldGenerator.TerrainType.PassableEdges;
+            validEdgeTypes.UnionWith(WorldGenerator.TerrainType.ImpassableEdges);
+            verticalEdges_ = new(slotWorldSize);
+            verticalEdges_.Fill(validEdgeTypes);
+            horizontalEdges_ = new(slotWorldSize);
+            horizontalEdges_.Fill(validEdgeTypes);
+
             uncollapsedSlots = new(WorldGenerator.Random.NewSeed());
             changedSlots = new(slotWorldSize);
             id_ = 0;
@@ -46,7 +56,8 @@ namespace WorldGen.WFC
             uncollapsed = original.uncollapsed;
             slots = original.slots.Clone();
             tiles_ = original.tiles_.Clone();
-            passages_ = new(original.passages_);
+            verticalEdges_ = original.verticalEdges_.Clone();
+            horizontalEdges_ = original.horizontalEdges_.Clone();
             uncollapsedSlots = new(original.uncollapsedSlots, WorldGenerator.Random.NewSeed());
             changedSlots = new(original.changedSlots.Size);
             id_ = original.id_ + 1000000;
@@ -78,55 +89,66 @@ namespace WorldGen.WFC
 
         public bool GetPassageAtTile(Vector2Int pos, int direction)
         {
-            (bool passable, bool _) = GetValidPassageAtSlot(pos + TileToSlotArrayOffsets[direction], 3 - direction);
-            return passable;
+            var edges = GetValidEdgesAtSlot(pos + TileToSlotArrayOffsets[direction], 3 - direction);
+            edges.IntersectWith(WorldGenerator.TerrainType.PassableEdges);
+            return !edges.IsEmpty;
         }
 
-        // PASSAGES
-        public CardinalDirs<(bool passable, bool impassable)> GetValidPassagesAtSlot(Vector2Int pos)
+        // EDGES
+        public CardinalDirs<BitSet32> GetValidEdgesAtSlot(Vector2Int pos)
         {
-            var ret = new CardinalDirs<(bool passable, bool impassable)>();
-            for (int i = 0; i < 4; i++)
-            {
-                ret[i] = GetValidPassageAtSlot(pos, i);
-            }
-
+            var ret = new CardinalDirs<BitSet32>();
+            for (int d = 0; d < 4; d++)
+                ret[d] = GetValidEdgesAtSlot(pos, d);
             return ret;
         }
 
-        (bool passable, bool impassable) GetValidPassageAtSlot(Vector2Int pos, int direction)
+        BitSet32 GetValidEdgesAtSlot(Vector2Int pos, int direction)
         {
             if (!slots.IsInBounds(pos + WorldUtils.CARDINAL_DIRS[direction]))
-                return (true, true);
-            int index = GetPassageArrayIndex(pos, direction);
-            return (passages_[index], passages_[index + 1]);
+                return BitSet32.AllSet;
+            var edgeArray = direction % 2 == 0 ? verticalEdges_ : horizontalEdges_;
+            return edgeArray[pos + SlotToEdgeArrayOffsets[direction]];
         }
 
-        public void SetValidPassagesAtSlot(Vector2Int pos, CardinalDirs<(bool passable, bool impassable)> p)
+        public void SetValidEdgesAtSlot(Vector2Int pos, CardinalDirs<BitSet32> validEdges)
         {
-            for (int i = 0; i < 4; i++)
-            {
-                SetValidPassageAtSlot(pos, i, p[i]);
-            }
+            for (int d = 0; d < 4; d++)
+                SetValidEdgesAtSlot(pos, d, validEdges[d]);
         }
 
-        void SetValidPassageAtSlot(Vector2Int pos, int direction, (bool passable, bool impassable) p)
+        void SetValidEdgesAtSlot(Vector2Int pos, int direction, BitSet32 valid)
         {
             if (!slots.IsInBounds(pos + WorldUtils.CARDINAL_DIRS[direction]))
                 return;
-            int index = GetPassageArrayIndex(pos, direction);
-            passages_[index] = p.passable;
-            passages_[index + 1] = p.impassable;
+            var edgeArray = direction % 2 == 0 ? verticalEdges_ : horizontalEdges_;
+            edgeArray[pos + SlotToEdgeArrayOffsets[direction]] = valid;
         }
 
-        public void SetValidPassageAtTile(Vector2Int pos, int direction, (bool passable, bool impassable) p)
+        public void RemoveImpassableEdgeTypesAtTile(Vector2Int pos, int direction)
         {
-            SetValidPassageAtSlot(pos + TileToSlotArrayOffsets[direction], 3 - direction, p);
-        }
+            WorldGenerator.WaitForStep(WorldGenerator.StepType.MicroStep);
+            var slotPos = pos + TileToSlotArrayOffsets[direction];
+            var slotDirection = 3 - direction;
+            var types = GetValidEdgesAtSlot(slotPos, slotDirection);
+            types.IntersectWith(WorldGenerator.TerrainType.PassableEdges);
+            SetValidEdgesAtSlot(slotPos, slotDirection, types);
+            WorldGenerator.RegisterGizmos(WorldGenerator.StepType.MicroStep, () =>
+            {
+                List<GizmoManager.GizmoObject> list = new();
+                foreach (var p in WorldUtils.WORLD_SIZE + Vector2Int.one)
+                {
+                    for (int d = 0; d < 4; d++)
+                    {
+                        var p2 = p + (Vector2)WorldUtils.CARDINAL_DIRS[d] * 0.3f;
+                        var realPos = WorldUtils.SlotPosToWorldPos(p2.x, p2.y, 0);
+                        var e = GetValidEdgesAtSlot(p, d);
+                        list.Add(new GizmoManager.Cube(new(e.IsSet(23) ? 1 : 0, e.IsSet(14) ? 1 : 0, 1), realPos, 0.2f));
+                    }
+                }
 
-        static int GetPassageArrayIndex(Vector2Int slotPos, int direction)
-        {
-            return (slotPos.x + slotPos.y * (WorldUtils.WORLD_SIZE.x + 1)) * 4 + SlotToPassageArrayOffsets[direction];
+                return list;
+            });
         }
 
         // TILES

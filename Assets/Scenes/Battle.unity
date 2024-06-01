@@ -5329,12 +5329,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 697fa3911599b2643b6eaefbb22d3023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  overrideRun: 0
+  overrideRun: 1
   terrainType: Test
-  seed: 75
+  seed: 9223372036854775808
   pathLengths: 180000001c00000021000000
   maxExtraPaths: 4
-  maxHubDistFromCenter: 3
+  maxHubDistFromCenter: 0
 --- !u!4 &815966620
 Transform:
   m_ObjectHideFlags: 0
@@ -12046,7 +12046,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 330
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.y
@@ -12054,7 +12054,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 165
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.y

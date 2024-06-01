@@ -591,6 +591,90 @@
       \verb https://www.science.org/doi/abs/10.1126/science.220.4598.671
       \endverb
     \endentry
+    \entry{ModelSynthesis}{thesis}{}
+      \name{author}{1}{}{%
+        {{hash=c1e8f36c537b67931de8cac36326fc96}{%
+           family={Merrell},
+           familyi={M\bibinitperiod},
+           given={Paul\bibnamedelima C},
+           giveni={P\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {The University of North Carolina at Chapel Hill}%
+      }
+      \strng{namehash}{c1e8f36c537b67931de8cac36326fc96}
+      \strng{fullhash}{c1e8f36c537b67931de8cac36326fc96}
+      \strng{bibnamehash}{c1e8f36c537b67931de8cac36326fc96}
+      \strng{authorbibnamehash}{c1e8f36c537b67931de8cac36326fc96}
+      \strng{authornamehash}{c1e8f36c537b67931de8cac36326fc96}
+      \strng{authorfullhash}{c1e8f36c537b67931de8cac36326fc96}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Also available at \url{https://paulmerrell.org/wp-content/uploads/2021/06/thesis.pdf} [visited on 2024-06-01]}
+      \field{title}{Model synthesis}
+      \field{type}{phdthesis}
+      \field{year}{2009}
+    \endentry
+    \entry{WFC}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=46c2caad2d1433d5a224bdbf82de6ffb}{%
+           family={Gumin},
+           familyi={G\bibinitperiod},
+           given={Maxim},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{46c2caad2d1433d5a224bdbf82de6ffb}
+      \strng{fullhash}{46c2caad2d1433d5a224bdbf82de6ffb}
+      \strng{bibnamehash}{46c2caad2d1433d5a224bdbf82de6ffb}
+      \strng{authorbibnamehash}{46c2caad2d1433d5a224bdbf82de6ffb}
+      \strng{authornamehash}{46c2caad2d1433d5a224bdbf82de6ffb}
+      \strng{authorfullhash}{46c2caad2d1433d5a224bdbf82de6ffb}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{WaveFunctionCollapse}
+      \field{urlday}{1}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/mxgmn/WaveFunctionCollapse
+      \endverb
+      \verb{url}
+      \verb https://github.com/mxgmn/WaveFunctionCollapse
+      \endverb
+    \endentry
+    \entry{WFCMarian}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=b30731c3fe009a48293ea85daced328f}{%
+           family={Marian},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{b30731c3fe009a48293ea85daced328f}
+      \strng{fullhash}{b30731c3fe009a48293ea85daced328f}
+      \strng{bibnamehash}{b30731c3fe009a48293ea85daced328f}
+      \strng{authorbibnamehash}{b30731c3fe009a48293ea85daced328f}
+      \strng{authornamehash}{b30731c3fe009a48293ea85daced328f}
+      \strng{authorfullhash}{b30731c3fe009a48293ea85daced328f}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Infinite procedurally generated city with the Wave Function Collapse algorithm}
+      \field{urlday}{1}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://marian42.de/article/wfc/
+      \endverb
+      \verb{url}
+      \verb https://marian42.de/article/wfc/
+      \endverb
+    \endentry
   \enddatalist
 \endrefsection
 \endinput

@@ -341,18 +341,18 @@ This is almost equivalent to doing multiple steps of the original algorithm unti
         \State $crowding \gets$ \Call{CalculateCrowding}{$s$}
         \Statex
         \For{$k$ from $0$ to $max\_steps-1$}
-        \State $t \gets$ \Call{LinearInterpolation}{$t_{initial}$, $t_{final}$, $k/(max\_steps-1)$}
+        \State $t \gets$ \Call{Lerp}{$t_{initial}$, $t_{final}$, $k/(max\_steps-1)$}
         \Statex
         \State $candidates \gets \varnothing$
-        \ForEach{change $c = ($node $x$ moved from $a$ to $b)$ in $n(s)$}
+        \ForEach{node swap $x = a \to b$ in \Call{GetPossibleNodeSwaps}{$s$}}
         \State $improvement \gets crowding(a) - crowding(b) + t$
         \If{$improvement > 0$}
-        \State to $candidates$ add ($c$, $improvement$)
+        \State $candidates \gets candidates + (x,\ improvement)$
         \EndIf
         \EndFor\\
-        \State $c \gets$ random change from $candidates$ weighted by $improvement$
-        \State $s \gets s$ with $c$ applied
-        \State $crowding \gets$ \Call{UpdateCrowding}{$crowding$, $c$}
+        \State $x \gets$ random node swap from $candidates$ weighted by $improvement$
+        \State $s \gets s$ with $x$ applied
+        \State $crowding \gets$ \Call{UpdateCrowding}{$crowding$, $x$}
         \EndFor\\
         \Return $s$
         \Statex
@@ -473,7 +473,7 @@ To generate the best paths, we order the valid continuations such that the most 
 Again, we can use crowding penalties to encourage paths to spread out.
 However, above that we will prioritize the continuation that goes straight~--- in the same direction as the last step in the path prototype so far.
 With this ordering, the algorithm usually reaches the \emph{Hub} too soon, and then it has to backtrack many times, before producing a path that is the right length.
-To fix this, we prioritize above all the tiles with exactly the right distance to the \emph{Hub}, which was denoted as $n$ in out previous example.
+To fix this, we prioritize above all the tiles with exactly the right distance to the \emph{Hub}, which was denoted as $n$ in our previous example.
 
 Now, How do we know when it's valid to finish a path prototype when it connects to an existing path or the \emph{Hub}?
 First, it must have the correct length.
@@ -501,96 +501,140 @@ The results of the algorithm are displayed in figure~\ref{fig:final-paths}, agai
 
 \section{Terrain Generation}
 
-- fractal noise X
+There are many techniques we could use for generating the terrain.
+We chose a variant of \emph{model synthesis} originally developed by \Citeauthor{ModelSynthesis}~\cite{ModelSynthesis}.
+The discrete version of this algorithm is better known by the name \emph{wave function collapse} (or~WFC in short), popularized by \Citeauthor{WFC} on github~\cite{WFC}.
+We would like to provide a high-level explanation of the algorithm before we explain why we chose to use a variant of it.
 
-- WFC \checkmark (don't forget to mention disadvantages)
+\subsection{Wave Function Collapse}
 
-\xxx{this is gonna be multiple subsections}
+The original intent behind the algorithm is to replicate the structure of an example on a larger scale, making sure that the output is locally similar to the input, as shown in figure~\ref{fig:wfc-example}.
+We will limit our examples to 2-dimensional grids of tiles, however this algorithm works in more dimensions, and even for irregular cells.
 
-\xxx{illustrate with images (from the videos I made)}
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.5\textwidth]{img/WFC Example.pdf}
+    \caption{Example input and output of the wave function collapse algorithm.}
+    \label{fig:wfc-example}
+\end{center}
 
-- *slots* offset compared to *tiles*
+The first step of the algorithm is to extract from the input which features can appear next to each other.
+The algorithm creates a set of \emph{modules}\footnote{This is a naming convention used in an article by \Citeauthor{WFCMarian}~\cite{WFCMarian}.}, which are the building blocks the output will be built from.
+Each module comes with a set of constraints on what modules that can be placed near it.
+The main portion of the algorithm then builds the output from these modules, such that all the constraints are satisfied, and each module appears in the ouput with a similar frequency to the input.
+However, we will create the modules for our generator by hand, including their constraints, in order to have greater control over the generated result.
+In figure~\ref{fig:wfc-modules}, we can see a set of 7 modules and the resulting output, given only the constraint that the edges of directly adjacent modules must match.
 
-- less distinct variants
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.5\textwidth]{img/WFC modules.pdf}
+    \caption{Example output of WFC, using the modules on the left and only the constraint that their edges must match.}
+    \label{fig:wfc-modules}
+\end{center}
 
-- more control over transitions
+We call each spot in the output where a module is supposed to be a \emph{slot}.
+Each slot keeps track of all the modules that can be placed in it.
+At the start of the main part of the algorithm, all slots are initialized with all the modules.
+Figure~\ref{fig:wfc-initial} shows a visualisation of this state.
+Then the algorithm repeats two actions: collapse a slot, propagate constraints.
+To collapse a slot, the algorithm removes all possible modules from the slot except for one, chosen at random.
 
-- prepare *modules*
+Then it has to propagate constraints, which means that it removes from each slot all the modules which can no longer be placed there.
+For example, in figure~\ref{fig:wfc-step-1} we see that a slot has collapsed to a module which has a line on each edge.
+Thus, the algorithm removes from the neighboring tiles (marked in red) all modules which don't have a line at the corresponding edge.
+After propagating constraints, the algoritm collapses another slot and so on.
 
-- generate grid of *slots*, mark them as *uncollapsed*
+In figure~\ref{fig:wfc-step-2}, we can see an interesting situation after collapsing a second slot.
+The tile between the collapsed slots can still contain two possible modules, however both of them have a line at the top and bottom edges.
+This means that the algorithm also has to propagate to the neighbors of this tile that they have to have lines at the corredponding edges.
+A change in one slot can affect slots far away from it.
 
-- each *slot* can become one of many *modules*
+\begin{figure}
+    \begin{subfigure}{0.31\textwidth}
+        \includegraphics[width=\linewidth]{img/WFC initial state.pdf}
+        \caption{Initial state} \label{fig:wfc-initial}
+    \end{subfigure}%
+    \hspace*{\fill}
+    \begin{subfigure}{0.31\textwidth}
+        \includegraphics[width=\linewidth]{img/WFC step 1.pdf}
+        \caption{First step} \label{fig:wfc-step-1}
+    \end{subfigure}%
+    \hspace*{\fill}
+    \begin{subfigure}{0.31\textwidth}
+        \includegraphics[width=\linewidth]{img/WFC step 2.pdf}
+        \caption{Second step} \label{fig:wfc-step-2}
+    \end{subfigure}
 
-- the *modules* that can be placed in a given slot are its *domain*
+    \caption{Two steps of wave function collapse. Uncollapsed slots are drawn in light blue, uncollapsed slots that changed are drawn in red.}\label{fig:wfc-steps}
+\end{figure}
 
-- at the start each *slot* has all *modules* in its *domain*
+This process repeats until all slots are collapsed, at which point we have successfully generated the output.
 
-- from the *domain*, compute all possible *boundary conditions*
+However, it is possible for the algorithm to create a slot with no valid module.
+If we look at WFC in the context of \emph{constraint solving problems}, we can see that our constraint propagation only ensures \emph{arc-consistency}.
+In this case, it is no longer possible to create a valid output.
+An example can be seen in figure~\ref{fig:wfc-backtracking}.
 
-- for example - there is a *module* in the *domain* with a cliff on its east boundary, so mark cliff to the east as possible
+One option is to simply restart the algorithm.
+Luckily, the constraint solving problems WFC is tasked with are not that constrained.
+If they were more constrained, there would exist very little valid solutions, so the results would all have to look similar.
+For sufficiently small outputs, this should be rare enough, only needing a few restarts.
+Another option is to use backtracking.
+Whenver the algorithm runs itno a dead end after collapsing a slot, it returns to the state before collapsing and removes the module the slot collapsed to from its valid options.
+The state after backtracking is illustrated in fig~\ref{fig:wfc-after-backtracking}.
 
-- mark all *slots* as *dirty*
+\begin{figure}
+    \begin{subfigure}{0.31\textwidth}
+        \includegraphics[width=\linewidth]{img/WFC backtracking before.pdf}
+        \caption{Before collapsing} \label{fig:wfc-before-backtracking}
+    \end{subfigure}%
+    \hspace*{\fill}
+    \begin{subfigure}{0.31\textwidth}
+        \includegraphics[width=\linewidth]{img/WFC backtracking dead end.pdf}
+        \caption{After collapsing} \label{fig:wfc-dead-end}
+    \end{subfigure}%
+    \hspace*{\fill}
+    \begin{subfigure}{0.31\textwidth}
+        \includegraphics[width=\linewidth]{img/WFC backtracking after.pdf}
+        \caption{After backtracking} \label{fig:wfc-after-backtracking}
+    \end{subfigure}
 
-- then repeat:
+    \caption{Dead ends and backtracking in WFC. The red cross marks a slot with no valid modules.}\label{fig:wfc-backtracking}
+\end{figure}
 
-- propagate constraints
+\subsection{Advantages and Disadvantages of WFC}
 
-- for each *dirty slot*, until there are none:
+- provides a lot of control using modules - we know what can appear in the world, because we choose it explicitly
 
-- mark as *not dirty*
+- inject additional constraints - preserve paths, hub tile, min and max height
 
-- find out which *modules* from its *domain* can be placed here and remove the rest from its *domain*
+- kinda slow at large scale (compute time complexity without errors)
 
-- decide only by neighbors' (orthogonal and diagonal) *boundary conditions*
+- it can fail - bad for online generation https://www.boristhebrave.com/2021/11/08/infinite-modifying-in-blocks/
 
-- update *boundary conditions*
+- local control only - use hierarichy
 
-- if *boundary conditions* changed, mark all *uncollapsed* neighbors as *dirty*
+- slot positions are apparent - use irregular slots
 
-- *collapse* a slot
+- luckily for us, these disadvantages don't matter
 
-- save the current *state* of all *slots* on a stack
+\subsection{Using WFC for Terrain Generation}
 
-- pick a *slot*
+- our modules
 
-- pick one *module* from its *domain* at random
+- flip and rotate
 
-- weighted - provides control
+- even tho it 3d, 2d is enough
 
-- remove each other *module* from its *domain*
+- what constraints do we use
 
-- update *boundary conditions*
+- weights
 
-- mark *uncollapsed* neighbors as *dirty*
-
-- if a *slot* ends up with 0 *modules* in its *domain*, backtrack
-
-- pop a prevoiusly saved *state* from the stack and revert to it
-
-- remove the previously chosen *module* from the *domain* of the previously *collapsed slot*
-
+\subsection{Selecting the Right Parameters}
 
 - Which slot to collapse?
 
-- fail fast approach
-
-- prioritize slot with least options
-
-- changed to slot with least entropy, because that's more accurate
-
-- slots near most constraining modules were prioritized, making them more common and leading to repetitive terrain features
-
-- better to just collapse a random slot
-
-- in the end still weighted by entropy
-
-- at first I tried to prefer slots with more entropy
-
-- define overall structure first by sparsely covering the world, then fill in details
-
-- often led to deep dead-ends with a lot of backtracking
-
-- in the end, tiles with less entropy are preferred
+- random, but weighted
 
 - provide data
 

@@ -87,7 +87,7 @@ namespace WorldGen.WFC
         /// <returns>newSlot - null if it didn't change or backtracking is needed, otherwise the updated slot. backtrack - true if the generator needs to backtrack.</returns>
         public (WFCSlot newSlot, bool backtrack) UpdateValidModules(in WFCState state)
         {
-            var vPassages = state.GetValidPassagesAtSlot(pos);
+            var vPassages = state.GetValidEdgesAtSlot(pos);
             var vTiles = state.GetValidTilesAtSlot(pos);
 
             bool changed = false;
@@ -137,15 +137,11 @@ namespace WorldGen.WFC
             return newHeights;
         }
 
-        static bool AreEdgesConsistent(ModuleShape moduleShape, CardinalDirs<(bool passable, bool impassable)> vPassages, DiagonalDirs<WFCTile> vTiles)
+        static bool AreEdgesConsistent(ModuleShape moduleShape, CardinalDirs<BitSet32> vEdges, DiagonalDirs<WFCTile> vTiles)
         {
             for (int d = 0; d < 4; d++)
             {
-                if (
-                    (moduleShape.Passable[d] ? !vPassages[d].passable : !vPassages[d].impassable) ||
-                    !vTiles[d].surfaces.IsSet(moduleShape.Surfaces[d]) ||
-                    !vTiles[d].slants.IsSet((int)moduleShape.Slants[d])
-                )
+                if (!vEdges[d].IsSet(moduleShape.Edges[d]) || !vTiles[d].surfaces.IsSet(moduleShape.Surfaces[d]) || !vTiles[d].slants.IsSet((int)moduleShape.Slants[d]))
                     return false;
             }
 
@@ -159,21 +155,21 @@ namespace WorldGen.WFC
         public HashSet<Vector2Int> UpdateConstraints(WFCState state)
         {
             // values current modules support
-            var passages = new CardinalDirs<(bool passable, bool impassable)>();
+            var edges = new CardinalDirs<BitSet32>();
             var tiles = new DiagonalDirs<WFCTile>();
             for (int i = 0; i < 4; i++)
                 tiles[i] = new(false);
-            GetSupportedConstraintValues(ref passages, ref tiles);
+            GetSupportedConstraintValues(ref edges, ref tiles);
 
             // previously allowed values
-            var prevPassages = state.GetValidPassagesAtSlot(pos);
+            var prevEdges = state.GetValidEdgesAtSlot(pos);
             var prevTiles = state.GetValidTilesAtSlot(pos);
 
             // newly allowed values
-            var neighborsToUpdate = MergeConstraintValues(prevPassages, prevTiles, ref passages, ref tiles);
+            var neighborsToUpdate = MergeConstraintValues(prevEdges, prevTiles, ref edges, ref tiles);
 
             // update state
-            state.SetValidPassagesAtSlot(pos, passages);
+            state.SetValidEdgesAtSlot(pos, edges);
             state.SetValidTilesAtSlot(pos, tiles);
 
             return neighborsToUpdate;
@@ -183,16 +179,21 @@ namespace WorldGen.WFC
         /// Computes the intersection of the previously allowed values with the currently supported values.
         /// Returns neighbors at which offsets should be recalculated, due to some values changing.
         /// </summary>
-        static HashSet<Vector2Int> MergeConstraintValues(CardinalDirs<(bool passable, bool impassable)> prevPassages, DiagonalDirs<WFCTile> prevTiles, ref CardinalDirs<(bool passable, bool impassable)> passages, ref DiagonalDirs<WFCTile> tiles)
+        static HashSet<Vector2Int> MergeConstraintValues(CardinalDirs<BitSet32> prevEdges, DiagonalDirs<WFCTile> prevTiles, ref CardinalDirs<BitSet32> edges, ref DiagonalDirs<WFCTile> tiles)
         {
             var toUpdate = new HashSet<Vector2Int>();
             for (int d = 0; d < 4; d++)
             {
                 // cardinal constraints
-                var prevPassage = prevPassages[d];
-                if (prevPassage.passable != passages[d].passable || prevPassage.impassable != passages[d].impassable)
+                var prevEdgeTypes = prevEdges[d];
+                if (prevEdgeTypes.IsSubsetOf(edges[d]))
                 {
-                    passages[d] = (prevPassage.passable && passages[d].passable, prevPassage.impassable && passages[d].impassable);
+                    // no new restriction
+                    edges[d] = prevEdgeTypes;
+                }
+                else
+                {
+                    edges[d].IntersectWith(prevEdgeTypes);
                     toUpdate.Add(WorldUtils.CARDINAL_DIRS[d]);
                 }
 
@@ -219,17 +220,20 @@ namespace WorldGen.WFC
             return toUpdate;
         }
 
-        void GetSupportedConstraintValues(ref CardinalDirs<(bool passable, bool impassable)> aPassages, ref DiagonalDirs<WFCTile> aTiles)
+        void GetSupportedConstraintValues(ref CardinalDirs<BitSet32> edges, ref DiagonalDirs<WFCTile> tiles)
         {
             foreach (var m in validModules_)
             {
                 ModuleShape moduleShape = WorldGenerator.TerrainType.Modules[m].Shape;
                 for (int d = 0; d < 4; d++)
                 {
-                    aPassages[d] = (aPassages[d].passable || moduleShape.Passable[d], aPassages[d].impassable || !moduleShape.Passable[d]);
-                    aTiles[d].surfaces.SetBit(moduleShape.Surfaces[d]);
-                    aTiles[d].slants.SetBit((int)moduleShape.Slants[d]);
-                    aTiles[d].heights.UnionWith(validHeights_[m] << moduleShape.Heights[d]);
+                    var e = edges[d];
+                    e.SetBit(moduleShape.Edges[d]);
+                    edges[d] = e;
+
+                    tiles[d].surfaces.SetBit(moduleShape.Surfaces[d]);
+                    tiles[d].slants.SetBit((int)moduleShape.Slants[d]);
+                    tiles[d].heights.UnionWith(validHeights_[m] << moduleShape.Heights[d]);
                 }
             }
         }

@@ -1,6 +1,8 @@
 display_name Test
 # D = default
 surfaces D
+passable_edges O
+impassable_edges X
 max_height 3
 
 modules {
@@ -8,9 +10,9 @@ modules {
         weight 80
         collision Terrain/Flat
         shape {
-            D0x o D0x
-             o     o
-            D0x o D0x
+            D0x O D0x
+             O     O
+            D0x O D0x
         }
     }
 
@@ -20,9 +22,9 @@ modules {
         collision Terrain/StraightCliff
         height_offset 1
         shape {
-            D1x o D1x
-             x     x
-            D0x o D0x
+            D1x O D1x
+             X     X
+            D0x O D0x
         }
     }
 
@@ -32,9 +34,9 @@ modules {
         collision Terrain/CurvedCliff
         height_offset 1
         shape {
-            D1x x D0x
-             x     o
-            D0x o D0x
+            D1x X D0x
+             X     O
+            D0x O D0x
         }
     }
 
@@ -44,9 +46,9 @@ modules {
         collision Terrain/InnerCornerCliff
         height_offset 1
         shape {
-            D1x o D1x
-             o     x
-            D1x x D0x
+            D1x O D1x
+             O     X
+            D1x X D0x
         }
     }
 
@@ -56,9 +58,9 @@ modules {
         collision Terrain/Straight2HighCliff
         height_offset 2
         shape {
-            D2x o D2x
-             x     x
-            D0x o D0x
+            D2x O D2x
+             X     X
+            D0x O D0x
         }
     }
 
@@ -68,9 +70,9 @@ modules {
         collision Terrain/TCliffTriple
         height_offset 2
         shape {
-            D2x o D2x
-             x     x
-            D0x x D1x
+            D2x O D2x
+             X     X
+            D0x X D1x
         }
     }
 
@@ -80,9 +82,9 @@ modules {
         collision Terrain/CrossCliffTriple
         height_offset 2
         shape {
-            D2x x D1x
-             x     x
-            D1x x D0x
+            D2x X D1x
+             X     X
+            D1x X D0x
         }
     }
 
@@ -91,9 +93,9 @@ modules {
         variants f4
         collision Terrain/StraightSlantDown
         shape {
-            D0x o D0x
-             o     o
-            D0x x D0v
+            D0x O D0x
+             O     O
+            D0x X D0v
         }
     }
 
@@ -103,9 +105,9 @@ modules {
         collision Terrain/CornerSlantUp
         height_offset 1
         shape {
-            D1x x D1v
-             x     o
-            D0x o D0x
+            D1x X D1v
+             X     O
+            D0x O D0x
         }
     }
 
@@ -114,9 +116,9 @@ modules {
         variants 4
         collision Terrain/FlatSlantDown
         shape {
-            D0x o D0x
-             o     o
-            D0v o D0v
+            D0x O D0x
+             O     O
+            D0v O D0v
         }
     }
 
@@ -126,9 +128,9 @@ modules {
         collision Terrain/FlatSlantUp
         height_offset 1
         shape {
-            D1v o D1v
-             o     o
-            D0x o D0x
+            D1v O D1v
+             O     O
+            D0x O D0x
         }
     }
 
@@ -138,9 +140,9 @@ modules {
         collision Terrain/SlantDownStraightCliff
         height_offset 1
         shape {
-            D1x x D0x
-             o     o
-            D1v x D0x
+            D1x X D0x
+             O     O
+            D1v X D0x
         }
     }
 
@@ -150,9 +152,9 @@ modules {
         collision Terrain/SlantUpStraightCliff
         height_offset 1
         shape {
-            D1x x D0x
-             o     o
-            D1x x D1^
+            D1x X D0x
+             O     O
+            D1x X D1^
         }
     }
 
@@ -162,9 +164,9 @@ modules {
         collision Terrain/DoubleSlantUpCornerCliff
         height_offset 1
         shape {
-            D1x x D1v
-             x     o
-            D1> o D0x
+            D1x X D1v
+             X     O
+            D1> O D0x
         }
     }
 
@@ -173,9 +175,9 @@ modules {
         variants 4
         collision Terrain/MonolithFlat
         shape {
-            D0x o D0x
-             o     o
-            D0x x D0x
+            D0x O D0x
+             O     O
+            D0x X D0x
         }
     }
 
@@ -185,9 +187,9 @@ modules {
         collision Terrain/MonolithCliffSlant
         height_offset 1
         shape {
-            D1x x D1v
-             x     o
-            D0x x D0x
+            D1x X D1v
+             X     O
+            D0x X D0x
         }
     }
 }

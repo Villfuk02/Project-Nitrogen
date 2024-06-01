@@ -41,13 +41,7 @@ namespace Data.WorldGen
 
     public record ObstacleData(string Name, ObstacleData.Type ObstacleType, int Min, int Max, float BaseProbability, BitSet32 ValidSurfaces, bool OnSlants, float[] Forces)
     {
-        public enum Type
-        {
-            Small,
-            Large,
-            Fuel,
-            Minerals
-        }
+        public enum Type { Small, Large, Fuel, Minerals }
 
         public static ObstacleData Parse(string name, ParseStream stream, int layerCount, IEnumerable<int> allSurfaces)
         {

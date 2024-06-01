@@ -6,7 +6,7 @@ using static Data.Parsers.Parsers;
 
 namespace Data.WorldGen
 {
-    public record TerrainType(string DisplayName, BitSet32 Surfaces, int MaxHeight, Module[] Modules, ObstaclesData Obstacles, ScattererData ScattererData, List<FractalNoiseNode> NoiseNodes)
+    public record TerrainType(string DisplayName, BitSet32 Surfaces, BitSet32 PassableEdges, BitSet32 ImpassableEdges, int MaxHeight, Module[] Modules, ObstaclesData Obstacles, ScattererData ScattererData, List<FractalNoiseNode> NoiseNodes)
     {
         public static TerrainType Parse(ParseStream stream)
         {
@@ -14,6 +14,8 @@ namespace Data.WorldGen
             PropertyParser pp = new();
             var displayName = pp.Register("display_name", ParseWord);
             var surfaces = pp.Register("surfaces", Chain(ParseLine, ParseList, ParseSurface));
+            var passableEdges = pp.Register("passable_edges", Chain(ParseLine, ParseList, ParseEdge));
+            var impassableEdges = pp.Register("impassable_edges", Chain(ParseLine, ParseList, ParseEdge));
             var maxHeight = pp.Register("max_height", ParseInt);
             var modules = pp.Register("modules", Chain(ParseBlock, ParseModules));
             var obstacles = pp.Register("obstacles", Chain(ParseBlock, s => ObstaclesData.Parse(s, surfaces())));
@@ -24,6 +26,8 @@ namespace Data.WorldGen
             return new(
                 displayName(),
                 BitSet32.FromBits(surfaces()),
+                BitSet32.FromBits(passableEdges()),
+                BitSet32.FromBits(impassableEdges()),
                 maxHeight(),
                 modules(),
                 obstacles(),
@@ -40,12 +44,15 @@ namespace Data.WorldGen
             return parser.ParsedExtra.SelectMany(a => a).ToArray();
         }
 
-        public static int ParseSurface(ParseStream stream)
+        static int ParseKey(ParseStream stream, string entryType)
         {
             char c = ParseChar(stream);
             if (c is < 'A' or > 'Z')
-                throw new ParseException(stream, $"\"{c}\" is not a valid surface - it must be an uppercase letter.");
+                throw new ParseException(stream, $"\"{c}\" is not a valid {entryType} type - it must be an uppercase letter.");
             return c - 'A';
         }
+
+        public static int ParseSurface(ParseStream stream) => ParseKey(stream, "surface");
+        public static int ParseEdge(ParseStream stream) => ParseKey(stream, "edge");
     }
 }
