@@ -1,6 +1,6 @@
-using Data.Parsers;
 using System;
 using System.Collections.Generic;
+using Data.Parsers;
 using UnityEngine;
 using Utils;
 using static Data.Parsers.Parsers;
@@ -75,10 +75,15 @@ namespace Data.WorldGen
             var valueThreshold = pp.Register("value_threshold", ParseFloat);
             var value = pp.Register("value", s => CompositeNode.Parse(s, nodeFactory));
 
+            triesPerTile.SetValidator((int v, out string err) => IsPositive(v, triesPerTile.Name, out err));
+            placementRadius.SetValidator((float v, out string err) => IsNonnegative(v, placementRadius.Name, out err));
+            persistentRadius.SetValidator((float v, out string err) => IsNonnegative(v, persistentRadius.Name, out err));
+            angleSpread.SetValidator((float v, out string err) => IsNonnegative(v, angleSpread.Name, out err));
 
             pp.Parse(blockStream);
 
-            return new(name, prefab(), triesPerTile(), placementRadius(), persistentRadius(), sizeGain(), radiusGain(), angleSpread(), valueThreshold(), value());
+            return new(name, prefab.GetValue(), triesPerTile.GetValue(), placementRadius.GetValue(),
+                persistentRadius.GetValue(), sizeGain.GetValue(), radiusGain.GetValue(), angleSpread.GetValue(), valueThreshold.GetValue(), value.GetValue());
         }
 
         static float GetScaled(float baseRadius, float strength, float evaluated)
@@ -112,6 +117,7 @@ namespace Data.WorldGen
     public record CompositeNode(List<Node> Children) : Node
     {
         public static CompositeNode Parse(ParseStream stream, Parse<Node> nodeFactory) => new(ParseChildren(stream, nodeFactory));
+
         public static List<Node> ParseChildren(ParseStream stream, Parse<Node> nodeFactory)
         {
             BlockParseStream blockStream = new(stream);
@@ -133,6 +139,7 @@ namespace Data.WorldGen
             var children = ParseChildren(stream, nodeFactory);
             return new(min, max, children);
         }
+
         public override T Accept<T>(IDecorationNodeVisitor<T> visitor) => visitor.VisitClampNode(this);
     }
 
@@ -145,6 +152,7 @@ namespace Data.WorldGen
             float outer = ParseFloat(stream);
             return new(inner, outer, isPosIn);
         }
+
         public override T Accept<T>(IDecorationNodeVisitor<T> visitor) => visitor.VisitSDFNode(this);
     }
 
@@ -161,9 +169,14 @@ namespace Data.WorldGen
             var baseFrequency = pp.Register("base_frequency", ParseFloat);
             var frequencyMult = pp.Register("frequency_mult", ParseFloat);
 
+            octaves.SetValidator((int value, out string err) => IsPositive(value, octaves.Name, out err));
+            amplitudeMult.SetValidator((float value, out string err) => IsPositive(value, amplitudeMult.Name, out err));
+            frequencyMult.SetValidator((float value, out string err) => IsPositive(value, frequencyMult.Name, out err));
+
             pp.Parse(blockStream);
-            return new(new FractalNoise(octaves(), bias(), baseAmplitude(), amplitudeMult(), baseFrequency(), frequencyMult()));
+            return new(new FractalNoise(octaves.GetValue(), bias.GetValue(), baseAmplitude.GetValue(), amplitudeMult.GetValue(), baseFrequency.GetValue(), frequencyMult.GetValue()));
         }
+
         public override T Accept<T>(IDecorationNodeVisitor<T> visitor) => visitor.VisitFractalNoiseNode(this);
     }
 }

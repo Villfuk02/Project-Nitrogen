@@ -23,7 +23,7 @@ namespace BattleSimulation.World.WorldData
             }
         }
 
-        public delegate bool IsPassable(Vector2Int tile, int direction);
+        public delegate bool IsBlocked(Vector2Int tile, int direction);
 
         readonly Array2D<TileData> tiles_;
 
@@ -31,35 +31,35 @@ namespace BattleSimulation.World.WorldData
         /// Creates an instance of <see cref="TilesData"/>, pre-filled with some base data.
         /// </summary>
         /// <param name="slots">Generated terrain <see cref="Module"/>s and their heights.</param>
-        /// <param name="isPassable">Oracle that accepts a tile position and direction and returns if there is a passage from the tile in the given direction.</param>
+        /// <param name="isBlocked">Oracle that accepts a tile position and direction and returns if the edge from the tile in the given direction is blocked.</param>
         /// <param name="paths">The generated paths, each an array of the tile positions it visits.</param>
-        public TilesData(IReadOnlyArray2D<CollapsedSlot> slots, IsPassable isPassable, IEnumerable<Vector2Int[]> paths)
+        public TilesData(IReadOnlyArray2D<CollapsedSlot> slots, IsBlocked isBlocked, IEnumerable<Vector2Int[]> paths)
         {
             tiles_ = new(WorldUtils.WORLD_SIZE);
             tiles_.Fill(() => new());
             foreach (Vector2Int pos in WorldUtils.WORLD_SIZE)
-                InitTile(slots, isPassable, pos);
+                InitTile(slots, isBlocked, pos);
 
             foreach (var path in paths)
                 for (int i = 0; i < path.Length; i++)
                     tiles_[path[i]].dist = path.Length - i - 1;
         }
 
-        void InitTile(IReadOnlyArray2D<CollapsedSlot> slots, IsPassable isPassable, Vector2Int pos)
+        void InitTile(IReadOnlyArray2D<CollapsedSlot> slots, IsBlocked isBlocked, Vector2Int pos)
         {
             TileData t = this[pos];
             CardinalDirs<TileData> connections = new();
             for (int d = 0; d < 4; d++)
             {
                 Vector2Int p = pos + WorldUtils.CARDINAL_DIRS[d];
-                if (tiles_.IsInBounds(p) && isPassable(pos, d))
+                if (tiles_.IsInBounds(p) && !isBlocked(pos, d))
                     connections[d] = this[p];
             }
 
             t.pos = pos;
             t.height = slots[pos].height + slots[pos].module.Shape.Heights.NE;
             t.slant = slots[pos].module.Shape.Slants.NE;
-            t.passable = true;
+            t.blocked = false;
             t.neighbors = connections;
             t.dist = int.MaxValue;
             t.obstacle = null;
@@ -73,8 +73,8 @@ namespace BattleSimulation.World.WorldData
         public IEnumerator<TileData> GetEnumerator() => tiles_.GetEnumerator();
 
         /// <summary>
-        /// Recalculates the distance of each tile to the hub, using only valid passages and passable tiles.
-        /// Tiles which already have a distance (path tiles) will not be recalculated, and they will be treated as not passable from directions other than the path direction.
+        /// Recalculates the distance of each tile to the hub, using only free edges and tiles.
+        /// Tiles which already have a distance (path tiles) will not be recalculated, and they will be treated as blocked from directions other than the path direction.
         /// Unreachable tiles have the distance <see cref="int.MaxValue"/>.
         /// </summary>
         /// <returns>maximum distance found</returns>
@@ -91,7 +91,7 @@ namespace BattleSimulation.World.WorldData
                 var node = queue.Dequeue();
                 foreach (var n in node.neighbors)
                 {
-                    if (n is null || !n.passable)
+                    if (n is null || n.blocked)
                         continue;
 
                     if (n.dist == int.MaxValue)

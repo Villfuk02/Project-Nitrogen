@@ -55,8 +55,8 @@ namespace WorldGen.WFC
             dirtySlots_ = new(0);
             Vector2Int minHeightSlot = new(WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.x + 1), WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.y + 1));
             Vector2Int maxHeightSlot = minHeightSlot;
-            //while (maxHeightSlot.ManhattanDistance(minHeightSlot) < 5)
-            maxHeightSlot = new(WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.x + 1), WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.y + 1));
+            while (maxHeightSlot.ManhattanDistance(minHeightSlot) < 5)
+                maxHeightSlot = new(WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.x + 1), WorldGenerator.Random.Int(0, WorldUtils.WORLD_SIZE.y + 1));
 
             foreach (var pos in WorldUtils.WORLD_SIZE + Vector2Int.one)
             {
@@ -74,7 +74,7 @@ namespace WorldGen.WFC
             WFCTile hubTile = state_.GetTileAt(hubPosition);
             hubTile.slants = BitSet32.OneBit((int)WorldUtils.Slant.None);
 
-            InitPassages(paths);
+            InitEdges(paths);
 
             stateStack_ = new(backtrackingDepth);
             steps_ = 0;
@@ -82,11 +82,11 @@ namespace WorldGen.WFC
 
 
         /// <summary>
-        /// Sets which passages must be passable.
-        /// A passage must exist between two tiles where a path goes through.
-        /// A passage must exist from a path tile on the edge of the world over the edge.
+        /// Sets which edges must be free or blocked.
+        /// An edge between two tiles where a path goes through must be free.
+        /// An edge from a path tile on the edge of the world over the edge must be free.
         /// </summary>
-        void InitPassages(Vector2Int[][] paths)
+        void InitEdges(Vector2Int[][] paths)
         {
             var pathDistances = new Array2D<int>(WorldUtils.WORLD_SIZE);
             pathDistances.Fill(int.MaxValue);
@@ -95,13 +95,13 @@ namespace WorldGen.WFC
                     pathDistances[path[i]] = path.Length - i;
 
             foreach ((var pos, int distance) in pathDistances.IndexedEnumerable)
-                InitTilePassages(distance, pos, pathDistances);
+                InitTileEdges(distance, pos, pathDistances);
         }
 
         /// <summary>
-        /// Set which passages from this specific tile must be passable.
+        /// Set which edges from this specific tile must be free or blocked.
         /// </summary>
-        void InitTilePassages(int distance, Vector2Int pos, IReadOnlyArray2D<int> pathDistances)
+        void InitTileEdges(int distance, Vector2Int pos, IReadOnlyArray2D<int> pathDistances)
         {
             if (distance == int.MaxValue)
                 return;
@@ -110,32 +110,32 @@ namespace WorldGen.WFC
             {
                 Vector2Int neighbor = pos + WorldUtils.CARDINAL_DIRS[direction];
                 bool hasNeighbor = pathDistances.TryGet(neighbor, out int neighborDistance);
-                bool passable = MustBePassable(distance, hasNeighbor, neighborDistance);
-                if (passable)
+                bool blocked = CanBeBlocked(distance, hasNeighbor, neighborDistance);
+                if (!blocked)
                 {
-                    state_.RemoveImpassableEdgeTypesAtTile(pos, direction);
+                    state_.SetValidEdgesAtTile(pos, direction, true, false);
                     // debug
-                    // draw edges that must be passable
-                    RegisterGizmos(StepType.Step, () => MakePassageGizmos(pos, direction, (true, false)));
+                    // draw edges that must be free
+                    RegisterGizmos(StepType.Step, () => MakeEdgeGizmo(pos, direction, true, false));
                     // end debug
                 }
             }
         }
 
         /// <summary>
-        /// Decides whether a passage from a tile to its neighbor must be passable.
+        /// Decides whether an edge from a path tile to its neighbor can be blocked.
         /// </summary>
-        static bool MustBePassable(int distance, bool hasNeighbor, int neighborDistance)
+        static bool CanBeBlocked(int distance, bool hasNeighbor, int neighborDistance)
         {
             if (!hasNeighbor)
-                return true;
-
-            if (neighborDistance == int.MaxValue)
                 return false;
 
-            if (Mathf.Abs(neighborDistance - distance) == 1)
+            if (neighborDistance == int.MaxValue)
                 return true;
-            return false;
+
+            if (Mathf.Abs(neighborDistance - distance) == 1)
+                return false;
+            return true;
         }
 
         /// <summary>
@@ -305,9 +305,9 @@ namespace WorldGen.WFC
                     new(t.m.module.Flipped ? -1 : 1, 1, 1), Quaternion.Euler(0, 90 * t.m.module.Rotated, 0))).ToList();
         }
 
-        static GizmoManager.Cube MakePassageGizmos(Vector2Int tilePos, int direction, (bool passable, bool impassable) p)
+        static GizmoManager.Cube MakeEdgeGizmo(Vector2Int tilePos, int direction, bool canBeFree, bool canBeBlocked)
         {
-            Color c = p switch
+            Color c = (canBeFree, canBeBlocked) switch
             {
                 (false, false) => Color.blue,
                 (true, false) => Color.green,

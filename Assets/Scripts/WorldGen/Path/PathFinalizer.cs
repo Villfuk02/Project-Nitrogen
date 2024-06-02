@@ -23,14 +23,14 @@ namespace WorldGen.Path
             // debug
             WaitForStep(StepType.Phase);
             print("Finalizing Paths");
-            // draw all impassable tiles and passages
+            // draw all blocked tiles and edges
             RegisterGizmos(StepType.Phase, () =>
             {
                 List<GizmoManager.GizmoObject> gizmos = new();
                 foreach (var tile in Tiles)
                 {
                     Vector3 pos = WorldUtils.TilePosToWorldPos(tile.pos);
-                    if (!tile.passable)
+                    if (tile.blocked)
                         gizmos.Add(new GizmoManager.Cube(Color.red, pos, new Vector3(0.6f, 0.1f, 0.6f)));
                     for (int i = 0; i < 4; i++)
                     {

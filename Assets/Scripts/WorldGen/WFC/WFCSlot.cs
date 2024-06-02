@@ -87,8 +87,8 @@ namespace WorldGen.WFC
         /// <returns>newSlot - null if it didn't change or backtracking is needed, otherwise the updated slot. backtrack - true if the generator needs to backtrack.</returns>
         public (WFCSlot newSlot, bool backtrack) UpdateValidModules(in WFCState state)
         {
-            var vPassages = state.GetValidEdgesAtSlot(pos);
-            var vTiles = state.GetValidTilesAtSlot(pos);
+            var validEdges = state.GetValidEdgesAtSlot(pos);
+            var validTiles = state.GetValidTilesAtSlot(pos);
 
             bool changed = false;
             WFCSlot n = new(pos);
@@ -96,13 +96,13 @@ namespace WorldGen.WFC
             foreach (var m in validModules_)
             {
                 ModuleShape moduleShape = WorldGenerator.TerrainType.Modules[m].Shape;
-                if (!AreEdgesConsistent(moduleShape, vPassages, vTiles))
+                if (!AreEdgesConsistent(moduleShape, validEdges, validTiles))
                 {
                     changed = true;
                     continue;
                 }
 
-                var newHeights = GetConsistentHeights(m, moduleShape, vTiles);
+                var newHeights = GetConsistentHeights(m, moduleShape, validTiles);
                 if (newHeights != validHeights_[m])
                     changed = true;
                 if (newHeights.IsEmpty)
@@ -137,13 +137,11 @@ namespace WorldGen.WFC
             return newHeights;
         }
 
-        static bool AreEdgesConsistent(ModuleShape moduleShape, CardinalDirs<BitSet32> vEdges, DiagonalDirs<WFCTile> vTiles)
+        static bool AreEdgesConsistent(ModuleShape moduleShape, CardinalDirs<BitSet32> edges, DiagonalDirs<WFCTile> tiles)
         {
             for (int d = 0; d < 4; d++)
-            {
-                if (!vEdges[d].IsSet(moduleShape.Edges[d]) || !vTiles[d].surfaces.IsSet(moduleShape.Surfaces[d]) || !vTiles[d].slants.IsSet((int)moduleShape.Slants[d]))
+                if (!edges[d].IsSet(moduleShape.Edges[d]) || !tiles[d].surfaces.IsSet(moduleShape.Surfaces[d]) || !tiles[d].slants.IsSet((int)moduleShape.Slants[d]))
                     return false;
-            }
 
             return true;
         }

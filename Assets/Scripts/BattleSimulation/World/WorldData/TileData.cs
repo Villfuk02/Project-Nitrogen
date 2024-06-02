@@ -1,5 +1,5 @@
-using Data.WorldGen;
 using System.Collections.Generic;
+using Data.WorldGen;
 using UnityEngine;
 using Utils;
 
@@ -11,7 +11,7 @@ namespace BattleSimulation.World.WorldData
         public int height;
         public WorldUtils.Slant slant;
         public CardinalDirs<TileData> neighbors;
-        public bool passable;
+        public bool blocked;
         public ObstacleData obstacle;
         public int dist;
         public List<TileData> pathNext = new();
@@ -28,7 +28,7 @@ namespace BattleSimulation.World.WorldData
                 WorldUtils.Slant.East => -relativePos.x - 0.5f,
                 WorldUtils.Slant.South => relativePos.y - 0.5f,
                 WorldUtils.Slant.West => relativePos.x - 0.5f,
-                _ => 0,
+                _ => 0
             };
             return height + offset;
         }

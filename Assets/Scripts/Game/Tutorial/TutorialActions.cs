@@ -166,7 +166,7 @@ namespace Game.Tutorial
 
         public void PlaceBudgetSentry()
         {
-            worldBuilder.PlacePermanentBuilding(budgetSentryBlueprint, new(4, 8));
+            worldBuilder.PlacePermanentBuilding(budgetSentryBlueprint, new(6, 7));
         }
 
         public void HideWavesPreview()

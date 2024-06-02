@@ -19,15 +19,14 @@ namespace Data.WorldGen
             var collisionPath = pp.Register("collision", ParseWord);
             var shape = pp.Register("shape", Chain(ParseBlock, ModuleShape.Parse));
 
+            weight.SetValidator((float v, out string err) => IsPositive(v, weight.Name, out err));
+
             pp.Parse(blockStream);
 
-            var parsedWeight = weight();
-            if (parsedWeight <= 0)
-                throw new ParseException(blockStream, "Weight must be positive.");
-            (bool flipped, int rotated) = variants();
-            var mesh = Resources.Load<Mesh>(collisionPath()) ?? throw new ParseException(blockStream, $"Could not load mesh at \"{collisionPath()}\"");
+            (bool flipped, int rotated) = variants.GetValue();
+            var mesh = Resources.Load<Mesh>(collisionPath.GetValue()) ?? throw new ParseException(blockStream, $"Could not load mesh at \"{collisionPath.GetValue()}\"");
 
-            Module settings = new(name, parsedWeight, flipped, rotated, heightOffset(), mesh, shape());
+            Module settings = new(name, weight.GetValue(), flipped, rotated, heightOffset.GetValue(), mesh, shape.GetValue());
 
             return settings.MakeVariants();
         }
@@ -43,8 +42,6 @@ namespace Data.WorldGen
                 switch (c)
                 {
                     case 'f':
-                        flipped = true;
-                        break;
                     case 'F':
                         flipped = true;
                         break;

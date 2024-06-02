@@ -4,9 +4,8 @@
 ## tweaks
 
 - [x] extend WFC to support edge types
-- [ ] fix fixed height tiles
-- [ ] rename passable, impassable and passages
-- [ ] aEdges, aTiles
+- [x] rename passable, impassable and passages, incl. comments and thesis
+
 ## till next metting
 - [x] ch2
 - [ ] ch3

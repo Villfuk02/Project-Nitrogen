@@ -13,21 +13,21 @@ namespace Data.Parsers
 
         protected override bool TryGetNext(out char c) => stream_.TryRead(out c);
 
-        protected override bool ProcessOutgoing(ref char c)
+        protected override bool TryProcessOutgoing(ref char c)
         {
             switch (c)
             {
                 case '{':
                     depth_++;
                     if (depth_ == 0)
-                        return !TryRead(out c);
+                        return TryRead(out c);
                     break;
                 case '}':
                     depth_--;
                     break;
             }
 
-            return depth_ < 0;
+            return depth_ >= 0;
         }
 
         protected override void ProcessReturning(char c)
@@ -44,6 +44,7 @@ namespace Data.Parsers
         }
 
         public override string GetStatus() => stream_.GetStatus();
+
         public override void Dispose()
         {
             while (TryRead(out char _)) { }

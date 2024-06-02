@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using BattleSimulation.World.WorldData;
 using UnityEngine;
@@ -39,8 +38,7 @@ namespace WorldGen.WFC
             foreach (var (index, _) in tiles_.IndexedEnumerable)
                 tiles_[index] = new(true);
 
-            var validEdgeTypes = WorldGenerator.TerrainType.PassableEdges;
-            validEdgeTypes.UnionWith(WorldGenerator.TerrainType.ImpassableEdges);
+            var validEdgeTypes = BitSet32.Union(WorldGenerator.TerrainType.FreeEdges, WorldGenerator.TerrainType.BlockedEdges);
             verticalEdges_ = new(slotWorldSize);
             verticalEdges_.Fill(validEdgeTypes);
             horizontalEdges_ = new(slotWorldSize);
@@ -87,11 +85,11 @@ namespace WorldGen.WFC
         // FINAL GETTERS
         public Array2D<TilesData.CollapsedSlot> GetCollapsedSlots() => new(slots.Select(s => s.Collapsed).ToArray(), slots.Size);
 
-        public bool GetPassageAtTile(Vector2Int pos, int direction)
+        public bool IsEdgeBlocked(Vector2Int pos, int direction)
         {
             var edges = GetValidEdgesAtSlot(pos + TileToSlotArrayOffsets[direction], 3 - direction);
-            edges.IntersectWith(WorldGenerator.TerrainType.PassableEdges);
-            return !edges.IsEmpty;
+            edges.IntersectWith(WorldGenerator.TerrainType.FreeEdges);
+            return edges.IsEmpty;
         }
 
         // EDGES
@@ -125,30 +123,16 @@ namespace WorldGen.WFC
             edgeArray[pos + SlotToEdgeArrayOffsets[direction]] = valid;
         }
 
-        public void RemoveImpassableEdgeTypesAtTile(Vector2Int pos, int direction)
+        public void SetValidEdgesAtTile(Vector2Int pos, int direction, bool canBeFree, bool canBeBlocked)
         {
-            WorldGenerator.WaitForStep(WorldGenerator.StepType.MicroStep);
             var slotPos = pos + TileToSlotArrayOffsets[direction];
             var slotDirection = 3 - direction;
             var types = GetValidEdgesAtSlot(slotPos, slotDirection);
-            types.IntersectWith(WorldGenerator.TerrainType.PassableEdges);
+            if (!canBeBlocked)
+                types.IntersectWith(WorldGenerator.TerrainType.FreeEdges);
+            if (!canBeFree)
+                types.IntersectWith(WorldGenerator.TerrainType.BlockedEdges);
             SetValidEdgesAtSlot(slotPos, slotDirection, types);
-            WorldGenerator.RegisterGizmos(WorldGenerator.StepType.MicroStep, () =>
-            {
-                List<GizmoManager.GizmoObject> list = new();
-                foreach (var p in WorldUtils.WORLD_SIZE + Vector2Int.one)
-                {
-                    for (int d = 0; d < 4; d++)
-                    {
-                        var p2 = p + (Vector2)WorldUtils.CARDINAL_DIRS[d] * 0.3f;
-                        var realPos = WorldUtils.SlotPosToWorldPos(p2.x, p2.y, 0);
-                        var e = GetValidEdgesAtSlot(p, d);
-                        list.Add(new GizmoManager.Cube(new(e.IsSet(23) ? 1 : 0, e.IsSet(14) ? 1 : 0, 1), realPos, 0.2f));
-                    }
-                }
-
-                return list;
-            });
         }
 
         // TILES

@@ -83,9 +83,7 @@ namespace System.Collections.Generic
         ///  The specified <paramref name="initialCapacity"/> was negative.
         /// </exception>
         public PriorityQueue(int initialCapacity)
-            : this(initialCapacity, comparer: null)
-        {
-        }
+            : this(initialCapacity, comparer: null) { }
 
         /// <summary>
         ///  Initializes a new instance of the <see cref="PriorityQueue{TElement, TPriority}"/> class
@@ -132,9 +130,7 @@ namespace System.Collections.Generic
         ///  which is generally faster than enqueuing individual elements sequentially.
         /// </remarks>
         public PriorityQueue(IEnumerable<(TElement Element, TPriority Priority)> items)
-            : this(items, comparer: null)
-        {
-        }
+            : this(items, comparer: null) { }
 
         /// <summary>
         ///  Initializes a new instance of the <see cref="PriorityQueue{TElement, TPriority}"/> class
@@ -182,7 +178,7 @@ namespace System.Collections.Generic
         ///  The enumeration does not order items by priority, since that would require N * log(N) time and N space.
         ///  Items are instead enumerated following the internal array heap layout.
         /// </remarks>
-        public UnorderedItemsCollection UnorderedItems => _unorderedItems ??= new UnorderedItemsCollection(this);
+        public UnorderedItemsCollection UnorderedItems => _unorderedItems ??= new(this);
 
         /// <summary>
         ///  Adds the specified element with associated priority to the <see cref="PriorityQueue{TElement, TPriority}"/>.
@@ -555,6 +551,7 @@ namespace System.Collections.Generic
                 // Clear the elements so that the gc can reclaim the references
                 Array.Clear(_nodes, 0, _size);
             }
+
             _size = 0;
             _version++;
         }
@@ -901,13 +898,11 @@ namespace System.Collections.Generic
 
                 return comparer;
             }
-            else
-            {
-                // Currently the JIT doesn't optimize direct Comparer<T>.Default.Compare
-                // calls for reference types, so we want to cache the comparer instance instead.
-                // TODO https://github.com/dotnet/runtime/issues/10050: Update if this changes in the future.
-                return comparer ?? Comparer<TPriority>.Default;
-            }
+
+            // Currently the JIT doesn't optimize direct Comparer<T>.Default.Compare
+            // calls for reference types, so we want to cache the comparer instance instead.
+            // TODO https://github.com/dotnet/runtime/issues/10050: Update if this changes in the future.
+            return comparer ?? Comparer<TPriority>.Default;
         }
 
         /// <summary>
@@ -1014,6 +1009,7 @@ namespace System.Collections.Generic
                 /// Gets the element at the current position of the enumerator.
                 /// </summary>
                 public (TElement Element, TPriority Priority) Current => _current;
+
                 object IEnumerator.Current => _current;
 
                 void IEnumerator.Reset()
@@ -1032,11 +1028,10 @@ namespace System.Collections.Generic
             /// Returns an enumerator that iterates through the <see cref="UnorderedItems"/>.
             /// </summary>
             /// <returns>An <see cref="Enumerator"/> for the <see cref="UnorderedItems"/>.</returns>
-            public Enumerator GetEnumerator() => new Enumerator(_queue);
+            public Enumerator GetEnumerator() => new(_queue);
 
             IEnumerator<(TElement Element, TPriority Priority)> IEnumerable<(TElement Element, TPriority Priority)>.GetEnumerator() =>
-                _queue.Count == 0 ? Enumerable.Empty<(TElement Element, TPriority Priority)>().GetEnumerator() :
-                GetEnumerator();
+                _queue.Count == 0 ? Enumerable.Empty<(TElement Element, TPriority Priority)>().GetEnumerator() : GetEnumerator();
 
             IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<(TElement Element, TPriority Priority)>)this).GetEnumerator();
         }

@@ -528,7 +528,7 @@ MonoBehaviour:
   muteButton: {fileID: 4128912061400058029}
   runSeed: 0
   seedString: 
-  tutorialLevelSeed: 1011
+  tutorialLevelSeed: 1021
   maxHullLostPerWave: 5
   blueprints: []
   level: 0
@@ -566,6 +566,7 @@ MonoBehaviour:
   normalLayer: -1
   generatingLayer: 3
   displayed: 0
+  generating: 0
 --- !u!1 &4128912061400058029
 GameObject:
   m_ObjectHideFlags: 0

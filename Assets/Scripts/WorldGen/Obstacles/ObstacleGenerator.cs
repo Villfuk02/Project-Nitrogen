@@ -125,7 +125,7 @@ namespace WorldGen.Obstacles
         void Place(Vector2Int pos, ObstacleData obstacle, int layer)
         {
             emptyTiles_.Remove(pos);
-            Tiles[pos].passable = false;
+            Tiles[pos].blocked = true;
             Tiles[pos].obstacle = obstacle;
             foreach (var p in emptyTiles_)
             {
@@ -144,7 +144,7 @@ namespace WorldGen.Obstacles
                 foreach (var tile in Tiles)
                 {
                     Vector3 pos = WorldUtils.TilePosToWorldPos(tile.pos);
-                    Color c = tile.passable ? tile.dist == int.MaxValue ? Color.red : Color.green : Color.magenta;
+                    Color c = tile.blocked ? Color.magenta : tile.dist == int.MaxValue ? Color.red : Color.green;
                     gizmos.Add(new GizmoManager.Cube(c, pos, 0.2f));
                     gizmos.AddRange(
                         tile.neighbors.Where(n => n is not null).Select(n => WorldUtils.TilePosToWorldPos(n.pos))

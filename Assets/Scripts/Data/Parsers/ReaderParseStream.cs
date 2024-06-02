@@ -28,11 +28,11 @@ namespace Data.Parsers
             return r != -1;
         }
 
-        protected override bool ProcessOutgoing(ref char c)
+        protected override bool TryProcessOutgoing(ref char c)
         {
             if (c == '\n')
                 Line++;
-            return false;
+            return true;
         }
 
         protected override void ProcessReturning(char c)

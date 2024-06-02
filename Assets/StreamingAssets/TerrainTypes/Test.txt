@@ -1,8 +1,10 @@
 display_name Test
 # D = default
 surfaces D
-passable_edges O
-impassable_edges X
+# O = flat
+free_edges O
+# X = cliff, M = monolith
+blocked_edges XM
 max_height 3
 
 modules {
@@ -171,25 +173,25 @@ modules {
     }
 
     * MonolithFlat {
-        weight 0.5
+        weight 2
         variants 4
         collision Terrain/MonolithFlat
         shape {
             D0x O D0x
              O     O
-            D0x X D0x
+            D0x M D0x
         }
     }
 
     * MonolithCliffSlant {
-        weight 0.5
+        weight 2
         variants f4
         collision Terrain/MonolithCliffSlant
         height_offset 1
         shape {
             D1x X D1v
              X     O
-            D0x X D0x
+            D0x M D0x
         }
     }
 }

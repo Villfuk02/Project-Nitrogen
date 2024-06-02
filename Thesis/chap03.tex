@@ -409,7 +409,7 @@ Additionally, some edges between tiles are also blocked, usually because the two
 The rest of the world generation has made sure that at least the main paths are still traversable, however we don't have to adhere to them completely.
 In fact, we can try to make the paths follow the rules even better, but we can always fall back on the previously generated ones.
 
-The first step of the algorithm we came up with, is to compute the shortest distance from each tile to the \emph{Hub}, respecting the blocked tiles and passages.
+The first step of the algorithm we came up with, is to compute the shortest distance from each tile to the \emph{Hub}, respecting the blocked tiles and edges.
 For this, we use breadth first search from the \emph{Hub} tile, but the paths start with the path distances already filled in, and we disallow the algorithm from visiting these tile sooner than their already marked distance.
 The result can be seen in figure~\ref{fig:path-distances}.
 

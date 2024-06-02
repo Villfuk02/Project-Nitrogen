@@ -292,8 +292,8 @@ namespace WorldGen.Path
         }
 
         /// <summary>
-        /// Tries to find a crossing (two orthogonal straight passages through the same tile) in the path.
-        /// If there is one, reverses a portion of the path to produce two curved passages instead.
+        /// Tries to find a crossing (two orthogonal straight passes through the same tile) in the path.
+        /// If there is one, reverses a portion of the path to produce two curved passes instead.
         /// </summary>
         static void UntwistCrossingIfExists(LinkedList<Vector2Int> path)
         {

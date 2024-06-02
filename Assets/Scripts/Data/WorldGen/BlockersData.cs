@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Data.Parsers;
 using Utils;
 using static Data.Parsers.Parsers;
@@ -7,11 +8,11 @@ namespace Data.WorldGen
 {
     public record ObstaclesData(ObstacleData[][] Layers, Dictionary<string, ObstacleData> Obstacles)
     {
-        public static ObstaclesData Parse(ParseStream stream, IEnumerable<int> allSurfaces)
+        public static ObstaclesData Parse(ParseStream stream)
         {
             var pp = new PropertyParserWithNamedExtra<ObstacleData>();
             var getLayers = pp.Register("layers", Chain(ParseBlock, ParseList, ParseLine, ParseList, ParseWord));
-            pp.RegisterExtraParser((n, s) => ObstacleData.Parse(n, s, getLayers().Count, allSurfaces));
+            pp.RegisterExtraParser((n, s) => ObstacleData.Parse(n, s, getLayers.GetValue().Count));
 
             pp.Parse(stream);
 
@@ -20,7 +21,7 @@ namespace Data.WorldGen
                 if (!obstacles.TryAdd(obstacle.Name, obstacle))
                     throw new ParseException(stream, $"Duplicate obstacle \"{obstacle.Name}\".");
 
-            var parsedLayers = getLayers();
+            var parsedLayers = getLayers.GetValue();
             var layers = new ObstacleData[parsedLayers.Count][];
             for (int i = 0; i < parsedLayers.Count; i++)
             {
@@ -43,7 +44,7 @@ namespace Data.WorldGen
     {
         public enum Type { Small, Large, Fuel, Minerals }
 
-        public static ObstacleData Parse(string name, ParseStream stream, int layerCount, IEnumerable<int> allSurfaces)
+        public static ObstacleData Parse(string name, ParseStream stream, int layerCount)
         {
             using BlockParseStream blockStream = new(stream);
             PropertyParser pp = new();
@@ -51,16 +52,20 @@ namespace Data.WorldGen
             var min = pp.Register("min", ParseInt, 0);
             var max = pp.Register("max", ParseInt, int.MaxValue);
             var baseProbability = pp.Register("base_probability", ParseFloat);
-            var validSurfaces = pp.Register("valid_surfaces", Chain(ParseLine, ParseList, TerrainType.ParseSurface), allSurfaces);
+            var validSurfaces = pp.Register("valid_surfaces", Chain(ParseLine, ParseList, TerrainType.ParseSurface), Enumerable.Range(0, 32).ToList());
             var onSlants = pp.Register("on_slants", ParseBool, true);
             var getForces = pp.Register("forces", Chain(ParseLine, ParseList, ParseFloat));
+
+            min.SetValidator((int value, out string err) => IsNonnegative(value, min.Name, out err));
+            max.SetValidator((int value, out string err) => IsAtLeast(value, max.Name, min.GetValue(), min.Name, out err));
+            validSurfaces.SetValidator(TerrainType.AreKeysDistinct);
 
             pp.Parse(blockStream);
 
             float[] forces = new float[layerCount];
-            getForces().CopyTo(forces);
+            getForces.GetValue().CopyTo(forces);
 
-            return new(name, type(), min(), max(), baseProbability(), BitSet32.FromBits(validSurfaces()), onSlants(), forces);
+            return new(name, type.GetValue(), min.GetValue(), max.GetValue(), baseProbability.GetValue(), BitSet32.FromBits(validSurfaces.GetValue()), onSlants.GetValue(), forces);
         }
 
         public static Type ParseType(ParseStream stream)

@@ -8,11 +8,14 @@ namespace Data.Parsers
     public static class Parsers
     {
         public delegate T Parse<out T>(ParseStream stream);
+
         public delegate TTo Transform<out TTo, in TFrom>(ParseStream stream, Parse<TFrom> parse);
+
         public static char ParseChar(ParseStream stream)
         {
             return stream.Read();
         }
+
         public static string ParseWord(ParseStream stream)
         {
             StringBuilder sb = new();
@@ -23,8 +26,10 @@ namespace Data.Parsers
                     stream.ReturnLast();
                     break;
                 }
+
                 sb.Append(c);
             }
+
             return sb.ToString();
         }
 
@@ -38,8 +43,10 @@ namespace Data.Parsers
                     stream.ReturnLast();
                     break;
                 }
+
                 count++;
             }
+
             return count;
         }
 
@@ -58,6 +65,7 @@ namespace Data.Parsers
                 res.Add(parse(stream));
                 SkipWhitespace(stream);
             }
+
             return res;
         }
 
@@ -68,13 +76,15 @@ namespace Data.Parsers
                 throw new ParseException(stream, $"\"{w}\" is not a valid integer.");
             return r;
         }
+
         public static float ParseFloat(ParseStream stream)
         {
             string w = ParseWord(stream);
-            if (!float.TryParse(w, NumberStyles.Any, CultureInfo.InvariantCulture, out float r))
-                throw new ParseException(stream, $"\"{w}\" is not a valid float.");
+            if (!float.TryParse(w, NumberStyles.Any, CultureInfo.InvariantCulture, out float r) || !float.IsFinite(r))
+                throw new ParseException(stream, $"\"{w}\" is not a valid floating point number.");
             return r;
         }
+
         public static bool ParseBool(ParseStream stream)
         {
             return ParseWord(stream) switch
@@ -91,6 +101,7 @@ namespace Data.Parsers
             SkipWhitespace(ls);
             return parse(ls);
         }
+
         public static T ParseBlock<T>(ParseStream stream, Parse<T> parse)
         {
             using BlockParseStream bs = new(stream);
@@ -110,5 +121,47 @@ namespace Data.Parsers
         public static Parse<T1> Chain<T1, T2, T3>(Transform<T1, T2> transform1, Transform<T2, T3> transform2, Parse<T3> parse) => Chain(transform1, Chain(transform2, parse));
         public static Parse<T1> Chain<T1, T2, T3, T4>(Transform<T1, T2> transform1, Transform<T2, T3> transform2, Transform<T3, T4> transform3, Parse<T4> parse) => Chain(transform1, Chain(transform2, transform3, parse));
         public static Parse<T1> Chain<T1, T2, T3, T4, T5>(Transform<T1, T2> transform1, Transform<T2, T3> transform2, Transform<T3, T4> transform3, Transform<T4, T5> transform4, Parse<T5> parse) => Chain(transform1, Chain(transform2, transform3, transform4, parse));
+
+        public static bool IsPositive(int value, string valueName, out string err)
+        {
+            err = $"The value of {valueName} ({value}) is not positive.";
+            return value > 0;
+        }
+
+        public static bool IsNonnegative(int value, string valueName, out string err)
+        {
+            err = $"The value of {valueName} ({value}) cannot be negative.";
+            return value >= 0;
+        }
+
+        public static bool IsPositive(float value, string valueName, out string err)
+        {
+            err = $"The value of {valueName} ({value}) is not positive.";
+            return value > 0;
+        }
+
+        public static bool IsNonnegative(float value, string valueName, out string err)
+        {
+            err = $"The value of {valueName} ({value}) cannot be negative.";
+            return value >= 0;
+        }
+
+        public static bool IsAtLeast(int value, string valueName, int minimum, string minimumName, out string err)
+        {
+            err = $"The value of {valueName} ({value}) is less than {minimumName} ({minimum}).";
+            return value >= minimum;
+        }
+
+        public static bool IsAtMost(int value, string valueName, int maximum, string maximumName, out string err)
+        {
+            err = $"The value of {valueName} ({value}) is greater than {maximumName} ({maximum}).";
+            return value <= maximum;
+        }
+
+        public static bool IsInRange(int value, string valueName, int minimum, int maximum, out string err)
+        {
+            err = $"The value of {valueName} ({value}) must be in the range {minimum} to {maximum}.";
+            return value >= minimum && value <= maximum;
+        }
     }
 }

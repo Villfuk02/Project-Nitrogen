@@ -13,6 +13,7 @@ namespace Data.Parsers
         {
             unexpectedEndMessage_ = unexpectedEndMessage;
         }
+
         public bool TryRead(out char c)
         {
             if (ended_)
@@ -36,11 +37,12 @@ namespace Data.Parsers
                 }
             }
 
-            if (ProcessOutgoing(ref c))
+            if (!TryProcessOutgoing(ref c))
             {
                 ended_ = true;
                 return false;
             }
+
             current_ = c;
             return true;
         }
@@ -64,7 +66,7 @@ namespace Data.Parsers
         }
 
         protected virtual void ReadPreprocess() { }
-        protected abstract bool ProcessOutgoing(ref char c);
+        protected abstract bool TryProcessOutgoing(ref char c);
         protected abstract void ProcessReturning(char c);
         public abstract string GetStatus();
         public abstract void Dispose();

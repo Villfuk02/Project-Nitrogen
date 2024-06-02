@@ -22,11 +22,11 @@ namespace Data.Parsers
 
         protected override bool TryGetNext(out char c) => stream_.TryRead(out c);
 
-        protected override bool ProcessOutgoing(ref char c)
+        protected override bool TryProcessOutgoing(ref char c)
         {
             if (c == '\n')
                 skipWhitespace_ = true;
-            return false;
+            return true;
         }
 
         protected override void ProcessReturning(char c) { }
@@ -45,7 +45,7 @@ namespace Data.Parsers
 
         protected override bool TryGetNext(out char c) => stream_.TryRead(out c);
 
-        protected override bool ProcessOutgoing(ref char c)
+        protected override bool TryProcessOutgoing(ref char c)
         {
             switch (c)
             {
@@ -55,10 +55,12 @@ namespace Data.Parsers
                     break;
                 case '%':
                     while (stream_.Read() != '%') { }
+
                     c = '\n';
                     break;
             }
-            return false;
+
+            return true;
         }
 
         protected override void ProcessReturning(char c) { }

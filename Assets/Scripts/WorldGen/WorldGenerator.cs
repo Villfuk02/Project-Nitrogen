@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using BattleSimulation.World.WorldData;
 using Data.WorldGen;
 using Game.Run;
+using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -149,7 +150,9 @@ namespace WorldGen
                 Debug.LogWarning($"generated world #{i + 1}");
             }
 
-            Debug.LogError($"BENCHMARK COMPLETE!  worlds: {repeats}, attempts: {-tries}, WFC fails: {wfcFails_}, milliseconds: {s.ElapsedMilliseconds}");
+            var results = $"BENCHMARK COMPLETE!  worlds: {repeats}, attempts: {-tries}, WFC fails: {wfcFails_}, milliseconds: {s.ElapsedMilliseconds}";
+            SceneController.FadeOut(results);
+            Debug.LogError(results);
         }
 
         void GenerateTerrain()
@@ -181,7 +184,7 @@ namespace WorldGen
                     continue;
                 }
 
-                Tiles = new(terrain.GetCollapsedSlots(), terrain.GetPassageAtTile, paths);
+                Tiles = new(terrain.GetCollapsedSlots(), terrain.IsEdgeBlocked, paths);
                 break;
             }
 
