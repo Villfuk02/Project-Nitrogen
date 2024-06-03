@@ -1,0 +1,1 @@
+{"rule":"PHRASE_REPETITION","sentence":"^\\QBefore collapsing After collapsing After backtracking\\E$"}

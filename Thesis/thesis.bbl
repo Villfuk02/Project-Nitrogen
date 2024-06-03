@@ -675,6 +675,36 @@
       \verb https://marian42.de/article/wfc/
       \endverb
     \endentry
+    \entry{Townscaper}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=9f88c0caae3dafcfec16c796f5affd7a}{%
+           family={Stålberg},
+           familyi={S\bibinitperiod},
+           given={Oskar},
+           giveni={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{9f88c0caae3dafcfec16c796f5affd7a}
+      \strng{fullhash}{9f88c0caae3dafcfec16c796f5affd7a}
+      \strng{bibnamehash}{9f88c0caae3dafcfec16c796f5affd7a}
+      \strng{authorbibnamehash}{9f88c0caae3dafcfec16c796f5affd7a}
+      \strng{authornamehash}{9f88c0caae3dafcfec16c796f5affd7a}
+      \strng{authorfullhash}{9f88c0caae3dafcfec16c796f5affd7a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Townscaper}
+      \field{urlday}{2}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://rawfury.com/games/townscaper/?portfolioCats=30%2C23%2C20%2C25%2C18%2C26%2C28%2C16%2C17%2C11
+      \endverb
+      \verb{url}
+      \verb https://rawfury.com/games/townscaper/?portfolioCats=30%2C23%2C20%2C25%2C18%2C26%2C28%2C16%2C17%2C11
+      \endverb
+    \endentry
   \enddatalist
 \endrefsection
 \endinput

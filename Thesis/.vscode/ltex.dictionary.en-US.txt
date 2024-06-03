@@ -8,3 +8,8 @@ playtesting
 playtested
 congruential
 Bloons
+uncollapsed
+Uncollapsed
+CSPs
+CSPs on
+satisfiability

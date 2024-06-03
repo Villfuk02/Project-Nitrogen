@@ -124,43 +124,43 @@ namespace Data.Parsers
 
         public static bool IsPositive(int value, string valueName, out string err)
         {
-            err = $"The value of {valueName} ({value}) is not positive.";
+            err = $"The value of property \"{valueName}\" ({value}) is not positive.";
             return value > 0;
         }
 
         public static bool IsNonnegative(int value, string valueName, out string err)
         {
-            err = $"The value of {valueName} ({value}) cannot be negative.";
+            err = $"The value of property \"{valueName}\" ({value}) cannot be negative.";
             return value >= 0;
         }
 
         public static bool IsPositive(float value, string valueName, out string err)
         {
-            err = $"The value of {valueName} ({value}) is not positive.";
+            err = $"The value of property \"{valueName}\" ({value}) is not positive.";
             return value > 0;
         }
 
         public static bool IsNonnegative(float value, string valueName, out string err)
         {
-            err = $"The value of {valueName} ({value}) cannot be negative.";
+            err = $"The value of property \"{valueName}\" ({value}) cannot be negative.";
             return value >= 0;
         }
 
         public static bool IsAtLeast(int value, string valueName, int minimum, string minimumName, out string err)
         {
-            err = $"The value of {valueName} ({value}) is less than {minimumName} ({minimum}).";
+            err = $"The value of property \"{valueName}\" ({value}) is less than \"{minimumName}\" ({minimum}).";
             return value >= minimum;
         }
 
         public static bool IsAtMost(int value, string valueName, int maximum, string maximumName, out string err)
         {
-            err = $"The value of {valueName} ({value}) is greater than {maximumName} ({maximum}).";
+            err = $"The value of property \"{valueName}\" ({value}) is greater than \"{maximumName}\" ({maximum}).";
             return value <= maximum;
         }
 
         public static bool IsInRange(int value, string valueName, int minimum, int maximum, out string err)
         {
-            err = $"The value of {valueName} ({value}) must be in the range {minimum} to {maximum}.";
+            err = $"The value of property \"{valueName}\" ({value}) must be in the range {minimum} to {maximum}.";
             return value >= minimum && value <= maximum;
         }
     }

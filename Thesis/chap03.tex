@@ -175,7 +175,7 @@ Then it removes the edge $e$.
 \begin{algorithm}[H]
     \caption{Generating paths by selecting points in between.}
     \label{alg:points-in-between}
-    \begin{algorithmic}[0]
+    \begin{algorithmic}[1]
         \State $h \gets$ create a node  with $pos \gets hub\_pos; dist \gets 0$
         \ForEach{path $p$}
         \State $s_p \gets$ create a node with $pos \gets p.start\_pos; dist \gets p.length$
@@ -242,7 +242,7 @@ Overall, the algorithm explores widely different states at the start, but settle
 \begin{algorithm}[H]
     \caption{Simulated annealing}
     \label{alg:simulated-annealing}
-    \begin{algorithmic}[0]
+    \begin{algorithmic}[1]
         \State $s \gets s_0$
         \For{$k$ from $0$ to $max\_steps-1$}
         \State $t \gets 1 - k/(max\_steps-1)$
@@ -336,7 +336,7 @@ This is almost equivalent to doing multiple steps of the original algorithm unti
 \begin{algorithm}[H]
     \caption{Simulated annealing for generating paths}
     \label{alg:annealing-paths}
-    \begin{algorithmic}[0]
+    \begin{algorithmic}[1]
         \State $s \gets$ \Call{GenerateInitialPaths}{}
         \State $crowding \gets$ \Call{CalculateCrowding}{$s$}
         \Statex
@@ -363,7 +363,6 @@ However, this algorithm still sometimes produces paths that intersect themselves
 This is because it is difficult for the algorithm to fix a loop in the path, as shown in figure~\ref{fig:untwisting-paths}.
 However, we can add a step that \emph{untwists} crossings by reversing the section of the path that forms a loop, as shown in the figure.
 This still leaves two nodes on the same tile, but annealing can drive these apart without any issue.
-
 
 \begin{center}
     \captionsetup{type=figure}
@@ -439,7 +438,7 @@ This process is described with pseudocode in algorithm~\ref{alg:path-finalizing}
 \begin{algorithm}[H]
     \caption{Finalizing paths}
     \label{alg:path-finalizing}
-    \begin{algorithmic}[0]
+    \begin{algorithmic}[1]
         \ForEach{path start $start$}
         \State $stack$.\Call{PushLast}{path prototype containing only $start$}
         \State $success \gets$ \mono{false}
@@ -503,8 +502,10 @@ The results of the algorithm are displayed in figure~\ref{fig:final-paths}, agai
 
 There are many techniques we could use for generating the terrain.
 We chose a variant of \emph{model synthesis} originally developed by \Citeauthor{ModelSynthesis}~\cite{ModelSynthesis}.
-The discrete version of this algorithm is better known by the name \emph{wave function collapse} (or~WFC in short), popularized by \Citeauthor{WFC} on github~\cite{WFC}.
-We would like to provide a high-level explanation of the algorithm before we explain why we chose to use a variant of it.
+The discrete version of this algorithm is better known by the name \emph{wave function collapse} (or~WFC in short), popularized by \Citeauthor{WFC} on GitHub~\cite{WFC}.
+Model synthesis is more general and focuses more on 3D models, whereas WFC applies the same concepts to generating 2D pixel art and tile maps.
+Since the name \enquote{wave function collapse} is more popular, we will use it in the rest of this thesis, even though it's not the original name.
+Before we explain why we chose to use a variant of this algorithm, we would like to explain how it works.
 
 \subsection{Wave Function Collapse}
 
@@ -520,8 +521,8 @@ We will limit our examples to 2-dimensional grids of tiles, however this algorit
 
 The first step of the algorithm is to extract from the input which features can appear next to each other.
 The algorithm creates a set of \emph{modules}\footnote{This is a naming convention used in an article by \Citeauthor{WFCMarian}~\cite{WFCMarian}.}, which are the building blocks the output will be built from.
-Each module comes with a set of constraints on what modules that can be placed near it.
-The main portion of the algorithm then builds the output from these modules, such that all the constraints are satisfied, and each module appears in the ouput with a similar frequency to the input.
+Each module comes with a set of constraints on its neighbors.
+The main portion of the algorithm then builds the output from these modules, such that all the constraints are satisfied, and each module appears in the output with a similar frequency to the input.
 However, we will create the modules for our generator by hand, including their constraints, in order to have greater control over the generated result.
 In figure~\ref{fig:wfc-modules}, we can see a set of 7 modules and the resulting output, given only the constraint that the edges of directly adjacent modules must match.
 
@@ -535,114 +536,255 @@ In figure~\ref{fig:wfc-modules}, we can see a set of 7 modules and the resulting
 We call each spot in the output where a module is supposed to be a \emph{slot}.
 Each slot keeps track of all the modules that can be placed in it.
 At the start of the main part of the algorithm, all slots are initialized with all the modules.
-Figure~\ref{fig:wfc-initial} shows a visualisation of this state.
+Figure~\ref{fig:wfc-initial} shows a visualization of this state.
 Then the algorithm repeats two actions: collapse a slot, propagate constraints.
 To collapse a slot, the algorithm removes all possible modules from the slot except for one, chosen at random.
 
 Then it has to propagate constraints, which means that it removes from each slot all the modules which can no longer be placed there.
 For example, in figure~\ref{fig:wfc-step-1} we see that a slot has collapsed to a module which has a line on each edge.
-Thus, the algorithm removes from the neighboring tiles (marked in red) all modules which don't have a line at the corresponding edge.
-After propagating constraints, the algoritm collapses another slot and so on.
+Thus, the algorithm removes from the neighboring slots (marked in red) all modules which don't have a line at the corresponding edge.
+After propagating constraints, the algorithm collapses another slot and so on.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/WFC initial state.pdf}
+        \subcaption{Initial state} \label{fig:wfc-initial}
+    \end{minipage}%
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/WFC step 1.pdf}
+        \subcaption{First step} \label{fig:wfc-step-1}
+    \end{minipage}%
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/WFC step 2.pdf}
+        \subcaption{Second step} \label{fig:wfc-step-2}
+    \end{minipage}
+    \caption{Two steps of wave function collapse. Uncollapsed slots are drawn in light blue, uncollapsed slots that changed are drawn in red.}
+    \label{fig:wfc-steps}
+\end{center}
 
 In figure~\ref{fig:wfc-step-2}, we can see an interesting situation after collapsing a second slot.
-The tile between the collapsed slots can still contain two possible modules, however both of them have a line at the top and bottom edges.
-This means that the algorithm also has to propagate to the neighbors of this tile that they have to have lines at the corredponding edges.
+The slot between the collapsed slots can still contain two possible modules, however both of them have a line at the top and bottom edges.
+This means that the algorithm also has to propagate to the neighbors of this tile that they have to have lines at the corresponding edges.
 A change in one slot can affect slots far away from it.
 
-\begin{figure}
-    \begin{subfigure}{0.31\textwidth}
-        \includegraphics[width=\linewidth]{img/WFC initial state.pdf}
-        \caption{Initial state} \label{fig:wfc-initial}
-    \end{subfigure}%
-    \hspace*{\fill}
-    \begin{subfigure}{0.31\textwidth}
-        \includegraphics[width=\linewidth]{img/WFC step 1.pdf}
-        \caption{First step} \label{fig:wfc-step-1}
-    \end{subfigure}%
-    \hspace*{\fill}
-    \begin{subfigure}{0.31\textwidth}
-        \includegraphics[width=\linewidth]{img/WFC step 2.pdf}
-        \caption{Second step} \label{fig:wfc-step-2}
-    \end{subfigure}
-
-    \caption{Two steps of wave function collapse. Uncollapsed slots are drawn in light blue, uncollapsed slots that changed are drawn in red.}\label{fig:wfc-steps}
-\end{figure}
-
 This process repeats until all slots are collapsed, at which point we have successfully generated the output.
+This process is summarized as algorithm~\ref{alg:wfc}.
+We left out one detail: which element does \textsc{Pop} select?
+This does not matter for the overall function of the algorithm, and it will be further discussed in section TODO.
+We will call this algorithm WFC, even though it differs from WFC by Gumin.
+The most notable difference is that we skip the feature extraction and take as input modules directly.
+
+\begin{algorithm}[H]
+    \caption{A na\"{i}ve version of wave function collapse}
+    \label{alg:wfc}
+    \begin{algorithmic}[1]
+        \ForEach{slot $s$ in output} \Comment{Initialize all slots.}
+        \State $s.modules \gets all\_modules$
+        \EndFor
+        \Statex
+        \State $uncollapsed \gets$ all slots
+        \While{$uncollapsed$ is not empty}
+        \State $s \gets uncollapsed$.\Call{Pop}{} \Comment{Collapse a slot.}
+        \State $s.modules \gets \{$random module from $s.modules\}$
+        \Statex
+        \State $to\_update \gets$ neighbors of $s$ \Comment{Propagate constraints.}
+        \While{$to\_update$ is not empty}
+        \State $u \gets to\_update$.\Call{Pop}{}
+        \Statex
+        \State $changed \gets$ \mono{false}
+        \ForEach{module $m$ in $u.modules$} \Comment{Remove invalid modules.}
+        \If{not \Call{IsValid}{$m$}}
+        \State $u.modules \gets u.modules - m$
+        \State $changed \gets$ \mono{true}
+        \EndIf
+        \EndFor
+        \Statex
+        \If{$changed$} \Comment{If $u$ changed, enqueue its neighbors.}
+        \State $to\_update \gets to\_update\,\cup$ neighbors of $u$
+        \EndIf
+        \Statex
+        \EndWhile
+        \EndWhile
+        \Statex
+    \end{algorithmic}
+\end{algorithm}
 
 However, it is possible for the algorithm to create a slot with no valid module.
-If we look at WFC in the context of \emph{constraint solving problems}, we can see that our constraint propagation only ensures \emph{arc-consistency}.
 In this case, it is no longer possible to create a valid output.
 An example can be seen in figure~\ref{fig:wfc-backtracking}.
+If we look at WFC as a \emph{constraint satisfaction problem} solver, we can see that the constraint propagation only ensures \emph{arc-consistency}, which is not enough to rule out conflicts.
 
 One option is to simply restart the algorithm.
-Luckily, the constraint solving problems WFC is tasked with are not that constrained.
-If they were more constrained, there would exist very little valid solutions, so the results would all have to look similar.
 For sufficiently small outputs, this should be rare enough, only needing a few restarts.
 Another option is to use backtracking.
-Whenver the algorithm runs itno a dead end after collapsing a slot, it returns to the state before collapsing and removes the module the slot collapsed to from its valid options.
+Whenever the algorithm runs into a contradiction after collapsing a slot, it returns to the state before collapsing and removes the module the slot collapsed to from its valid options.
 The state after backtracking is illustrated in fig~\ref{fig:wfc-after-backtracking}.
+This way, the algorithm can continue generating without getting rid of all the progress.
 
-\begin{figure}
-    \begin{subfigure}{0.31\textwidth}
-        \includegraphics[width=\linewidth]{img/WFC backtracking before.pdf}
-        \caption{Before collapsing} \label{fig:wfc-before-backtracking}
-    \end{subfigure}%
-    \hspace*{\fill}
-    \begin{subfigure}{0.31\textwidth}
-        \includegraphics[width=\linewidth]{img/WFC backtracking dead end.pdf}
-        \caption{After collapsing} \label{fig:wfc-dead-end}
-    \end{subfigure}%
-    \hspace*{\fill}
-    \begin{subfigure}{0.31\textwidth}
-        \includegraphics[width=\linewidth]{img/WFC backtracking after.pdf}
-        \caption{After backtracking} \label{fig:wfc-after-backtracking}
-    \end{subfigure}
-
-    \caption{Dead ends and backtracking in WFC. The red cross marks a slot with no valid modules.}\label{fig:wfc-backtracking}
-\end{figure}
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/WFC backtracking before.pdf}
+        \subcaption{Before collapsing} \label{fig:wfc-before-backtracking}
+    \end{minipage}%
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/WFC backtracking dead end.pdf}
+        \subcaption{After collapsing} \label{fig:wfc-dead-end}
+    \end{minipage}%
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/WFC backtracking after.pdf}
+        \subcaption{After backtracking} \label{fig:wfc-after-backtracking}
+    \end{minipage}
+    \caption{Conflicts and backtracking in WFC. The red cross marks a slot with no valid modules.}
+    \label{fig:wfc-backtracking}
+\end{center}
 
 \subsection{Advantages and Disadvantages of WFC}
 
-- provides a lot of control using modules - we know what can appear in the world, because we choose it explicitly
+The main advantage of WFC is that it offers a lot of control over the generated world.
+That's ultimately why we chose to use it.
+We always know what features can appear in the world, because we explicitly allowed them to exist.
+We can also freely constrain the world that we are generating.
+For example, we can force the generator to not block the paths we've generated in the previous stage, and we can force the tile with the \emph{Hub} to be flat.
+We also force a random tile to be at the lowest height level and another to be at the highest.
 
-- inject additional constraints - preserve paths, hub tile, min and max height
+However, WFC has some disadvantages when used as a terrain generator.
+First, it scales poorly.
+Merrell shows in their thesis~\cite{ModelSynthesis} that deciding whether an incomplete output is consistent, i.e. it can be completed without running into contradictions, is an NP-complete problem.
+This necessarily means that WFC isn't very fast in the worst case, that would be a contradiction.
+In section \xxx{TODO}, we show that algorithm~\ref{alg:wfc} runs in $O(k^3 \cdot n)$ time, where $k$ is the number of modules, and $n$ is the number of slots.
+This time complexity also holds for a version which can handle contradictions, assuming it never runs into any, and each contradiction can only slow the algorithm down.
 
-- kinda slow at large scale (compute time complexity without errors)
+The real problem is that the algorithm usually does run into contradictions.
+In fact, the larger the generation task, the less likely it is to succeed.
+This is especially bad for online generation of infinite worlds, because we can't simply restart and generate a new world after the player has already seen a part of it.
+Backtracking also doesn't solve this issue, because the algorithm can collapse a slot in a way that is guaranteed to cause a contradiction, and then do arbitrarily many more steps before finally running into it.
+Of course, there are ways to circumvent this issue, namely by making the individual generation tasks smaller.
+In their thesis, Merrell describes a technique called \emph{modifying in parts} based on this approach.
 
-- it can fail - bad for online generation https://www.boristhebrave.com/2021/11/08/infinite-modifying-in-blocks/
+Another potential problem with WFC is that the individual slots or modules can be very apparent and repetitive.
+This can be solved by procedurally generating the resulting geometry, only based on the modules chosen by WFC.
+Another way to make the slots less apparent is to make them irregular.
+Both of these techniques are used by \emph{Townscaper}~\cite{Townscaper}, a game by Oskar St\r{a}lberg.
 
-- local control only - use hierarichy
+Also, WFC uses only local constraints, so it provides no control over the more global features of the output.
+On a large scale, the results are very homogenous.
+For larger outputs, WFC should only be used to generate the local features, guided by large-scale features generated by some other algorithm, or an instance of WFC with larger slots.
 
-- slot positions are apparent - use irregular slots
-
-- luckily for us, these disadvantages don't matter
+Luckily, none of these disadvantages matter for our use case.
+Our worlds are very small, and we don't mind that the tiles will be apparent, since the gameplay of our game is centered around them.
 
 \subsection{Using WFC for Terrain Generation}
 
-- our modules
+Even though we want to generate a 3D terrain, our output will consist of a 2D grid of slots.
+We want the tiles of the generated world to be at different heights, however, we don't want any tiles to generate above other tiles.
+Ultimately, this is a 2D generation task, with the addition that modules can appear at different height levels.
 
-- flip and rotate
+At first, it might seem sensible to have one slot per world tile.
+However, each tiles on it sown will be mostly a flat square.
+The interesting terrain features will appear on the boundaries between the tiles.
+For example, two tiles at different height levels next to each other will have a cliff separating them.
+If we wanted to incorporate the cliff into the tile module, which tile does it belong to?
+What about the features where the corners of four tiles meet?
+We offset the slots in a way shown in figure~\ref{fig:tiles-and-slots}, such that each slot is responsible for four quarter-tiles of the world.
+This way, the modules dictate how can the adjacent tiles connect to each other.
 
-- even tho it 3d, 2d is enough
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{tikzpicture}
+        \draw[step=1.0,thick,red] (0,0) grid (4,4);
+        \draw[step=1.0,black,thick,shift={(0.5,0.5)}] (0,0) grid (3,3);
+    \end{tikzpicture}
+    \caption{The slots for generating a $3\times3$ tile world. Tiles are drawn in black, slots in red.}
+    \label{fig:tiles-and-slots}
+\end{center}
 
-- what constraints do we use
+One example of such module is shown in figure~\ref{fig:wfc-module}.
+Each module constrains the 8 adjacent slots.
+An edge type is specified for each edge, and modules which share an edge must have the same edge type.
+For each corner of the module, several tile constraints are specified.
+The modules that share a tile must agree on the tile's properties: its height, slant direction (if any) and surface type.
+Terrain types can have multiple surface types, each with a different set of modules and a few modules that allow to transition between them.
+For example, a \emph{shore} module could have \emph{ground} tiles on one side and \emph{water} tiles on the other.
+For each terrain type, it is also specified which surface types and which edge types block paths.
 
-- weights
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/Module model.png}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/Module constraints.pdf}
+    \end{minipage}
+    \caption{An example module and its constraints.}
+    \label{fig:wfc-module}
+\end{center}
 
-\subsection{Selecting the Right Parameters}
+In figure~\ref{fig:wfc-modules}, we show 7 modules as an input.
+However, when designing them, it would make more sense to think of them as 3 different modules that can each be rotated.
+Thus, the modules we use will also have an option to select the allowed reflection and rotations.
+Then, before generating the terrain, we will automatically generate all variants of each module.
+Each module can also be placed at different height levels, which is handled similarly.
+For example, the module shown in figure~\ref{fig:wfc-module} will effectively become 24 different modules in a terrain type with 4 height levels (0, 1, 2, 3), because it has 8 different reflections and rotations, and it can appear at 3 different height levels (0--1, 1--2, 2--3).
 
-- Which slot to collapse?
+For each module, we also specify a weight.
+This dictates how likely it is to be selected when collapsing a slot, compared to other modules.
+For example, when we collapse a slot that only has two valid modules, with weights 1 and 4, then the first module will be selected with a 20\,\% probability.
 
-- random, but weighted
+We have decided to implement backtracking to solve contradictions.
+If the algorithm only ever has to backtrack once before collapsing another slot, we say that it needs backtracking depth 1.
+However, it is possible that the algorithm collapses a slot, finds a contradiction, and after backtracking, removes the only remaining module in the slot that was collapsed.
+Thus, it creates another contradiction, which causes it to backtrack deeper.
+We run some quick tests with the set of modules which is going to be used to generate terrain in the demo version.
+During these tests, we were unable to generate a single world, without running into a contradiction.
+However, most worlds only ever needed backtracking depth of 1 to successfully generate.
+After that, we ran into diminishing returns.
+Of the worlds that required backtracking depth 2, most required backtracking depth greater than 10.
+So we decided to allow for backtracking depth 1 and otherwise just restart the generation, which makes it faster on average.
 
-- provide data
+\xxx{I should probably provide the data I measured. Do I also need to explain the whole setup to make it reproducible?}
 
-- Limited backtracking depth
+We also need to decide which slot to collapse at each step of the algorithm.
+Merrell uses in their thesis a sort of scan line order, collapsing them in the lexicographic order of their coordinates.
+This could theoretically introduce a directional bias in the results.
+Gumin in their implementation always collapses a slot with the lowest \emph{Shannon entropy}.
+However, from our testing, the results tend to look unnatural, often creating rectangular regions at the same height or repeating patterns.
 
-- usually when more backtracking is required, the search would take too long and it's faster to restart the algorithm
+To make the results more natural, we chose to select the slot at random.
+This means that the generator first sets slots in various parts of the world to different heights.
+Then it has to somehow connect these to make the world follow the rules we set.
+This leads to more diverse results, however, the failure rate becomes very high, leading to slower generation.
 
-- provide data
+As a compromise, we chose to weight the slots by the number of invalid slots $+\,1$.
+This is an approximation of entropy that is trivial to compute, making it more likely to select more constrained slots, but still collapsing unconstrained slots once in a while.
+The 1 is added just to make all weights nonzero.
+This leads to results similar to the ones with uniform randomness, but decreases the failure rate substantially.
+
+\xxx{Can I show screenshots of the generated worlds with different settings?}
+\xxx{More testing data to compare the success rate of different approaches}
+
+\subsection{Time Complexity of Na\"{i}ve WFC}
+
+In this section, we will show that algorithm~\ref{alg:wfc} runs in amortized $O(k^3 \cdot n)$ time, where $k$ is the number of modules, and $n$ is the number of slots.
+We will assume that the sets $uncollapsed$, $to\_update$ and the $modules$ of each slot have amortized $O(1)$ queries, additions and removals (including \textsc{Pop}).
+Another assumption we will is that \textsc{IsValid} runs in $O(k)$ time, because each slot has $O(1)$ neighbors and each neighbor can only have $k$ different modules, so we have to check at most $O(k)$ constraints.
+
+This means that checking the modules a slot can have takes $O(k^2)$ time.
+Since each change removes at least one module, each slot can change up to $k$ times, and each change leads to $O(1)$ neighbors being checked.
+There are only $n$ slots which means at most $kn$ changes, which means constraint propagation takes $O(k^3 \cdot n)$ time over the execution of the whole algorithm.
+
+All other steps can are asymptotically faster:
+Initialization is done in $O(kn)$ time.
+Collapsing $n$ slots takes $O(kn)$ time, assuming picking the random module takes $O(k)$ time.
 
 \section{Resources and Obstacles}
 
