@@ -108,7 +108,7 @@ How to accomplish the goal of each of these stages will be described in the foll
 
 In the first stage of path generation, we need to pick the path start positions.
 
-One thing we should notice is that starts of paths of even length have to have an even \emph{Manhattan distance} (also called \emph{taxicab distance} or \emph{$L^1$~metric}) from the \emph{Hub}, and starts of paths of odd length have to be an odd distance from the \emph{Hub}.
+One thing we should notice, is that starts of paths of even length have to have an even \emph{Manhattan distance} from the \emph{Hub}, and starts of paths of odd length have to be an odd distance from the \emph{Hub}.
 This parity holds, because by going from one tile to another that shares an edge with it, the Manhattan distance always changes by 1.
 When a path goes from a tile to another tile $l$ times, its Manhattan distance changes parity $l$ times.
 The distance of the final tile must be 0, which is even, so the parity of the path distance and Manhattan distance must match on every tile, including the starting tile.

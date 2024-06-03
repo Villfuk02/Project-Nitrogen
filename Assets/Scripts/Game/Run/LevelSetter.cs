@@ -95,7 +95,7 @@ namespace Game.Run
         {
             WorldSettings ws = GameObject.FindGameObjectWithTag(TagNames.WORLD_SETTINGS).GetComponent<WorldSettings>();
             ws.seed = randomSeed;
-            ws.pathLengths = new[] { 35 };
+            ws.pathLengths = new[] { 28 };
             ws.maxHubDistFromCenter = 6;
 
             WaveGenerator wg = GameObject.FindGameObjectWithTag(TagNames.WAVE_GENERATOR).GetComponent<WaveGenerator>();

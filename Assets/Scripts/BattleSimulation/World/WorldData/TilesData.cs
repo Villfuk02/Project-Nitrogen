@@ -23,7 +23,9 @@ namespace BattleSimulation.World.WorldData
             }
         }
 
-        public delegate bool IsBlocked(Vector2Int tile, int direction);
+        public delegate bool IsEdgeBlocked(Vector2Int tile, int direction);
+
+        public delegate bool IsTileBlocked(Vector2Int tile);
 
         readonly Array2D<TileData> tiles_;
 
@@ -31,35 +33,36 @@ namespace BattleSimulation.World.WorldData
         /// Creates an instance of <see cref="TilesData"/>, pre-filled with some base data.
         /// </summary>
         /// <param name="slots">Generated terrain <see cref="Module"/>s and their heights.</param>
-        /// <param name="isBlocked">Oracle that accepts a tile position and direction and returns if the edge from the tile in the given direction is blocked.</param>
+        /// <param name="isTileBlocked">Oracle that accepts a tile position and returns if the tile is blocked.</param>
+        /// <param name="isEdgeBlocked">Oracle that accepts a tile position and direction and returns if the edge from the tile in the given direction is blocked.</param>
         /// <param name="paths">The generated paths, each an array of the tile positions it visits.</param>
-        public TilesData(IReadOnlyArray2D<CollapsedSlot> slots, IsBlocked isBlocked, IEnumerable<Vector2Int[]> paths)
+        public TilesData(IReadOnlyArray2D<CollapsedSlot> slots, IsTileBlocked isTileBlocked, IsEdgeBlocked isEdgeBlocked, IEnumerable<Vector2Int[]> paths)
         {
             tiles_ = new(WorldUtils.WORLD_SIZE);
             tiles_.Fill(() => new());
             foreach (Vector2Int pos in WorldUtils.WORLD_SIZE)
-                InitTile(slots, isBlocked, pos);
+                InitTile(slots, isTileBlocked, isEdgeBlocked, pos);
 
             foreach (var path in paths)
                 for (int i = 0; i < path.Length; i++)
                     tiles_[path[i]].dist = path.Length - i - 1;
         }
 
-        void InitTile(IReadOnlyArray2D<CollapsedSlot> slots, IsBlocked isBlocked, Vector2Int pos)
+        void InitTile(IReadOnlyArray2D<CollapsedSlot> slots, IsTileBlocked isTileBlocked, IsEdgeBlocked isEdgeBlocked, Vector2Int pos)
         {
             TileData t = this[pos];
             CardinalDirs<TileData> connections = new();
             for (int d = 0; d < 4; d++)
             {
                 Vector2Int p = pos + WorldUtils.CARDINAL_DIRS[d];
-                if (tiles_.IsInBounds(p) && !isBlocked(pos, d))
+                if (tiles_.IsInBounds(p) && !isEdgeBlocked(pos, d))
                     connections[d] = this[p];
             }
 
             t.pos = pos;
             t.height = slots[pos].height + slots[pos].module.Shape.Heights.NE;
             t.slant = slots[pos].module.Shape.Slants.NE;
-            t.blocked = false;
+            t.blocked = isTileBlocked(pos);
             t.neighbors = connections;
             t.dist = int.MaxValue;
             t.obstacle = null;

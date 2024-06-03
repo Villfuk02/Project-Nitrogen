@@ -1,6 +1,7 @@
 display_name Test
 # D = default
-surfaces D
+free_surfaces D
+# blocked_surfaces none
 # O = flat
 free_edges O
 # X = cliff, M = monolith
@@ -181,6 +182,7 @@ modules {
              O     O
             D0x M D0x
         }
+        heights 01
     }
 
     * MonolithCliffSlant {
@@ -193,6 +195,7 @@ modules {
              X     O
             D0x M D0x
         }
+        heights 01
     }
 }
 

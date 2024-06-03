@@ -16,7 +16,7 @@ namespace WorldGen.WFC
             if (prefill)
             {
                 heights = BitSet32.LowestBitsSet(WorldGenerator.TerrainType.MaxHeight + 1);
-                surfaces = WorldGenerator.TerrainType.Surfaces;
+                surfaces = BitSet32.Union(WorldGenerator.TerrainType.FreeSurfaces, WorldGenerator.TerrainType.BlockedSurfaces);
                 slants = WorldUtils.ALL_SLANTS;
             }
             else

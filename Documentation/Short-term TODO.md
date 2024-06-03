@@ -1,17 +1,19 @@
 ## questions
-- WFC citation
-- we vs. the author (eg. we feel)
-- mám opakovat odkazy na literaturu?
-- kuba rng
+- WFC github citation
+- kolik toho mám vynechat
 ## tweaks
 
 - [x] extend WFC to support edge types
 - [x] rename passable, impassable and passages, incl. comments and thesis
-- [ ] module heights
-- [ ] blocked surfaces
+- [x] module heights
+- [x] blocked surfaces
+
+## new since prev meeting
+- [ ] 2.4 - 2.9
+- [ ] 3.4
 
 ## till next metting
-- [x] ch2
+- [ ] konzultace notes
 - [ ] ch3
     - [x] game engine
     - [x] procedural generation

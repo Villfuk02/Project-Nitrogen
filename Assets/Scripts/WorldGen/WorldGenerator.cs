@@ -184,7 +184,7 @@ namespace WorldGen
                     continue;
                 }
 
-                Tiles = new(terrain.GetCollapsedSlots(), terrain.IsEdgeBlocked, paths);
+                Tiles = new(terrain.GetCollapsedSlots(), terrain.IsTileBlocked, terrain.IsEdgeBlocked, paths);
                 break;
             }
 

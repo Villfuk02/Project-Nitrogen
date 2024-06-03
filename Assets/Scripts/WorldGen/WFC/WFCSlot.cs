@@ -29,10 +29,11 @@ namespace WorldGen.WFC
             for (int m = 0; m < moduleCount; m++)
             {
                 validModules_.Add(m);
+                Module module = WorldGenerator.TerrainType.Modules[m];
                 if (forcedHeight is int forced)
-                    validHeights_[m] = BitSet32.OneBit(forced);
+                    validHeights_[m] = BitSet32.Intersect(BitSet32.OneBit(forced), module.Heights);
                 else
-                    validHeights_[m] = BitSet32.LowestBitsSet(WorldGenerator.TerrainType.MaxHeight + 1);
+                    validHeights_[m] = BitSet32.Intersect(BitSet32.LowestBitsSet(WorldGenerator.TerrainType.MaxHeight + 1), module.Heights);
             }
 
             this.pos = pos;

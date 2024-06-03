@@ -32,7 +32,7 @@ namespace WorldGen.Obstacles
             emptyTiles_ = new();
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
             {
-                if (Tiles[v].dist == int.MaxValue)
+                if (Tiles[v].dist == int.MaxValue && !Tiles[v].blocked)
                     emptyTiles_.Add(v);
             }
 

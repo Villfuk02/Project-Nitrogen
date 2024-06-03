@@ -74,7 +74,7 @@ namespace WorldGen.WFC
             WFCTile hubTile = state_.GetTileAt(hubPosition);
             hubTile.slants = BitSet32.OneBit((int)WorldUtils.Slant.None);
 
-            InitEdges(paths);
+            InitPathConstraints(paths);
 
             stateStack_ = new(backtrackingDepth);
             steps_ = 0;
@@ -82,11 +82,12 @@ namespace WorldGen.WFC
 
 
         /// <summary>
-        /// Sets which edges must be free or blocked.
+        /// Sets which edges or tiles must be free or blocked based on paths.
+        /// A tile with a path must be free.
         /// An edge between two tiles where a path goes through must be free.
         /// An edge from a path tile on the edge of the world over the edge must be free.
         /// </summary>
-        void InitEdges(Vector2Int[][] paths)
+        void InitPathConstraints(Vector2Int[][] paths)
         {
             var pathDistances = new Array2D<int>(WorldUtils.WORLD_SIZE);
             pathDistances.Fill(int.MaxValue);
@@ -95,7 +96,11 @@ namespace WorldGen.WFC
                     pathDistances[path[i]] = path.Length - i;
 
             foreach ((var pos, int distance) in pathDistances.IndexedEnumerable)
+            {
+                if (distance != int.MaxValue)
+                    state_.SetValidSurfaces(pos, true, false);
                 InitTileEdges(distance, pos, pathDistances);
+            }
         }
 
         /// <summary>

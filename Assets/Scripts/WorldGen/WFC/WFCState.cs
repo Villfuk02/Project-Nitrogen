@@ -92,6 +92,13 @@ namespace WorldGen.WFC
             return edges.IsEmpty;
         }
 
+        public bool IsTileBlocked(Vector2Int pos)
+        {
+            var surfaces = GetTileAt(pos).surfaces;
+            surfaces.IntersectWith(WorldGenerator.TerrainType.FreeSurfaces);
+            return surfaces.IsEmpty;
+        }
+
         // EDGES
         public CardinalDirs<BitSet32> GetValidEdgesAtSlot(Vector2Int pos)
         {
@@ -152,7 +159,16 @@ namespace WorldGen.WFC
 
         public WFCTile GetTileAt(Vector2Int pos) => tiles_[pos + Vector2Int.one];
 
+        public void SetValidSurfaces(Vector2Int pos, bool canBeFree, bool canBeBlocked)
+        {
+            var tile = GetTileAt(pos);
+            if (!canBeBlocked)
+                tile.surfaces.IntersectWith(WorldGenerator.TerrainType.FreeSurfaces);
+            if (!canBeFree)
+                tile.surfaces.IntersectWith(WorldGenerator.TerrainType.BlockedSurfaces);
+        }
 
+        // TO STRING
         public override string ToString()
         {
             return $"({id_}) {base.ToString()}";

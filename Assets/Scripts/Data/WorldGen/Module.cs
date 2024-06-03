@@ -7,7 +7,7 @@ using static Data.Parsers.Parsers;
 
 namespace Data.WorldGen
 {
-    public record Module(string Name, float Weight, bool Flipped, int Rotated, int HeightOffset, Mesh CollisionMesh, ModuleShape Shape)
+    public record Module(string Name, float Weight, BitSet32 Heights, bool Flipped, int Rotated, int HeightOffset, Mesh CollisionMesh, ModuleShape Shape)
     {
         public static Module[] Parse(string name, ParseStream stream)
         {
@@ -18,6 +18,7 @@ namespace Data.WorldGen
             var heightOffset = pp.Register("height_offset", ParseInt, 0);
             var collisionPath = pp.Register("collision", ParseWord);
             var shape = pp.Register("shape", Chain(ParseBlock, ModuleShape.Parse));
+            var heights = pp.Register("heights", Chain(ParseLine, ParseList, ParseHeight), Enumerable.Range(0, 10));
 
             weight.SetValidator((float v, out string err) => IsPositive(v, weight.Name, out err));
 
@@ -26,7 +27,7 @@ namespace Data.WorldGen
             (bool flipped, int rotated) = variants.GetValue();
             var mesh = Resources.Load<Mesh>(collisionPath.GetValue()) ?? throw new ParseException(blockStream, $"Could not load mesh at \"{collisionPath.GetValue()}\"");
 
-            Module settings = new(name, weight.GetValue(), flipped, rotated, heightOffset.GetValue(), mesh, shape.GetValue());
+            Module settings = new(name, weight.GetValue(), BitSet32.FromBits(heights.GetValue()), flipped, rotated, heightOffset.GetValue(), mesh, shape.GetValue());
 
             return settings.MakeVariants();
         }
@@ -94,6 +95,15 @@ namespace Data.WorldGen
 
             return m.ToArray();
         }
+
+        public static int ParseHeight(ParseStream stream)
+        {
+            char c = stream.Read();
+            if (c is < '0' or > '9')
+                throw new ParseException(stream, $"Invalid height \'{c}\'. It must be a digit from 0 to 9.");
+
+            return c - '0';
+        }
     }
 
     public record ModuleShape(DiagonalDirs<int> Surfaces, DiagonalDirs<int> Heights, DiagonalDirs<WorldUtils.Slant> Slants, CardinalDirs<int> Edges)
@@ -107,13 +117,13 @@ namespace Data.WorldGen
 
             SkipWhitespace(stream);
             surfaces.NW = TerrainType.ParseSurface(stream);
-            heights.NW = ParseHeight(stream.Read());
+            heights.NW = Module.ParseHeight(stream);
             slants.NW = ParseSlant(stream.Read());
             SkipWhitespace(stream);
             edges.N = TerrainType.ParseEdge(stream);
             SkipWhitespace(stream);
             surfaces.NE = TerrainType.ParseSurface(stream);
-            heights.NE = ParseHeight(stream.Read());
+            heights.NE = Module.ParseHeight(stream);
             slants.NE = ParseSlant(stream.Read());
             SkipWhitespace(stream);
             edges.W = TerrainType.ParseEdge(stream);
@@ -121,20 +131,16 @@ namespace Data.WorldGen
             edges.E = TerrainType.ParseEdge(stream);
             SkipWhitespace(stream);
             surfaces.SW = TerrainType.ParseSurface(stream);
-            heights.SW = ParseHeight(stream.Read());
+            heights.SW = Module.ParseHeight(stream);
             slants.SW = ParseSlant(stream.Read());
             SkipWhitespace(stream);
             edges.S = TerrainType.ParseEdge(stream);
             SkipWhitespace(stream);
             surfaces.SE = TerrainType.ParseSurface(stream);
-            heights.SE = ParseHeight(stream.Read());
+            heights.SE = Module.ParseHeight(stream);
             slants.SE = ParseSlant(stream.Read());
 
             return new(surfaces, heights, slants, edges);
-
-            int ParseHeight(char c) => c is >= '0' and <= '9'
-                ? c - '0'
-                : throw new ParseException(stream, $"Invalid height \'{c}\'. It must be a digit from 0 to 9.");
 
             WorldUtils.Slant ParseSlant(char c) => c switch
             {

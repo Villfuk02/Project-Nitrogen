@@ -4828,7 +4828,7 @@ MonoBehaviour:
     batches:
     - typePerPath:
       - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
-      count: 8
+      count: 6
       spacing: 2
   - newAttacker: {fileID: 0}
     batches:
