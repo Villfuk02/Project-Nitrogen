@@ -658,9 +658,9 @@ We also force a random tile to be at the lowest height level and another to be a
 However, WFC has some disadvantages when used as a terrain generator.
 First, it scales poorly.
 Merrell shows in their thesis~\cite{ModelSynthesis} that deciding whether an incomplete output is consistent, i.e. it can be completed without running into contradictions, is an NP-complete problem.
-This necessarily means that WFC isn't very fast in the worst case, that would be a contradiction.
-In section \xxx{TODO}, we show that algorithm~\ref{alg:wfc} runs in $O(k^3 \cdot n)$ time, where $k$ is the number of modules, and $n$ is the number of slots.
-This time complexity also holds for a version which can handle contradictions, assuming it never runs into any, and each contradiction can only slow the algorithm down.
+This necessarily means that WFC isn't very fast in the worst case.
+In section~\ref{sec:wfc-time-complexity}, we show that algorithm~\ref{alg:wfc} runs in $O(k^3 \cdot n)$ time, where $k$ is the number of modules, and $n$ is the number of slots.
+This time complexity also holds for a version which can handle contradictions, assuming it never runs into any, but each contradiction can only slow the algorithm down.
 
 The real problem is that the algorithm usually does run into contradictions.
 In fact, the larger the generation task, the less likely it is to succeed.
@@ -772,7 +772,7 @@ This leads to results similar to the ones with uniform randomness, but decreases
 \xxx{Can I show screenshots of the generated worlds with different settings?}
 \xxx{More testing data to compare the success rate of different approaches}
 
-\subsection{Time Complexity of Na\"{i}ve WFC}
+\subsection{Time Complexity of Na\"{i}ve WFC}\label{sec:wfc-time-complexity}
 
 In this section, we will show that algorithm~\ref{alg:wfc} runs in amortized $O(k^3 \cdot n)$ time, where $k$ is the number of modules, and $n$ is the number of slots.
 We will assume that the sets $uncollapsed$, $to\_update$ and the $modules$ of each slot have amortized $O(1)$ queries, additions and removals (including \textsc{Pop}).

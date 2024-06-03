@@ -17,9 +17,8 @@
     - [x] procedural generation
     - [x] paths
     - [ ] terrain generation
-        - [ ] our implementation
-        - [ ] POP
-        - [ ] proofs
+        - [ ] tests and results
+        - [ ] images
         - [ ] todos
     - [ ] sections done 3/14 (x)(x)(x)( )( )( )( )( )( )( )( )( )( )( )
     - [ ] TODOs
