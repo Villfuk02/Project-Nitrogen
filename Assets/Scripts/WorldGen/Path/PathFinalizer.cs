@@ -97,7 +97,7 @@ namespace WorldGen.Path
         {
             // debug
             // draw start position
-            RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TilePosToWorldPos(start.pos), 0.3f));
+            RegisterGizmos(StepType.Step, () => new GizmoManager.Cube(Color.magenta, WorldUtils.TilePosToWorldPos(start.pos), 0.4f));
             //end debug
 
             bool foundAny = false;
@@ -177,15 +177,15 @@ namespace WorldGen.Path
             // order them by repulsion (trying to avoid other paths)
             var validNeighbors = validNeighborsTemp.OrderByDescending(n => repulsion_[n.pos]).ToList();
 
-            if (path.Length <= 1)
-                return validNeighbors;
-
-            // if there is an option that goes straight, prioritize it
-            var straight = validNeighbors.Find(n => n.pos.x == path[^2].x || n.pos.y == path[^2].y);
-            if (straight != null)
+            if (path.Length > 1)
             {
-                validNeighbors.Remove(straight);
-                validNeighbors.Add(straight);
+                // if there is an option that goes straight, prioritize it
+                var straight = validNeighbors.Find(n => n.pos.x == path[^2].x || n.pos.y == path[^2].y);
+                if (straight != null)
+                {
+                    validNeighbors.Remove(straight);
+                    validNeighbors.Add(straight);
+                }
             }
 
             // even more importantly, prioritize options where distance decreases exactly by one

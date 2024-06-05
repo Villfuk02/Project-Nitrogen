@@ -13,3 +13,6 @@ Uncollapsed
 CSPs
 CSPs on
 satisfiability
+Gumin
+Merrell
+Stålberg

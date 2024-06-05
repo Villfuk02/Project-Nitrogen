@@ -14,14 +14,23 @@ More information is available in the official documentation~\cite{UnityDocs}.
 \section{Procedural Generation}
 
 As explained in the previous chapter, a lot of the game will be procedurally generated including the map of a run and each battle along the way.
-From the player's perspective, all this and the rewards they receive will be randomized and unpredictable.
+In the next few sections, we will decide how to generate the worlds for the battles, and in section~\ref{sec:analysis-waves}, we will focus on generating the waves of attackers.
+The worlds are composed of three somewhat distinct parts~--- paths, terrain and obstacles.
+It would make the most sense to generate each part separately, one after another.
+We should start with the part that is most restricted, because each part is additionally restricted by what was generated before it.
+For this reason, we will start with paths.
+There is a lot of rules the paths should follow, as described in section~\ref{sec:design-paths}.
+Additionally, the number of paths and their lengths heavily influence the difficulty of the battle.
+A battle's difficulty should be decided by its position in the run, and it should be known to the player even before they select it, so they can decide which battle to fight.
+So, we will generate paths first (section~\ref{sec:analysis-path-generation}), then the terrain (\ref{sec:analysis-terrain-generation}), and finally, the obstacles (\ref{sec:analysis-obstacles}).
+
+From the player's perspective, all procedural generation and the rewards they receive will be random and unpredictable.
 However, each run will have a single seed that deterministically decides all the \enquote{random decisions} the game makes.
 Two runs with the same seed should look identical and if the player makes the same decisions and choices, the outcomes should be the same.
 This allows the players to share seeds of the runs they found interesting and compare their skill in the same situations.
 Furthermore, this is helpful for debugging, because it lets us easily reproduce any issue with the generation just by running it with the same seed.
-
-We want to allow the player to save the game between battles.
-Here, determinism is also useful, because it allows us to save just the seed of something that was generated, instead of saving it whole, which leads to simpler and smaller save files.
+As discussed in section~\ref{sec:design-saving}, we want to allow the player to save the game.
+Here, determinism is also useful, because it allows us to save just the seed of the world that was generated, instead of saving it whole, which leads to simpler and smaller save files.
 
 \subsection{Random Number Generators}
 
@@ -74,25 +83,22 @@ From there we took the parameters for our LCG implementation.
 
 \section{Path Generation}\label{sec:analysis-path-generation}
 
-The worlds we want to generate for the battles in our game are composed of three somewhat distinct parts~--- paths, terrain and obstacles.
-It would make the most sense to generate each part separately, one after another.
-We should start with the part that is most restricted, because each part is additionally restricted by what was generated before it.
-Thus, the world generation algorithm will start by generating paths.
-There is a lot of rules the paths should follow, as described in section~\ref{sec:design-paths}.
-Additionally, the number of paths and their lengths heavily influence the difficulty of the battle.
-A battle's difficulty should be decided by its position in the run, and it should be known to the player even before they select it, so they can decide which battle to fight.
-This means, that the number of paths and their lengths will be given to the world generation algorithm as an input, further restricting the paths that will generate.
+In the previous section, we decided that when generating a world, we will start with the paths.
+In section~\ref{sec:design-paths}, we outlined many requirements and suggestions for the paths, in order to make them play well.
+We also mentioned that we will get the number of paths and their lengths as an input, because these values heavily influence difficulty.
+However, there is still a lot of variance left for the player to deal with.
+For example, the shape of the path can still vary a lot, not to mention the terrain and obstacles that will be generated after.
 
-One of the features the paths will have is that they can split into more and join together.
-When one path splits into two branches that go in separate directions, the battle would play out similarly to a battle with two distinct paths.
+We should consider how is the difficulty influenced by the paths splitting into more branches or joining together.
+When one path splits into two branches that go in separate directions, the battle should play out similarly to a battle with two distinct paths.
 However, for the player, branching paths are not as difficult to manage as distinct paths.
 They are usually closer together, because they have in common both the end point and the start point.
 Furthermore, there is a stretch of path before it split into two branches, and a few tiles after the split, the branches are still pretty close together.
 The player can concentrate their defenses around this portion of the level, partially mitigating the disadvantages of the split.
-Additionally, these splits in paths can vary widely in length.
 
-This all means that it's hard to quantify the relative difficulty of various path networks.
-We believe that it's enough to specify the number of path starts, the lengths of each path, and the maximum number of extra branches to sufficiently define the difficulty range of the path network that will be generated.
+It is really hard to quantify the difficulty of more complex path networks.
+However, we believe that the splits and joins do not influence the difficulty so much, that a greater control over them is required.
+Especially with all the other sources of variance.
 
 We can split the path generation process into three stages:
 \begin{enumerate}
@@ -100,138 +106,80 @@ We can split the path generation process into three stages:
     \item Generate the main branch of each path.
     \item Refine the paths in order to make them split into branches and join together.
 \end{enumerate}
-We feel it's a good idea split stages 2 and 3 mainly because it is simpler to treat them as two separate problems.
-We believe this leads to simpler and faster algorithms without failing the requirements set in section~\ref{sec:design-paths}.
+This is useful, because we can approach the path generation as three separate problems.
 How to accomplish the goal of each of these stages will be described in the following subsections of this section.
 
 \subsection{Path Starts}
 
 In the first stage of path generation, we need to pick the path start positions.
+As an input, we only get the Hub position, the number of paths, and their lengths.
+Each path start must be at a position, such that a path of the given length can go from it to the Hub.
 
-One thing we should notice, is that starts of paths of even length have to have an even \emph{Manhattan distance} from the \emph{Hub}, and starts of paths of odd length have to be an odd distance from the \emph{Hub}.
-This parity holds, because by going from one tile to another that shares an edge with it, the Manhattan distance always changes by 1.
-When a path goes from a tile to another tile $l$ times, its Manhattan distance changes parity $l$ times.
-The distance of the final tile must be 0, which is even, so the parity of the path distance and Manhattan distance must match on every tile, including the starting tile.
+From the specification in section~\ref{sec:design-paths}, we know that paths must start just outside the world.
+However, other segments of the paths are confined to the actual tiles of the world.
+For simplicity, we will pretend from now on, that the paths start at an edge tile of the world, and add one segment going over the edge only after the paths are generated.
+This segment is uniquely determined anyway, except in the corners of the world, where we can just always select the one that makes the path go straight, as shown in figure~\ref{fig:real-path-starts}.
 
-So, in the first step we will find all tiles along the edge of the world, and separate them into two sets~--- even and odd.
-Now, we could just pick a random tile from the corresponding set for each of the starts.
-However, there is one problem: a path of length $l$ can start at most $l$ tiles from the \emph{Hub} in Manhattan distance, since the distance equals the length of the shortest path between the two tiles.
-We also want the path starts to be sufficiently spread out from each other, so that individual paths come from different directions.
-And we don't want the paths to start too close to the \emph{Hub}, especially in levels with just one long path~--- it should ideally start as far from the \emph{Hub} as possible, in order to fill the world more evenly.
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.5\textwidth]{img/Real path starts.pdf}
+    \caption{The red circles are the path starts we work with to stay within the bounds of the world. The blue arrows represent the first segment of each path that will only get added after the rest of the path was generated.}
+    \label{fig:real-path-starts}
+\end{center}
 
-We can simply use rejection sampling to pick starts that satisfy these conditions.
-When we select a candidate tile, we accept it only if it satisfies all of these conditions, otherwise we throw it away.
-One exception is when a candidate tile is too far from the \emph{Hub}.
-Then we return it into the set after we're done with picking the start for this path, because other paths can be longer than this one, so the tiles might be valid for those.
+For a valid path of the correct length to exist between the Hub and the start, the start cannot be further from the Hub using \emph{Manhattan distance} that the path length.
+Additionally, the Manhattan distance must have the same parity as the path length, i.e. a path with odd length must start an odd Manhattan distance from the Hub.
+This is easy to see when we go along a path from the Hub to its start.
+At the Hub, both Manhattan distance and \emph{path distance} are 0.
+Whenever we go to the next tile, the path distance increases by 1, changing its parity.
+The Manhattan distance can only increase by 1 or decrease by 1, also changing its parity.
+Thus, at every tile on the path, the parities of the path distance and Manhattan distance match, including the path start.
 
-If the minimum distances between path starts and from the \emph{Hub} are small enough, this approach always yields a valid collection of path starts.
+In levels with more paths, we want the path starts to be spread out from each other, in order to cover the world with paths more evenly.
+We can set a minimum distance between the paths starts.
+For levels with just one long path, we can also set a minimum distance from the Hub, so it starts further away from it and has more space to zigzag through the world.
+
+To actually select the starts, we find all tiles along the edge of the world, and separate them into two sets~--- each for one parity.
+Then we can simply use rejection sampling to pick starts that satisfy the conditions on the distances.
+As long as the minimum distances between path starts and from the \emph{Hub} are small enough, this approach always yields a valid collection of path starts.
 However, with stricter parameters it is possible that the first few starts invalidate all other start positions.
-In that case we could use rejection sampling again~--- trying to randomly select collections of starts, until we get one that's valid.
-If the failure rate is great enough, it would be wise to select a different algorithm.
+In that case we can use rejection sampling again~--- trying to randomly select collections of starts, until we get one that's valid.
+If the failure rate is great enough, it is wise to select a different algorithm, but our requirements are not very strict, so rejection sampling is fine.
 
-We choose the parameters based on the number of paths and their lengths, such that the path starts are sufficiently spread out for our use-case, and start picking never fails for 1 to 8 paths of lengths 10 to 100, which is a wide enough range for our needs.
+\subsection{Generating the Main Paths}
 
-\subsection{Random Walks}\label{sec:analysis-random-walks}
+From the previous step, we have a path start position for each path, in addition to the required lengths and hub position.
+There is also a lot of rules for the paths, which we set in section~\ref{sec:design-paths}.
 
-In the current and the next~(\ref{sec:analysis-points-in-between}) section, we will describe two approaches we tried to use for generating the main paths.
-The one we ended up using will be described in the section~\ref{sec:analysis-simulated-annealing}.
+We couldn't find many resources on procedurally generated paths.
+There is a lot of research on generating road networks, mazes or dungeons.
+Theoretically, we could use one of the many algorithms for generating mazes~\cite{MazeWiki}, and modify it to suit our needs.
+However, it would be difficult to achieve what we need using an approach that was designed for something else.
 
-For generating the main paths, the simplest approach that comes to mind is to just do a random walk from the start to the end.
-Of course, we have some rules the paths need to follow, so we need to tweak the algorithm.
-First, the path cannot intersect itself, so we have to ban moves onto a tile where we've already been.
-We also need to ensure the path is the correct length.
-To do so, we can count how long is the part of the path that is yet to be generated, and ban the option to go on a tile that's further away from the \emph{Hub} than the remaining length.
-This means we have to recalculate the shortest distance to the \emph{Hub} for every potential step we would take, since the path creates walls for itself.
+We found one algorithm specifically designed for procedurally generating paths, called \emph{path chiseling} by Boris the Brave on his blog~\cite{PathChiseling1}\cite{PathChiseling2}.
+This algorithm creates random paths on a tile grid by randomly blocking off individual tiles until only one path remains.
+This is more promising, however we were unable to find a good way to modify it to generate paths of specific lengths with the properties we want.
 
-Then there are all the suggestions about path spacing, which we can try to solve by introducing a \emph{crowding} penalty.
-Whenever we mark a tile as containing path, we also increase the \emph{crowding} penalty of tiles around it by an amount decreasing with distance from the original tile.
-The more crowded a tile is, the less likely it is to be selected during the random direction selection.
-We can also add a small amount of \emph{crowding} penalty around the edges of the world to steer the paths away from the edges.
-
-We have tried this approach and did many more tweaks, but the paths were always problematic.
-They were always too bunched up either at the start or at the end.
-With multiple paths, two often stranded the path in between them.
-This approach also did not work for long paths, where the path usually blocked itself off from getting to the \emph{Hub}.
-So, we tried a different approach.
-
-\subsection{Selecting Points in Between}\label{sec:analysis-points-in-between}
-
-The previous approach selected the first tile of a path, then the next, and so on.
-We thought it might be better to select some tiles that will be in the middle of the path, then select tiles in between those, and continue refining the path until all of its tiles are selected.
-
-In the algorithm we used, the path network can be viewed as a graph.
-Each node has a distance $dist$ and a tile position $pos$.
-No two nodes can share a tile.
-The $length$ of an edge connecting nodes $a$ and $b$ is defined as $\abs{a.dist - b.dist}$.
-A simplified version is described in pseudocode as algorithm~\ref{alg:points-in-between}.
-
-The procedure \textsc{GetValidPositions}$(a$, $b$, $d)$ returns a set of valid positions for a new node with $dist = d$ that would connect to nodes $a$ and $b$.
-For simplicity, let's say that a position $p$ is valid, if we could travel from $a.pos$ to $p$ in $\abs{a.dist - d}$ steps, and from $p$ to $b.pos$ in $\abs{d - b.dist}$ steps, without going on a tile which already has a node on it.
-The details of how to determine this are omitted.
-The procedure \textsc{Remove}$(n)$ connects the two neighbors of $n$ with an edge and removes $n$.
-The procedure \textsc{Subdivide}$(e$, $n)$ takes the nodes $a,b$ connected by $e$ and connects each of them to $n$ with new edges.
-Then it removes the edge $e$.
-
-\begin{algorithm}[H]
-    \caption{Generating paths by selecting points in between.}
-    \label{alg:points-in-between}
-    \begin{algorithmic}[1]
-        \State $h \gets$ create a node  with $pos \gets hub\_pos; dist \gets 0$
-        \ForEach{path $p$}
-        \State $s_p \gets$ create a node with $pos \gets p.start\_pos; dist \gets p.length$
-        \State create an edge between $s_p$ and $h$
-        \EndFor
-        \State $initial \gets \{h,$ all $s_p\}$
-        \Statex
-        \While{$\exists$ edge with $length > 1$}
-        \State $e \gets$ random edge with $length > 1$
-        \State $a, b \gets$ nodes connected by $e$
-        \State $d \gets$ random integer strictly between $a.pos$ and $b.pos$
-        \State $valid\_positions \gets$ \Call{GetValidPositions}{$a$, $b$, $d$}
-        \Statex
-        \If{$valid\_positions = \varnothing$}
-        \If{$a \notin initial$ \textbf{or} $b \notin initial$}
-        \State $n \gets$ random node from $\{a, b\} \smallsetminus initial$
-        \State \Call{Remove}{$n$}
-        \EndIf
-        \Else
-        \State $p \gets$ random position from $valid\_positions$
-        \State $n \gets$ create a node with $pos \gets p; dist \gets d$
-        \State \Call{Subdivide}{$e$, $n$}
-        \EndIf
-        \EndWhile
-        \Statex
-    \end{algorithmic}
-\end{algorithm}
-
-This algorithm inserts new path nodes between others, incrementally refining the paths.
-But once a new node cannot be inserted, it backs up by removing one of the nodes that are already present.
-This way, it can try different configurations, until it is finally able to complete the paths.
-
-However, it is possible for this algorithm to never finish when it gets to a state from which a valid path cannot be created.
-For example, this will happen when two paths completely separate another path's start from the \emph{Hub}.
-We can partially mitigate this issue by letting the algorithm run only for a limited number of steps.
-If it doesn't finish before then, we restart the whole process, including picking new path starts.
-
-We have used this algorithm and extended it for various heuristics to make it produce better paths (according to the design requirements) and succeed more often.
-It worked somewhat well, but it really struggled with long paths, being unable to create paths over 50 in reasonable time.
-This lead us to search for a simpler and better alternative.
+Since many of our requirements are more like suggestions, we always want to fulfill them almost the best we can.
+This means we can look at the task as an optimization problem: create the \emph{best looking} paths, given the requirements like length, no crossing etc.
+Since we want the paths to be randomized, we don't need to find the optimum, we only need a random solution that is good enough.
+Given this, we decided to generate the paths using an optimization technique called \emph{simulated annealing}.
 
 \subsection{Simulated Annealing}\label{sec:analysis-simulated-annealing}
 
-The algorithm we ended up using is based on an optimization technique called \emph{simulated annealing}.
-A great description of this technique can be found in the article \citetitle{SimulatedAnnealing}~\cite{SimulatedAnnealing}.
-Here, we will describe the main ideas, and then we will describe the algorithm we used to generate paths.
+
+A great analysis of this technique can be found in the article \citetitle{SimulatedAnnealing}~\cite{SimulatedAnnealing}.
+In this section, we will describe the technique, and use it to generate the random paths we want.
 
 Simulated annealing can be used to find an approximation of the global optimum much faster than it would take to find the exact global optimum.
 The problems it can be used on have to be formulated as follows:
 From the set of all states $S$, find a state $s^*$ that minimizes the cost function $f \colon S \to \R$, given a neighbor function $n \colon S \to \mathcal{P}(S)$ which gives the \emph{neighbor states} of each state.
-For example, in the \emph{travelling salesman problem}, each state is usually defined as a permutation of the cities to be visited.
-The cost function gives the length of the salesman's path, and the neighbor function gives all the states that can be acquired by swapping two cities in the original state.
+For example, to use simulated annealing to solve the \emph{travelling salesman problem}, each state is usually defined as a permutation of the cities to be visited.
+The cost function then gives the length of the salesman's path, and the neighbor function gives all the states that can be acquired by swapping two cities in the original state.
 
 The process of simulated annealing is described in pseudocode in algorithm~\ref{alg:simulated-annealing}.
 It starts in an initial state $s_0$ and runs for $max\_steps$ steps.
-For each step, a temperature $t$ is computed, slowly decreasing from 1 in the first step, to 0 at the final step.
+For each step, a temperature $t$ is computed, slowly decreasing from $t_{initial}$ in the first step, to $t_{final}$ at the final step.
 In each step, a random neighbor $s'$ of the current state $s$ is selected, and an acceptance probability $p$ is computed, based on the values of $f(s)$, $f(s')$ and the current temperature $t$.
 The new state $s'$ is then set as the current state with probability $p$.
 This acceptance probability function always accepts a better new state ($s'$ such that $f(s') < f(s)$), but it can also give a non-zero probability when the new state is worse that the current state ($f(s') > f(s)$).
@@ -245,7 +193,7 @@ Overall, the algorithm explores widely different states at the start, but settle
     \begin{algorithmic}[1]
         \State $s \gets s_0$
         \For{$k$ from $0$ to $max\_steps-1$}
-        \State $t \gets 1 - k/(max\_steps-1)$
+        \State $t \gets$ \Call{Lerp}{$t_{initial}$, $t_{final}$, $k/(max\_steps-1)$}
         \State $s' \gets$ random neighbor from $n(s)$
         \State $p \gets$ \Call{AcceptanceProbability}{$f(s)$, $f(s')$, $t$}
         \State with probability $p$: $s \gets s'$
@@ -255,6 +203,7 @@ Overall, the algorithm explores widely different states at the start, but settle
     \end{algorithmic}
 \end{algorithm}
 
+\subsection*{States}
 To generate paths using simulated annealing, we need to define what is a state, a cost function and a neighbor function.
 Each state will be a path network, where each path is a sequence of nodes.
 Each node has a tile position, and each tile can contain multiple nodes.
@@ -263,11 +212,15 @@ Additionally, each path starts at the given path start, has the given length, an
 Since we are going to change the paths only by a small amount at every step, we chose not to check for intersections.
 Otherwise, we would lose too much freedom during the simulated annealing, and the final state would always end up close to the initial state.
 
+\subsection*{Neighbor States}
 The neighbors of a state are the states we obtain by changing the position of single node to a different position, such that the result is still a valid state.
 This set is not too difficult to generate.
 First, we can notice that the first and last node of every path can never change position.
-Additionally, any node can only ever change its position to a diagonally adjacent one, or horizontally by two tiles, based on the nodes immediately before and after, as shown in figure~\ref{fig:path-node-swaps}.
+Additionally, any node can only ever change its position to one other position, because it has to stay exactly 1 tile away from the nodes that come immediately before and after it.
+This is shown in figure~\ref{fig:path-node-swaps}.
 We only draw the nodes before and after the node which we want to modify, because the other nodes are not relevant.
+As we can see, the new configuration is always obtained by switching the order of the two consecutive steps the path takes.
+For example, in the first situation, the path changes from going down and left to going left and down.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -298,40 +251,65 @@ We only draw the nodes before and after the node which we want to modify, becaus
         \filldraw[black,shift={(0.5,1)}] (4,1) circle (3pt);
         \filldraw[red,shift={(0.5,1)}] (5,1) circle (3pt);
         \filldraw[black,shift={(0.5,1)}] (5,0) circle (3pt);
-        \draw[red,->,very thick,shift={(0.5,0.5)}] (2,1) -- (3,1);
+        \draw[->,very thick,shift={(0.5,0.5)}] (2,1) -- (3,1);
         \filldraw[black,shift={(0.5,0.5)}] (7.8,1) circle (3pt);
         \filldraw[red,shift={(0.5,0.5)}] (8,2) circle (3pt);
         \filldraw[black,shift={(0.5,0.5)}] (8.2,1) circle (3pt);
         \filldraw[black,shift={(0.5,0.5)}] (10.8,1) circle (3pt);
         \filldraw[red,shift={(0.5,0.5)}] (11,0) circle (3pt);
         \filldraw[black,shift={(0.5,0.5)}] (11.2,1) circle (3pt);
-        \draw[red,->,very thick,shift={(0.5,0.5)}] (9,1) -- (10,1);
+        \draw[->,very thick,shift={(0.5,0.5)}] (9,1) -- (10,1);
     \end{tikzpicture}
     \caption{Possible node position changes to create a neighbor state.}
     \label{fig:path-node-swaps}
 \end{center}
 
+\subsection*{Cost Function}
 Now we select a cost function that gives a better score to paths that are more desirable.
-A great starting point is to calculate a crowding penalty for each tile as we did for our random walks algorithm (see section~\ref{sec:analysis-random-walks}).
+Since we want the paths to spread out, we can calculate fore each tile what we call a \emph{crowding penalty}.
+Each node contributes 1 crowding to the tile it's on, and all other tiles get a lower penalty decreasing with distance.
+In the end we chose the following formula for the crowding penalty $c$ of a tile $t$ caused by a path node on tile $n$:
+\begin{equation*}
+    c = \frac{1}{\abs{t - n}^4 + 1}
+\end{equation*}
+Each tile's total crowding penalty is the sum of the contribution from each node.
+We raise the distance to the power of 4, because in our testing, lower exponents led to paths influencing each other from too far away.
+
+We also add a big crowding penalty to the tiles along the edge of the world, which gradually decreases as we go away from the edge.
+This is to push the paths away from the edges, as this is undesirable for reasons specified in section~\ref{sec:design-paths}.
+
 We could then calculate the cost function of a state as the sum of the crowding penalties of each tile for each node on it.
-However, to save on computation, we don't compare the values of the current and next state.
+However, to save on computation, we don't actually compare the values of the current and next state.
 Instead, we only calculate the \emph{relative improvement} of the position change as $crowding($crurrent position$) - crowding($future position$)$ without even calculating the new crowding penalties.
 We only recalculate the crowding penalties for a state after we select it as the new state.
-This means that the relative improvement is a very crude approximation of the real relative improvement, and it is biased towards switching the position, because the current position has greater crowding penalty from the node itself, while the future position is not affected as much.
+This is only a very crude approximation of the real relative improvement $f(s) - f(s')$, and it is biased towards changing the node's position, because the current position has greater crowding penalty from the node itself, while the future position is not affected as much.
 Later, we will show how we changed the algorithm to mitigate this bias.
 
+\subsection*{Initial State}
 All that's left is to produce an initial state.
 This is not trivial, because of our constraints on what's considered a valid state.
-However, we can easily produce a valid initial state using a random walk, as described in section~\ref{sec:analysis-random-walks}.
-This time we don't even have to check for self-intersection.
+Namely, every path has to be the correct length.
+However, we can easily produce a valid initial state using a random walk from each path start.
+For each path, the algorithm starts on the path start tile, and create the first path node.
+Then it repeatedly moves its current position to a random neighbor of the current tile, and places the next path node there.
+This is repeated until it creates a path of the correct length.
+However, we need to ensure that the path ends at the Hub.
+To achieve this, we just make the algorithm never select a tile that is further away from the Hub (in Manhattan distance), than the remaining length of the path.
 
+\subsection*{Modified Algorithm}
 We used a slightly different version of the algorithm, as seen in algorithm~\ref{alg:annealing-paths}.
-Before (algorithm~\ref{alg:simulated-annealing}), temperature went from 1 to 0, however it can have any initial and final value without loss of generality.
-Here, we specify this explicitly, because we use the temperature directly in the calculation of the \emph{improvement} a change would lead to.
-We use the temperature to offset the bias in our \emph{improvement} function, by setting the final temperature to an adequate negative value.
+The first difference from algorithm~\ref{alg:simulated-annealing} is that at each step we don't pick a random candidate, and then switch to it with some probability.
+This would lead to a lot of steps, where we don't change the state.
+We skip all those steps, by instead calculating a weight for each of the candidates, giving greater weight to better candidates.
+Then we select a random one, weighted by these weights, and always switch to it.
+For some candidates, the weight comes out as less than or equal to 0, and we don't add it to our list of candidates.
+This is the same as if the candidate had an acceptance probability of 0.
+
+Another change we make is to calculate an approximation of the relative improvement $f(s) - f(s')$, instead of calculating $f(s)$ and $f(s')$ separately.
+This is to save on computation, as described before.
+However, we also immediately add the temperature to the relative improvement, in order to offset the bias our approximation introduces.
+We just change the temperature range to end at a negative value.
 This value does not have to be exact, because the temperature changes, so it will always be too high or too low anyway.
-Furthermore, we always move to a new random state, but better states are more likely to be selected.
-This is almost equivalent to doing multiple steps of the original algorithm until it moves to a new state, without actually doing them.
 
 \begin{algorithm}[H]
     \caption{Simulated annealing for generating paths}
@@ -359,9 +337,11 @@ This is almost equivalent to doing multiple steps of the original algorithm unti
     \end{algorithmic}
 \end{algorithm}
 
+\subsection*{Intersection Untwisting}
 However, this algorithm still sometimes produces paths that intersect themselves.
 This is because it is difficult for the algorithm to fix a loop in the path, as shown in figure~\ref{fig:untwisting-paths}.
-However, we can add a step that \emph{untwists} crossings by reversing the section of the path that forms a loop, as shown in the figure.
+It would first have to bring many nodes closer together, in order to let them cross over each other.
+However, we can add a step that just \emph{untwists} crossings by reversing the section of the path that forms a loop, as shown in the figure.
 This still leaves two nodes on the same tile, but annealing can drive these apart without any issue.
 
 \begin{center}
@@ -382,58 +362,143 @@ This still leaves two nodes on the same tile, but annealing can drive these apar
             \draw[postaction={decorate},shift={(0.5,0.5)}] (9,1)--(7.05,0.95);
             \draw[postaction={decorate},shift={(0.5,0.5)}] (7.05,0.95)--(7,-1);
         \end{scope}
-        \draw[red,->,very thick,shift={(0.5,0.5)}] (4,1.5) -- (5,1.5);
+        \draw[->,very thick,shift={(0.5,0.5)}] (4,1.5) -- (5,1.5);
     \end{tikzpicture}
     \caption{Untwisting a self-intersecting path.}
     \label{fig:untwisting-paths}
 \end{center}
 
-To only accept valid path networks, we can modify the algorithm to return the last valid path network, if any.
+This is valid, because the length of the path doesn't change.
+However, we cannot untwist crossings between two different paths, because that could change their lengths.
+This means that we should take special care to not produce an initial state where two different paths cross.
+We can achieve this by calculating crowding penalties when creating the initial state.
+Then, when the algorithm selects a random neighbor to move to, we make it prefer the neighbors with a lower crowding penalty.
+Because we don't mind self-intersections, we don't add the crowding penalties from the nodes of the path the algorithm is currently creating.
+We add them only when the path is complete.
+
+Sill, the algorithm sometimes fails in creating a valid path network.
 In case no valid network is generated, we can restart the path generation algorithm, including picking the starting positions.
 
-This leaves us with an algorithm that can generate high quality path networks often, even with long paths.
-From our testing, $0.5l^2$ steps, where $l$ is the total length of all paths, is usually enough for high quality paths.
-Usually, when the algorithm is unable to create a valid path network in $0.05l^2$ steps, it will fail to do so even in $0.5l^2$ steps, given the same initial state.
-We modified the algorithm to fail early if it doesn't find a valid path network in $0.05l^2$ steps, and try again without wasting more time.
+In figure~\ref{fig:simulated-annealing}, we can see how the paths evolve over time as the temperature decreases.
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/SA initial state.pdf}
+        \subcaption{Initial state ($t_{initial} = 2$)}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/SA temp 1.5.pdf}
+        \subcaption{$t = 1.5$}
+    \end{minipage}\\
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/SA temp 0.5.pdf}
+        \subcaption{$t = 0.5$}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/SA final.pdf}
+        \subcaption{Result ($t_{final} = -0.5$)}
+    \end{minipage}
+    \caption{Evolution of paths during simulated annealing.}
+    \label{fig:simulated-annealing}
+\end{center}
 
 \subsection{Final Paths}
 
-Now, that we can generate the main paths, we just have to generate the side branches.
-It is useful we don't have many requirements on the count or length.
-We can generate the rest of the world first, and fill in more paths after that.
-Since the world generation is random enough, our algorithm can be relatively simple and still lead to widely varying results.
+Now that we have generated the main paths, we just have to generate the side branches.
+Again, we could use some randomized algorithm.
+We don't want the branching to feel the same in every level, so we would need to come up with complicated heuristics to ensure the paths we generate vary a lot.
+The world generation steps that come after have to make sure to not block the paths we have generated, but we don't want to constrain it with the side branches too.
 
-After generating the world, some tiles are blocked by obstacles, so a path cannot go through them.
+Since we don't have any requirements on the side branch count or their lengths, we can use a much simpler solution.
+We can generate the rest of the world first, and only then make extra paths where they fit.
+This also leverages the randomness of the world generation instead of needing to introduce more on our own.
+
+This means, that this step will start with an already generated terrain and obstacles, as described in sections~\ref{sec:analysis-terrain-generation} and~\ref{sec:analysis-obstacles}.
+These steps respect the original paths, but they will cause other tiles or edges between them to be blocked, as shown in figure~\ref{fig:paths-world}.
+Here, we can see the original paths on the left.
+On the right, we can see tiles blocked by obstacles as gray squares with black edges.
 Additionally, some edges between tiles are also blocked, usually because the two tiles are at different height levels, separated by a cliff.
-The rest of the world generation has made sure that at least the main paths are still traversable, however we don't have to adhere to them completely.
-In fact, we can try to make the paths follow the rules even better, but we can always fall back on the previously generated ones.
-
-The first step of the algorithm we came up with, is to compute the shortest distance from each tile to the \emph{Hub}, respecting the blocked tiles and edges.
-For this, we use breadth first search from the \emph{Hub} tile, but the paths start with the path distances already filled in, and we disallow the algorithm from visiting these tile sooner than their already marked distance.
-The result can be seen in figure~\ref{fig:path-distances}.
+These are the remaining black lines.
 
 \begin{center}
     \captionsetup{type=figure}
     \begin{minipage}{.5\textwidth}
         \centering
-        \includegraphics[width=0.95\textwidth]{img/Path Distances.pdf}
+        \includegraphics[width=0.95\textwidth]{img/Generated Paths.pdf}
     \end{minipage}%
     \begin{minipage}{.5\textwidth}
         \centering
-        \includegraphics[width=0.95\textwidth]{img/Generated Paths.pdf}
+        \includegraphics[width=0.95\textwidth]{img/Paths and world.pdf}
     \end{minipage}
-    \caption{Calculated tile distances compared to the originally generated paths.}
-    \label{fig:path-distances}
+    \caption{Blocked edges and tiles after generating the terrain and obstacles.}
+    \label{fig:paths-world}
 \end{center}
 
-It then traces paths one by one from the start, basically doing a depth first search.
-At every step, it pops the last item on a stack of path prototypes, then it finds all valid one-step continuations, and it pushes them onto the stack.
-Which continuations are valid and how they are ordered will be explained later.
-Once it reaches the \emph{Hub} or an already existing path, it checks whether it is valid to finish the current path.
-If this check fails, it pops the last item on the stack and continues from there.
-If the check succeeds, it marks the new path section and continues by making another branch, this time taking the first item in the stack.
-We do this to minimize the length of path the new branch shares with the branch it came from.
-This process is described with pseudocode in algorithm~\ref{alg:path-finalizing}.
+The rest of the world generation has made sure that at least the main paths are still traversable, however we don't have to adhere to them completely.
+For example, we would like them to sometimes join together, which we cannot do without changing them.
+
+There are so many blocked edges that we can just greedily add all the valid side branches we find.
+To do this, we will use depth first search, but we will add a few heuristics to produce better paths.
+To decide on these heuristics, we will set a few more requirements:
+We still want the paths to be spread out, but we would also prefer the paths to go straight if possible.
+Additionally, we can see there are some \emph{choke points}~--- tiles, which have to have a path going through them, because all valid paths from one start go through them.
+
+Each tile can only have one path distance from the Hub, as specified in section~\ref{sec:design-paths}.
+We want these tiles to have the same path distance as the distance on the original path.
+This heavily reduces the number of possible paths, while making sure, that the paths don't bunch up at the start or near the Hub, because it will make them keep a similar distribution to the originally generated paths.
+We can see the choke points for the paths we generated in figure~\ref{fig:choke-points}.
+They are shown as a blue circle with a number representing the path distance to the Hub.
+
+Above all, we need to make sure the paths we produce are the correct length.
+We can save a lot of time by precomputing the distance from each tile to the Hub, respecting all the blocked tiles and edges.
+For this, we can do a breadth first search from the Hub tile.
+However, we can also introduce the required distances for the choke points.
+Finding the choke points is not trivial, so we instead set a minimum distance for every tile on one of the generated paths.
+The result can be seen in figure~\ref{fig:path-distances}.
+
+\begin{center}
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \captionsetup{type=figure,width=0.9\textwidth}
+        \includegraphics[width=0.95\textwidth]{img/Path choke points.pdf}
+        \caption{Path choke points and their respective distances.}
+        \label{fig:choke-points}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \captionsetup{type=figure,width=0.9\textwidth}
+        \includegraphics[width=0.95\textwidth]{img/Path Distances.pdf}
+        \caption{Minimum distances calculated in the first step.}
+        \label{fig:path-distances}
+    \end{minipage}
+\end{center}
+
+Now we finally run the depth first search, one path by one.
+The algorithm keeps a stack of \emph{path prototypes}.
+These are paths, which start at the start tile, but have not reached the Hub yet.
+At the start, the stack contains only the path prototype with only the start position as its only element.
+At every step, the algorithm pops the last prototype from the stack, finds all valid one-step continuations of the current paths, and adds those to the stack.
+
+Valid continuations are tiles that can be reached from the last tile of the current path prototype in one step.
+Additionally, they have to have a distance that is less than or equal to the remaining length of this path prototype.
+The valid continuations are ordered such that the best option will be put onto the stack last, so it gets popped in the next step.
+The best option is always the one that goes straight, and the rest is ordered by the crowding penalty of the tile, which is calculated similarly to section~\ref{sec:analysis-simulated-annealing}.
+
+Once the algorithm reaches the \emph{Hub} or an already existing path, it checks whether it is valid to finish the current path.
+First, it must have the correct remaining length to produce a valid path.
+When it connects to the Hub, the remaining length must be 0, and for connecting to an existing path, the remaining length must match the path distance of that tile.
+Additionally, as per the last rule in the summary of section~\ref{sec:design-paths}, every side branch must go through at least one tile that is not adjacent to any already existing path.
+
+If this check fails, the algorithm does not mark this path, it pops the last item from the stack and continues from there.
+If the check succeeds, it marks the new path section and updates the crowding penalties to take the new path section into account.
+Then it continues by making another branch, this time taking an item from the opposite end of the stack.
+This is done to minimize the length of path the new branch shares with the branch it came from.
+The first item on the stack should have the least amount of path segments in common with the last item.
+The entire search is described in pseudocode as algorithm~\ref{alg:path-finalizing}.
 
 \begin{algorithm}[H]
     \caption{Finalizing paths}
@@ -450,11 +515,11 @@ This process is described with pseudocode in algorithm~\ref{alg:path-finalizing}
         \State $p \gets stack$.\Call{PopLast}{}
         \EndIf
         \Statex
-        \If{last position in $p$ contains a path or the Hub}
+        \If{last tile in $p$ contains a path or the Hub}
         \State $success \gets$ \Call{TryFinishPath}{$p$}
         \Else
         \State $success \gets$ \mono{false}
-        \ForEach{position $c$ from \Call{GetValidContinuations}{$p$}}
+        \ForEach{tile $c$ from \Call{GetValidContinuations}{$p$}}
         \State $stack$.\Call{PushLast}{$p$ extended by $c$}
         \EndFor
         \EndIf
@@ -464,48 +529,40 @@ This process is described with pseudocode in algorithm~\ref{alg:path-finalizing}
     \end{algorithmic}
 \end{algorithm}
 
-For valid continuations of a path prototype, we consider the neighbors of the last position in the path prototype.
-A tile is a neighbor of another tile, only if the passage between them is not blocked and the tile itself is not blocked.
-Additionally, the distance we computed for this tile before, must be less than the target path length minus the length of the current prototype.
-In other words, if the path prototype has to go $n$ more tiles before it can connect to the \emph{Hub}, this tile's distance from the \emph{Hub} must be at most $n$.
-To generate the best paths, we order the valid continuations such that the most preferable one is popped from the stack first.
-Again, we can use crowding penalties to encourage paths to spread out.
-However, above that we will prioritize the continuation that goes straight~--- in the same direction as the last step in the path prototype so far.
-With this ordering, the algorithm usually reaches the \emph{Hub} too soon, and then it has to backtrack many times, before producing a path that is the right length.
-To fix this, we prioritize above all the tiles with exactly the right distance to the \emph{Hub}, which was denoted as $n$ in our previous example.
+However, there is one more optimization we can make.
+With this ordering of valid continuations, the algorithm usually reaches the Hub too soon, and then it has to backtrack many times, before producing a path that is the right length.
+To fix this, we prioritize above all the tiles with distance to the Hub exactly equal to the remaining length.
 
-Now, How do we know when it's valid to finish a path prototype when it connects to an existing path or the \emph{Hub}?
-First, it must have the correct length.
-If it does, and the path start this prototype originates from is not connected to the network yet, it is valid.
-However, for branches other than the first, the requirements are stricter.
-As per the last rule in the summary of section~\ref{sec:design-paths}, every side branch must go through at least one tile that is not adjacent to any already existing path.
-
-As we mentioned at the start of section~\ref{sec:analysis-path-generation}, we also get a maximum number of extra branches as a parameter for path generation.
-Thus, once the algorithm reaches the maximum count, it stops.
-The results of the algorithm are displayed in figure~\ref{fig:final-paths}, again, compared to the initially generated paths.
+The results of the algorithm are displayed on the right in figure~\ref{fig:final-paths}, compared to the initially generated paths on the left.
+Segments that have changed are highlighted in red.
 
 \begin{center}
     \captionsetup{type=figure}
     \begin{minipage}{.5\textwidth}
         \centering
-        \includegraphics[width=0.95\textwidth]{img/Final Paths.pdf}
+        \includegraphics[width=0.95\textwidth]{img/Paths and world.pdf}
     \end{minipage}%
     \begin{minipage}{.5\textwidth}
         \centering
-        \includegraphics[width=0.95\textwidth]{img/Generated Paths.pdf}
+        \includegraphics[width=0.95\textwidth]{img/Final Paths.pdf}
     \end{minipage}
     \caption{Final paths compared to the originally generated paths.}
     \label{fig:final-paths}
 \end{center}
 
-\section{Terrain Generation}
+\section{Terrain Generation}\label{sec:analysis-terrain-generation}
 
 There are many techniques we could use for generating the terrain.
-We chose a variant of \emph{model synthesis} originally developed by \Citeauthor{ModelSynthesis}~\cite{ModelSynthesis}.
+However, we have pretty strict requirements for the terrain generation.
+For example, we need to make sure the paths we have generated in the previous step are not blocked by terrain features like cliffs.
+
+This led us to choose a variant of a procedural generation algorithm called \emph{model synthesis}, originally developed by \Citeauthor{ModelSynthesis}~\cite{ModelSynthesis}.
 The discrete version of this algorithm is better known by the name \emph{wave function collapse} (or~WFC in short), popularized by \Citeauthor{WFC} on GitHub~\cite{WFC}.
 Model synthesis is more general and focuses more on 3D models, whereas WFC applies the same concepts to generating 2D pixel art and tile maps.
 Since the name \enquote{wave function collapse} is more popular, we will use it in the rest of this thesis, even though it's not the original name.
-Before we explain why we chose to use a variant of this algorithm, we would like to explain how it works.
+
+We chose WFC, because it can generate randomized terrain, whilst fully respecting the initial constraints we give it.
+To see how this works, we will explain the algorithm first.
 
 \subsection{Wave Function Collapse}
 
@@ -569,14 +626,14 @@ After propagating constraints, the algorithm collapses another slot and so on.
 In figure~\ref{fig:wfc-step-2}, we can see an interesting situation after collapsing a second slot.
 The slot between the collapsed slots can still contain two possible modules, however both of them have a line at the top and bottom edges.
 This means that the algorithm also has to propagate to the neighbors of this tile that they have to have lines at the corresponding edges.
-A change in one slot can affect slots far away from it.
+A change in one slot can affect slots even very far away from it.
 
 This process repeats until all slots are collapsed, at which point we have successfully generated the output.
 This process is summarized as algorithm~\ref{alg:wfc}.
 We left out one detail: which element does \textsc{Pop} select?
-This does not matter for the overall function of the algorithm, and it will be further discussed in section TODO.
-We will call this algorithm WFC, even though it differs from WFC by Gumin.
-The most notable difference is that we skip the feature extraction and take as input modules directly.
+This does not matter for the overall function of the algorithm, and it will be further discussed in section~\ref{sec:analysis-our-wfc}.
+We will call this algorithm WFC, even though it differs from both WFC by Gumin and Merrell's model synthesis.
+The only notable difference is that we skip the feature extraction step, and the algorithm takes as input the modules directly.
 
 \begin{algorithm}[H]
     \caption{A na\"{i}ve version of wave function collapse}
@@ -614,16 +671,21 @@ The most notable difference is that we skip the feature extraction and take as i
 \end{algorithm}
 
 However, it is possible for the algorithm to create a slot with no valid module.
-In this case, it is no longer possible to create a valid output.
+In that case, it is no longer possible to create a valid output.
+We call this situation a \emph{conflict}.
 An example can be seen in figure~\ref{fig:wfc-backtracking}.
-If we look at WFC as a \emph{constraint satisfaction problem} solver, we can see that the constraint propagation only ensures \emph{arc-consistency}, which is not enough to rule out conflicts.
+If we look at WFC as a \emph{constraint satisfaction problem} solver, we can see that the constraint propagation only ensures \emph{arc-consistency}, which is not enough to rule out conflicts~\cite{LocalConsistencyWiki}.
 
+We called algorithm~\ref{alg:wfc} na\"{i}ve, because it is unable to deal with any conflicts.
+What can we do to always produce a result, even when a conflict happens?
 One option is to simply restart the algorithm.
 For sufficiently small outputs, this should be rare enough, only needing a few restarts.
+
 Another option is to use backtracking.
-Whenever the algorithm runs into a contradiction after collapsing a slot, it returns to the state before collapsing and removes the module the slot collapsed to from its valid options.
+Whenever the algorithm runs into a contradiction after collapsing a slot, it returns to the state before collapsing.
+Additionally, it removes the module the slot collapsed to from its valid options, because it now knows it causes to a conflict.
 The state after backtracking is illustrated in fig~\ref{fig:wfc-after-backtracking}.
-This way, the algorithm can continue generating without getting rid of all the progress.
+This way, the algorithm can continue generating without getting rid of all its progress.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -652,36 +714,34 @@ The main advantage of WFC is that it offers a lot of control over the generated 
 That's ultimately why we chose to use it.
 We always know what features can appear in the world, because we explicitly allowed them to exist.
 We can also freely constrain the world that we are generating.
-For example, we can force the generator to not block the paths we've generated in the previous stage, and we can force the tile with the \emph{Hub} to be flat.
+For example, we can force the generator to not block the paths we've generated in the previous stage, and we can force the tile with the Hub to be flat.
 We also force a random tile to be at the lowest height level and another to be at the highest.
 
 However, WFC has some disadvantages when used as a terrain generator.
-First, it scales poorly.
-Merrell shows in their thesis~\cite{ModelSynthesis} that deciding whether an incomplete output is consistent, i.e. it can be completed without running into contradictions, is an NP-complete problem.
+First, it can be very slow.
+The time it takes algorithm~\ref{alg:wfc} to run scales linearly with the number of slots, which is not bad when we never run into contradictions.
+Merrell shows in their thesis that deciding whether an incomplete output is consistent, i.e. it can be completed without running into contradictions, is an NP-complete problem.
 This necessarily means that WFC isn't very fast in the worst case.
-In section~\ref{sec:wfc-time-complexity}, we show that algorithm~\ref{alg:wfc} runs in $O(k^3 \cdot n)$ time, where $k$ is the number of modules, and $n$ is the number of slots.
-This time complexity also holds for a version which can handle contradictions, assuming it never runs into any, but each contradiction can only slow the algorithm down.
 
-The real problem is that the algorithm usually does run into contradictions.
-In fact, the larger the generation task, the less likely it is to succeed.
+The real problem is that the algorithm usually does run into contradictions, and the larger the generation task, the more likely it is to run into a contradiction.
 This is especially bad for online generation of infinite worlds, because we can't simply restart and generate a new world after the player has already seen a part of it.
 Backtracking also doesn't solve this issue, because the algorithm can collapse a slot in a way that is guaranteed to cause a contradiction, and then do arbitrarily many more steps before finally running into it.
 Of course, there are ways to circumvent this issue, namely by making the individual generation tasks smaller.
 In their thesis, Merrell describes a technique called \emph{modifying in parts} based on this approach.
 
 Another potential problem with WFC is that the individual slots or modules can be very apparent and repetitive.
-This can be solved by procedurally generating the resulting geometry, only based on the modules chosen by WFC.
-Another way to make the slots less apparent is to make them irregular.
+This can be solved by procedurally generating the resulting geometry the player sees, only based on the modules chosen by WFC.
+Another way to make the slots less apparent is to make the slots irregular.
 Both of these techniques are used by \emph{Townscaper}~\cite{Townscaper}, a game by Oskar St\r{a}lberg.
 
-Also, WFC uses only local constraints, so it provides no control over the more global features of the output.
+Also, WFC only uses local constraints, so it provides no control over the more global features of the output.
 On a large scale, the results are very homogenous.
-For larger outputs, WFC should only be used to generate the local features, guided by large-scale features generated by some other algorithm, or an instance of WFC with larger slots.
+For larger outputs, WFC should only be used to generate the local features, guided by large-scale features generated by some other algorithm.
 
 Luckily, none of these disadvantages matter for our use case.
-Our worlds are very small, and we don't mind that the tiles will be apparent, since the gameplay of our game is centered around them.
+Our worlds are very small, and we don't mind that the tiles will be apparent, since the gameplay of our game is centered around them anyway.
 
-\subsection{Using WFC for Terrain Generation}
+\subsection{Using WFC for Terrain Generation}\label{sec:analysis-our-wfc}
 
 Even though we want to generate a 3D terrain, our output will consist of a 2D grid of slots.
 We want the tiles of the generated world to be at different heights, however, we don't want any tiles to generate above other tiles.
@@ -751,42 +811,31 @@ After that, we ran into diminishing returns.
 Of the worlds that required backtracking depth 2, most required backtracking depth greater than 10.
 So we decided to allow for backtracking depth 1 and otherwise just restart the generation, which makes it faster on average.
 
-\xxx{I should probably provide the data I measured. Do I also need to explain the whole setup to make it reproducible?}
+\xxx{I should probably provide the exact data I measured. Do I also need to explain the whole setup to make it reproducible?}
 
 We also need to decide which slot to collapse at each step of the algorithm.
 Merrell uses in their thesis a sort of scan line order, collapsing them in the lexicographic order of their coordinates.
 This could theoretically introduce a directional bias in the results.
 Gumin in their implementation always collapses a slot with the lowest \emph{Shannon entropy}.
-However, from our testing, the results tend to look unnatural, often creating rectangular regions at the same height or repeating patterns.
+This causes the generation to collapse slots outwards form the slot that was collapsed first.
+From our testing, the results tend to look unnatural, often creating rectangular regions at the same height, or repeating patterns.
 
-To make the results more natural, we chose to select the slot at random.
-This means that the generator first sets slots in various parts of the world to different heights.
+Both of these orders grow the collapsed portion of the world from one initial slot, similar to growing a regular crystal from one seed crystal.
+To make the results more natural, we chose to select the slot to collapse at random.
+This leads to the generator first collapsing slots in various parts of the world to different configurations.
 Then it has to somehow connect these to make the world follow the rules we set.
 This leads to more diverse results, however, the failure rate becomes very high, leading to slower generation.
 
-As a compromise, we chose to weight the slots by the number of invalid slots $+\,1$.
+As a compromise, we chose to weight the slots by the number of invalid slots\,$+\,1$.
 This is an approximation of entropy that is trivial to compute, making it more likely to select more constrained slots, but still collapsing unconstrained slots once in a while.
 The 1 is added just to make all weights nonzero.
 This leads to results similar to the ones with uniform randomness, but decreases the failure rate substantially.
 
-\xxx{Can I show screenshots of the generated worlds with different settings?}
-\xxx{More testing data to compare the success rate of different approaches}
+\xxx{More testing data to compare the success rate of the different approaches}
 
-\subsection{Time Complexity of Na\"{i}ve WFC}\label{sec:wfc-time-complexity}
+\xxx{A picture of the result?}
 
-In this section, we will show that algorithm~\ref{alg:wfc} runs in amortized $O(k^3 \cdot n)$ time, where $k$ is the number of modules, and $n$ is the number of slots.
-We will assume that the sets $uncollapsed$, $to\_update$ and the $modules$ of each slot have amortized $O(1)$ queries, additions and removals (including \textsc{Pop}).
-Another assumption we will is that \textsc{IsValid} runs in $O(k)$ time, because each slot has $O(1)$ neighbors and each neighbor can only have $k$ different modules, so we have to check at most $O(k)$ constraints.
-
-This means that checking the modules a slot can have takes $O(k^2)$ time.
-Since each change removes at least one module, each slot can change up to $k$ times, and each change leads to $O(1)$ neighbors being checked.
-There are only $n$ slots which means at most $kn$ changes, which means constraint propagation takes $O(k^3 \cdot n)$ time over the execution of the whole algorithm.
-
-All other steps can are asymptotically faster:
-Initialization is done in $O(kn)$ time.
-Collapsing $n$ slots takes $O(kn)$ time, assuming picking the random module takes $O(k)$ time.
-
-\section{Resources and Obstacles}
+\section{Resources and Obstacles}\label{sec:analysis-obstacles}
 
 - after terrain generation, place blockers on tiles
 
@@ -872,7 +921,7 @@ For the blockers, I didn't want repetitive obstacle models, so they are generate
 
 - the rest will be in background threads
 
-\section{Attacker Wave Generation}
+\section{Attacker Wave Generation}\label{sec:analysis-waves}
 
 - creates a randomized plan of waves
 

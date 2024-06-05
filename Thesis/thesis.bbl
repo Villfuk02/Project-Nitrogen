@@ -546,6 +546,94 @@
       \field{volume}{68}
       \field{year}{1999}
     \endentry
+    \entry{MazeWiki}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=b6aea1a416c89509a7df1cbb69249cb6}{%
+           family={{Wikipedia contributors}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{fullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{bibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \field{extraname}{6}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Maze generation algorithm --- {Wikipedia}{,} The Free Encyclopedia}
+      \field{urlday}{4}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{year}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/w/index.php?title=Maze_generation_algorithm&oldid=1223006272
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/w/index.php?title=Maze_generation_algorithm&oldid=1223006272
+      \endverb
+    \endentry
+    \entry{PathChiseling1}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=307419533dd882159d3f9c88565b696f}{%
+           family={{Boris the Brave}},
+           familyi={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{307419533dd882159d3f9c88565b696f}
+      \strng{fullhash}{307419533dd882159d3f9c88565b696f}
+      \strng{bibnamehash}{307419533dd882159d3f9c88565b696f}
+      \strng{authorbibnamehash}{307419533dd882159d3f9c88565b696f}
+      \strng{authornamehash}{307419533dd882159d3f9c88565b696f}
+      \strng{authorfullhash}{307419533dd882159d3f9c88565b696f}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Random Paths via Chiseling}
+      \field{urlday}{4}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.boristhebrave.com/2018/04/28/random-paths-via-chiseling/
+      \endverb
+      \verb{url}
+      \verb https://www.boristhebrave.com/2018/04/28/random-paths-via-chiseling/
+      \endverb
+    \endentry
+    \entry{PathChiseling2}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=307419533dd882159d3f9c88565b696f}{%
+           family={{Boris the Brave}},
+           familyi={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{307419533dd882159d3f9c88565b696f}
+      \strng{fullhash}{307419533dd882159d3f9c88565b696f}
+      \strng{bibnamehash}{307419533dd882159d3f9c88565b696f}
+      \strng{authorbibnamehash}{307419533dd882159d3f9c88565b696f}
+      \strng{authornamehash}{307419533dd882159d3f9c88565b696f}
+      \strng{authorfullhash}{307419533dd882159d3f9c88565b696f}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Chiseled Paths Revisited}
+      \field{urlday}{4}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.boristhebrave.com/2022/03/20/chiseled-paths-revisited/
+      \endverb
+      \verb{url}
+      \verb https://www.boristhebrave.com/2022/03/20/chiseled-paths-revisited/
+      \endverb
+    \endentry
     \entry{SimulatedAnnealing}{article}{}
       \name{author}{3}{}{%
         {{hash=7872b231407c202bb66a9588eac3de57}{%
@@ -631,8 +719,8 @@
       \strng{authorbibnamehash}{46c2caad2d1433d5a224bdbf82de6ffb}
       \strng{authornamehash}{46c2caad2d1433d5a224bdbf82de6ffb}
       \strng{authorfullhash}{46c2caad2d1433d5a224bdbf82de6ffb}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{WaveFunctionCollapse}
@@ -659,8 +747,8 @@
       \strng{authorbibnamehash}{b30731c3fe009a48293ea85daced328f}
       \strng{authornamehash}{b30731c3fe009a48293ea85daced328f}
       \strng{authorfullhash}{b30731c3fe009a48293ea85daced328f}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Infinite procedurally generated city with the Wave Function Collapse algorithm}
@@ -673,6 +761,36 @@
       \endverb
       \verb{url}
       \verb https://marian42.de/article/wfc/
+      \endverb
+    \endentry
+    \entry{LocalConsistencyWiki}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=b6aea1a416c89509a7df1cbb69249cb6}{%
+           family={{Wikipedia contributors}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{fullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{bibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \field{extraname}{7}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Local consistency --- {Wikipedia}{,} The Free Encyclopedia}
+      \field{urlday}{5}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{year}{2023}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/w/index.php?title=Local_consistency&oldid=1179702336
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/w/index.php?title=Local_consistency&oldid=1179702336
       \endverb
     \endentry
     \entry{Townscaper}{misc}{}

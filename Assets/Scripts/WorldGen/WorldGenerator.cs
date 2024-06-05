@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BattleSimulation.World.WorldData;
@@ -172,10 +171,12 @@ namespace WorldGen
 
                 pathPlanner.Init(pathStarts, worldSettings.pathLengths, hubPosition);
 
-                var pathPrototypes = pathPlanner.PrototypePaths();
+                var pathPrototypes = pathPlanner.PrototypePaths(pathStarts, worldSettings.pathLengths);
                 var paths = pathPlanner.RefinePaths(pathPrototypes);
                 if (paths is null)
                     continue;
+
+                worldData.pathStarts = pathEndPointPicker.FinalizeStarts(paths);
 
                 terrain = wfc.Generate(paths, hubPosition);
                 if (terrain is null)
@@ -190,7 +191,6 @@ namespace WorldGen
 
             worldData.hubPosition = hubPosition;
             worldData.firstPathTiles = pathStarts;
-            worldData.pathStarts = pathStarts.Select(s => s + WorldUtils.GetMainDir(WorldUtils.WORLD_CENTER, s, Random)).ToArray();
             worldData.terrain = terrain.GetCollapsedSlots();
             worldData.tiles = Tiles;
         }

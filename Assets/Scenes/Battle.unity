@@ -5329,10 +5329,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 697fa3911599b2643b6eaefbb22d3023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  overrideRun: 0
+  overrideRun: 1
   terrainType: Test
-  seed: 9223372036854775808
-  pathLengths: 180000001c00000021000000
+  seed: 9223372036854775809
+  pathLengths: 15000000180000001b000000
   maxExtraPaths: 4
   maxHubDistFromCenter: 0
 --- !u!4 &815966620
@@ -6929,16 +6929,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e603b74c4764d74bb3a7f28454dbc21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  crowdingPenaltyByDistance: 0a0000000200000001000000
-  baseCrowdingByDistanceFromTheEdge: 060000000300000002000000010000000100000001000000010000000100000001000000
+  baseCrowdingByDistanceFromTheEdge:
+  - 2.4
+  - 1.2
+  - 0.7
+  - 0.4
+  - 0.25
+  - 0.13
+  - 0.06
+  - 0.02
+  - 0
   startCrowdingPenalty: 20
-  alignmentBonus: 0.15
-  startTemperature: 4
-  endTemperature: -5
-  stepsPerLengthSquared: 0.45
-  untanglingStepsPerLengthSquared: 0.05
+  startTemperature: 2
+  endTemperature: -0.5
+  stepsPerLength: 60
   stepsLeft: 0
-  untanglingStepsLeft: 0
   temperature: 0
 --- !u!4 &1087793669
 Transform:
@@ -9757,7 +9762,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stepped: 0
-  stepType: 0
+  stepType: 3
   worldData: {fileID: 94511820}
   worldSettings: {fileID: 815966619}
   gizmos: {fileID: 1838770610}
@@ -9839,7 +9844,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   benchmarkingMode: 0
-  repeats: 500
+  repeats: 100
 --- !u!114 &1838770610
 MonoBehaviour:
   m_ObjectHideFlags: 0

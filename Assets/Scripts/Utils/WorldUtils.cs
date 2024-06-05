@@ -63,23 +63,6 @@ namespace Utils
         }
 
         /// <summary>
-        /// Get the closest axis-aligned unit vector closest to the direction from 'from' to 'to'. If more directions are the closest, one of them is chosen at random.
-        /// </summary>
-        public static Vector2Int GetMainDir(Vector2Int from, Vector2Int to, Random.Random random)
-        {
-            if (from == to)
-                return CARDINAL_DIRS[random.Int(4)];
-            Vector2Int o = to - from;
-            if (Mathf.Abs(o.x) == Mathf.Abs(o.y))
-                o += random.Bool() ? Vector2Int.right : Vector2Int.left;
-
-            if (Mathf.Abs(o.x) > Mathf.Abs(o.y))
-                return new((int)Mathf.Sign(o.x), 0);
-
-            return new(0, (int)Mathf.Sign(o.y));
-        }
-
-        /// <summary>
         /// Is v.x in the range [0..size.x-1] and v.y in the range [0..size.y-1]?
         /// </summary>
         public static bool IsInRange(Vector2Int v, Vector2Int size) => v is { x: >= 0, y: >= 0 } && v.x < size.x && v.y < size.y;

@@ -1,7 +1,7 @@
-using Data.WorldGen;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.WorldGen;
 using UnityEngine;
 using Utils;
 using static WorldGen.WorldGenerator;
@@ -36,6 +36,7 @@ namespace WorldGen.Decorations
 
                 ScatterStep(d);
             }
+
             // debug
             print("Scattered");
             // draw the colliders of all scattered models
@@ -73,8 +74,6 @@ namespace WorldGen.Decorations
         /// </summary>
         void ScatterStep(Decoration decoration)
         {
-            print($"Scattering {decoration.Name}");
-
             Array2D<List<Vector3>> currentColliders = new(WorldUtils.WORLD_SIZE);
             Array2D<List<Vector3>> futureColliders = new(WorldUtils.WORLD_SIZE);
             List<Vector2Int> groups = new(9);
@@ -92,6 +91,7 @@ namespace WorldGen.Decorations
                     var seed = WorldGenerator.Random.NewSeed();
                     tasks.Add(Task.Run(() => ScatterTile(decoration, tile, currentColliders, futureColliders, seed)));
                 }
+
                 Task.WaitAll(tasks.ToArray());
             }
 
@@ -168,6 +168,7 @@ namespace WorldGen.Decorations
                 Tiles[tile].decorations.Add(new() { decoration = decoration, position = pos, size = decoration.GetScale(v), eulerRotation = rotation });
             }
         }
+
         /// <summary>
         /// Merges the colliders of decorations from the given tile and adjacent tiles into one list.
         /// </summary>
@@ -193,6 +194,7 @@ namespace WorldGen.Decorations
                     }
                 }
             }
+
             return merging.Values.ToArray();
         }
     }

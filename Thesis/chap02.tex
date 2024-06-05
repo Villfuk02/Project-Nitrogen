@@ -425,13 +425,13 @@ When a line of attackers comes to a split into multiple paths, they will alterna
 
 The player will start each level with one building already built~--- the \emph{Hub}.
 It is the goal the attackers are trying to reach to destroy it.
-Hence, all attacker paths will converge to the tile the \emph{Hub} is on.
+Hence, all attacker paths will converge to the tile the Hub is on.
 The attackers will come from outside the world the battle takes place on.
-In the game's universe, the worlds are bigger, but the playable area is just a small neighborhood around the \emph{Hub}.
+In the game's universe, the worlds are bigger, but the playable area is just a small neighborhood around the Hub.
 It would be weird if the attackers just appeared on the edge tiles, so their paths will start on tiles just outside the playable world.
 
 In figure~\ref{fig:valid-path-example} we can see an example of a valid path network drawn in blue on a world of square tiles.
-The black point represents the \emph{Hub}.
+The black point represents the Hub.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -458,7 +458,7 @@ We can also see, that after the paths join back into one, the attacker spacing i
 We don't want this to happen for aesthetic reasons, but also because overlapping attackers could be hard to identify or distinguish by the player.
 This only happens when the branches of a path are of unequal length and the difference is not a multiple of the spacing between the attackers.
 We don't want to put more constraints on attacker spacing, so instead, we will constrain path branches to be of equal length.
-More precisely, each tile on a path has to be the same distance from the \emph{Hub}, no matter which path an attacker would take.
+More precisely, each tile on a path has to be the same distance from the Hub, no matter which path an attacker would take.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -506,9 +506,9 @@ Similarly, paths going right next to each other (marked in red) are bad.
 The player cannot place towers on paths, so these paths greatly limit the player's access to each other, making for an unpleasant experience.
 A similar situation occurs when a path goes through tiles at the edge of the world, blocking access to the path from one side, so paths should not go through these tiles very often.
 
-The \emph{Hub} should be several tiles away from the edges of the playable area, so the player has good access to the path segments near it.
+The Hub should be several tiles away from the edges of the playable area, so the player has good access to the path segments near it.
 It should be very close to the center in levels with many paths, so the paths can come towards it from different sides of the world.
-It can be more off-center in levels with only one or two long paths, where the path can snake through the world from the side furthest away from the \emph{Hub}, also covering the world somewhat evenly.
+It can be more off-center in levels with only one or two long paths, where the path can snake through the world from the side furthest away from the Hub, also covering the world somewhat evenly.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -569,8 +569,8 @@ To summarize, these are the rules the paths should follow:
     \item Paths are formed by one-way segments, each from one tile to its neighbor.
     \item Paths start just outside the playable portion of the world, and there can be one or more path starts in each level.
     \item Paths can split or join.
-    \item All paths must end on the tile with the \emph{Hub}, no other dead ends can exist.
-    \item Each tile with a path going through it has to be the same distance from the \emph{Hub} no matter which path an attacker would take.
+    \item All paths must end on the tile with the Hub, no other dead ends can exist.
+    \item Each tile with a path going through it has to be the same distance from the Hub no matter which path an attacker would take.
     \item Paths should be spread throughout the playable world, not bunched up.
     \item Paths right next to each other or the edge of the world, and sharp U-turns (see figure~\ref{fig:path-spacing}), should be rare.
     \item Every side branch must go through at least one tile that is not adjacent to any already existing path.
@@ -585,7 +585,7 @@ An attacker type defines the following properties of an attacker:
     \item \textbf{Appearance}. Every attacker will be represented in a battle by its 3D model, corresponding animations and other visual effects. Every attacker type will also have an associated icon to display in the user interface.
     \item \textbf{Hit Points} or \textbf{HP} determine how much damage can an attacker take from the towers before it dies.
     \item \textbf{Movement speed} in tiles per second.
-    \item \textbf{Size}~--- either \emph{small}, \emph{large} or \emph{boss}~--- determines how much \emph{hull} (see section~\ref{sec:design-hull}) the player loses when this attacker reaches the \emph{Hub}. Also defines the height off the ground of the spot defensive towers target. More details below.
+    \item \textbf{Size}~--- either \emph{small}, \emph{large} or \emph{boss}~--- determines how much \emph{hull} (see section~\ref{sec:design-hull}) the player loses when this attacker reaches the Hub. Also defines the height off the ground of the spot defensive towers target. More details below.
     \item \textbf{Abilities}. These can be \emph{passive} (for example \enquote{Immune to fire.}), \emph{repeating} (\enquote{Heals 5\,HP every two seconds.}), or \emph{reactive} (\enquote{Spawns \emph{attacker A} when killed.}).
 \end{itemize}
 
@@ -594,14 +594,14 @@ We want some attackers to look bigger than others, and it would be weird if the 
 Larger attackers will have their targeting point higher.
 To make things simple for the player, there are only two heights of the targeting point~--- \emph{small} at $0.15$ units above the ground and \emph{large} at $0.3$.
 
-Whenever an attacker reaches the \emph{Hub}, the player will lose some \emph{hull}.
+Whenever an attacker reaches the Hub, the player will lose some \emph{hull}.
 The \emph{small} attackers will come in greater numbers than \emph{large} attackers.
 To make the stakes more equal, \emph{small} attackers cost the player only 1~\emph{hull}, whereas the \emph{large} attackers cost 3~\emph{hull}.
 
 \begin{notindemo}
     The player will encounter only few \emph{boss} attackers in every run.
     They will be the main attackers in special boss levels, which are spread throughout the run and cannot be avoided by the player.
-    When a boss reaches the \emph{Hub}, the player immediately loses the game.
+    When a boss reaches the Hub, the player immediately loses the game.
     Each boss will bend the rules of the game a bit as one of their abilities, but most of them will have the same target height as \emph{large} attackers.
 \end{notindemo}
 
@@ -621,9 +621,9 @@ Special buildings are the buildings that don't fit in either category.
 They have a unique ability that usually increases the effectiveness of other buildings.
 One special building could make economic buildings produce more, another could increase your towers' range, yet another might slow attackers down.
 
-One notable special building is the \emph{Hub}, since the player starts each level with one for free, and they cannot build more.
-The goal of the attackers is to reach the \emph{Hub}, and when they do, the player loses some \emph{hull} (see section~\ref{sec:design-hull}).
-Additionally, the \emph{Hub} produces some amount of \emph{fuel}, \emph{materials} and \emph{energy} at the end of each wave.
+One notable special building is the Hub, since the player starts each level with one for free, and they cannot build more.
+The goal of the attackers is to reach the Hub, and when they do, the player loses some \emph{hull} (see section~\ref{sec:design-hull}).
+Additionally, the Hub produces some amount of \emph{fuel}, \emph{materials} and \emph{energy} at the end of each wave.
 These resources are further described in their respective sections.
 
 \subsection{Towers}\label{sec:design-towers}
@@ -646,8 +646,8 @@ With tower designs, the sky is the limit.
 Whenever a tower has more attackers in its range, it will decide which one to target based on the tower's targeting priority.
 The player will be able to select one of these priorities on most towers:
 \begin{itemize}
-    \item First~--- the attacker that's closest to the \emph{Hub}.
-    \item Last~--- the attacker that's farthest from the \emph{Hub}.
+    \item First~--- the attacker that's closest along its path to the Hub.
+    \item Last~--- the attacker that's farthest along its path from the Hub.
     \item Closest~--- the attacker that's closest to this tower.
     \item Farthest~--- the attacker that's farthest from this tower.
     \item Weakest~--- the attacker with the least HP.
@@ -684,7 +684,7 @@ Another ability might improve the player's blueprints for the rest of the battle
 \subsection{Materials and energy}\label{sec:design-materials-and-energy}
 
 \textbf{Materials} are the main resource within a battle.
-The player starts each battle with some materials, and the \emph{Hub} produces a small amount of materials after every wave.
+The player starts each battle with some materials, and the Hub produces a small amount of materials after every wave.
 Materials accumulate over the battle and there is no limit as to how many the player can have.
 The player can spend materials on buildings, notably towers and economic buildings.
 The more economic buildings that produce materials a player builds, the more materials they will have later in the battle.
@@ -716,7 +716,7 @@ But in this section, we will summarize everything about fuel.
 
 The goal of each battle is to gather enough fuel to continue to the next level.
 The faster the player gathers the fuel, the sooner they win the battle.
-It is generated passively by the \emph{Hub}, but additional buildings can be built to speed up the process.
+It is generated passively by the Hub, but additional buildings can be built to speed up the process.
 This makes the player decide when it's the best to improve their defenses and when to build fuel-producing building instead, to end the battle before the more difficult waves come, hopefully leading to greater strategic depth.
 The maximum number of waves each battle will take is determined by the amount of fuel the player needs to gather.
 
@@ -730,7 +730,7 @@ The maximum number of waves each battle will take is determined by the amount of
 \subsection{Hull}\label{sec:design-hull}
 
 The player starts each run with a fixed amount of hull.
-As described in section~\ref{sec:attacker-types}, whenever an attacker reaches the \emph{Hub} during a battle, the player loses some hull.
+As described in section~\ref{sec:attacker-types}, whenever an attacker reaches the Hub during a battle, the player loses some hull.
 Once the player loses all hull, they lose the game.
 A player's hull is a kind of buffer that allows them to make a few mistakes throughout the whole run before they lose.
 They will be able to restore their hull only a few times during the run (and no hull can be restored in the demo version).
@@ -990,7 +990,7 @@ For example, a special building could add new abilities to neighboring towers.
 This new description is highlighted in orange.
 
 Below the description is a button that allows the player to delete the selected building.
-Of course, this button only appears when the selected object is a building that it is not permanent, unlike for example, the \emph{Hub}.
+Of course, this button only appears when the selected object is a building that it is not permanent, unlike for example, the Hub.
 
 As mentioned, the info panel will display the description of \textbf{blueprints}.
 A blueprint's description contains sentences that explain what the thing, which the blueprint represents, does.
@@ -1152,7 +1152,7 @@ These features will also have to be designed eventually, but they will not be in
     It is reassuring to know that a roguelike of this kind can work even with fewer levels.
     Even though \emph{Monster Train} has fewer levels than \emph{Slay the Spire}, it has a similar amount of rewards and shops throughout the run, letting the players customize their build to a similar degree, if not greater.
 
-    \subsection{Saving the Game}
+    \subsection{Saving the Game}\label{sec:design-saving}
 
     Even though we want the players to be able to play a run in one sitting, saving their progress is still a very useful feature.
 

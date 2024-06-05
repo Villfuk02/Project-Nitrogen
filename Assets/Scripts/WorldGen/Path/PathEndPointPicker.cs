@@ -152,5 +152,26 @@ namespace WorldGen.Path
             candidates.AddRange(tooFar);
             return result;
         }
+
+        public Vector2Int[] FinalizeStarts(Vector2Int[][] paths)
+        {
+            var starts = new Vector2Int[paths.Length];
+            for (int i = 0; i < paths.Length; i++)
+            {
+                var start = paths[i][0];
+                Vector2Int offset = start - WorldUtils.WORLD_CENTER;
+
+                if (Mathf.Abs(offset.x) == Mathf.Abs(offset.y))
+                    offset = start - paths[i][1];
+                else if (Mathf.Abs(offset.x) > Mathf.Abs(offset.y))
+                    offset = new((int)Mathf.Sign(offset.x), 0);
+                else
+                    offset = new(0, (int)Mathf.Sign(offset.y));
+
+                starts[i] = start + offset;
+            }
+
+            return starts;
+        }
     }
 }
