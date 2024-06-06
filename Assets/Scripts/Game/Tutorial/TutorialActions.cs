@@ -34,6 +34,8 @@ namespace Game.Tutorial
         [SerializeField] BattleController battleController;
         [SerializeField] InfoPanel.InfoPanel infoPanel;
         [SerializeField] TextMeshProUGUI infoPanelTitle;
+        [Header("Settings")]
+        [SerializeField] Vector2Int sentryPosition;
         [Header("Runtime variables")]
         [SerializeField] bool shown;
         [SerializeField] string newTutorialText;
@@ -166,7 +168,7 @@ namespace Game.Tutorial
 
         public void PlaceBudgetSentry()
         {
-            worldBuilder.PlacePermanentBuilding(budgetSentryBlueprint, new(10, 5));
+            worldBuilder.PlacePermanentBuilding(budgetSentryBlueprint, sentryPosition);
         }
 
         public void HideWavesPreview()

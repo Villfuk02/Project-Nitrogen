@@ -4828,7 +4828,7 @@ MonoBehaviour:
     batches:
     - typePerPath:
       - {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
-      count: 6
+      count: 8
       spacing: 2
   - newAttacker: {fileID: 0}
     batches:
@@ -5329,10 +5329,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 697fa3911599b2643b6eaefbb22d3023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  overrideRun: 1
+  overrideRun: 0
   terrainType: Test
-  seed: 9223372036854775809
-  pathLengths: 15000000180000001b000000
+  seed: 9223372036854775808
+  pathLengths: be000000
   maxExtraPaths: 4
   maxHubDistFromCenter: 0
 --- !u!4 &815966620
@@ -5397,6 +5397,7 @@ MonoBehaviour:
   battleController: {fileID: 568931855}
   infoPanel: {fileID: 884524845}
   infoPanelTitle: {fileID: 929038896}
+  sentryPosition: {x: 7, y: 3}
   shown: 0
   newTutorialText: 
 --- !u!114 &865701826
@@ -6940,9 +6941,9 @@ MonoBehaviour:
   - 0.02
   - 0
   startCrowdingPenalty: 20
-  startTemperature: 2
-  endTemperature: -0.5
-  stepsPerLength: 60
+  startTemperature: 2.5
+  endTemperature: 1
+  stepsPerLength: 100
   stepsLeft: 0
   temperature: 0
 --- !u!4 &1087793669
@@ -9762,7 +9763,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stepped: 0
-  stepType: 3
+  stepType: 0
   worldData: {fileID: 94511820}
   worldSettings: {fileID: 815966619}
   gizmos: {fileID: 1838770610}

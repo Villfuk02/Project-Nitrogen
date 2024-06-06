@@ -433,119 +433,6 @@
       \verb https://docs.unity.com
       \endverb
     \endentry
-    \entry{johnston2018random}{book}{}
-      \name{author}{1}{}{%
-        {{hash=e92745ac08515aac577188dcdd2d523c}{%
-           family={Johnston},
-           familyi={J\bibinitperiod},
-           given={D.},
-           giveni={D\bibinitperiod}}}%
-      }
-      \list{publisher}{1}{%
-        {De Gruyter, Incorporated}%
-      }
-      \strng{namehash}{e92745ac08515aac577188dcdd2d523c}
-      \strng{fullhash}{e92745ac08515aac577188dcdd2d523c}
-      \strng{bibnamehash}{e92745ac08515aac577188dcdd2d523c}
-      \strng{authorbibnamehash}{e92745ac08515aac577188dcdd2d523c}
-      \strng{authornamehash}{e92745ac08515aac577188dcdd2d523c}
-      \strng{authorfullhash}{e92745ac08515aac577188dcdd2d523c}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{isbn}{9781501506260}
-      \field{title}{Random Number Generators--Principles and Practices: A Guide for Engineers and Programmers}
-      \field{year}{2018}
-      \verb{urlraw}
-      \verb https://books.google.cz/books?id=yniVDwAAQBAJ
-      \endverb
-      \verb{url}
-      \verb https://books.google.cz/books?id=yniVDwAAQBAJ
-      \endverb
-    \endentry
-    \entry{UnityRandom}{manual}{}
-      \name{author}{1}{}{%
-        {{hash=3f56ad8f8e05fcad24de3fcf878fb50b}{%
-           family={{Unity Technologies}},
-           familyi={U\bibinitperiod}}}%
-      }
-      \strng{namehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
-      \strng{fullhash}{3f56ad8f8e05fcad24de3fcf878fb50b}
-      \strng{bibnamehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
-      \strng{authorbibnamehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
-      \strng{authornamehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
-      \strng{authorfullhash}{3f56ad8f8e05fcad24de3fcf878fb50b}
-      \field{extraname}{2}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Unity - Scripting API: Random}
-      \field{urlday}{7}
-      \field{urlmonth}{4}
-      \field{urlyear}{2024}
-      \field{urldateera}{ce}
-      \verb{urlraw}
-      \verb https://docs.unity3d.com/ScriptReference/Random.html
-      \endverb
-      \verb{url}
-      \verb https://docs.unity3d.com/ScriptReference/Random.html
-      \endverb
-    \endentry
-    \entry{SystemRandom}{manual}{}
-      \name{author}{1}{}{%
-        {{hash=140864078aeca1c7c35b4beb33c53c34}{%
-           family={{Microsoft}},
-           familyi={M\bibinitperiod}}}%
-      }
-      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Random Class (System) - Microsoft learn}
-      \field{urlday}{7}
-      \field{urlmonth}{4}
-      \field{urlyear}{2024}
-      \field{urldateera}{ce}
-      \verb{urlraw}
-      \verb https://learn.microsoft.com/en-us/dotnet/api/system.random
-      \endverb
-      \verb{url}
-      \verb https://learn.microsoft.com/en-us/dotnet/api/system.random
-      \endverb
-    \endentry
-    \entry{LCGTables}{article}{}
-      \name{author}{1}{}{%
-        {{hash=a1c93f9899ec4b90bbfd7591be21dba4}{%
-           family={l'Ecuyer},
-           familyi={l\bibinitperiod},
-           given={Pierre},
-           giveni={P\bibinitperiod}}}%
-      }
-      \strng{namehash}{a1c93f9899ec4b90bbfd7591be21dba4}
-      \strng{fullhash}{a1c93f9899ec4b90bbfd7591be21dba4}
-      \strng{bibnamehash}{a1c93f9899ec4b90bbfd7591be21dba4}
-      \strng{authorbibnamehash}{a1c93f9899ec4b90bbfd7591be21dba4}
-      \strng{authornamehash}{a1c93f9899ec4b90bbfd7591be21dba4}
-      \strng{authorfullhash}{a1c93f9899ec4b90bbfd7591be21dba4}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{journaltitle}{Mathematics of Computation}
-      \field{month}{1}
-      \field{number}{225}
-      \field{title}{Tables of Linear Congruential Generators of Different Sizes and Good Lattice Structure}
-      \field{volume}{68}
-      \field{year}{1999}
-    \endentry
     \entry{MazeWiki}{misc}{}
       \name{author}{1}{}{%
         {{hash=b6aea1a416c89509a7df1cbb69249cb6}{%
@@ -559,8 +446,8 @@
       \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
       \field{extraname}{6}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Maze generation algorithm --- {Wikipedia}{,} The Free Encyclopedia}
@@ -589,8 +476,8 @@
       \strng{authornamehash}{307419533dd882159d3f9c88565b696f}
       \strng{authorfullhash}{307419533dd882159d3f9c88565b696f}
       \field{extraname}{1}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Random Paths via Chiseling}
@@ -618,8 +505,8 @@
       \strng{authornamehash}{307419533dd882159d3f9c88565b696f}
       \strng{authorfullhash}{307419533dd882159d3f9c88565b696f}
       \field{extraname}{2}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Chiseled Paths Revisited}
@@ -658,8 +545,8 @@
       \strng{authorbibnamehash}{4e64604b17f2f25156bbf67444c2ae54}
       \strng{authornamehash}{96f9af867710312e870a066ebaf3b314}
       \strng{authorfullhash}{4e64604b17f2f25156bbf67444c2ae54}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Science}
@@ -719,8 +606,8 @@
       \strng{authorbibnamehash}{46c2caad2d1433d5a224bdbf82de6ffb}
       \strng{authornamehash}{46c2caad2d1433d5a224bdbf82de6ffb}
       \strng{authorfullhash}{46c2caad2d1433d5a224bdbf82de6ffb}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{WaveFunctionCollapse}
@@ -747,8 +634,8 @@
       \strng{authorbibnamehash}{b30731c3fe009a48293ea85daced328f}
       \strng{authornamehash}{b30731c3fe009a48293ea85daced328f}
       \strng{authorfullhash}{b30731c3fe009a48293ea85daced328f}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Infinite procedurally generated city with the Wave Function Collapse algorithm}
@@ -776,8 +663,8 @@
       \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
       \field{extraname}{7}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Local consistency --- {Wikipedia}{,} The Free Encyclopedia}
@@ -807,8 +694,8 @@
       \strng{authorbibnamehash}{9f88c0caae3dafcfec16c796f5affd7a}
       \strng{authornamehash}{9f88c0caae3dafcfec16c796f5affd7a}
       \strng{authorfullhash}{9f88c0caae3dafcfec16c796f5affd7a}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Townscaper}
@@ -822,6 +709,119 @@
       \verb{url}
       \verb https://rawfury.com/games/townscaper/?portfolioCats=30%2C23%2C20%2C25%2C18%2C26%2C28%2C16%2C17%2C11
       \endverb
+    \endentry
+    \entry{johnston2018random}{book}{}
+      \name{author}{1}{}{%
+        {{hash=e92745ac08515aac577188dcdd2d523c}{%
+           family={Johnston},
+           familyi={J\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {De Gruyter, Incorporated}%
+      }
+      \strng{namehash}{e92745ac08515aac577188dcdd2d523c}
+      \strng{fullhash}{e92745ac08515aac577188dcdd2d523c}
+      \strng{bibnamehash}{e92745ac08515aac577188dcdd2d523c}
+      \strng{authorbibnamehash}{e92745ac08515aac577188dcdd2d523c}
+      \strng{authornamehash}{e92745ac08515aac577188dcdd2d523c}
+      \strng{authorfullhash}{e92745ac08515aac577188dcdd2d523c}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9781501506260}
+      \field{title}{Random Number Generators--Principles and Practices: A Guide for Engineers and Programmers}
+      \field{year}{2018}
+      \verb{urlraw}
+      \verb https://books.google.cz/books?id=yniVDwAAQBAJ
+      \endverb
+      \verb{url}
+      \verb https://books.google.cz/books?id=yniVDwAAQBAJ
+      \endverb
+    \endentry
+    \entry{UnityRandom}{manual}{}
+      \name{author}{1}{}{%
+        {{hash=3f56ad8f8e05fcad24de3fcf878fb50b}{%
+           family={{Unity Technologies}},
+           familyi={U\bibinitperiod}}}%
+      }
+      \strng{namehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{fullhash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{bibnamehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{authorbibnamehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{authornamehash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \strng{authorfullhash}{3f56ad8f8e05fcad24de3fcf878fb50b}
+      \field{extraname}{2}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Unity - Scripting API: Random}
+      \field{urlday}{7}
+      \field{urlmonth}{4}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://docs.unity3d.com/ScriptReference/Random.html
+      \endverb
+      \verb{url}
+      \verb https://docs.unity3d.com/ScriptReference/Random.html
+      \endverb
+    \endentry
+    \entry{SystemRandom}{manual}{}
+      \name{author}{1}{}{%
+        {{hash=140864078aeca1c7c35b4beb33c53c34}{%
+           family={{Microsoft}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Random Class (System) - Microsoft learn}
+      \field{urlday}{7}
+      \field{urlmonth}{4}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://learn.microsoft.com/en-us/dotnet/api/system.random
+      \endverb
+      \verb{url}
+      \verb https://learn.microsoft.com/en-us/dotnet/api/system.random
+      \endverb
+    \endentry
+    \entry{LCGTables}{article}{}
+      \name{author}{1}{}{%
+        {{hash=a1c93f9899ec4b90bbfd7591be21dba4}{%
+           family={l'Ecuyer},
+           familyi={l\bibinitperiod},
+           given={Pierre},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{a1c93f9899ec4b90bbfd7591be21dba4}
+      \strng{fullhash}{a1c93f9899ec4b90bbfd7591be21dba4}
+      \strng{bibnamehash}{a1c93f9899ec4b90bbfd7591be21dba4}
+      \strng{authorbibnamehash}{a1c93f9899ec4b90bbfd7591be21dba4}
+      \strng{authornamehash}{a1c93f9899ec4b90bbfd7591be21dba4}
+      \strng{authorfullhash}{a1c93f9899ec4b90bbfd7591be21dba4}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Mathematics of Computation}
+      \field{month}{1}
+      \field{number}{225}
+      \field{title}{Tables of Linear Congruential Generators of Different Sizes and Good Lattice Structure}
+      \field{volume}{68}
+      \field{year}{1999}
     \endentry
   \enddatalist
 \endrefsection

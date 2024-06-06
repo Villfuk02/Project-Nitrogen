@@ -184,3 +184,16 @@
 \newenvironment{notindemo}{\begin{mdframed}[tikzsetting={draw=darkgray,dashed}, roundcorner=10pt, linecolor=white, frametitle=\emph{\textcolor{darkgray}{{\scriptsize (not implemented in the demo)}}}]}{\end{mdframed}}
 
 \newcommand{\mono}[1]{\texttt{#1}}
+
+\newcommand{\head}[2]{\paragraph*{#1}\label{head:#2}\hfill\break}
+
+\newcounter{req_counter}
+
+\newcommand{\reqreset}{\setcounter{req_counter}{0}}
+
+\newcommand{\reqitem}[2]
+{
+    \refstepcounter{req_counter}%
+    \item \textbf{#1\arabic{req_counter} }%
+    \label{#1:#2}
+}

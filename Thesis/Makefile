@@ -1,7 +1,7 @@
 all: thesis abstract-cs.pdf abstract-en.pdf
 
 thesis:
-	pdflatex .\thesis.tex && biber thesis && pdflatex .\thesis.tex && pdflatex .\thesis.tex
+	pdflatex .\thesis.tex -halt-on-error && biber thesis && pdflatex .\thesis.tex -halt-on-error && pdflatex .\thesis.tex -halt-on-error
 
 %.pdf: force
 	latexmk $*.tex

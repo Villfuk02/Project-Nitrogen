@@ -223,7 +223,7 @@ These changes are cumulative, so in the end it takes serious effort and luck to 
     We will also want to balance the base game, so that most players that try are able to beat it, but it still takes some effort and several attempts, so the players feel like they've accomplished something.
 \end{notindemo}
 
-\section{Procedural Generation}
+\section{Procedural Generation}\label{sec:design-procedural-generation}
 
 Randomized procedural generation is one of the defining features of the roguelike genre.
 We want to use randomized procedural generation to make each run of the game unique.
@@ -262,6 +262,12 @@ We want this, because each level in our game will consist of many waves, each wi
 We could design many sets of waves, but we feel that would make the levels too predictable, once a player learns these sets.
 So, the waves shouldn't be tied to the previous waves in a level.
 Each wave in a level will be harder and harder, so this would mean we would have to populate tens of pools with hand-crafted waves, which feels very inefficient.
+
+From the player's perspective, all procedural generation and the rewards they receive will be random and unpredictable.
+However, each run will have a single seed that deterministically decides all the \enquote{random decisions} the game makes.
+Two runs with the same seed should look identical and if the player makes the same decisions and choices, the outcomes should be the same.
+This allows the players to share seeds of the runs they found interesting and compare their skill in the same situations.
+Furthermore, this is helpful for debugging, because it lets us easily reproduce any issue with the generation just by running it with the same seed.
 
 We could also procedurally generate the blueprints and attacker types.
 However, here we want to have greater control, because that will allow us to create designs that have powerful and unique abilities.
@@ -399,13 +405,13 @@ A terrain type will dictate how a terrain should look~--- the colors used, which
 Each terrain type will have its distinct look, keeping the levels from being all the same.
 
 To summarize:
+\reqreset
 \begin{itemize}
-    \item The world each level takes place on will be a grid of $15 \times 15$ square tiles.
-    \item There will be \emph{small} or \emph{large} obstacles on some tiles, large obstacles blocking certain towers' line of sight.
-    \item The tiles will be at different heights in multiples of $0.5$ units, and some tiles will be slanted, going between two heights.
-    \item Attacker paths will consist of segments going from the center of one tile to the center of a neighboring tile.
-    \item The player can build one building per tile, and only if the tile doesn't contain an obstacle or the attacker path.
-    \item Each world will be generated according to a randomly selected terrain type, which determines what the world will be like.
+    \reqitem{RW}{grid} The world each level takes place on will be a grid of $15 \times 15$ square tiles.
+    \reqitem{RW}{obstacles} There will be \emph{small} or \emph{large} obstacles on some tiles, large obstacles blocking certain towers' line of sight.
+    \reqitem{RW}{tile-height} The tiles will be at different heights in multiples of $0.5$ units, and some tiles will be slanted, going between two heights.
+    \reqitem{RW}{building} The player can build one building per tile, and only if the tile doesn't contain an obstacle or the attacker path.
+    \reqitem{RW}{terrain-type} Each world will be generated according to a randomly selected terrain type, which determines what the world will be like.
 \end{itemize}
 
 \subsection{Attacker Paths}\label{sec:design-paths}
@@ -428,7 +434,7 @@ It is the goal the attackers are trying to reach to destroy it.
 Hence, all attacker paths will converge to the tile the Hub is on.
 The attackers will come from outside the world the battle takes place on.
 In the game's universe, the worlds are bigger, but the playable area is just a small neighborhood around the Hub.
-It would be weird if the attackers just appeared on the edge tiles, so their paths will start on tiles just outside the playable world.
+It would be weird if the attackers just appeared on the edge tiles, so their paths will start on tiles just outside the playable world, and the first path segment goes from the path start to the nearest tile in the playable world.
 
 In figure~\ref{fig:valid-path-example} we can see an example of a valid path network drawn in blue on a world of square tiles.
 The black point represents the Hub.
@@ -545,7 +551,7 @@ It can be more off-center in levels with only one or two long paths, where the p
 
 Similarly, we don't want to produce side branches that just take up more space, but don't deviate meaningfully from the original path, like on figure \ref{fig:bad-path-splits}.
 To make this desire into a rule, we can define it in the following way:
-Every side branch must go through at least one tile that is not adjacent (by an edge or by a corner) to any already existing path.
+Every branch must go through at least one tile that is not adjacent (by an edge or by a corner) to any already existing path.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -565,15 +571,18 @@ Every side branch must go through at least one tile that is not adjacent (by an 
 \end{center}
 
 To summarize, these are the rules the paths should follow:
+\reqreset
 \begin{itemize}
-    \item Paths are formed by one-way segments, each from one tile to its neighbor.
-    \item Paths start just outside the playable portion of the world, and there can be one or more path starts in each level.
-    \item Paths can split or join.
-    \item All paths must end on the tile with the Hub, no other dead ends can exist.
-    \item Each tile with a path going through it has to be the same distance from the Hub no matter which path an attacker would take.
-    \item Paths should be spread throughout the playable world, not bunched up.
-    \item Paths right next to each other or the edge of the world, and sharp U-turns (see figure~\ref{fig:path-spacing}), should be rare.
-    \item Every side branch must go through at least one tile that is not adjacent to any already existing path.
+    \reqitem{RP}{hub-pos} The Hub should not be near the edge of the world, and it should be close to the center in levels with multiple paths.
+    \reqitem{RP}{segments} Paths are formed by one-way segments, each from the center of one tile to the center of a neighbor tile.
+    \reqitem{RP}{start-outside} Paths start on tiles just outside the playable world, and the first path segment goes from the path start to the nearest tile in the playable world.
+    \reqitem{RP}{start-count} There can be one or more path starts in each level.
+    \reqitem{RP}{split-join} Paths can split or join.
+    \reqitem{RP}{end-hub} All paths must end on the tile with the Hub, no other dead ends can exist.
+    \reqitem{RP}{equal-distance} Each tile with a path going through it has to be the same distance from the Hub no matter which path an attacker would take.
+    \reqitem{RP}{spread} Paths should be spread throughout the playable world, not bunched up.
+    \reqitem{RP}{undesirable} Paths right next to each other or the edge of the world, and sharp U-turns (see figure~\ref{fig:path-spacing}), should be rare.
+    \reqitem{RP}{branch} Every branch must go through at least one tile that is not adjacent to any already existing path.
 \end{itemize}
 
 \subsection{Attacker Types}\label{sec:attacker-types}

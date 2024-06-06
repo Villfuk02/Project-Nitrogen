@@ -10,6 +10,8 @@ namespace WorldGen.Path
     public class PathPlanner : MonoBehaviour
     {
         static readonly object RelaxPathGizmosDuration = new();
+        static readonly float ChangeCrowdingDiagonal = 2 * GetCrowdingBetween(Vector2Int.zero, Vector2Int.one) - 2;
+        static readonly float ChangeCrowdingCardinal = 2 * GetCrowdingBetween(Vector2Int.zero, Vector2Int.up * 2) - 2;
 
         [Header("Settings")]
         [SerializeField] float[] baseCrowdingByDistanceFromTheEdge;
@@ -21,9 +23,11 @@ namespace WorldGen.Path
         [Header("Runtime variables")]
         [SerializeField] int stepsLeft;
         [SerializeField] float temperature;
-        Array2D<float> crowding_;
-        Array2D<int> distances_;
         int totalSteps_;
+        Array2D<float> staticCrowding_;
+        Array2D<int> distances_;
+        Array2D<float> dynamicCrowding_;
+        (LinkedListNode<Vector2Int> from, Vector2Int to)[] possibleChanges_;
 
         /// <summary>
         /// Initialize the data structures.
@@ -41,21 +45,22 @@ namespace WorldGen.Path
             int totalLength = pathLengths.Sum();
             totalSteps_ = Mathf.FloorToInt(stepsPerLength * totalLength);
 
-            InitializeCrowding(starts, hubPosition);
+            dynamicCrowding_ = new(WorldUtils.WORLD_SIZE);
+            InitializeStaticCrowding(starts, hubPosition);
 
             distances_ = new(WorldUtils.WORLD_SIZE);
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
                 distances_[v] = v.ManhattanDistance(hubPosition);
         }
 
-        void InitializeCrowding(IEnumerable<Vector2Int> starts, Vector2Int hubPosition)
+        void InitializeStaticCrowding(IEnumerable<Vector2Int> starts, Vector2Int hubPosition)
         {
-            crowding_ = new(WorldUtils.WORLD_SIZE);
+            staticCrowding_ = new(WorldUtils.WORLD_SIZE);
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
-                crowding_[v] = baseCrowdingByDistanceFromTheEdge[DistanceFromTheEdge(v)];
-            crowding_[hubPosition] += startCrowdingPenalty;
+                staticCrowding_[v] = baseCrowdingByDistanceFromTheEdge[DistanceFromTheEdge(v)];
+            staticCrowding_[hubPosition] += startCrowdingPenalty;
             foreach (var start in starts)
-                crowding_[start] += startCrowdingPenalty;
+                staticCrowding_[start] += startCrowdingPenalty;
         }
 
         /// <summary>
@@ -86,7 +91,6 @@ namespace WorldGen.Path
         public Vector2Int[][] RefinePaths(LinkedList<Vector2Int>[] prototypes)
         {
             stepsLeft = totalSteps_;
-            temperature = startTemperature;
 
             // debug
             WaitForStep(StepType.Step);
@@ -98,9 +102,14 @@ namespace WorldGen.Path
             Vector2Int[][] lastValidPaths = null;
             while (stepsLeft > 0)
             {
+                stepsLeft--;
+                temperature = Mathf.Lerp(endTemperature, startTemperature, stepsLeft / (float)totalSteps_);
+
                 // if unable to change anything anymore, return early (should only happen when the temperature is way too low)
-                if (!DoAnnealingStep(prototypes))
+                if (!TryDoAnnealingStep(prototypes, out var changed))
                     break;
+                if (!changed)
+                    continue;
 
                 // if any path intersects with itself, check for any crossings and try to untwist them
                 // relaxing is unlikely to fix a path crossing itself
@@ -131,9 +140,6 @@ namespace WorldGen.Path
 
                     lastValidPaths = prototypes.Select(p => p.ToArray()).ToArray();
                 }
-
-                temperature = Mathf.Lerp(endTemperature, startTemperature, stepsLeft / (float)totalSteps_);
-                stepsLeft--;
 
                 // debug
                 WaitForStep(StepType.MicroStep);
@@ -180,7 +186,7 @@ namespace WorldGen.Path
                     if (!distances_.TryGet(neighbor, out int dist) || dist > length)
                         continue;
 
-                    float weight = Mathf.Min(1, 1f / crowding_[neighbor]);
+                    float weight = Mathf.Min(1, 1f / (staticCrowding_[neighbor] + dynamicCrowding_[neighbor]));
                     validNeighbors.AddOrUpdate(neighbor, weight);
                 }
 
@@ -207,10 +213,42 @@ namespace WorldGen.Path
         /// <summary>
         /// Randomly switch the position of one path node, with higher chance to switch it to a position that makes the path nodes more spread out.
         /// </summary>
-        bool DoAnnealingStep(IEnumerable<LinkedList<Vector2Int>> paths)
+        bool TryDoAnnealingStep(IEnumerable<LinkedList<Vector2Int>> paths, out bool changed)
         {
-            var possibleChanges = new WeightedRandomSet<(LinkedListNode<Vector2Int>, Vector2Int)>(WorldGenerator.Random.NewSeed());
-            // find all path nodes that can be switched to another position (and the switch has positive weight)
+            changed = false;
+            possibleChanges_ ??= GetPossibleChanges(paths);
+            if (possibleChanges_.Length == 0)
+                return false;
+
+            var index = WorldGenerator.Random.Int(possibleChanges_.Length);
+            var change = possibleChanges_[index];
+            var probability = GetAcceptanceProbability(change.from.Value, change.to);
+
+            if (!WorldGenerator.Random.Bool(probability))
+                return true;
+
+            // debug
+            // show the change we will preform
+            RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.red, WorldUtils.TilePosToWorldPos(change.from.Value), 0.4f));
+            RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.yellow, WorldUtils.TilePosToWorldPos(change.to), 0.4f));
+            WaitForStep(StepType.MicroStep);
+            ExpireGizmos(RelaxPathGizmosDuration);
+            // end debug
+
+            // apply the change
+            ApplyCrowding(change.to, 1);
+            ApplyCrowding(change.from.Value, -1);
+            change.from.Value = change.to;
+            possibleChanges_ = null;
+
+            changed = true;
+            return true;
+        }
+
+
+        static (LinkedListNode<Vector2Int> from, Vector2Int to)[] GetPossibleChanges(IEnumerable<LinkedList<Vector2Int>> paths)
+        {
+            List<(LinkedListNode<Vector2Int> from, Vector2Int to)> candidates = new();
             foreach (var path in paths)
             {
                 var prev = path.First;
@@ -219,17 +257,14 @@ namespace WorldGen.Path
                 while (next is not null)
                 {
                     var pos = current.Value;
-                    // the new position is offset from the previous by the offset from current to next
-                    var newPos = prev.Value + next.Value - pos;
 
-                    // only consider switching it when the new position is less crowded
-                    // the better the improvement the better the weight
-                    // but temperature is added, so with high temperature, even very bad switches are likely - this allows for more exploration
-                    // when the temperature eventually gets low, only the highest quality switches happen and the path doesn't change much
-                    float improvement = crowding_.GetOrDefault(pos, int.MaxValue) - crowding_.GetOrDefault(newPos, int.MaxValue);
-                    improvement += temperature;
-                    if (improvement > 0)
-                        possibleChanges.AddOrUpdate((current, newPos), improvement);
+                    // if the prev and next node are on the same tile, three changes are possible
+                    if (prev.Value == next.Value)
+                        candidates.AddRange(WorldUtils.CARDINAL_DIRS.Where(dir => prev.Value + dir != pos).Select(dir => (current, prev.Value + dir)));
+
+                    // if the nodes don't form a straight line, the path forms a bend and only one change is possible
+                    else if (pos - prev.Value != next.Value - pos)
+                        candidates.Add((current, prev.Value + next.Value - pos));
 
                     prev = current;
                     current = next;
@@ -237,19 +272,16 @@ namespace WorldGen.Path
                 }
             }
 
-            if (possibleChanges.Count == 0)
-                return false;
+            // remove positions out of bounds
+            return candidates.Where(p => WorldUtils.IsInRange(p.to, WorldUtils.WORLD_SIZE)).ToArray();
+        }
 
-            var (node, newNodePos) = possibleChanges.PopRandom();
-            RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.red, WorldUtils.TilePosToWorldPos(node.Value), 0.4f));
-            RegisterGizmos(StepType.MicroStep, () => new GizmoManager.Cube(Color.yellow, WorldUtils.TilePosToWorldPos(newNodePos), 0.4f));
-            WaitForStep(StepType.MicroStep);
-            ExpireGizmos(RelaxPathGizmosDuration);
-            // make the chosen switch
-            ApplyCrowding(newNodePos, 1);
-            ApplyCrowding(node.Value, -1);
-            node.Value = newNodePos;
-            return true;
+        float GetAcceptanceProbability(Vector2Int from, Vector2Int to)
+        {
+            var offset = to - from;
+            var crowdingChange = offset.x * offset.y == 0 ? ChangeCrowdingCardinal : ChangeCrowdingDiagonal;
+            var improvement = staticCrowding_[from] - staticCrowding_[to] + 2 * dynamicCrowding_[from] - 2 * dynamicCrowding_[to] + crowdingChange;
+            return improvement + temperature;
         }
 
         /// <summary>
@@ -352,10 +384,13 @@ namespace WorldGen.Path
         void ApplyCrowding(Vector2Int origin, float multiplier)
         {
             foreach (var pos in WorldUtils.WORLD_SIZE)
-            {
-                float sqrDist = (pos - origin).sqrMagnitude;
-                crowding_[pos] += multiplier / (sqrDist * sqrDist + 1);
-            }
+                dynamicCrowding_[pos] += multiplier * GetCrowdingBetween(pos, origin);
+        }
+
+        static float GetCrowdingBetween(Vector2Int t, Vector2Int u)
+        {
+            float sqrDist = (t - u).sqrMagnitude;
+            return 1 / (sqrDist * sqrDist + 1);
         }
 
         static IEnumerable<GizmoManager.GizmoObject> MakePathGizmos(IEnumerable<Vector2Int> path, Color color)
