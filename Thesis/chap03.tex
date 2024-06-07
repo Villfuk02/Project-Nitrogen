@@ -576,12 +576,13 @@ Segments that have changed are highlighted in red.
 
 There are many techniques we could use for generating the terrain.
 However, we have pretty strict requirements for the terrain generation.
-For example, we need to make sure the paths we have generated in the previous step are not blocked by terrain features like cliffs.
+We need to make sure the paths we have generated in the previous step are not blocked by terrain features like cliffs.
+We also want the algorithm to be able to generate different-looking terrain types.
 
-This led us to choose a variant of a procedural generation algorithm called \emph{model synthesis}, originally developed by \Citeauthor{ModelSynthesis}~\cite{ModelSynthesis}.
+This led us to a variant of a procedural generation algorithm called \emph{model synthesis}, originally developed by \Citeauthor{ModelSynthesis}~\cite{ModelSynthesis}.
 The discrete version of this algorithm is better known by the name \emph{wave function collapse} (or~WFC in short), popularized by \Citeauthor{WFC} on GitHub~\cite{WFC}.
 Model synthesis is more general and focuses more on 3D models, whereas WFC applies the same concepts to generating 2D pixel art and tile maps.
-Since the name \enquote{wave function collapse} is more popular, we will use it in the rest of this thesis, even though it's not the original name.
+Since the name \enquote{wave function collapse} is more popular, we will use it in the rest of this thesis, even though it's not the name of the algorithm that came first.
 
 We chose WFC, because it can generate randomized terrain, whilst fully respecting the initial constraints we give it.
 To see how this works, we will explain the algorithm first.
@@ -734,22 +735,24 @@ This way, the algorithm can continue generating without getting rid of all its p
 
 The main advantage of WFC is that it offers a lot of control over the generated world.
 That's ultimately why we chose to use it.
-We always know what features can appear in the world, because we explicitly allowed them to exist.
+We always know what features can appear in the world, because we explicitly select them as building blocks of the terrain.
 We can also freely constrain the world that we are generating.
 For example, we can force the generator to not block the paths we've generated in the previous stage, and we can force the tile with the Hub to be flat.
 We also force a random tile to be at the lowest height level and another to be at the highest.
 
 However, WFC has some disadvantages when used as a terrain generator.
 First, it can be very slow.
-The time it takes algorithm~\ref{alg:wfc} to run scales linearly with the number of slots, which is not bad when we never run into contradictions.
-Merrell shows in their thesis that deciding whether an incomplete output is consistent, i.e. it can be completed without running into contradictions, is an NP-complete problem.
+The time it takes algorithm~\ref{alg:wfc} to run scales linearly with the number of slots, which is not bad.
+We show this in section~\ref{sec:analysis-wfc-time-complexity}.
+However, when we take contradictions into account, it gets worse.
+Merrell shows in section 3.3.5 of their thesis that deciding whether an incomplete output is consistent, i.e., it can be completed without running into contradictions, is an NP-complete problem.
 This necessarily means that WFC isn't very fast in the worst case.
 
 The real problem is that the algorithm usually does run into contradictions, and the larger the generation task, the more likely it is to run into a contradiction.
 This is especially bad for online generation of infinite worlds, because we can't simply restart and generate a new world after the player has already seen a part of it.
 Backtracking also doesn't solve this issue, because the algorithm can collapse a slot in a way that is guaranteed to cause a contradiction, and then do arbitrarily many more steps before finally running into it.
 Of course, there are ways to circumvent this issue, namely by making the individual generation tasks smaller.
-In their thesis, Merrell describes a technique called \emph{modifying in parts} based on this approach.
+In section 3.3.6 of their thesis, Merrell describes a technique called \emph{modifying in parts} based on this approach.
 
 Another potential problem with WFC is that the individual slots or modules can be very apparent and repetitive.
 This can be solved by procedurally generating the resulting geometry the player sees, only based on the modules chosen by WFC.
@@ -795,7 +798,8 @@ For each corner of the module, several tile constraints are specified.
 The modules that share a tile must agree on the tile's properties: its height, slant direction (if any) and surface type.
 Terrain types can have multiple surface types, each with a different set of modules and a few modules that allow to transition between them.
 For example, a \emph{shore} module could have \emph{ground} tiles on one side and \emph{water} tiles on the other.
-For each terrain type, it is also specified which surface types and which edge types block paths.
+Some surface types block paths and buildings and some edge types block paths.
+What modules are available for the generator will be determined by the terrain type that was chosen for this world.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -828,35 +832,86 @@ However, it is possible that the algorithm collapses a slot, finds a contradicti
 Thus, it creates another contradiction, which causes it to backtrack deeper.
 
 We ran some quick tests with the set of modules which is going to be used to generate terrain in the demo version.
-During these tests, we were unable to generate a single world, without running into a contradiction.
-However, most worlds only ever needed backtracking depth of 1 to successfully generate.
-After that, we ran into diminishing returns.
-Of the worlds that required backtracking depth 2, most required backtracking depth greater than 10.
-So we decided to allow for backtracking depth 1 and otherwise just restart the generation, which makes it faster on average.
+The results are shown in table~\ref{tab:wfc-backtracking}.
+For each test, we tried generating 2000 random worlds, each with three path starts with lengths 24, 28 and 33, making them pretty constrained.
 
-\xxx{I should probably provide the exact data I measured. Do I also need to explain the whole setup to make it reproducible?}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lrrD{.}{.}{-1}r}
+        \toprule
+        \textbf{Maximum}            &                          &                              & \mc{}                                &                             \\
+        \textbf{backtracking depth} & \halfrow{\textbf{Fails}} & \halfrow{\textbf{Successes}} & \mc{\halfrow{\textbf{Success rate}}} & \halfrow{\textbf{Time (s)}} \\
+        \midrule
+        0                           & 2000                     & 0                            & 100.00\,\%                           & 644                         \\
+        1                           & 786                      & 1214                         & 60.70\,\%                            & 740                         \\
+        2                           & 783                      & 1217                         & 60.85\,\%                            & 797                         \\
+        10                          & 783                      & 1217                         & 60.85\,\%                            & 819                         \\
+        \bottomrule
+    \end{tabular}
+    \caption{Success rate of terrain generation based on maximum backtracking depth. }
+    \label{tab:wfc-backtracking}
+\end{table}
+
+No world was able to generate without running into a contradiction, i.e., with a backtracking depth 0.
+60.7\,\% of the worlds only ever needed backtracking depth of 1 to successfully generate.
+Greater backtracking depth doesn't seem to help very much.
+Instead, it makes the generator spend more time trying to save worlds which are still going to fail.
+We decided to allow for backtracking depth 1 and otherwise just restart the generation to try again.
 
 We also need to decide which slot to collapse at each step of the algorithm.
-Merrell uses in their thesis a sort of scan line order, collapsing them in the lexicographic order of their coordinates.
-This could theoretically introduce a directional bias in the results.
+Merrell uses in their thesis a scan line order, collapsing slots in the lexicographic order of their coordinates.
 Gumin in their implementation always collapses a slot with the lowest \emph{Shannon entropy}.
 This causes the generation to collapse slots outwards form the slot that was collapsed first.
-From our testing, the results tend to look unnatural, often creating rectangular regions at the same height, or repeating patterns.
+From our testing, the results tend to look unnatural, often creating regions at the same height, or repeating patterns.
 
-Both of these orders grow the collapsed portion of the world from one initial slot, similar to growing a regular crystal from one seed crystal.
+Both approaches grow the collapsed portion of the world from one initial slot, similar to growing a single crystal solid from one seed crystal.
 To make the results more natural, we chose to select the slot to collapse at random.
 This leads to the generator first collapsing slots in various parts of the world to different configurations.
 Then it has to somehow connect these to make the world follow the rules we set.
-This leads to more diverse results, however, the failure rate becomes very high, leading to slower generation.
+This leads to much more diverse results, however, the success rate becomes very low, leading to slower generation.
 
-As a compromise, we chose to weight the slots by the number of invalid slots\,$+\,1$.
-This is an approximation of entropy that is trivial to compute, making it more likely to select more constrained slots, but still collapsing unconstrained slots once in a while.
-The 1 is added just to make all weights nonzero.
-This leads to results similar to the ones with uniform randomness, but decreases the failure rate substantially.
+As a compromise, we tried to weight the slots by $1/$entropy, making it more likely to select more constrained slots, but still collapsing unconstrained slots once in a while.
+This leads to results similar to the ones with uniform randomness, but it increases the success rate.
+However, this results in the algorithm being even slower, probably because calculating the entropy of a slot is not trivial.
 
-\xxx{More testing data to compare the success rate of the different approaches}
+In the end, we chose to weight the slots by the number of invalid slots\,$+\,1$.
+This is an approximation of entropy that is trivial to compute, but performs in our tests almost identical.
+The $+1$ at the end is important to make all weights nonzero.
 
-\xxx{A picture of the result?}
+In table~\ref{tab:wfc-collapsing} are the results of the tests we ran.
+For each method, we generated worlds until we successfully generated 1000 of them.
+This is to compare the average time it takes to successfully generate a world, which is a more useful metric for us.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lrrD{.}{.}{-1}r}
+        \toprule
+        \textbf{Which slot}         &                          &                              & \mc{}                                &                             \\
+        \textbf{to collapse?}       & \halfrow{\textbf{Fails}} & \halfrow{\textbf{Successes}} & \mc{\halfrow{\textbf{Success rate}}} & \halfrow{\textbf{Time (s)}} \\
+        \midrule
+        minimum entropy             & 213                      & 1000                         & 82.44\,\%                            & 492                         \\
+        uniformly random            & 823                      & 1000                         & 54.85\,\%                            & 691                         \\
+        weighted by $1/$entropy     & 672                      & 1000                         & 59.81\,\%                            & 728                         \\
+        weighted by invalid modules & 676                      & 1000                         & 59.67\,\%                            & 656                         \\
+        \bottomrule
+    \end{tabular}
+    \caption{Success rate of terrain generation based on how the algorithm decides which slot to collapse next. }
+    \label{tab:wfc-collapsing}
+\end{table}
+
+\subsection{Time Complexity of Na\"{i}ve WFC}\label{sec:wfc-time-complexity}
+
+In this section, we will show that algorithm~\ref{alg:wfc} runs in amortized $O(k^3 \cdot n)$ time, where $k$ is the number of modules, and $n$ is the number of slots.
+We will assume that the sets $uncollapsed$, $to\_update$ and the $modules$ of each slot have amortized $O(1)$ queries, additions and removals (including \textsc{Pop}).
+Another assumption we will is that \textsc{IsValid} runs in $O(k)$ time, because each slot has $O(1)$ neighbors and each neighbor can only have $k$ different modules, so we have to check at most $O(k)$ constraints.
+
+This means that checking the modules a slot can have takes $O(k^2)$ time.
+Since each change removes at least one module, each slot can change up to $k$ times, and each change leads to $O(1)$ neighbors being checked.
+There are only $n$ slots which means at most $kn$ changes, which means constraint propagation takes $O(k^3 \cdot n)$ time over the execution of the whole algorithm.
+
+It is easy to see that other steps can are asymptotically faster:
+Initialization is done in $O(kn)$ time.
+Collapsing $n$ slots takes $O(kn)$ time, assuming picking the random module takes $O(k)$ time.
 
 \section{Resources and Obstacles}\label{sec:analysis-obstacles}
 

@@ -56,7 +56,7 @@ modules {
     }
 
     * StraightHighCliff {
-        weight 8
+        weight 0.75
         variants 4
         collision Terrain/Straight2HighCliff
         height_offset 2
@@ -68,7 +68,7 @@ modules {
     }
 
     * 3LevelTCliff {
-        weight 2
+        weight 1
         variants f4
         collision Terrain/TCliffTriple
         height_offset 2
