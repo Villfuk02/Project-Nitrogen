@@ -11,7 +11,7 @@ namespace WorldGen.Obstacles
     public class ObstacleGenerator : MonoBehaviour
     {
         RandomSet<Vector2Int> tilesLeft_;
-        Array2D<float>[] weightFields_;
+        Array2D<float>[] proximityFields_;
         List<Vector2Int> emptyTiles_;
 
         /// <summary>
@@ -25,25 +25,25 @@ namespace WorldGen.Obstacles
             print("Picking Obstacles");
             // end debug
 
-            var layers = WorldGenerator.TerrainType.Obstacles.Layers;
-            weightFields_ = new Array2D<float>[layers.Length];
-            weightFields_.Fill(() => new(WorldUtils.WORLD_SIZE));
+            var phases = WorldGenerator.TerrainType.Obstacles.Phases;
+            proximityFields_ = new Array2D<float>[phases.Length];
+            proximityFields_.Fill(() => new(WorldUtils.WORLD_SIZE));
 
             emptyTiles_ = new();
             foreach (Vector2Int v in WorldUtils.WORLD_SIZE)
             {
-                if (Tiles[v].dist == int.MaxValue && !Tiles[v].blocked)
+                if (Tiles[v].dist == int.MaxValue)
                     emptyTiles_.Add(v);
             }
 
-            for (var layer = 0; layer < layers.Length; layer++)
+            for (var phase = 0; phase < phases.Length; phase++)
             {
                 // debug
                 DrawGizmos(StepType.Step);
                 WaitForStep(StepType.Step);
                 // end debug
 
-                GenerateLayer(layers[layer], layer);
+                GeneratePhase(phases[phase], phase);
             }
 
             // debug
@@ -53,12 +53,12 @@ namespace WorldGen.Obstacles
         }
 
         /// <summary>
-        /// Places all obstacles of the given layer randomly, based on their parameters.
+        /// Places all obstacles of the given phase randomly, based on their parameters.
         /// </summary>
-        void GenerateLayer(IEnumerable<ObstacleData> layer, int index)
+        void GeneratePhase(IEnumerable<ObstacleData> phase, int index)
         {
             // keep track of how many obstacles were placed of each type, but only keep those that have not reached the maximum count
-            var obstacleCounts = layer.Where(o => o.Max > 0).ToDictionary(o => o, _ => 0);
+            var obstacleCounts = phase.Where(o => o.Max > 0).ToDictionary(o => o, _ => 0);
             while (obstacleCounts.Count > 0)
             {
                 tilesLeft_ = new(emptyTiles_, WorldGenerator.Random.NewSeed());
@@ -82,47 +82,43 @@ namespace WorldGen.Obstacles
         /// Tries to place an obstacle at the given tile, selected from the given dictionary.
         /// Removes the obstacle entry from the dictionary if the max count is reached.
         /// </summary>
-        void TryPlace(Vector2Int pos, Dictionary<ObstacleData, int> available, int layer)
+        void TryPlace(Vector2Int pos, Dictionary<ObstacleData, int> available, int phase)
         {
-            var placeable = GetValidPlacements(pos, available.Keys);
+            var placeable = GetCandidates(pos, available.Keys);
             if (placeable.Count == 0)
                 return;
 
-            var obstacle = placeable.PopRandom();
+            var obstacle = placeable.Count == 1 ? placeable[0] : placeable[WorldGenerator.Random.Int(placeable.Count)];
             if (++available[obstacle] >= obstacle.Max)
                 available.Remove(obstacle);
-            Place(pos, obstacle, layer);
+            Place(pos, obstacle, phase);
         }
 
         /// <summary>
-        /// For each obstacle, calculates its probability to be placed on this tile, and adds it to the resulting set with the calculated probability.
+        /// For each obstacle, calculates its probability to be placed on this tile, and adds it to the set of results with the given probability.
         /// </summary>
-        WeightedRandomSet<ObstacleData> GetValidPlacements(Vector2Int pos, IEnumerable<ObstacleData> available)
+        List<ObstacleData> GetCandidates(Vector2Int pos, IEnumerable<ObstacleData> available)
         {
-            WeightedRandomSet<ObstacleData> placeable = new(WorldGenerator.Random.NewSeed());
+            List<ObstacleData> toPlace = new();
             foreach (var o in available)
             {
                 float probability = o.BaseProbability;
-                if (!o.OnSlants && Tiles[pos].slant != WorldUtils.Slant.None)
+                if (!o.ValidSurfaces.IsSet(Tiles[pos].surface) || (!o.OnSlants && Tiles[pos].slant != WorldUtils.Slant.None))
                     continue;
 
-                for (int layer = 0; layer < o.Forces.Length; layer++)
-                {
-                    probability += o.Forces[layer] * weightFields_[layer][pos];
-                }
+                probability += o.Affinities.Select((affinity, phase) => affinity * proximityFields_[phase][pos]).Sum();
 
-                probability = Mathf.Clamp01(probability);
                 if (WorldGenerator.Random.Bool(probability))
-                    placeable.AddOrUpdate(o, probability);
+                    toPlace.Add(o);
             }
 
-            return placeable;
+            return toPlace;
         }
 
         /// <summary>
         /// Actually place the obstacle at the given tile and update all the relevant fields.
         /// </summary>
-        void Place(Vector2Int pos, ObstacleData obstacle, int layer)
+        void Place(Vector2Int pos, ObstacleData obstacle, int phase)
         {
             emptyTiles_.Remove(pos);
             Tiles[pos].blocked = true;
@@ -130,7 +126,7 @@ namespace WorldGen.Obstacles
             foreach (var p in emptyTiles_)
             {
                 Vector2Int dist = p - pos;
-                weightFields_[layer][p] += 1f / dist.sqrMagnitude;
+                proximityFields_[phase][p] += 1f / dist.sqrMagnitude;
             }
         }
 

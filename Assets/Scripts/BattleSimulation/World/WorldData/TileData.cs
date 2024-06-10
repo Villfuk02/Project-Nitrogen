@@ -10,6 +10,7 @@ namespace BattleSimulation.World.WorldData
         public Vector2Int pos;
         public int height;
         public WorldUtils.Slant slant;
+        public int surface;
         public CardinalDirs<TileData> neighbors;
         public bool blocked;
         public ObstacleData obstacle;

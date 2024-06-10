@@ -34,6 +34,9 @@ The map generator will also define the maximum number of path branches, since th
 This is mainly to limit the complexity of the path network in some levels.
 There are many more factors which influence the difficulty of the battle, but they are more difficult to quantify, and we believe their influence is not as great.
 
+The map and the map generator will not be a part of the demo, but we still want to let the players play more levels and collect blueprints, until they inevitably lose.
+So, we will just create a simple system that will set up the levels with gradually harder attacker waves, shorter paths and different numbers of paths.
+
 The worlds the battles take place on are composed of three somewhat distinct parts~--- paths, terrain and obstacles.
 It would make the most sense to generate each part separately, one after another.
 We should start with the part that is the most restricted, because each part is additionally restricted by what was generated before it.
@@ -590,7 +593,7 @@ To see how this works, we will explain the algorithm first.
 \subsection{Wave Function Collapse}
 
 The original intent behind the algorithm is to replicate the structure of an example on a larger scale, making sure that the output is locally similar to the input, as shown in figure~\ref{fig:wfc-example}.
-We will limit our examples to 2-dimensional grids of tiles, however this algorithm works in more dimensions, and even for irregular cells.
+We will limit our examples to 2-dimensional grids of tiles, however this algorithm works in more dimensions.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -642,7 +645,7 @@ After propagating constraints, the algorithm collapses another slot and so on.
         \includegraphics[width=0.95\linewidth]{img/WFC step 2.pdf}
         \subcaption{Second step} \label{fig:wfc-step-2}
     \end{minipage}
-    \caption{Two steps of wave function collapse. Uncollapsed slots are drawn in light blue, uncollapsed slots that changed are drawn in red.}
+    \caption{Two steps of wave function collapse.}
     \label{fig:wfc-steps}
 \end{center}
 
@@ -779,6 +782,7 @@ For example, two tiles at different height levels next to each other will have a
 If we wanted to incorporate the cliff into the tile module, which tile does it belong to?
 What about the features where the corners of four tiles meet?
 We offset the slots in a way shown in figure~\ref{fig:tiles-and-slots}, such that each slot is responsible for four quarter-tiles of the world.
+Tiles are drawn in black, slots in red.
 This way, the modules dictate how can the adjacent tiles connect to each other.
 
 \begin{center}
@@ -787,7 +791,7 @@ This way, the modules dictate how can the adjacent tiles connect to each other.
         \draw[step=1.0,thick,red] (0,0) grid (4,4);
         \draw[step=1.0,black,thick,shift={(0.5,0.5)}] (0,0) grid (3,3);
     \end{tikzpicture}
-    \caption{The slots for generating a $3\times3$ tile world. Tiles are drawn in black, slots in red.}
+    \caption{The slots for generating a $3\times3$ tile world.}
     \label{fig:tiles-and-slots}
 \end{center}
 
@@ -899,127 +903,338 @@ This is to compare the average time it takes to successfully generate a world, w
     \label{tab:wfc-collapsing}
 \end{table}
 
-\subsection{Time Complexity of Na\"{i}ve WFC}\label{sec:wfc-time-complexity}
+\subsection{Time Complexity of Na\"{i}ve WFC}\label{sec:analysis-wfc-time-complexity}
 
 In this section, we will show that algorithm~\ref{alg:wfc} runs in amortized $O(k^3 \cdot n)$ time, where $k$ is the number of modules, and $n$ is the number of slots.
-We will assume that the sets $uncollapsed$, $to\_update$ and the $modules$ of each slot have amortized $O(1)$ queries, additions and removals (including \textsc{Pop}).
-Another assumption we will is that \textsc{IsValid} runs in $O(k)$ time, because each slot has $O(1)$ neighbors and each neighbor can only have $k$ different modules, so we have to check at most $O(k)$ constraints.
+We will assume that the sets $uncollapsed$, $to\_update$ and the $modules$ of each slot have amortized $O(1)$ queries, additions and removals, including \textsc{Pop}.
+Another assumption we make is that \textsc{IsValid} runs in $O(k)$ time, because each slot has $O(1)$ neighbors and each neighbor can only have $k$ different modules, so we have to check at most $O(k)$ constraints.
 
 This means that checking the modules a slot can have takes $O(k^2)$ time.
-Since each change removes at least one module, each slot can change up to $k$ times, and each change leads to $O(1)$ neighbors being checked.
-There are only $n$ slots which means at most $kn$ changes, which means constraint propagation takes $O(k^3 \cdot n)$ time over the execution of the whole algorithm.
+Since each change removes at least one module, each slot can change up to $k$ times during the execution of the whole algorithm, and each change leads to $O(1)$ neighbors being checked.
+There are $n$ slots which means at most $kn$ changes and $O(kn)$ checks.
+Since each check is $O(k^2)$, constraint propagation takes $O(k^3 \cdot n)$ time over the execution of the whole algorithm.
 
 It is easy to see that other steps can are asymptotically faster:
 Initialization is done in $O(kn)$ time.
-Collapsing $n$ slots takes $O(kn)$ time, assuming picking the random module takes $O(k)$ time.
+Collapsing $n$ slots takes $O(kn)$ time, assuming selecting a random module takes $O(k)$ time.
 
-\section{Resources and Obstacles}\label{sec:analysis-obstacles}
+\section{Obstacle Generation}\label{sec:analysis-obstacles}
 
-- after terrain generation, place blockers on tiles
+Now that we have generated the attacker paths and terrain, the next step is to generate obstacles.
+We know from section~\ref{sec:design-world}, that each tile can have up to one obstacle placed on it.
+They block the tiles, so they cannot appear on path tiles.
+Which obstacles can appear, and their placement is controlled by the terrain type.
+Before we select an algorithm to place them, we should formalize the parameters which influence the obstacle placement.
 
-- materials for the player to mine
+\subsection{Obstacle Placement Parameters}
 
-- just rocks for variety - the player cant build on these
+In section~\ref{sec:design-world}, we also specified that some obstacles will be more common than others.
+In the terrain type specification, we can assign each obstacle a probability of it appearing on each tile.
+Some obstacles, for example the \emph{mineral-rich} and \emph{fuel-rich} ones will also have a maximum and minimum count.
 
-- set up as a few layers
+Some obstacles will appear more often or less often around other obstacles.
+This means that an obstacle's probability to be placed on a given tile will be influenced by the obstacles already placed on surrounding tiles.
+For each obstacle type, the terrain type can specify its \emph{affinity} for each other obstacle type.
+When trying to place the obstacle on a given tile, its placement probability will be modified for each already placed obstacle by the affinity for that obstacle times the \emph{closeness} to it.
+The closeness is some function that decreases with distance, similar to \emph{crowding penalty} we used in section~\ref{sec:analysis-our-simulated-annealing} when generating paths.
 
-- each stage has:
+Since each tile can only have one obstacle, the more important obstacles should be placed before others.
+For example, we want the resource providing obstacles to be placed first.
+So, the obstacle types will be divided into phases, and the first phase will be placed first, then the second, and so on.
 
-- one or more types of blocker (e.g. ore, small rocks, big rocks)
+In section~\ref{sec:analysis-our-wfc}, we mentioned that each tile will have a surface type from the set of surface types the terrain type allows.
+We also want to limit on which surfaces can each obstacle appear.
+For example, we don't want trees to appear in water.
+This should be all we need to procedurally place obstacles how we want.
 
-- *min* and *max* amounts
+\subsection{Obstacle Placement Algorithm}
 
-- *base chance* to place
+Placing the obstacles should be fairly straightforward given the parameters we decided on.
 
-- whether they can be placed on slanted tiles
+The algorithm should place them phase by phase.
+For each phase, it will through all tiles, and for each tile, it will assign an obstacle to it with the probability that is calculated for that obstacle for that tile.
+The probability is 0 for invalid placements, like path tiles, tiles with another obstacle, or tiles with the wrong surface.
+When multiple obstacles from the same phase want to be placed on the same tile, we just select one of them at random.
 
-- which surface Types they can be on (currently there is only one)
+However, we also have a minimum and maximum count for some obstacles.
+To adhere to the maximum count, we can just stop placing the obstacle once the maximum count is reached.
+This creates a small problem.
+If the algorithm went through the tiles in some predefined order, the tiles at the start would have a higher chance of containing obstacles with a count limit than the tiles at the end.
+Because once the algorithm reaches the maximum count, it stops placing them.
+We can fix this by enumerating the tiles in a random order.
 
-- *forces* - effect on chance based on already placed blockers
+Enforcing the minimum count is also not difficult.
+If we finish a phase and there is not enough obstacles of some types, we can do another placement phase, this time only with the obstacle types which didn't reach their minimum yet.
+Assuming there is enough tiles with nonzero probability, we can repeat this process until the right amount obstacles is placed.
 
-- for example: negative force with magnitude *m* from stage *s* means the chance to place a blocker on a given tile is decreased by *m/d*  for each blocker placed in stage *s*, where *d* is its distance from the considered tile
+This is summarized as algorithm~\ref{alg:obstacle-placement}.
+Here, a phase is just a set of obstacle types.
+Here, the function \textsc{GetPlacementProbability} also checks if the placement would be valid.
+If not, it returns 0.
 
-- for each stage:
+\begin{algorithm}[H]
+    \caption{Obstacle placement}
+    \label{alg:obstacle-placement}
+    \begin{algorithmic}[1]
+        \ForEach{phase $p$}
+        \While{$p$ is not empty}
+        \Statex
+        \ForEach{tile $t$ in random order}
+        \State $candidates \gets \varnothing$
+        \ForEach{obstacle type $o$ in $p$}
+        \State $q \gets$ \Call{GetPlacementProbability}{$o, t$}
+        \State with probability $q$: $candidates \gets candidates + o$
+        \EndFor
+        \Statex
+        \If{$candidates$ is not empty}
+        \State $selected \gets$ random obstacle type from $candidates$
+        \State \Call{Place}{$selected, t$}
+        \EndIf
+        \EndFor
+        \Statex
+        \ForEach{obstacle type $o$ in $p$}
+        \If{number of placed obstacles of type $o \geq o.minimum$}
+        \State $p \gets p - o$
+        \EndIf
+        \EndFor
+        \Statex
+        \EndWhile
+        \EndFor
+        \Statex
+    \end{algorithmic}
+\end{algorithm}
 
-- repeat until at least min blockers have been placed (in this stage)
+Of course, there are some optimizations we can make.
+For example, we don't have to go through all tiles, only those that don't have an obstacle, or a path going through them.
 
-- for each tile without a path or blocker (in random order):
+\subsection{Generating Obstacle Models}
 
-- if random number between 0 and 1 < modified chance:
+We can now determine which tiles are blocked by which obstacles.
+But by requirement~\ref{RW:obstacle-models}, \enquote{each tile with an obstacle will usually contain a whole procedurally generated cluster of obstacle models}.
+How do we generate these models?
 
-- place the blocker of the given type
+For any given obstacle type, we can through all the tiles with that obstacle type and place some number of the corresponding model at random points within the tile.
+We can also slightly randomize the rotation and scale of the models to achieve a more natural look.
+The terrain type then specifies the number of models per tile and the scale and rotation range.
 
-- if there are max blockers (placed in this stage), end the stage
+Just placing the models at random points often creates clusters of intersecting models that don't look nice.
+So, we let the terrain type set some minimum distance the models should keep from each other.
+If we would place a model at a position that's too close to an already placed model, we don't place it.
 
-- scattering models
+However, this still wouldn't feel very natural because the models would create perfect squares.
+We would like the boundaries to be more natural too, and even make the models smaller and more spread out near the edges of the boundary.
+This is shown in figure~\ref{fig:analysis-obstacles-natural-boundary}.
 
-- unity physics engine X
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/inorganic minerals.png}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/organic minerals.png}
+    \end{minipage}
+    \caption{Clusters of obstacle models with hard boundaries and with more natural boundaries.}
+    \label{fig:analysis-obstacles-natural-boundary}
+\end{center}
 
-- parallel
+To achieve this, we can use what the developers of the game \emph{Factorio}~\cite{Factorio} call \emph{noise expressions}.
+Earendel has written a great overview of noise expressions on their blog~\cite{NoiseExpressions}.
+The main idea is that we specify a function that assigns a value to each point in our world.
+For our use-case, the value represents \enquote{how much of an obstacle} is at any given point.
+We can then place the obstacle models only where the value is above some threshold, and we scale the models and their spacing by the value too.
 
-For the blockers, I didn't want repetitive obstacle models, so they are generated proceduraly by scattering many simpler models (decorations) on each tile
+This function will be specified in the terrain type for each model.
+This means that more different models can be used to represent each obstacle type.
+It is created by combining some base functions using arithmetic and other operations.
 
-- first compute weights based on various factors (images!!!)
+The most important base function is which tiles have the obstacle we care about and which don't.
+We could make a function that returns 1 for points within the tiles with the obstacle and 0 otherwise.
+However, this doesn't help us make smooth transitions, because we cannot distinguish points that are just outside a tile with the obstacle from positions far away.
+We would also like to know how far inside the tile with the obstacle is any given point.
+So, we need a \emph{signed distance function}, or \emph{SDF}, a function which tells the distance to a boundary, but has a different sign on the outside than the inside.
+We can see the SDF of some obstacle tiles in figure~\ref{fig:basic-fns}, along with an SDF for the path tiles, and a function that just returns the height of the terrain at any given point.
+For greater convenience, we will also allow to specify the scale of the values of the SDFs, separately for the inside and outside, represented in the figures as \mono{in} and \mono{out}.
 
-- distance to path
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{minipage}{.07\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/noise expr gradient.pdf}
+        \small{\ }
+    \end{minipage}%
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/obstacle sdf.png}
+        \small{\mono{obstacle(in:1, out:-1)}}
+    \end{minipage}%
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/path sdf.png}
+        \small{\mono{path(in:1, out:-1)}}
+    \end{minipage}%
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/heights.png}
+        \small{\mono{height()}}
+    \end{minipage}
+    \caption{Signed distance functions and height function.}
+    \label{fig:basic-fns}
+\end{center}
 
-- height
+These are very useful building blocks, but they still don't let us create shapes without straight boundaries.
+For that we will use a noise function.
+However, we don't want a function that just gives us some random value for each point, we need the noise to be smooth and change its value gradually as we move in space.
+For this, we can use \emph{Perlin noise}, developed by Perlin and used in their paper \citetitle{PerlinNoise}~\cite{PerlinNoise}.
+It is also implemented in the Unity engine, so it is easy to use.
+It is deterministic, but we want the noise to be different for each obstacle type.
+We can simply sample a different region of the noise by offsetting all our queries with a predetermined random displacement.
 
-- distance to other blockers
+In figure~\ref{fig:noise-funcs}, we show what values it produces.
+We can scale it up or down, but it is always too smooth or too random.
+By adding together more layers of the noise, each with a different scale and amplitude, we can create a result that has both details and large-scale features.
 
-- customizable thanks to modular approach
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{minipage}{.07\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/noise expr gradient.pdf}
+        \small{\ \\\ \\\ \\\ }
+    \end{minipage}%
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/noise2.png}
+        \small{\mono{noise(scale:2)\\\ \\\ }}
+    \end{minipage}%
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/noise3.png}
+        \small{\mono{noise(scale:0.5)\\\ \\\ }}
+    \end{minipage}%
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/fractal noise.png}
+        \small{\mono{noise(scale:2) +\\0.5 noise(scale:1) +\\0.25 noise(scale:0.5)}}
+    \end{minipage}
+    \caption{Examples of Perlin noise.}
+    \label{fig:noise-funcs}
+\end{center}
 
-- then scatter decorations in stages, each stage again having one type of decoration and many parameters
+In figure~\ref{fig:noise-expr-steps}, we show how we can build up a noise expression that we could use to place obstacle models.
+Here, we use some shortcuts for the values it computes in the individual steps, only to save space.
+We also use a function called \mono{clamp} which clamps a value between the specified minimum and maximum.
 
-- for each tile in random order repeat x (specified for this stage) times:
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{minipage}{.07\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/noise expr gradient.pdf}
+        \small{\ \\\ \\\ \\\ }
+    \end{minipage}%
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/noise expr step1.png}
+        \small{\mono{STEP1 =\\clamp(min:-2, max:0.2,\\obstacle(in:1,out:-3))}}
+    \end{minipage}%
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/noise expr step2.png}
+        \small{\mono{STEP2 =\\STEP1 +\\path(in:-2, out:0)}}
+    \end{minipage}%
+    \begin{minipage}{.31\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/noise expr step3.png}
+        \small{\mono{STEP2 +\\0.8 noise(scale:0.9) +\\0.54 noise(scale:0.45)}}
+    \end{minipage}
+    \caption{Building up a noise expression step by step.}
+    \label{fig:noise-expr-steps}
+\end{center}
 
-- pick a random position within it
-
-- calcualte the weight at this position (based on settings)
-
-- check that it is greater than some threshold (based on settings)
-
-- calculate the minimum distance to other decorations (from weight, based on settings)
-
-- check that the position is far enough from other decorations
-
-- calculate the decoration size (from weight, based on settings)
-
-- place the decoration on this position, with the given size
-
-\section{Terrain Types}
-
-- what information is tied to the type
-
-- why txt (inspector was not as legible)
-
-\section{World Builder}
-
-- builds the world from the generated data, it needs to be done in the main thread
-
-- the rest will be in background threads
+As a final note, we would like to mention that checking the minimum distance to all other already placed models is very inefficient, because there can be a lot of them, and we need to check the distance of each pair.
+However, if we assume that the minimum distance is always less than one tile, we only need to check the models in the current tile and the 8 adjacent tiles.
+This even lets us generate models for many tiles in parallel, as long as we don't generate models for tiles that are adjacent at once.
 
 \section{Attacker Wave Generation}\label{sec:analysis-waves}
 
-- creates a randomized plan of waves
+Now that world generation is done, attacker waves are the last remaining part of battles we want to procedurally generate.
+In section~\ref{sec:design-attacker-waves} we have outlined that each wave will be composed of batches, and each batch will contain potentially different attackers spawning on each path.
+However, the spacing and count will be shared by the whole batch.
+We also mentioned, that the waves need to scale in difficulty, ideally slightly faster than the player could realistically handle.
+In section~\ref{sec:analysis-procedural-generation} we also decided that this difficulty will be controlled by the map generator.
 
-- two types of waves
+Our goal in this section will be to create an algorithm for generating these waves, such that their difficulty somewhat matches the requested difficulty.
+We were able to find some quality sources about procedural wave generation in tower defense games, but they generate waves dynamically to adapt to the player's skill, or to find weaknesses in their defenses.
+For example~\cite{NeatWaves} \xxx{TODO}.
+However, we want the waves to be predetermined only based on the requested difficulty.
+And, as stated in section~\ref{sec:design-attacker-waves}, we let the player see them in advance, so the player is the one who adapts, not the waves.
 
-- combine different attackers in sequence
+There are also some already existing implementations.
+For example, even though the waves in the main game modes of \emph{Bloons TD6} are always the same, there are also game modes with randomized waves.
+However, the nature of the algorithm used to generate these waves is not publicly known, and it probably wouldn't be useful us, because the generated waves vary in difficulty a lot.
+We were unable to find an example of a tower defense game with procedurally generated waves with a consistent difficulty.
 
-- combine different attackers in parallel (only possible with multiple paths, rarer)
+To create a good algorithm that generates waves with a specific difficulty, we need to somehow quantify the difficulty of a wave first.
 
-- each wave gets some throughput budget and buffer
+\subsection{Quantifying Wave Difficulty}
 
-- each attacker has a given cost
+In this section we aim to find a way to express the difficulty of a wave, that is as simple as possible, but it is close enough for the waves to not feel unfair.
+It is important to stress that depending on the player's defenses, some waves will be always harder for them to deal with and others will be easier.
+However, if a player is unable to beat some wave, we want them to feel like there were ways to prevent this.
+In other words, that the wave was beatable, they just weren't prepared for it.
 
-- when planning a wave, select attackers and spacing, such that the througput budget is exceeded
+As we discussed in section~\ref{sec:analysis-procedural-generation}, the world on which the battle takes place greatly influences the difficulty.
+However, we will eliminate this variable and try to quantify the wave difficulty in vacuum.
+It will be the responsibility of the map generator to select the right wave difficulty based on the parameters it selected for world.
 
-- for each attacker subtract the throughput overshoot from buffer
+Let's simplify our problem to as much as we can to make it easy to find an exact solution.
+Then we'll gradually add more complications until we get an approximation of the real problem that is good enough.
 
-- fit such that as much of buffer gets used without going over
+\head{Model 1~--- Single Attacker}{waves-single}
+For our simplest model, we assume that a wave contains only one attacker with some amount of HP, denoted as $h$, and a speed $s$ in tiles per second.
+The attacker has no other qualities or special abilities.
+We say the player's defense beats this wave when the attacker is killed before it reaches the Hub.
+The difficulty of a wave can then be defined as the minimum strength $S$ of the player's defenses that is required to beat the wave.
 
-- branching
+We also imagine each defensive tower $t$ to always deal some fixed amount of damage $d_t$ per second to the first attacker in its range, which covers some region of the path that is $l_t$ long.
+This means that the attacker will spend $l_t / s$ seconds in its range, taking $d_t \cdot l_t / s$ damage in total.
+
+A defense $T$ that consists of multiple towers can then deal damage equal to the sum of the individual towers.
+This means that the defense can beat the wave if and only if
+\begin{equation*}
+    \sum_{t \in T} d_t \cdot l_t / s \geq h.
+\end{equation*}
+
+From this equation we can see, that the difficulty of this wave is exactly proportional to $hs$.
+The defenses that can beat an attacker with 10\,HP and speed~1 are exactly the same as those that can beat an attacker with 5\,HP and speed~2.
+
+This is a great result, but our waves can contain more attackers than one, so we have to generalize.
+Next, we will also take a look at a case with infinite attackers.
+
+\head{Model 2~--- Infinite Attackers}{waves-infinite}
+For this model, everything is the same as in the previous model, but each wave consists of infinitely many attackers of one attacker type.
+We will denote the spacing (or gap) between the attackers as $g$, measured in seconds.
+This means that the physical distance between the attackers will be $sg$ tiles.
+Here, we say the player's defense beats this wave when no attacker ever reaches the Hub.
+
+The towers still deal damage only to the first attacker.
+Imagine the first attacker is killed after it has travelled $p$ tiles.
+Assuming at least $g$ seconds have passed, this means that the second attacker has already traveled $p - sg$ tiles, so the defenses have less time to kill it than they had for the first attacker.
+If the towers progressively kill the attackers later and later, eventually, one of them will reach the Hub.
+Intuitively, the player needs to kill each attacker in $g$ seconds or less in order to beat the wave.
+
+As before, each tower $t$ can deal at most $d_t \cdot l_t / s $ damage to a single attacker.
+However, now we're dealing with an infinite wave of attackers.
+Either the tower can kill each attacker, in which case the defenses are strong enough to beat the wave.
+Or, there will be some $n$th attacker the tower isn't able to kill.
+
+Assume the region of path that is within the range of $t$ is continuous, that is, each attacker both enters the range and leaves it exactly once, except for the first $n-1$, which die before they leave the tower's range.
+When the $n$th attacker leaves the tower's range, the tower starts dealing the damage to the $n + 1$st attacker, assuming it already is within range.
+It can only deal damage to the next attacker for at most $g$ seconds, because it is $g$ seconds behind the previous attacker, so it will also leave the range soon.
+The same holds for any other attacker after the $n+1$st.
+
+\dots
+
 
 \section{Simulation}
 

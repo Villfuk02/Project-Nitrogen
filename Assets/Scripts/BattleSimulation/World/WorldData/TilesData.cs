@@ -61,6 +61,7 @@ namespace BattleSimulation.World.WorldData
 
             t.pos = pos;
             t.height = slots[pos].height + slots[pos].module.Shape.Heights.NE;
+            t.surface = slots[pos].module.Shape.Surfaces.NE;
             t.slant = slots[pos].module.Shape.Slants.NE;
             t.blocked = isTileBlocked(pos);
             t.neighbors = connections;

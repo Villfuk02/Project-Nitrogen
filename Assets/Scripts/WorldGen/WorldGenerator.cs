@@ -193,6 +193,7 @@ namespace WorldGen
             worldData.firstPathTiles = pathStarts;
             worldData.terrain = terrain.GetCollapsedSlots();
             worldData.tiles = Tiles;
+            World.InitData();
         }
 
         void Step()

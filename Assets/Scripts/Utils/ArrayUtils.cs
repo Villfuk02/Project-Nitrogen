@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Utils
@@ -14,6 +15,7 @@ namespace Utils
                     array[pos] += value;
             }
         }
+
         public static void Subtract(this Array2D<int> array, IReadOnlyArray2D<int> subtrahend, Vector2Int position)
         {
             foreach ((Vector2Int offset, int value) in subtrahend.IndexedEnumerable)
@@ -24,19 +26,16 @@ namespace Utils
             }
         }
 
-        public static void Fill<T>(this T[] array, Func<T> getValue)
+        public static void Fill<T>(this IList<T> list, Func<T> getValue)
         {
-            for (int i = 0; i < array.Length; i++)
-            {
-                array[i] = getValue();
-            }
+            for (int i = 0; i < list.Count; i++)
+                list[i] = getValue();
         }
-        public static void Fill<T>(this T[] array, T value)
+
+        public static void Fill<T>(this IList<T> list, T value)
         {
-            for (int i = 0; i < array.Length; i++)
-            {
-                array[i] = value;
-            }
+            for (int i = 0; i < list.Count; i++)
+                list[i] = value;
         }
     }
 }

@@ -710,6 +710,130 @@
       \verb https://rawfury.com/games/townscaper/?portfolioCats=30%2C23%2C20%2C25%2C18%2C26%2C28%2C16%2C17%2C11
       \endverb
     \endentry
+    \entry{Factorio}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=38afa090b4ec790323df0e932e272a73}{%
+           family={{Wube Software}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{38afa090b4ec790323df0e932e272a73}
+      \strng{fullhash}{38afa090b4ec790323df0e932e272a73}
+      \strng{bibnamehash}{38afa090b4ec790323df0e932e272a73}
+      \strng{authorbibnamehash}{38afa090b4ec790323df0e932e272a73}
+      \strng{authornamehash}{38afa090b4ec790323df0e932e272a73}
+      \strng{authorfullhash}{38afa090b4ec790323df0e932e272a73}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Factorio}
+      \field{urlday}{8}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://factorio.com/
+      \endverb
+      \verb{url}
+      \verb https://factorio.com/
+      \endverb
+    \endentry
+    \entry{NoiseExpressions}{misc}{}
+      \name{author}{2}{}{%
+        {{hash=35cb15b4605e8ce1349cdf8eed6b6964}{%
+           family={Earendel},
+           familyi={E\bibinitperiod}}}%
+        {{hash=f1789391a97c145e1b7b14870096aa9c}{%
+           family={Genhis},
+           familyi={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{5b13602a3fc7b21c366f1a50bd7dcb7d}
+      \strng{fullhash}{5b13602a3fc7b21c366f1a50bd7dcb7d}
+      \strng{bibnamehash}{5b13602a3fc7b21c366f1a50bd7dcb7d}
+      \strng{authorbibnamehash}{5b13602a3fc7b21c366f1a50bd7dcb7d}
+      \strng{authornamehash}{5b13602a3fc7b21c366f1a50bd7dcb7d}
+      \strng{authorfullhash}{5b13602a3fc7b21c366f1a50bd7dcb7d}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Friday Facts \#390 - Noise expressions 2.0}
+      \field{urlday}{8}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{year}{2023}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://factorio.com/blog/post/fff-390
+      \endverb
+      \verb{url}
+      \verb https://factorio.com/blog/post/fff-390
+      \endverb
+    \endentry
+    \entry{PerlinNoise}{inproceedings}{}
+      \name{author}{1}{}{%
+        {{hash=d909d34e62b8c30430690affc20c3ebc}{%
+           family={Perlin},
+           familyi={P\bibinitperiod},
+           given={Ken},
+           giveni={K\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{d909d34e62b8c30430690affc20c3ebc}
+      \strng{fullhash}{d909d34e62b8c30430690affc20c3ebc}
+      \strng{bibnamehash}{d909d34e62b8c30430690affc20c3ebc}
+      \strng{authorbibnamehash}{d909d34e62b8c30430690affc20c3ebc}
+      \strng{authornamehash}{d909d34e62b8c30430690affc20c3ebc}
+      \strng{authorfullhash}{d909d34e62b8c30430690affc20c3ebc}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 12th Annual Conference on Computer Graphics and Interactive Techniques}
+      \field{isbn}{0897911660}
+      \field{series}{SIGGRAPH '85}
+      \field{title}{An image synthesizer}
+      \field{year}{1985}
+      \field{pages}{287\bibrangedash 296}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1145/325334.325247
+      \endverb
+    \endentry
+    \entry{NeatWaves}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=3d595ec459ec53b3b77108cbca771437}{%
+           family={Hind},
+           familyi={H\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod}}}%
+        {{hash=64c051cfb6299ab6d402a5a17093d14f}{%
+           family={Harvey},
+           familyi={H\bibinitperiod},
+           given={Carlo},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {IEEE}%
+      }
+      \strng{namehash}{4d750cdd68654b31f556a2b5e98bdf48}
+      \strng{fullhash}{4d750cdd68654b31f556a2b5e98bdf48}
+      \strng{bibnamehash}{4d750cdd68654b31f556a2b5e98bdf48}
+      \strng{authorbibnamehash}{4d750cdd68654b31f556a2b5e98bdf48}
+      \strng{authornamehash}{4d750cdd68654b31f556a2b5e98bdf48}
+      \strng{authorfullhash}{4d750cdd68654b31f556a2b5e98bdf48}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2022 International Conference on Interactive Media, Smart Systems and Emerging Technologies (IMET)}
+      \field{title}{A neat approach to wave generation in tower defense games}
+      \field{year}{2022}
+      \field{pages}{1\bibrangedash 8}
+      \range{pages}{8}
+    \endentry
     \entry{johnston2018random}{book}{}
       \name{author}{1}{}{%
         {{hash=e92745ac08515aac577188dcdd2d523c}{%
@@ -727,8 +851,8 @@
       \strng{authorbibnamehash}{e92745ac08515aac577188dcdd2d523c}
       \strng{authornamehash}{e92745ac08515aac577188dcdd2d523c}
       \strng{authorfullhash}{e92745ac08515aac577188dcdd2d523c}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{isbn}{9781501506260}

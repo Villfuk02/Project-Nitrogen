@@ -205,7 +205,7 @@ namespace BattleSimulation.Attackers
 
         void OnDrawGizmosSelected()
         {
-            if (World.WorldData.World.instance == null || !World.WorldData.World.instance.Ready)
+            if (World.WorldData.World.instance == null || !World.WorldData.World.Ready)
                 return;
             float height = World.WorldData.World.data.tiles.GetHeightAt(pathSegmentTarget);
             Vector3 segTarget = WorldUtils.TilePosToWorldPos(pathSegmentTarget.x, pathSegmentTarget.y, height);

@@ -200,7 +200,7 @@ modules {
 }
 
 obstacles {
-    layers {
+    phases {
         Fuel
         Minerals
         BigRocks
@@ -214,7 +214,7 @@ obstacles {
         base_probability 1
         # valid_surfaces D (default value is all surfaces)
         on_slants false
-        forces -6
+        affinities -6
     }
 
     * Minerals {
@@ -223,20 +223,20 @@ obstacles {
         max 8
         base_probability 0.3
         on_slants false
-        forces -1.5 0.3
+        affinities -1.5 0.3
     }
 
     * BigRocks {
         type l
         max 10
         base_probability 0.2
-        forces -1 0 -1
+        affinities -1 0 -1
     }
 
     * SmallRocks {
         type s
         base_probability 0.25
-        forces -0.1 0 0.4 -0.1
+        affinities -0.1 0 0.4 -0.1
     }
 }
 
@@ -252,14 +252,16 @@ scatterer {
         value_threshold 0
         value {
             clamp -3 1.5 {
-                obstacle Fuel 1 -1
-                fractal_noise {
-                    octaves 2
-                    bias 0
-                    base_amplitude 0.3
-                    amplitude_mult 0.673
-                    base_frequency 0.63
-                    frequency_mult 2.147
+                obstacle Fuel 1 -2
+                clamp -0.1 10 {
+                    fractal_noise {
+                        octaves 2
+                        bias 0
+                        base_amplitude 0.6
+                        amplitude_mult 0.673
+                        base_frequency 0.63
+                        frequency_mult 2.147
+                    }
                 }
                 path -3 0
             }
@@ -276,12 +278,12 @@ scatterer {
         angle_spread 25
         value_threshold 0
         value {
-            clamp -3 1.5 {
+            clamp -3 0.7 {
                 obstacle Minerals 1 -1
                 fractal_noise {
                     octaves 2
                     bias 0
-                    base_amplitude 0.25
+                    base_amplitude 0.3
                     amplitude_mult 0.777
                     base_frequency 0.61
                     frequency_mult 2.137

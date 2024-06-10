@@ -36,7 +36,7 @@ namespace Game.Run
                 txt.text = $"Level {displayed}";
             }
 
-            if (generating && World.instance != null && World.instance.Ready)
+            if (generating && World.instance != null && World.Ready)
             {
                 generating = false;
                 Invoke(nameof(FinishedGenerating), 0.3f);

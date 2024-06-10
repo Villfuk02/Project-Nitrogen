@@ -1,6 +1,7 @@
-using Data.WorldGen;
 using System;
 using System.Linq;
+using BattleSimulation.World.WorldData;
+using Data.WorldGen;
 using UnityEngine;
 using Utils;
 
@@ -17,8 +18,11 @@ namespace WorldGen.Decorations
 
         public float Evaluate(Decoration decoration) => decoration.Value.Accept(this);
 
+        public float VisitConstantNode(ConstantNode node) => node.Value;
         public float VisitCompositeNode(CompositeNode node) => node.Children.Select(c => c.Accept(this)).Sum();
+        public float VisitMultiplyNode(MultiplyNode node) => node.Children.Select(c => c.Accept(this)).Sum() * node.Multiplier;
         public float VisitClampNode(ClampNode node) => Mathf.Clamp(VisitCompositeNode(node), node.Min, node.Max);
+
         public float VisitSDFNode(SDFNode node)
         {
             float sdf = EvaluateSDF(node);
@@ -26,6 +30,7 @@ namespace WorldGen.Decorations
                 return node.OuterMultiplier * sdf;
             return -node.InnerMultiplier * sdf;
         }
+
         float EvaluateSDF(SDFNode node)
         {
             Vector2Int rounded = position_.Round();
@@ -66,6 +71,7 @@ namespace WorldGen.Decorations
         {
             return new Vector2(GetSignedDistance1D(pos.x, tile.x), GetSignedDistance1D(pos.y, tile.y)).magnitude;
         }
+
         static float GetSignedDistance1D(float pos, int tilePos)
         {
             float diff = pos - tilePos;
@@ -75,6 +81,11 @@ namespace WorldGen.Decorations
                 > 0.5f => diff - 0.5f,
                 _ => 0
             };
+        }
+
+        public float VisitHeightNode(HeightNode node)
+        {
+            return World.data.tiles.GetHeightAt(position_);
         }
 
         public float VisitFractalNoiseNode(FractalNoiseNode node) => node.Noise.EvaluateAt(position_);

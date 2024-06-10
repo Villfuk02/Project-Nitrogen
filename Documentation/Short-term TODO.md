@@ -1,4 +1,7 @@
 ## questions
+jak mám zmínit https://dl.acm.org/doi/pdf/10.1145/3564982.3564993 (https://dl.acm.org/doi/abs/10.1145/3564982.3564993)
+asi bych měl do dotazníku dát stejné otázky
+
 
 ## tweaks
 
@@ -15,6 +18,7 @@
 - [ ] 3.2 updates
 - [ ] 3.3 updates
 - [ ] 3.4
+- [ ] 3.5
 
 ## till next metting
 - [ ] ch3
@@ -22,10 +26,26 @@
     - [x] procedural generation
     - [x] paths
     - [x] terrain generation
-    - [ ] obstákuls
-        - [ ] refine the requirements in ch.2
+    - [x] obstákuls
+    - [ ] waves
+        - [x] rešerš
+        - [x] quantify difficulty
+        - [x] we don't need to be exact
+        - [x] start simple
+        - [ ] add finite waves
+        - [ ] add finite waves
+        - [ ] add abilities
+        - [ ] add on aoe
+        - [ ] add on multi-paths
+        - [ ] add on abilities
+        - [ ] add on multi-types
+        - [ ] generate random sequential waves
+        - [ ] generate random parallel waves
     - [x] RNG
-    - [ ] sections done 4/15 (x)(x)(x)(x)( )( )( )( )( )( )( )( )( )( )(x)
+    - [ ] sections done 6/14 (x)(x)(x)(x)(x)( )( )( )( )( )( )( )( )(x)
     - [ ] TODOs
     - [ ] i.e.
     - [ ] dots in abbreviations
+
+
+https://paulbourke.net/fractals/noise/

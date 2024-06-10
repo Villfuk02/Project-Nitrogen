@@ -391,6 +391,12 @@ That's why some tiles will contain obstacles that block the player from building
 Some obstacles will be \emph{small} and some will be \emph{large}~--- they will also block the line-of-sight of towers that require a straight line between them and the attacker they want to shoot.
 Some small obstacles will make the tile rich in \emph{minerals} (see section~\ref{sec:design-materials-and-energy}) or \emph{fuel} (see~\ref{sec:design-fuel}).
 These will be used by some economic buildings (see~\ref{sec:design-buildings}), and also act as \emph{small} obstacles.
+There number of tiles with resource obstacles should always be between some minimum and maximum value, so the levels aren't unfair.
+
+The tiles are pretty big, so when a tile has an obstacle, it's usually not just one obstacle, but a whole cluster of them.
+For example, a tile won't be blocked by one rock, but rather a cluster of rocks.
+These clusters will also be procedurally generated.
+If we used a small set of hand-made models, the repetition would be very obvious, and making a lot of these models by hand seems unnecessary.
 
 Another great way to make the levels more interesting, that is also intuitive for the player, is having tiles at different heights.
 The heights will be in multiples of $0.5$ units, where one unit is the edge length of a tile.
@@ -402,13 +408,15 @@ Some buildings will be possible to build on slanted tiles and some won't, making
 
 As we already mentioned, each level will randomly select one of multiple \emph{terrain types}.
 A terrain type will dictate how a terrain should look~--- the colors used, which terrain feature will appear and how often, and which obstacles will appear.
+Some obstacles will appear in clusters or near another obstacle, others will be spread out or avoid another obstacle.
 Each terrain type will have its distinct look, keeping the levels from being all the same.
 
 To summarize:
 \reqreset
 \begin{itemize}
     \reqitem{RW}{grid} The world each level takes place on will be a grid of $15 \times 15$ square tiles.
-    \reqitem{RW}{obstacles} There will be \emph{small} or \emph{large} obstacles on some tiles, large obstacles blocking certain towers' line of sight.
+    \reqitem{RW}{obstacles} There will be \emph{small} or \emph{large} obstacles on some tiles, large obstacles blocking certain towers' line of sight. Some \emph{small} obstacles make the tile rich in \emph{minerals} or \emph{fuel}.
+    \reqitem{RW}{obstacle-models} Each tile with an obstacle will usually contain a whole procedurally generated cluster of obstacle models.
     \reqitem{RW}{tile-height} The tiles will be at different heights in multiples of $0.5$ units, and some tiles will be slanted, going between two heights.
     \reqitem{RW}{building} The player can build one building per tile, and only if the tile doesn't contain an obstacle or the attacker path.
     \reqitem{RW}{terrain-type} Each world will be generated according to a randomly selected terrain type, which determines what the world will be like.
@@ -1090,6 +1098,7 @@ Most importantly, a lot of towers will only be able to shoot at attackers in lin
 We definitely need to communicate to the player where the tower can hit attackers and where it cannot.
 
 In figure~\ref{fig:range-visualization} is an example range visualization for a tower that requires line of sight.
+The tower in question is represented by the blue square.
 This situation is showed from a top-down view, however in game, this would take place on a 3D terrain and this range visualization would have to be drawn correctly even from a different angle.
 In the figure, the tower is represented by the blue square in the center.
 The black lines separate different levels of the terrain, the lowest level is colored with the darkest shade of gray.
@@ -1103,7 +1112,7 @@ This gap in the range appears, because the terrain level the tower is on is in t
 \begin{center}
     \captionsetup{type=figure}
     \includegraphics[width=0.9\textwidth]{img/Range visualisation.pdf}
-    \caption{Example visualization of the range of a tower represented by the blue square.}
+    \caption{Example visualization of a tower's range.}
     \label{fig:range-visualization}
 \end{center}
 

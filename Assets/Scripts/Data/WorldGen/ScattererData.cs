@@ -28,8 +28,12 @@ namespace Data.WorldGen
                 SkipWhitespace(parseStream);
                 switch (node)
                 {
+                    case "const":
+                        return ConstantNode.Parse(parseStream);
                     case "sum":
                         return CompositeNode.Parse(parseStream, ParseNode);
+                    case "mult":
+                        return MultiplyNode.Parse(parseStream, ParseNode);
                     case "clamp":
                         return ClampNode.Parse(parseStream, ParseNode);
                     case "path":
@@ -40,6 +44,8 @@ namespace Data.WorldGen
                         if (!sd.isObstacle.ContainsKey(obstacle))
                             throw new ParseException(parseStream, $"Obstacle \"{obstacle}\" was not defined.");
                         return SDFNode.Parse(parseStream, pos => sd.isObstacle[obstacle](pos));
+                    case "height":
+                        return new HeightNode();
                     case "fractal_noise":
                         var n = FractalNoiseNode.Parse(parseStream);
                         noiseNodes.Add(n);
@@ -103,15 +109,29 @@ namespace Data.WorldGen
 
     public interface IDecorationNodeVisitor<out T>
     {
+        public T VisitConstantNode(ConstantNode node);
         public T VisitCompositeNode(CompositeNode node);
+        public T VisitMultiplyNode(MultiplyNode node);
         public T VisitClampNode(ClampNode node);
         public T VisitSDFNode(SDFNode node);
+        public T VisitHeightNode(HeightNode node);
         public T VisitFractalNoiseNode(FractalNoiseNode node);
     }
 
     public abstract record Node
     {
         public abstract T Accept<T>(IDecorationNodeVisitor<T> visitor);
+    }
+
+    public record ConstantNode(float Value) : Node
+    {
+        public static ConstantNode Parse(ParseStream stream)
+        {
+            float value = ParseFloat(stream);
+            return new(value);
+        }
+
+        public override T Accept<T>(IDecorationNodeVisitor<T> visitor) => visitor.VisitConstantNode(this);
     }
 
     public record CompositeNode(List<Node> Children) : Node
@@ -126,6 +146,19 @@ namespace Data.WorldGen
         }
 
         public override T Accept<T>(IDecorationNodeVisitor<T> visitor) => visitor.VisitCompositeNode(this);
+    }
+
+    public record MultiplyNode(float Multiplier, List<Node> Children) : CompositeNode(Children)
+    {
+        public new static MultiplyNode Parse(ParseStream stream, Parse<Node> nodeFactory)
+        {
+            float mult = ParseFloat(stream);
+            SkipWhitespace(stream);
+            var children = ParseChildren(stream, nodeFactory);
+            return new(mult, children);
+        }
+
+        public override T Accept<T>(IDecorationNodeVisitor<T> visitor) => visitor.VisitMultiplyNode(this);
     }
 
     public record ClampNode(float Min, float Max, List<Node> Children) : CompositeNode(Children)
@@ -154,6 +187,11 @@ namespace Data.WorldGen
         }
 
         public override T Accept<T>(IDecorationNodeVisitor<T> visitor) => visitor.VisitSDFNode(this);
+    }
+
+    public record HeightNode : Node
+    {
+        public override T Accept<T>(IDecorationNodeVisitor<T> visitor) => visitor.VisitHeightNode(this);
     }
 
     public record FractalNoiseNode(FractalNoise Noise) : Node

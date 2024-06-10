@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using Data.WorldGen;
 using UnityEngine;
 using Utils;
@@ -13,6 +15,7 @@ namespace WorldGen.Decorations
         [Header("Runtime controls")]
         [SerializeField] int pixelsPerUnit = 1;
         [SerializeField] int decorationIndex = -1;
+        [SerializeField] bool saveAsFile;
         [Header("Runtime variables")]
         Texture2D tex_;
         Color32[] cols_;
@@ -21,6 +24,12 @@ namespace WorldGen.Decorations
 
         void Update()
         {
+            if (saveAsFile)
+            {
+                saveAsFile = false;
+                Save();
+            }
+
             if (!sr.enabled || (lastIndex_ == decorationIndex && lastPixelsPerUnit_ == pixelsPerUnit))
                 return;
             if (decorationIndex >= 0 && decorationIndex < WorldGenerator.TerrainType.ScattererData.decorations.Length)
@@ -68,6 +77,17 @@ namespace WorldGen.Decorations
         {
             tex_ = null;
             sr.sprite = null;
+        }
+
+        void Save()
+        {
+            if (tex_ == null)
+                return;
+            var dirPath = Application.dataPath + "/../Exports/";
+            if (!Directory.Exists(dirPath))
+                Directory.CreateDirectory(dirPath);
+
+            File.WriteAllBytes(dirPath + DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss") + ".png", tex_.EncodeToPNG());
         }
     }
 }

@@ -8,16 +8,20 @@ namespace BattleSimulation.World.WorldData
         public static WorldData data;
         public WorldData worldData;
 
-        public bool Ready { get; private set; }
+        public static bool Ready { get; private set; }
 
         void Awake()
         {
             instance = this;
         }
 
+        public static void InitData()
+        {
+            data = instance.worldData;
+        }
+
         public void SetReady()
         {
-            data = worldData;
             Ready = true;
         }
     }
