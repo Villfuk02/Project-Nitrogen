@@ -27,7 +27,7 @@ The map generator will select the terrain type of the world and what attacker ty
 These parameters define the theme of the battle.
 To control the difficulty, the map generator dictates how difficult should the waves of attackers be, and how much \emph{fuel} is required to finish the level.
 This is further explained in section~\ref{sec:analysis-waves}.
-The number of attacker path starts and the path lengths also greatly influences the difficulty.
+The number of attacker path starts and the path lengths also greatly influence the difficulty.
 More paths are harder to cover with defenses than a single path.
 Shorter paths give the player's defenses less time to deal with the attackers than longer paths.
 The map generator will also define the maximum number of path branches, since the paths can split into more.
@@ -78,7 +78,7 @@ We can think of them as the edges in an oriented graph, with tiles being the nod
 A tile with at least one segment starting or ending at it is a \textbf{path tile}.
 A \textbf{path} or a \textbf{branch} is a sequence of consecutive segments.
 The \textbf{number of extra branches} of a path network could be defined as the sum of the number of outgoing segments from each tile beyond the first.
-For example, the path network in figure~\ref{fig:path-network} has 2 path starts and 2 extra branches.
+For example, the path network in figure~\ref{fig:path-network} has 2 path starts, and because there are two tiles with two outgoing segments each, they make for 2 extra branches.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -88,22 +88,23 @@ For example, the path network in figure~\ref{fig:path-network} has 2 path starts
 \end{center}
 
 If tile $u$ can be reached from tile $t$ by going along $d$ path segments, we say the \textbf{path distance} from $t$ to $u$ is $d$.
-Two tiles can have multiple path distances when multiple paths between them exist.
+Two tiles can have multiple different paths between them, however by requirement RP~\ref{RP:equal-distance}, all of these paths must have the same distance.
 When $u$ is not reachable from $t$, they do not have a path distance.
 The \textbf{path length} of a start dictates its path distance to the Hub.
-For example, the path start on the bottom left of figure~\ref{fig:path-network} technically has 3 path distances to the Hub, all of them are 9.
-This means its path length is 9.
+For example, the path start on the bottom left of figure~\ref{fig:path-network} has path length 9.
 
 \subsection{Hub Position and Path Starts} \label{sec:analysis-path-starts}
 
 In the first stage of path generation, we need to select the tile the Hub will be on, and all the path starts.
 This will be informed by the number of path starts we have to generate and their path lengths.
 
+\head{Hub Position}{hub-pos}
 First, we will select the Hub tile.
 According to requirement RP\ref{RP:hub-pos}, it \enquote{should not be near the edge of the world, and it should be close to the center in levels with multiple paths}.
 There aren't any more requirements, so we will simply select a random tile from tiles that are at most some distance from the center using the euclidean metric.
 This distance will be the greatest for levels with one path start and decrease with each additional path start.
 
+\head{Path Start Requirements}{path-start-req}
 Now we select the path starts.
 According to requirement RP\ref{RP:start-outside}, \enquote{paths start on tiles just outside the playable world, and the first path segment goes from the path start to the nearest tile in the playable world.}
 However, other path segments are confined to the actual tiles of the world.
@@ -145,6 +146,7 @@ In levels with more paths, we want the path starts to be spread out from each ot
 We can choose a minimum distance between the paths starts.
 For levels with just one long path, we can also set a minimum distance from the Hub, so it starts further away from it and has more space to zigzag through the world.
 
+\head{Selecting Path Starts}{select-path-starts}
 To actually select the starts, we find all edge tiles, and separate them into two sets~--- each for one parity.
 Then to select each start, we can use rejection sampling.
 This means we take random tiles from the set of with the correct parity until we find one that satisfies all the conditions.
@@ -164,7 +166,7 @@ There is a lot of research on generating road networks, mazes or dungeons.
 Theoretically, we could use one of the many algorithms for generating mazes~\cite{MazeWiki}, and modify it to suit our needs.
 However, it would be difficult to achieve what we need using an approach that was designed for something else.
 
-We found one algorithm specifically designed for procedurally generating paths, called \emph{path chiseling} by Boris the Brave on his blog~\cite{PathChiseling1}\cite{PathChiseling2}.
+We found one algorithm specifically designed for procedurally generating paths, called \emph{path chiseling} by Boris the Brave on his blog~\cite{PathChiseling1,PathChiseling2}.
 This algorithm creates random paths on a tile grid by randomly blocking off individual tiles until only one path remains.
 This is more promising, however we were unable to find a good way to modify it to generate paths of specific lengths with the properties we want.
 
@@ -245,7 +247,8 @@ All these options, up to symmetry, are illustrated in figure~\ref{fig:path-tile-
 The tiles in the sequence are drawn as circles connected by arrows that show their order in the sequence.
 The tile we plan to change is drawn as a red circle.
 Additionally, we draw the tiles which go before and after it in the sequence.
-These are the only tiles that determine the possible changes:
+These are the only tiles that determine the possible changes.
+
 When the tiles form a straight line, no change is possible.
 When they form a right angle, one change is possible.
 And when the same tile comes before and after, 3 changes are possible.
@@ -259,17 +262,17 @@ And when the same tile comes before and after, 3 changes are possible.
 
 \head{Cost function}{sa-cost-function}
 Now we select a cost function that gives a better score to paths that are more desirable.
-Since we want the paths to spread out, we can calculate fore each tile of the world what we call a \emph{crowding penalty}.
+Since we want the paths to spread out, we can calculate for each tile of the world what we call a \emph{crowding penalty}.
 Each time a tile appears in the state, it's crowding penalty increments by 1, and all other tiles get a lower penalty decreasing with euclidean distance.
 This way, the tiles that get visited the most times get the highest crowding penalty.
 A tile can be substantially crowded even when no path goes through it just because there is a lot of paths around it.
 
 We will denote the crowding penalty that tile $t$ gets from tile $u$ as $c(t,u)$.
-The total crowding penalty from tiles $c_t(t,s)$ in state $s$ for a given tile $t$ is then $c_t(t,s) = \sum_{u \in s} c(t,u)$.
+The total crowding penalty from tiles in state $s$ for a given tile $t$ is then $c_t(t,s) = \sum_{u \in s} c(t,u)$.
 
 We also add a big crowding penalty to the tiles along the edge of the world, which gradually decreases as we go away from the edge.
 This is to push the paths away from the edges, as that is undesirable by requirement RP\ref{RP:undesirable}.
-We will denote the crowding penalty that tile $t$ gets from its closeness to the edge as $c_e(t)$
+We will denote the crowding penalty that tile $t$ gets from its closeness to the edge as $c_e(t)$.
 
 We define the cost function of a state $s$ as the sum of the crowding penalties of each tile in the state:
 \begin{equation*}
@@ -304,7 +307,7 @@ The algorithm starts on the path start tile, and adds it to the state as the fir
 Then it moves to a random neighbor and appends it to the sequence.
 This is repeated until it creates a path of the correct length.
 However, we need to ensure that the path ends at the Hub.
-To achieve this, we just make the algorithm never select a tile that is further away from the Hub in Manhattan distance, than the remaining length of the path.
+To achieve this, we just make the algorithm never select a tile that is further away from the Hub in Manhattan distance than the remaining length of the path.
 
 \head{Acceptance Probability Function}{sa-acceptance-probability-function}
 Next, we need to select an acceptance probability function that works well for this problem.
@@ -352,12 +355,12 @@ This still leaves two identical tiles, but now, simulated annealing can drive th
 This modification of the state is valid, because the length of the path doesn't change.
 However, we cannot untwist crossings between two different paths, because that could change their lengths.
 This means that we should take special care to not produce an initial state where two different paths cross.
-We can achieve this by calculating crowding penalties when creating the initial state.
+We can achieve this by calculating crowding penalties while creating the initial state.
 Then, when the random walk algorithm selects a random neighbor to move to, we make it prefer the neighbors with a lower crowding penalty.
 Because we don't mind self-intersections, we don't add the crowding penalties from the nodes of the path the algorithm is currently creating.
 We add them only when the path is complete.
 
-Sill, the algorithm sometimes fails in creating a valid path network.
+Still, the algorithm sometimes fails in creating a valid path network.
 In case no valid network is generated, we can restart the path generation algorithm, including picking new starting positions.
 
 In figure~\ref{fig:simulated-annealing}, we can see how the paths evolve over time as the temperature decreases.
@@ -389,8 +392,16 @@ In figure~\ref{fig:simulated-annealing}, we can see how the paths evolve over ti
 
 \subsection{Simplifying the Relative Improvement Calculation}\label{sec:analysis-proof-improvement}
 
-In this section, we will show that the \emph{relative improvement} defined in paragraph~\ref{head:sa-cost-function} can be calculated very efficiently.
-Formally, we want to show that $r_i = f(s) - f(s')$ for $s'$ obtained by changing tile $v$ in $s$ to $w$ can be calculated as
+In paragraph~\nameref{head:sa-cost-function} of the previous section, we defined the cost function we will use and its components:
+The cost function for state $s$ is
+\begin{equation*}
+    f(s) = \sum_{t \in s} \left(c_e(t) + \sum_{u \in s} c(t,u) \right).
+\end{equation*}
+Where $c(t,u)$ is the crowding penalty that tile $t$ gets from its distance to tile $u$, and $c_e(t)$ is the crowding penalty tile $t$ gets from its distance to the edge of the world.
+The total crowding penalty from tiles in state $s$ for a given tile $t$ is then $c_t(t,s) = \sum_{u \in s} c(t,u)$.
+We also stated that we will only calculate the relative improvement $r_i = f(s) - f(s')$ between the current state $s$ and the new state $s'$.
+
+In this section, we show that the relative improvement $r_i = f(s) - f(s')$ for $s'$ obtained by changing tile $v$ in $s$ to $w$ can be calculated as
 \begin{equation*}
     r_i = c_e(v) - c_e(w)  + 2 c_t(v,s) - 2 c_t(w,s) + 2c(w,v) - 2.
 \end{equation*}
@@ -426,6 +437,8 @@ Now we separate $v$ from $s$ and $w$ from $s'$.
 \end{align*}
 $\hfill\square$
 
+So we see that the equality holds, letting us compute the relative improvement more efficiently.
+
 \subsection{Final Paths}
 
 Now that we have generated the main paths, we just have to generate the side branches.
@@ -436,7 +449,7 @@ We can generate the rest of the world first, and only then make extra paths wher
 We don't want the branching to feel the same in every level.
 This lets us use the randomness of the world generation instead of needing to introduce more in this stage.
 
-This means, that this step will start with an already generated terrain and obstacles, as described in sections~\ref{sec:analysis-terrain-generation} and~\ref{sec:analysis-obstacles}.
+Due to this decision, this step will start with an already generated terrain and obstacles, as described in sections~\ref{sec:analysis-terrain-generation} and~\ref{sec:analysis-obstacles}.
 These steps respect the original paths, but they will cause other tiles or edges between them to be blocked, as shown in figure~\ref{fig:paths-world}.
 Here, we can see the original paths on the left.
 On the right, we can see tiles blocked by obstacles as gray squares with black edges.
@@ -457,7 +470,6 @@ These are the remaining black lines.
     \label{fig:paths-world}
 \end{center}
 
-
 Now, how do we actually generate the path network?
 There are so many blocked edges that we want to add all the valid branches we find, up to the maximum number of branches decided by the map generator (see section~\ref{sec:analysis-procedural-generation}).
 To do this, we will use depth first search, but we will add a few heuristics to produce better paths.
@@ -468,7 +480,7 @@ However, we would also like to somehow capture the shape of the paths that were 
 We could simply make the first path from each start be identical to the original path.
 We would like multiple paths to sometimes join together, which we cannot do without changing them.
 To achieve this, we add a rule for every tile with a path: if an original path also went through it, its path distance must be the same as the original path distance.
-This way, the path segments of any new path will be distributed similarly to the original path, since they cross at every choke point.
+This way, the path segments of any new path will be distributed similarly to the original path, since they have to cross at every choke point.
 This is illustrated in figure~\ref{fig:respect-originals}.
 On the left are the original paths, and on the right are randomly generated paths which respect the rule.
 The tiles where the random paths would intersect the original paths are marked with a blue circle.
@@ -510,7 +522,7 @@ At every step, the algorithm pops the last prototype from the stack, finds all v
 Valid continuations are the neighbors of the last tile of the current path prototype that aren't blocked.
 Additionally, they have to have a minimum distance that is less than or equal to the remaining length of this path prototype.
 The valid continuations are ordered such that the best option will be put onto the stack last, so it gets popped in the next step.
-The best option is always the one that goes straight, and the rest is ordered by the same crowding penalty as in paragraph~\ref{head:sa-cost-function} of section~\ref{sec:analysis-our-simulated-annealing}.
+The best option is always the one that goes straight, and the rest is ordered by the same crowding penalty as in paragraph~\nameref{head:sa-cost-function} of section~\ref{sec:analysis-our-simulated-annealing}.
 
 Once the algorithm reaches the Hub or an already existing path, it checks whether it is valid to finish the current path.
 First, it must have the correct remaining length to produce a valid path.
@@ -700,12 +712,13 @@ However, it is possible for the algorithm to create a slot with no valid module.
 In that case, it is no longer possible to create a valid output.
 We call this situation a \emph{conflict}.
 An example can be seen in figure~\ref{fig:wfc-backtracking}.
-If we look at WFC as a \emph{constraint satisfaction problem} solver, we can see that the constraint propagation only ensures \emph{arc-consistency}, which is not enough to rule out conflicts~\cite{LocalConsistencyWiki}.
+If we look at WFC as a \emph{constraint satisfaction problem} solver, we can see that the constraint propagation only ensures \emph{arc-consistency}, which is not enough to rule out conflicts.
+This is concisely explained in the Wikipedia article on local consistency~\cite{LocalConsistencyWiki}.
 
 We called algorithm~\ref{alg:wfc} na\"{i}ve, because it is unable to deal with any conflicts.
 What can we do to always produce a result, even when a conflict happens?
 One option is to simply restart the algorithm.
-For sufficiently small outputs, this should be rare enough, only needing a few restarts.
+For sufficiently small outputs, conflicts should be rare enough, only needing a few restarts.
 
 Another option is to use backtracking.
 Whenever the algorithm runs into a contradiction after collapsing a slot, it returns to the state before collapsing.
@@ -756,18 +769,18 @@ This is especially bad for online generation of infinite worlds, because we can'
 Backtracking also doesn't solve this issue, because the algorithm can collapse a slot in a way that is guaranteed to cause a contradiction, and then do arbitrarily many more steps before finally running into it.
 Of course, there are ways to circumvent this issue, namely by making the individual generation tasks smaller.
 In section 3.3.6 of their thesis, Merrell describes a technique called \emph{modifying in parts} based on this approach.
+Luckily, this is not a problem for us, because our world is very small.
 
 Another potential problem with WFC is that the individual slots or modules can be very apparent and repetitive.
 This can be solved by procedurally generating the resulting geometry the player sees, only based on the modules chosen by WFC.
 Another way to make the slots less apparent is to make the slots irregular.
 Both of these techniques are used by \emph{Townscaper}~\cite{Townscaper}, a game by Oskar St\r{a}lberg.
+This also isn't a problem for us: we don't mind that the tiles will be apparent, since the gameplay of our game is centered around them anyway
 
 Also, WFC only uses local constraints, so it provides no control over the more global features of the output.
 On a large scale, the results are very homogenous.
 For larger outputs, WFC should only be used to generate the local features, guided by large-scale features generated by some other algorithm.
-
-Luckily, none of these disadvantages matter for our use case.
-Our worlds are very small, and we don't mind that the tiles will be apparent, since the gameplay of our game is centered around them anyway.
+Our game world is also too small for this to matter.
 
 \subsection{Using WFC for Terrain Generation}\label{sec:analysis-our-wfc}
 
@@ -1190,28 +1203,32 @@ It will be the responsibility of the map generator to select the right wave diff
 Let's simplify our problem to as much as we can to make it easy to find an exact solution.
 Then we'll gradually add more complications until we get an approximation of the real problem that is good enough.
 
-\head{Model 1~--- Single Attacker}{waves-single}
+\head{Model 1: Single Attacker}{waves-single}
 For our simplest model, we assume that a wave contains only one attacker with some amount of HP, denoted as $h$, and a speed $s$ in tiles per second.
 The attacker has no other qualities or special abilities.
 We say the player's defense beats this wave when the attacker is killed before it reaches the Hub.
-The difficulty of a wave can then be defined as the minimum strength $S$ of the player's defenses that is required to beat the wave.
 
-We also imagine each defensive tower $t$ to always deal some fixed amount of damage $d_t$ per second to the first attacker in its range, which covers some region of the path that is $l_t$ long.
+We also imagine each defensive tower $t$ to always deal some fixed amount of damage $d_t$ per second to the first attacker in its range which covers some region of the path that is $l_t$ long.
 This means that the attacker will spend $l_t / s$ seconds in its range, taking $d_t \cdot l_t / s$ damage in total.
 
 A defense $T$ that consists of multiple towers can then deal damage equal to the sum of the individual towers.
 This means that the defense can beat the wave if and only if
 \begin{equation*}
-    \sum_{t \in T} d_t \cdot l_t / s \geq h.
+    \sum_{t \in T} d_t l_t / s \geq h.
 \end{equation*}
+We will refer to the total damage the towers would deal to an attacker with speed 1 as \emph{buffer} $B$, and
+\begin{equation}\label{eqn:B}
+    B = \sum_{t \in T} d_t l_t.
+\end{equation}
+This lets us write the condition more concisely as $B \geq hs$.
 
 From this equation we can see, that the difficulty of this wave is exactly proportional to $hs$.
 The defenses that can beat an attacker with 10\,HP and speed~1 are exactly the same as those that can beat an attacker with 5\,HP and speed~2.
 
 This is a great result, but our waves can contain more attackers than one, so we have to generalize.
-Next, we will also take a look at a case with infinite attackers.
+Next, we will take a look at a case with an infinite amount of attackers.
 
-\head{Model 2~--- Infinite Attackers}{waves-infinite}
+\head{Model 2: Infinite Waves}{waves-infinite}
 For this model, everything is the same as in the previous model, but each wave consists of infinitely many attackers of one attacker type.
 We will denote the spacing (or gap) between the attackers as $g$, measured in seconds.
 This means that the physical distance between the attackers will be $sg$ tiles.
@@ -1221,19 +1238,65 @@ The towers still deal damage only to the first attacker.
 Imagine the first attacker is killed after it has travelled $p$ tiles.
 Assuming at least $g$ seconds have passed, this means that the second attacker has already traveled $p - sg$ tiles, so the defenses have less time to kill it than they had for the first attacker.
 If the towers progressively kill the attackers later and later, eventually, one of them will reach the Hub.
-Intuitively, the player needs to kill each attacker in $g$ seconds or less in order to beat the wave.
+Intuitively, the towers need to be able to kill an attacker every $g$ seconds to beat the wave.
 
-As before, each tower $t$ can deal at most $d_t \cdot l_t / s $ damage to a single attacker.
-However, now we're dealing with an infinite wave of attackers.
-Either the tower can kill each attacker, in which case the defenses are strong enough to beat the wave.
-Or, there will be some $n$th attacker the tower isn't able to kill.
+When each attacker spends at least $g$ seconds within the range of each tower, then each tower $t$ deals in total $d_t g$ damage to each attacker.
+However, when the spacing is larger, some towers won't be able to deal damage to each attacker for $g$ seconds, but only $l_t / s$ as we determined in the previous model.
+So, each tower can only deal $d_t$ damage per second for $\min(l_t / s, g)$ seconds, so the towers will deal in total
+\begin{equation*}
+    \sum_{t \in T} d_t \cdot \min(l_t / s, g)
+\end{equation*}
+damage to each attacker.
 
-Assume the region of path that is within the range of $t$ is continuous, that is, each attacker both enters the range and leaves it exactly once, except for the first $n-1$, which die before they leave the tower's range.
-When the $n$th attacker leaves the tower's range, the tower starts dealing the damage to the $n + 1$st attacker, assuming it already is within range.
-It can only deal damage to the next attacker for at most $g$ seconds, because it is $g$ seconds behind the previous attacker, so it will also leave the range soon.
-The same holds for any other attacker after the $n+1$st.
+It is more useful to think about the damage per second, so let $R$ be the total damage per second the player's defenses can deal to the attackers, or the \emph{damage rate}.
+One attacker spawns each $g$ seconds, so when we divide the previous equation by $g$, we get that
+\begin{equation}\label{eqn:R}
+    R = \sum_{t \in T} d_t \cdot \min(l_t / (s g), 1).
+\end{equation}
+We see that $R$ is at most $\sum_{t \in T} d_t$, and it is equal to it only if $l_t / (sg) \geq 1$ for each tower $t$.
+$R$ is also at most $\sum_{t \in T} d_t \cdot l_t / (s g)$, and it is equal to it in the other cases, when $l_t / (sg) \leq 1$.
+By equation~\ref{eqn:B}, $\sum_{t \in T} d_t \cdot l_t / (s g) = B/(s g)$, so we know that
+\begin{equation}\label{eqn:RB}
+    R \leq \frac{B}{s g}
+\end{equation}
+This is an important fact that will be useful later.
 
-\dots
+Since one attacker spawns every $g$ seconds, the towers can deal at most $Rg$ damage to each attacker.
+So, the player will beat the game if and only if $Rg \geq h$.
+Sometimes, $R$ does not depend only on the player's defenses, but also on the attacker speed $s$ and spacing $g$.
+However, this should be very rare, because the maximum spacing we will use is $g=2$ seconds, and no attacker will be faster than $s=4$ tiles per second, which is still extremely fast compared to most attackers.
+This means that every tower has to have $l_t \geq 8$ for $g$ and $s$ to never influence $R$, which is easily achievable with most tower types.
+For now, we can think of $R$ as being a constant determined by the player's defenses.
+
+\head{Model 3: Finite Waves}{waves-finite}
+In this model, we add another parameter to our wave.
+The wave is once again composed of attackers with $h$ HP and speed $s$, coming with a spacing of $g$ seconds, but this time, there is exactly $n$ of them.
+How do we judge the wave difficulty now?
+
+The best way to think about this is that the player's towers need to deal $nh$ damage in total.
+From \hyperref[head:waves-single]{model~1} we know that if the whole wave was a single attacker, the player's defenses would deal $B/s$ damage in total.
+So, they would defeat the wave if and only if $B/s \geq nh$.
+
+The towers still target only the first attacker, so they will kill it first.
+Then, they can deal with the second attacker, but the second attacker is $g$ seconds behind the first, so they have $g$ more seconds to deal with it.
+This is also true for each other attacker, so the towers effectively get $g$ seconds of firing for free for each attacker beyond the first.
+\begin{equation*}
+    B/s + (n-1) R g \geq nh.
+\end{equation*}
+When we put all wave-dependent terms on the right and rearrange, we get that the player beats the wave if and only if
+\begin{equation}\label{eqn:beat-finite-wave-ugly}
+    B \geq (h - R g)(n - 1)s + hs.
+\end{equation}
+
+We cannot quantify the difficulty of the wave as one number anymore.
+For example, there exists a defense $T_1$ which beats the wave, and another defense $T_2$ which also beats it, despite having lower $B$, because it has greater $R$.
+So, we have to accept that each defense has two characteristic values.
+
+In figure \xxx{TODO} we show the set of defenses that can beat a particular wave, and we show how it changes when the wave's parameters change.
+The blue area represents the defenses which can beat the wave, and the orange area shows which defenses cannot exist, because of inequality~\ref{eqn:RB}.
+We also highlight two points in each chart, each of these points represents one example defense.
+$T_1$ consists of one tower with $d_t=5$ and $l_t=12$.
+$T_2$ consists of one tower with $d_t=10$ and $l_t=1.5$, which is an unusually small path coverage to showcase what happens when $l_t/(sg) < 1$ as shown in figure \xxx{TODO}.
 
 
 \section{Simulation}

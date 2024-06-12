@@ -1,6 +1,6 @@
 ## questions
 jak mám zmínit https://dl.acm.org/doi/pdf/10.1145/3564982.3564993 (https://dl.acm.org/doi/abs/10.1145/3564982.3564993)
-asi bych měl do dotazníku dát stejné otázky
+
 
 
 ## tweaks
@@ -15,10 +15,9 @@ asi bych měl do dotazníku dát stejné otázky
 - [ ] find new tutorial seed
 ## new since prev meeting
 - [ ] 2.4 - 2.9
-- [ ] 3.2 updates
-- [ ] 3.3 updates
-- [ ] 3.4
+- [ ] 3.4.3+
 - [ ] 3.5
+- [ ] the beginning of 3.6
 
 ## till next metting
 - [ ] ch3
@@ -32,7 +31,7 @@ asi bych měl do dotazníku dát stejné otázky
         - [x] quantify difficulty
         - [x] we don't need to be exact
         - [x] start simple
-        - [ ] add finite waves
+        - [x] add infinite waves
         - [ ] add finite waves
         - [ ] add abilities
         - [ ] add on aoe
@@ -48,4 +47,11 @@ asi bych měl do dotazníku dát stejné otázky
     - [ ] dots in abbreviations
 
 
-https://paulbourke.net/fractals/noise/
+## finishing
+- [ ] update tex template
+- [ ] commas
+- [ ] https://blog.wordvice.com/when-to-use-commas-colons-semicolons-and-dashes/#:~:text=Use%20an%20em%20dash%20instead,less%20formal%20than%20a%20colon.
+- [ ] TODOs
+- [ ] i.e.
+- [ ] dots in abbreviations
+- [ ] ~

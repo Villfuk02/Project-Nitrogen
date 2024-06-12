@@ -235,8 +235,12 @@ namespace BattleSimulation.Control
                 if (b is null)
                     continue;
 
-                if (newAttacker_ != null)
-                    usedAttackers_.Add(newAttacker_);
+                foreach (var type in b.typePerPath.Where(t => t != null))
+                {
+                    if (usedAttackers_.Add(type))
+                        newAttacker_ = type;
+                }
+
                 return new(newAttacker_, b);
             }
 
@@ -252,7 +256,6 @@ namespace BattleSimulation.Control
 
         Batch? TryMakeParallelBatchOnce(float valueRate, int[] pathSelection, WeightedRandomSet<AttackerStats> selection)
         {
-            newAttacker_ = null;
             PickParallelAttackerTypes(valueRate, pathSelection, new(selection), out var types, out var mockStats);
 
             if (mockStats.MaxValueRate(1) <= valueRate)
@@ -274,13 +277,14 @@ namespace BattleSimulation.Control
         {
             types = new AttackerStats[paths];
             mockStats = ScriptableObject.CreateInstance<AttackerStats>();
+            var newAttacker = newAttacker_;
             foreach (int p in pathSelection)
             {
                 AttackerStats selected;
                 while (true)
                 {
                     selected = selection.PopRandom();
-                    if (newAttacker_ == null || newAttacker_ == selected || usedAttackers_.Contains(selected))
+                    if (newAttacker == null || newAttacker == selected || usedAttackers_.Contains(selected))
                     {
                         selection.AddOrUpdate(selected, selected.weight);
                         break;
@@ -293,7 +297,7 @@ namespace BattleSimulation.Control
                 mockStats = newMockStats;
                 types[p] = selected;
                 if (!usedAttackers_.Contains(selected))
-                    newAttacker_ = selected;
+                    newAttacker = selected;
             }
         }
 

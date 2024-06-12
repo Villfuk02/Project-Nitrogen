@@ -202,34 +202,32 @@
       \field{title}{Game Design Deep Dive: Roguelikes}
       \field{year}{2021}
     \endentry
-    \entry{StSWiki}{misc}{}
+    \entry{StS}{misc}{}
       \name{author}{1}{}{%
-        {{hash=b6aea1a416c89509a7df1cbb69249cb6}{%
-           family={{Wikipedia contributors}},
-           familyi={W\bibinitperiod}}}%
+        {{hash=d6bb95bd31f6a338652db993f5a14d79}{%
+           family={{Mega Crit}},
+           familyi={M\bibinitperiod}}}%
       }
-      \strng{namehash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \strng{fullhash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \strng{bibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \field{extraname}{3}
+      \strng{namehash}{d6bb95bd31f6a338652db993f5a14d79}
+      \strng{fullhash}{d6bb95bd31f6a338652db993f5a14d79}
+      \strng{bibnamehash}{d6bb95bd31f6a338652db993f5a14d79}
+      \strng{authorbibnamehash}{d6bb95bd31f6a338652db993f5a14d79}
+      \strng{authornamehash}{d6bb95bd31f6a338652db993f5a14d79}
+      \strng{authorfullhash}{d6bb95bd31f6a338652db993f5a14d79}
       \field{sortinit}{8}
       \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{title}{Slay the Spire --- {Wikipedia}{,} The Free Encyclopedia}
+      \field{title}{Mega Crit – Slay the Spire}
       \field{urlday}{6}
       \field{urlmonth}{5}
       \field{urlyear}{2024}
-      \field{year}{2024}
       \field{urldateera}{ce}
       \verb{urlraw}
-      \verb https://en.wikipedia.org/w/index.php?title=Slay_the_Spire&oldid=1221499787
+      \verb https://www.megacrit.com/
       \endverb
       \verb{url}
-      \verb https://en.wikipedia.org/w/index.php?title=Slay_the_Spire&oldid=1221499787
+      \verb https://www.megacrit.com/
       \endverb
     \endentry
     \entry{buildDict}{misc}{}
@@ -328,7 +326,7 @@
       \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \field{extraname}{4}
+      \field{extraname}{3}
       \field{sortinit}{1}
       \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
@@ -358,7 +356,7 @@
       \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \field{extraname}{5}
+      \field{extraname}{4}
       \field{sortinit}{1}
       \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
@@ -445,7 +443,7 @@
       \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \field{extraname}{6}
+      \field{extraname}{5}
       \field{sortinit}{1}
       \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
@@ -662,7 +660,7 @@
       \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
       \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
-      \field{extraname}{7}
+      \field{extraname}{6}
       \field{sortinit}{2}
       \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
@@ -753,8 +751,8 @@
       \strng{authorbibnamehash}{5b13602a3fc7b21c366f1a50bd7dcb7d}
       \strng{authornamehash}{5b13602a3fc7b21c366f1a50bd7dcb7d}
       \strng{authorfullhash}{5b13602a3fc7b21c366f1a50bd7dcb7d}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Friday Facts \#390 - Noise expressions 2.0}
