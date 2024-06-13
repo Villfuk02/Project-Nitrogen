@@ -12,6 +12,8 @@ jak mám zmínit https://dl.acm.org/doi/pdf/10.1145/3564982.3564993 (https://dl.
 - [x] fix simulated annealing step
 - [x] implement better r_i
 - [x] implement better simulated annealing step
+- [ ] reimplement wave generator
+- [ ] don't deselect abilities
 - [ ] find new tutorial seed
 ## new since prev meeting
 - [ ] 2.4 - 2.9
@@ -32,14 +34,22 @@ jak mám zmínit https://dl.acm.org/doi/pdf/10.1145/3564982.3564993 (https://dl.
         - [x] we don't need to be exact
         - [x] start simple
         - [x] add infinite waves
-        - [ ] add finite waves
-        - [ ] add abilities
-        - [ ] add on aoe
-        - [ ] add on multi-paths
-        - [ ] add on abilities
-        - [ ] add on multi-types
+        - [x] add finite waves
+        - [x] add on aoe
+        - [x] frmalize bxR
+        - [x] exponents
+        - [x] make h/R into frac
+        - [x] reference model 3
+        - [x] fix subcaptions
+        - [x] add on multi-paths
+        - [x] add on multi-batches
+        - [x] add abilities
+        - [x] add on attacker abilities
+        - [ ] prepare for a wave
+        - [ ] general idea
         - [ ] generate random sequential waves
         - [ ] generate random parallel waves
+        - [ ] TODOs
     - [x] RNG
     - [ ] sections done 6/14 (x)(x)(x)(x)(x)( )( )( )( )( )( )( )( )(x)
     - [ ] TODOs

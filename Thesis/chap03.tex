@@ -1188,22 +1188,19 @@ However, the nature of the algorithm used to generate these waves is not publicl
 We were unable to find an example of a tower defense game with procedurally generated waves with a consistent difficulty.
 
 To create a good algorithm that generates waves with a specific difficulty, we need to somehow quantify the difficulty of a wave first.
-
-\subsection{Quantifying Wave Difficulty}
-
-In this section we aim to find a way to express the difficulty of a wave, that is as simple as possible, but it is close enough for the waves to not feel unfair.
+In the following subsections we aim to find a way to express the difficulty of a wave, that is as simple as possible, but it is close enough for the waves to not feel unfair.
 It is important to stress that depending on the player's defenses, some waves will be always harder for them to deal with and others will be easier.
 However, if a player is unable to beat some wave, we want them to feel like there were ways to prevent this.
-In other words, that the wave was beatable, they just weren't prepared for it.
+In other words, that the wave was beatable, they just didn't play the best way they could.
 
 As we discussed in section~\ref{sec:analysis-procedural-generation}, the world on which the battle takes place greatly influences the difficulty.
 However, we will eliminate this variable and try to quantify the wave difficulty in vacuum.
-It will be the responsibility of the map generator to select the right wave difficulty based on the parameters it selected for world.
+It will be the responsibility of the map generator to select the right wave difficulty based on the parameters it selected for the world.
 
 Let's simplify our problem to as much as we can to make it easy to find an exact solution.
 Then we'll gradually add more complications until we get an approximation of the real problem that is good enough.
 
-\head{Model 1: Single Attacker}{waves-single}
+\subsection{Model 1: Single Attacker}\label{sec:analysis-waves-single}
 For our simplest model, we assume that a wave contains only one attacker with some amount of HP, denoted as $h$, and a speed $s$ in tiles per second.
 The attacker has no other qualities or special abilities.
 We say the player's defense beats this wave when the attacker is killed before it reaches the Hub.
@@ -1228,7 +1225,7 @@ The defenses that can beat an attacker with 10\,HP and speed~1 are exactly the s
 This is a great result, but our waves can contain more attackers than one, so we have to generalize.
 Next, we will take a look at a case with an infinite amount of attackers.
 
-\head{Model 2: Infinite Waves}{waves-infinite}
+\subsection{Model 2: Infinite Waves}
 For this model, everything is the same as in the previous model, but each wave consists of infinitely many attackers of one attacker type.
 We will denote the spacing (or gap) between the attackers as $g$, measured in seconds.
 This means that the physical distance between the attackers will be $sg$ tiles.
@@ -1268,13 +1265,13 @@ However, this should be very rare, because the maximum spacing we will use is $g
 This means that every tower has to have $l_t \geq 8$ for $g$ and $s$ to never influence $R$, which is easily achievable with most tower types.
 For now, we can think of $R$ as being a constant determined by the player's defenses.
 
-\head{Model 3: Finite Waves}{waves-finite}
+\subsection{Model 3: Finite Waves}\label{sec:analysis-waves-finite}
 In this model, we add another parameter to our wave.
 The wave is once again composed of attackers with $h$ HP and speed $s$, coming with a spacing of $g$ seconds, but this time, there is exactly $n$ of them.
 How do we judge the wave difficulty now?
 
 The best way to think about this is that the player's towers need to deal $nh$ damage in total.
-From \hyperref[head:waves-single]{model~1} we know that if the whole wave was a single attacker, the player's defenses would deal $B/s$ damage in total.
+From \hyperref[sec:analysis-waves-single]{model~1} we know that if the whole wave was a single attacker, the player's defenses would deal $B/s$ damage in total.
 So, they would defeat the wave if and only if $B/s \geq nh$.
 
 The towers still target only the first attacker, so they will kill it first.
@@ -1284,20 +1281,243 @@ This is also true for each other attacker, so the towers effectively get $g$ sec
     B/s + (n-1) R g \geq nh.
 \end{equation*}
 When we put all wave-dependent terms on the right and rearrange, we get that the player beats the wave if and only if
-\begin{equation}\label{eqn:beat-finite-wave-ugly}
-    B \geq (h - R g)(n - 1)s + hs.
+\begin{equation}\label{eqn:beat-finite-wave}
+    B \geq nhs - (n - 1)Rgs.
 \end{equation}
 
-We cannot quantify the difficulty of the wave as one number anymore.
+We cannot quantify the difficulty of the wave with one number anymore.
 For example, there exists a defense $T_1$ which beats the wave, and another defense $T_2$ which also beats it, despite having lower $B$, because it has greater $R$.
 So, we have to accept that each defense has two characteristic values.
 
-In figure \xxx{TODO} we show the set of defenses that can beat a particular wave, and we show how it changes when the wave's parameters change.
-The blue area represents the defenses which can beat the wave, and the orange area shows which defenses cannot exist, because of inequality~\ref{eqn:RB}.
+Now we can finally explain why we call $B$ the \emph{buffer}.
+In the time it takes for the wave to spawn, the player's defenses can deal $Rg$ damage to each attacker.
+Then $B$ can be thought of as an additional buffer of firepower they have to clean up the rest.
+
+In figure~\ref{fig:model3} we show the set of defenses that can beat a particular wave, and we show how it changes when the wave's parameters change.
+The blue area represents the defenses which can beat the wave, and the orange area represents defenses that don't exist because they would violate inequality~\ref{eqn:RB}.
 We also highlight two points in each chart, each of these points represents one example defense.
 $T_1$ consists of one tower with $d_t=5$ and $l_t=12$.
-$T_2$ consists of one tower with $d_t=10$ and $l_t=1.5$, which is an unusually small path coverage to showcase what happens when $l_t/(sg) < 1$ as shown in figure \xxx{TODO}.
+$T_2$ consists of one tower with $d_t=10$ and $l_t=1.5$ which is an unusually small path coverage, to showcase what happens when $l_t/(sg) < 1$ as shown in figures~\ref{fig:model3-s2} and~\ref{fig:model3-g2}.
 
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{minipage}{.33\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/model3 base.pdf}
+        \subcaption{$h=10, s=1,$\\$ g=1, n=4$}
+    \end{minipage}%
+    \begin{minipage}{.33\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/model3 h20.pdf}
+        \subcaption{$\bm{h=20}, s=1,$\\$ g=1, n=4$}
+    \end{minipage}%
+    \begin{minipage}{.33\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/model3 s2.pdf}
+        \subcaption{$h=10, \bm{s=2},$\\$ g=1, n=4$}
+        \label{fig:model3-s2}
+    \end{minipage}\\
+    \begin{minipage}{.33\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/model3 g0.5.pdf}
+        \subcaption{$h=10, s=1,$\\$ \bm{g=0.5}, n=4$}
+    \end{minipage}%
+    \begin{minipage}{.33\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/model3 g2.pdf}
+        \subcaption{$h=10, s=1,$\\$ \bm{g=2}, n=4$}
+        \label{fig:model3-g2}
+    \end{minipage}\\
+    \begin{minipage}{.33\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/model3 n1.pdf}
+        \subcaption{$h=10, s=1,$\\$ g=1, \bm{n=1}$}
+    \end{minipage}%
+    \begin{minipage}{.33\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/model3 n12.pdf}
+        \subcaption{$h=10, s=1,$\\$ g=1, \bm{n=12}$}
+    \end{minipage}%
+    \caption{Which defenses can beat various attacker waves, according to model 3.}
+    \label{fig:model3}
+\end{center}
+
+\subsection{Model 4: Damage in an Area}
+Many towers will be able to deal damage to all attackers in some area.
+These towers are much more effective against large groups of attackers, especially when they are close together.
+We can model these towers similarly to what we have done so far, but we will add one more parameter, the damage range $r_t$.
+Now, each tower $t$ deals $d_t$ damage per second to the first attacker, but also all the attackers at most $r_t$ tiles behind it.
+This still makes all calculations much more difficult, so we will choose to ignore many edge cases.
+
+Intuitively, for the first attacker of every wave, nothing changes.
+To kill it, the condition $B/s \geq h$ still holds.
+Killing the second attacker is easier as it has already been damaged by collateral damage.
+The attackers spawn $g$ seconds apart, so each can travel $sg$ tiles before the next one spawns, making the gaps between them $sg$ tiles long.
+So, the second attacker has been receiving collateral damage from all towers $t$ with $r_t \geq sg$.
+But how much damage is that?
+
+To simplify our calculations, we will introduce some new variables $R_k$.
+$R_1$ is the damage rate of towers which hit one extra attacker with collateral damage, $R_2$ for towers which deal damage to two extra attackers, and so on.
+Formally, $\forall k \in \mathbb{N}$ let $R_k$ be the damage rate (see equation~\ref{eqn:R}) of towers $t$ with $r_t \geq ksg$.
+
+Killing the first attacker will take $t_1 = h/R$ seconds as usual, and in the time, the second attacker will take $t_1 R_1$ collateral damage.
+In general, the $k$th attacker will take $t_1 R_{k-1}$ collateral damage from towers shooting at the first attacker.
+Let $t_k$ be the time it takes for the $k$th attacker to be killed by towers continuously shooting at it.
+It is equal to the remaining health the attacker will have after the ones before it have been killed, divided by $R$ or specifically
+\begin{equation}\label{eqn:time-to-kill}
+    t_k = \frac{1}{R}\left(h - \sum_{i=1}^{k-1} t_i R_{k-i} \right).
+\end{equation}
+
+This is still very complicated, and we also need too many variables to specify the player's defenses.
+However, this can be simplified with the right assumptions.
+The game should force the player use towers that deal damage in an area, in addition to those with a single target.
+So, we can just assume they have them when generating the waves, and make it the player's responsibility to adapt to the waves by building the right towers.
+
+The greater the tower's damage range $r_t$, the less damage it should deal and the less often it should appear.
+Let's assume that in a balanced defense, the towers' damage rate decreases exponentially with increasing $r_t$.
+Formally, for each $x \in \R_0^+$ we create a subset of towers $Tx = {t \in T \vert r_t \geq x}$.
+We say that a defense is $\lambda$-balanced for some $\lambda \in (0,1)$ when $\forall x \in \R_0^+$, the damage rate of towers in $Tx$ is equal to $\lambda^x R$.
+We will select the right $\lambda$ for this exponential decrease based on playtesting.
+
+Now we can precisely determine all $R_k$ for a given wave.
+From the definition, $R_k$ is the damage rate of towers with $r_t \geq ksg$, so $R_k = R \cdot \lambda^{ksg}$.
+We can substitute this into equation~\ref{eqn:time-to-kill} to get
+\begin{equation*}
+    t_k = \frac{1}{R}\left(h - \sum_{i=1}^{k-1} t_i \cdot R \cdot \lambda^{(k-i)sg}\right).
+\end{equation*}
+
+For $t_1$, the summation is empty, so $t_1$ is still equal to $h/R$.
+For $k > 1$ we can simplify further:
+\begin{align*}
+    t_k & = \frac{1}{R}\left(h - \sum_{i=1}^{k-1} t_i \cdot R \cdot \lambda^{(k-i)sg} \right)              \\
+        & = \frac{h}{R} - \sum_{i=1}^{k-1} t_i \cdot \lambda^{(k-i)sg}                                     \\
+        & = \frac{h}{R} - \sum_{i=1}^{k-1} t_i (\lambda^{sg})^{(k-i)}                                      \\
+        & = \frac{h}{R} - t_1 (\lambda^{sg})^{(k-1)} - \sum_{i=2}^{k-1} t_i (\lambda^{sg})^{(k-i)}.        \\
+    \intertext{Now we substitute for $t_1$,}
+        & = \frac{h}{R} - \frac{h}{R} (\lambda^{sg})^{(k-1)} - \sum_{i=2}^{k-1} t_i (\lambda^{sg})^{(k-i)} \\
+        & = \frac{h}{R} (1 - (\lambda^{sg})^{(k-1)}) - \sum_{i=2}^{k-1} t_i (\lambda^{sg})^{(k-i)}.
+\end{align*}
+Now we know that $t_2 = (h/R)(1 - \lambda^{sg})$, since the summation on the right is empty for $k=2$.
+
+We can continue simplifying for $k > 2$
+\begin{align*}
+    t_k & = \frac{h}{R} (1 - (\lambda^{sg})^{(k-1)}) - \sum_{i=2}^{k-1} t_i (\lambda^{sg})^{(k-i)}                                                         \\
+        & = \frac{h}{R} (1 - (\lambda^{sg})^{(k-1)}) - t_2 (\lambda^{sg})^{(k-2)} - \sum_{i=3}^{k-1} t_i (\lambda^{sg})^{(k-i)}                            \\
+        & = \frac{h}{R} (1 - (\lambda^{sg})^{(k-1)}) - \frac{h}{R} (1 - \lambda^{sg}) (\lambda^{sg})^{(k-2)} - \sum_{i=3}^{k-1} t_i (\lambda^{sg})^{(k-i)} \\
+        & = \frac{h}{R} (1 - (\lambda^{sg})^{(k-1)} - (1 - \lambda^{sg}) (\lambda^{sg})^{(k-2)}) - \sum_{i=3}^{k-1} t_i (\lambda^{sg})^{(k-i)}             \\
+        & = \frac{h}{R} (1 - (\lambda^{sg})^{(k-1)} - (\lambda^{sg})^{(k-2)} + (\lambda^{sg})^{(k-1)}) - \sum_{i=3}^{k-1} t_i (\lambda^{sg})^{(k-i)}       \\
+        & = \frac{h}{R} (1 - (\lambda^{sg})^{(k-2)}) - \sum_{i=3}^{k-1} t_i (\lambda^{sg})^{(k-i)}.
+\end{align*}
+This means that $t_3$ is also $(h/R)(1 - \lambda^{sg})$.
+We could repeat this process and use induction to prove that for all $k > 1$, $t_k = (h/R)(1 - \lambda^{sg})$.
+
+Now we can finally construct an updated condition for beating this wave.
+By definition of $t_k$, we know that each attacker will have $Rt_k$ HP when all attackers before it die.
+So, the player's defenses needs to deal in total $\sum_{k=1}^{n} Rt_k$ damage to all the attackers while they are the first attacker alive, instead of $hs$.
+Otherwise, the derivation is the same as for \hyperref[sec:analysis-waves-finite]{model~3}, so the player will beat a wave if and only if
+\begin{equation*}
+    B/s + (n-1)Rg \geq \sum_{k=1}^{n} Rt_k.
+\end{equation*}
+Then we substitute for $t_k$:
+\begin{equation*}
+    B/s + (n-1)Rg \geq nh - (n-1)\lambda^{sg}.
+\end{equation*}
+If we put all wave-dependent terms on the right again, we get
+\begin{equation}\label{eqn:beat-wave-with-aoe}
+    B \geq nhs - (n-1)(Rg + \lambda^{sg})s.
+\end{equation}
+We can see this condition is very similar to the one for model 3 (inequality~\ref{eqn:beat-finite-wave}).
+
+\subsection{Model 5: Multiple Batches}
+So far we have considered only waves with one attacker type.
+In section~\ref{sec:design-attacker-waves} we mentioned that waves can consist of up to three batches.
+Each batch contains some number of attackers of one attacker type which are spaced by some spacing.
+We can specify a set of wave parameters for each batch $b_k$ instead of having one for the wave as a whole.
+These parameters have a subscript which denotes which batch they correspond to, for example the first batch ($b_1$) contains attackers with $h_1$\,HP and speed $s_1$.
+
+To determine which defenses will beat a wave with $N$ batches, we could extend the condition for model 4 (inequality~\ref{eqn:beat-wave-with-aoe}).
+The defenses simple have to beat all the batches one by one, but they still have the same buffer $B$.
+This gives us
+\begin{equation*}
+    B \geq \sum_{k=1}^{N} n_k h_k s_k - \sum_{k=1}^{N} (n_k - 1)(R g_k + \lambda^{s_k g_k})s_k.
+\end{equation*}
+
+However, there is more we need to consider.
+There is a pretty big issue which manifests for example, when the first batch spawns small attackers with large spacing, so the defenses can kill each of them before then next one spawns, and for the second batch this is no longer true.
+The current formula essentially allows dealing damage in advance to attackers that haven't spawned yet, because the therm $R g_k + \lambda^{s_k g_k}$ is not limited by the total health of the attacker.
+To fix this, we need to introduce this limit, so we get
+\begin{equation*}
+    B \geq \sum_{k=1}^{N} n_k h_k s_k - \sum_{k=1}^{N} (n_k - 1)\min(R g_k + \lambda^{s_k g_k}, h_k)s_k.
+\end{equation*}
+This wasn't a problem before, because this only happened for waves which the defenses beat anyway, so we didn't mention it.
+It is a problem now, because beating one batch doesn't guarantee beating all of them.
+
+We specified that the spacing between batches will be 1 second, but the previous condition acts like the next batch begins right when the previous one ends.
+An updated condition could look like this:
+\begin{equation*}
+    B \geq \sum_{k=1}^{N} n_k h_k s_k - \sum_{k=1}^{N} (n_k - 1)\min(R g_k + \lambda^{s_k g_k}, h_k)s_k - \sum_{k=2}^{N} \min(R + \lambda^{s_k}, h_k)s_k.
+\end{equation*}
+However, the collateral damage calculations are all wrong.
+We never investigated what happens with an uneven attacker spacing, but we don't even know what's the spacing going to be like.
+We know how far each attacker spawns behind the attacker before it, but attackers from different batches can have different speeds, so the spacing between them changes, and they can even overtake each other.
+
+There really isn't a way to capture this behavior in our model without making it much more complicated.
+So, we will ignore this problem, and hope that the waves we generate don't deviate in difficulty too much from our estimate.
+If this ends up being a problem, we can adjust the wave generation algorithm to only produce waves that aren't problematic.
+The only thing we'll change is that we'll ignore collateral damage across batches, giving us the following condition:
+\begin{equation}
+    B \geq \sum_{k=1}^{N} n_k h_k s_k - \sum_{k=1}^{N} (n_k - 1)\min(R g_k + \lambda^{s_k g_k}, h_k)s_k - \sum_{k=2}^{N} \min(R, h_k)s_k.
+\end{equation}
+
+\subsection{Model 6: Multiple Paths}
+The levels in our game can have multiple paths, and we can even spawn different attackers on each path.
+Since all paths in a single level will have similar lengths, we can treat them all the same.
+To start, we'll assume that the paths don't interact in any way and that each tower can only shoot at attackers on one path.
+This means that each path $p_k$ will have its own buffer $B_k$ and damage rate $R_k$.
+The player's defenses then beat a wave if they beat it on each path.
+
+However, when generating a wave, we'll generate it to have the difficulty determined by the map generator.
+We want the difficulty of each path to vary between waves, but the overall difficulty to smoothly increase.
+It would be weird for the map generator to dictate the difficulty of each path separately, the wave generator should take care of that.
+By limiting what the wave generator can do, we don't have to modify our calculations to consider the relationships between different paths or other waves.
+So, we define the overall difficulty using one buffer $B$ and damage rate $R$ and for each wave, the wave generator will divide them between the paths.
+Since towers provide both $B$ and $R$ at once, it would be weird to expect some path $p_k$ to have high $B_k$ but low $R_k$.
+So the wave generator should always divide them in the same proportions.
+
+Since the towers a player builds stay on the same tile for the entire battle, we can't expect the player to have all their firepower concentrated on one path and then suddenly on a different path.
+So, the wave generator should accumulate the $B_k$ and $R_k$ of each path $p_k$.
+For each wave, it will determine the new $B$ and $R$ the wave should have over the previous wave, and randomly distribute only that.
+
+We can expect the player to place some tower such that their range covers more than one path.
+This breaks our assumption that the paths are independent.
+To encourage the player to do this, we will designate a fraction of the total buffer as \emph{global}.
+This portion of the buffer will not be assigned to any path, and it can be spent on different paths in every wave.
+How much of the buffer will be global will have to be determined by playtesting.
+
+\subsection{Model 7: Abilities}
+So far, we've only considered attackers that have no abilities, towers with no special abilities, and we ignored the abilities the player can use (see section~\ref{sec:design-abilities}).
+In this section, we will incorporate these into our wave difficulty estimate.
+
+Usable abilities usually provide one-time damage to the attackers, so they effectively contribute to the buffer of the player's defenses.
+Similarly, special abilities of towers or other buildings which have some effect on the attackers, usually just make the defense more effective, thus increasing its buffer or damage rate.
+These should all be balanced based on playtesting, so they aren't too weak or too strong.
+Thus, they don't need any special treatment in our calculations.
+
+On the other hand, attacker abilities is something the wave generator should consider.
+We don't want it to spawn lots of attackers which have very strong abilities just because of their low HP and slow speed.
+These abilities can vary widely in their effect and can interact in unpredictable ways.
+However, we hope it's enough to assign each attacker a value which will be used in all the calculations we did so far instead of their HP.
+For example, an attacker with no special abilities and 10\,HP will still have a value of 10.
+If it had an ability that makes it take 50\% less physical damage, its value might be about 13.
+Also, the damage rate of a defense (see equation~\ref{eqn:R}) is also influenced by the attacker speed, but we treated it as a constant the whole time.
+We can increase the value of very fast attackers to offset this, treating super-speed as a kind of special ability.
+The important thing is that this value can be tweaked based on playtesting.
+
+This way of quantifying the wave difficulty should be good enough to let us produce waves that vary widely in their feel, but are consistent in their difficulty, so they don't feel unfair to the player.
+
+\subsection{Generating Waves}
+
+- yay
 
 \section{Simulation}
 
