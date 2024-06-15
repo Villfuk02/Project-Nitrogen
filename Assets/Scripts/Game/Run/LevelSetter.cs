@@ -12,6 +12,8 @@ namespace Game.Run
     {
         public void SetupLevel(ulong randomSeed, int level)
         {
+            level += 5;
+
             if (level == 0)
             {
                 SetupTutorialSettings(randomSeed);
@@ -71,16 +73,15 @@ namespace Game.Run
         static void SetupWaveGenerator(int level, int pathCount, int totalPathLength, Random rand)
         {
             WaveGenerator wg = GameObject.FindGameObjectWithTag(TagNames.WAVE_GENERATOR).GetComponent<WaveGenerator>();
-            wg.paths = pathCount;
+            wg.pathCount = pathCount;
             if (wg.overrideRunSettings)
                 return;
 
-            wg.baseValueRate = 2.85f + 0.35f * level - pathCount;
-            wg.baseEffectiveValueBuffer = (7 + 1 * level) * (20 + totalPathLength) * 0.02f;
+            wg.baseRate = 1.7f + 0.2f * level - 0.1f * pathCount;
+            wg.baseBuffer = (7 + 1 * level) * (20 + totalPathLength / (float)pathCount) * 0.05f;
             wg.linearScaling = 1;
             wg.quadraticScaling = 0.01f;
-            wg.cubicScaling = 0.009f;
-            wg.exponentialScalingBase = 1;
+            wg.cubicScaling = 0.007f;
             wg.random = new(rand.NewSeed());
         }
 
@@ -99,7 +100,7 @@ namespace Game.Run
             ws.maxHubDistFromCenter = 6;
 
             WaveGenerator wg = GameObject.FindGameObjectWithTag(TagNames.WAVE_GENERATOR).GetComponent<WaveGenerator>();
-            wg.paths = 1;
+            wg.pathCount = 1;
             wg.tutorial = true;
 
             BattleController bc = GameObject.FindGameObjectWithTag(TagNames.BATTLE_CONTROLLER).GetComponent<BattleController>();

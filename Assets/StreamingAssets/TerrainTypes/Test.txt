@@ -251,7 +251,7 @@ scatterer {
         angle_spread 15
         value_threshold 0
         value {
-            clamp -3 1.5 {
+            clamp -3 0.7 {
                 obstacle Fuel 1 -2
                 clamp -0.1 10 {
                     fractal_noise {

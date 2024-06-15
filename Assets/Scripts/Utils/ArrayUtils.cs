@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Utils
@@ -36,6 +37,11 @@ namespace Utils
         {
             for (int i = 0; i < list.Count; i++)
                 list[i] = value;
+        }
+
+        public static T[] PickOut<T>(this T[] array, IEnumerable<int> indexes)
+        {
+            return indexes.Select(i => array[i]).ToArray();
         }
     }
 }

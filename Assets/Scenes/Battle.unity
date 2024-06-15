@@ -4813,10 +4813,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 41b21d00b30f2304b94dbe125c704605, type: 2}
   maxWaveLengthTicks: 250
   maxAttackersPerWave: 120
-  parallelWaveChance: 0.25
+  parallelWaveChance: 1
   pathDropChance: 0.4
   maxBatchCount: 3
   parallelMinCount: 3
+  splashDamageMultiplier: 0.6
+  fullSplashDamageMultiplierWave: 7
+  splashDamageBase: 0.4
+  globalBufferPortion: 0.6
   tutorialWaves:
   - newAttacker: {fileID: 0}
     batches:
@@ -4946,17 +4950,25 @@ MonoBehaviour:
       - {fileID: 11400000, guid: cce42b626625438479a1c859190c2c3c, type: 2}
       count: 60
       spacing: 0
-  baseValueRate: 5
-  baseEffectiveValueBuffer: 25
+  baseRate: 0
+  baseBuffer: 0
   linearScaling: 1
   quadraticScaling: 0
   cubicScaling: 0
-  exponentialScalingBase: 1
-  paths: 4
+  pathCount: 0
   tutorial: 0
-  bufferLeft: 0
+  totalBuffer: 0
+  totalRate: 0
+  bufferPerPath: []
+  bufferLeftPerPath: []
+  ratePerPath: []
+  globalBuffer: 0
+  globalBufferLeft: 0
   waves: []
-  currentWaveMaxBatches: 0
+  currentWaveNumber: 0
+  currentMaxBatches: 0
+  currentPaths: 
+  currentSplashDamageMultiplier: 0
 --- !u!1 &793714036
 GameObject:
   m_ObjectHideFlags: 0
@@ -10935,6 +10947,7 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   pixelsPerUnit: 10
   decorationIndex: -1
+  saveAsFile: 0
 --- !u!1 &2046862147
 GameObject:
   m_ObjectHideFlags: 0
@@ -12052,7 +12065,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 330
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_SizeDelta.y
@@ -12060,7 +12073,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 165
       objectReference: {fileID: 0}
     - target: {fileID: 1560906903024010509, guid: 6b483b925cd03444fb67355facb7d33b, type: 3}
       propertyPath: m_AnchoredPosition.y

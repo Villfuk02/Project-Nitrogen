@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.AttackerStats;
 using UnityEngine;
+using Utils;
 using Utils.Random;
 using static Game.AttackerStats.AttackerStats;
 using Random = Utils.Random.Random;
@@ -20,23 +21,38 @@ namespace BattleSimulation.Control
         [SerializeField] float pathDropChance;
         [SerializeField] int maxBatchCount;
         [SerializeField] int parallelMinCount;
+        [SerializeField] float splashDamageMultiplier;
+        [SerializeField] int fullSplashDamageMultiplierWave;
+        [SerializeField] float splashDamageBase;
+        [SerializeField] float globalBufferPortion;
         [SerializeField] List<Wave> tutorialWaves;
         [Header("Settings - auto-assigned")]
-        public float baseValueRate;
-        public float baseEffectiveValueBuffer;
+        public float baseRate;
+        public float baseBuffer;
         public float linearScaling;
         public float quadraticScaling;
         public float cubicScaling;
-        public float exponentialScalingBase;
-        public int paths;
+        public int pathCount;
         public Random random;
         public bool tutorial;
         [Header("Runtime variables")]
-        [SerializeField] float bufferLeft;
+        [SerializeField] float totalBuffer;
+        [SerializeField] float totalRate;
+        [SerializeField] float[] bufferPerPath;
+        [SerializeField] float[] bufferLeftPerPath;
+        [SerializeField] float[] ratePerPath;
+        [SerializeField] float globalBuffer;
+        [SerializeField] float globalBufferLeft;
         [SerializeField] List<Wave> waves;
+        [SerializeField] int currentWaveNumber;
         readonly HashSet<AttackerStats> usedAttackers_ = new();
         AttackerStats? newAttacker_;
-        [SerializeField] int currentWaveMaxBatches;
+        [SerializeField] int currentMaxBatches;
+        [SerializeField] List<int> currentPaths;
+        readonly HashSet<AttackerStats> currentUsedAttackers_ = new();
+        int currentTicksLeft_;
+        int currentAttackersLeft_;
+        [SerializeField] float currentSplashDamageMultiplier;
 
         [Serializable]
         public class Batch
@@ -74,347 +90,644 @@ namespace BattleSimulation.Control
                 return tutorialWaves.Count > number ? tutorialWaves[number] : new(null);
 
             while (number >= waves.Count)
-                waves.Add(GenerateWave(waves.Count));
+                waves.Add(GenerateWave());
             return waves[number];
         }
 
-        Wave GenerateWave(int number)
+        Wave GenerateWave()
         {
-            newAttacker_ = null;
-            currentWaveMaxBatches = Mathf.Min(1 + number / 2, maxBatchCount);
-            float scaling = linearScaling * number + quadraticScaling * number * number + cubicScaling * number * number * number + Mathf.Pow(exponentialScalingBase, number);
-            float valueRate = baseValueRate * scaling;
-            bufferLeft += baseEffectiveValueBuffer * scaling;
-
-            print($"Generating wave {number + 1}: scaling {scaling}, rate {valueRate}, buffer {bufferLeft}");
-
-            if (random.Bool(parallelWaveChance))
+            currentWaveNumber = waves.Count;
+            if (currentWaveNumber == 0)
             {
-                Wave? w = TryGenerateParallelWave(valueRate);
-                if (w is not null)
-                    return w;
+                bufferLeftPerPath = new float[pathCount];
+                bufferPerPath = new float[pathCount];
+                ratePerPath = new float[pathCount];
             }
 
-            return GenerateSequentialWave(valueRate);
+            newAttacker_ = null;
+            currentUsedAttackers_.Clear();
+            currentMaxBatches = Mathf.Min(1 + currentWaveNumber / 2, maxBatchCount);
+            currentSplashDamageMultiplier = Mathf.Lerp(0, splashDamageMultiplier, currentWaveNumber / (float)fullSplashDamageMultiplierWave);
+            SelectPaths();
+            UpdateTotalRatesAndBuffers(out float newRate, out float newBuffer);
+
+            print($"Generating wave {currentWaveNumber + 1}: total rate {totalRate}, total buffer {totalBuffer} (global {globalBufferLeft})");
+
+
+            Wave w;
+            // first wave can never be parallel
+            if (currentWaveNumber > 0 && random.Bool(parallelWaveChance))
+            {
+                w = GenerateParallelWave(newRate, newBuffer);
+                print($"global buffer left: {globalBufferLeft}");
+                return w;
+            }
+
+            DistributeNewRateAndBufferFairly(newRate, newBuffer);
+            w = GenerateSequentialWave();
+            print($"global buffer left: {globalBufferLeft}");
+            return w;
         }
 
-        Wave GenerateSequentialWave(float valueRate)
+        void SelectPaths()
         {
-            SelectPathsForSequentialWave(out var selectedPathCount, out var selectedPaths);
-            List<Batch> batches = new();
-            int durationLeft = maxWaveLengthTicks;
-            int attackersLeft = maxAttackersPerWave;
-            for (int i = 0; i < currentWaveMaxBatches; i++)
+            currentPaths.Clear();
+            // always select at least one path
+            int forcedPath = random.Int(pathCount);
+            for (int i = 0; i < pathCount; i++)
             {
-                if (attackersLeft < selectedPathCount)
+                if (i != forcedPath && random.Bool(pathDropChance))
+                    continue;
+                currentPaths.Add(i);
+            }
+        }
+
+        void UpdateTotalRatesAndBuffers(out float newRate, out float newBuffer)
+        {
+            float scaling = 1 +
+                            linearScaling * currentWaveNumber +
+                            quadraticScaling * currentWaveNumber * currentWaveNumber +
+                            cubicScaling * currentWaveNumber * currentWaveNumber * currentWaveNumber;
+            newRate = baseRate * scaling - totalRate;
+            newBuffer = baseBuffer * scaling - totalBuffer;
+            totalRate = baseRate * scaling;
+            totalBuffer = baseBuffer * scaling;
+
+            globalBuffer += newBuffer * globalBufferPortion;
+            globalBufferLeft += globalBuffer;
+            newBuffer *= 1 - globalBufferPortion;
+        }
+
+        void DistributeNewRateAndBufferFairly(float newRate, float newBuffer)
+        {
+            var sortedPaths = currentPaths.Select(p => (p, rate: ratePerPath[p])).OrderBy(p => p.rate).Select(p => p.p);
+            List<int> equalPaths = new();
+            int representative = -1;
+            foreach (int path in sortedPaths)
+            {
+                if (newRate <= 0)
                     break;
-                durationLeft -= Spacing.BatchSpacing.GetTicks();
-                Batch? b = TryMakeSequentialBatch(selectedPathCount, selectedPaths, valueRate, ref durationLeft, ref attackersLeft, i == currentWaveMaxBatches - 1, batches.SelectMany(b => b.typePerPath).Where(a => a != null));
+                if (equalPaths.Count == 0)
+                {
+                    equalPaths.Add(path);
+                    representative = path;
+                    continue;
+                }
+
+                float rateDifference = ratePerPath[path] - ratePerPath[representative];
+                rateDifference = Mathf.Min(newRate / equalPaths.Count, rateDifference);
+                float bufferDifference = bufferPerPath[path] - bufferPerPath[representative];
+                bufferDifference = Mathf.Min(newBuffer / equalPaths.Count, bufferDifference);
+
+                foreach (int equalPath in equalPaths)
+                {
+                    ratePerPath[equalPath] += rateDifference;
+                    bufferPerPath[equalPath] += bufferDifference;
+                }
+
+                newRate -= rateDifference * equalPaths.Count;
+                newBuffer -= bufferDifference * equalPaths.Count;
+
+                equalPaths.Add(path);
+            }
+
+            foreach (int path in currentPaths)
+            {
+                ratePerPath[path] += newRate / currentPaths.Count;
+                bufferPerPath[path] += newBuffer / currentPaths.Count;
+                bufferLeftPerPath[path] += bufferPerPath[path];
+            }
+        }
+
+        Wave GenerateSequentialWave()
+        {
+            List<Batch> batches = new();
+            currentTicksLeft_ = maxWaveLengthTicks + Spacing.BatchSpacing.GetTicks();
+            currentAttackersLeft_ = maxAttackersPerWave;
+            for (int i = 0; i < currentMaxBatches; i++)
+            {
+                if (currentAttackersLeft_ < currentPaths.Count)
+                    break;
+                currentTicksLeft_ -= Spacing.BatchSpacing.GetTicks();
+
+                bool isFirstBatch = i == 0;
+                bool isLastBatch = i == currentMaxBatches - 1;
+                Batch? b = TryMakeSequentialBatch(isFirstBatch, isLastBatch);
                 if (b == null)
                     break;
                 batches.Add(b);
+
+                var selected = b.typePerPath.First(a => a is not null);
+                currentUsedAttackers_.Add(selected);
+                if (usedAttackers_.Add(selected))
+                    newAttacker_ = selected;
             }
 
             return new(newAttacker_, batches.ToArray());
         }
 
-        void SelectPathsForSequentialWave(out int count, out bool[] selectedPaths)
+
+        Batch? TryMakeSequentialBatch(bool isFirstBatch, bool isLastBatch)
         {
-            selectedPaths = new bool[paths];
-            // always select at least one path
-            int forcedPath = random.Int(paths);
-            count = 0;
-            for (int i = 0; i < paths; i++)
-            {
-                if (i != forcedPath && random.Bool(pathDropChance))
-                    continue;
-                selectedPaths[i] = true;
-                count++;
-            }
-        }
+            var selection = PrepareSequentialBatchAttackerSelection(isFirstBatch, isLastBatch);
 
-        Batch? TryMakeSequentialBatch(int pathCount, bool[] selectedPaths, float valueRate, ref int durationLeft, ref int attackersLeft, bool forceMaxCount, IEnumerable<AttackerStats> usedAttackers)
-        {
-            var selection = PrepareSequentialBatchAttackerSelection(pathCount, valueRate, durationLeft, attackersLeft);
-            foreach (var usedAttacker in usedAttackers)
-                selection.Remove(usedAttacker);
-            while (true)
-            {
-                if (selection.Count == 0)
-                    return null;
-                var selected = selection.PopRandom();
-                var batch = TryMakeSequentialBatchOf(selected, pathCount, selectedPaths, valueRate, ref durationLeft, ref attackersLeft, forceMaxCount || selection.Count == 0);
-
-                if (batch == null)
-                    continue;
-                if (usedAttackers_.Add(selected))
-                    newAttacker_ = selected;
-                return batch;
-            }
-        }
-
-        WeightedRandomSet<AttackerStats> PrepareSequentialBatchAttackerSelection(int pathCount, float valueRate, int durationLeft, int attackersLeft)
-        {
-            IEnumerable<AttackerStats> selection = newAttacker_ != null ? usedAttackers_ : availableAttackers;
-            var filteredAttackers = selection.Where(a =>
-                a.MaxValueRate(pathCount) > valueRate
-                && a.MinEffectiveValue(valueRate, pathCount) < bufferLeft
-                && a.MaxEffectiveValue(valueRate, pathCount, durationLeft, attackersLeft) >= bufferLeft / 2
-            );
-            return new(filteredAttackers.Select(a => (a, a.weight)), random.NewSeed());
-        }
-
-        Batch? TryMakeSequentialBatchOf(AttackerStats selected, int pathCount, bool[] selectedPaths, float valueRate, ref int durationLeft, ref int attackersLeft, bool forceMaxCount)
-        {
-            if (!TryPickSequentialBatchSpacing(selected, pathCount, valueRate, durationLeft, attackersLeft, forceMaxCount, out var spacing, out float totalValue, out int count))
-                return null;
-            bufferLeft -= totalValue;
-            durationLeft -= (count - 1) * spacing.GetTicks();
-            attackersLeft -= count * pathCount;
-            var types = Enumerable.Range(0, paths).Select(i => selectedPaths[i] ? selected : null).ToArray();
-            return new(count, spacing, types);
-        }
-
-        bool TryPickSequentialBatchSpacing(AttackerStats selected, int pathCount, float valueRate, int durationLeft, int maxCount, bool useUpBuffer, out Spacing spacing, out float totalValue, out int count)
-        {
-            spacing = default;
-            totalValue = 0;
-            count = 0;
-
-            var lastUnitValue = selected.MinEffectiveValue(valueRate, pathCount);
-            var minSpacing = selected.MinFeasibleSpacing(valueRate, pathCount, bufferLeft - lastUnitValue);
-            var maxSpacing = selected.MaxFeasibleSpacing(valueRate, pathCount, durationLeft);
-            if (minSpacing > maxSpacing)
-                return false;
-
-            if (!useUpBuffer)
-            {
-                spacing = (Spacing)random.Int((int)minSpacing, (int)maxSpacing + 1);
-                PickSequentialBatchAttackerCount(selected, pathCount, valueRate, durationLeft, maxCount, bufferLeft - lastUnitValue, false, spacing, out var extraCount, out float unitValue);
-                totalValue = lastUnitValue + extraCount * unitValue;
-                count = extraCount + 1;
-                return totalValue > 0;
-            }
-
-            for (Spacing s = minSpacing; s <= maxSpacing; s++)
-            {
-                PickSequentialBatchAttackerCount(selected, pathCount, valueRate, durationLeft, maxCount, bufferLeft - lastUnitValue, true, s, out var extraCount, out float unitValue);
-                float value = lastUnitValue + extraCount * unitValue;
-
-                if (value > totalValue)
-                {
-                    totalValue = value;
-                    count = extraCount + 1;
-                    spacing = s;
-                }
-            }
-
-            return totalValue > 0;
-        }
-
-        void PickSequentialBatchAttackerCount(AttackerStats selected, int pathCount, float valueRate, int durationLeft, int maxCount, float bufferLeft, bool forceMaxCount, Spacing spacing, out int extraCount, out float unitValue)
-        {
-            unitValue = selected.GetEffectiveValue(spacing, pathCount, valueRate);
-            var maxExtraCount = 200;
-            maxExtraCount = Mathf.Min(maxExtraCount, durationLeft / spacing.GetTicks());
-            maxExtraCount = Mathf.Min(maxExtraCount, Mathf.FloorToInt(bufferLeft / unitValue));
-            maxExtraCount = Mathf.Min(maxExtraCount, maxCount / pathCount - 1);
-            extraCount = forceMaxCount ? maxExtraCount : random.Int(maxExtraCount + 1);
-        }
-
-        Wave? TryGenerateParallelWave(float valueRate)
-        {
-            var selection = PrepareParallelAttackerSelection(valueRate);
             if (selection.Count == 0)
                 return null;
-            int[] pathSelection = Enumerable.Range(0, paths).ToArray();
-            random.Shuffle(pathSelection);
-            for (int r = 0; r < 5; r++)
-            {
-                var b = TryMakeParallelBatchOnce(valueRate, pathSelection, selection);
-                if (b is null)
-                    continue;
 
-                foreach (var type in b.typePerPath.Where(t => t != null))
+            var selected = selection.PopRandom();
+
+            if (isLastBatch || selection.Count == 0)
+                return MakeSequentialLastBatchOf(selected.stats, selected.spacings, isFirstBatch);
+            return MakeSequentialBatchOf(selected.stats, selected.spacings, isFirstBatch);
+        }
+
+        WeightedRandomSet<(AttackerStats stats, BitSet32 spacings)> PrepareSequentialBatchAttackerSelection(bool isFirstBatch, bool isLastBatch)
+        {
+            IEnumerable<AttackerStats> selection = newAttacker_ != null ? usedAttackers_ : availableAttackers;
+
+            selection = selection.Where(s => !currentUsedAttackers_.Contains(s));
+
+            var withSpacings = selection.Select(a =>
+            {
+                BitSet32 set = new();
+
+                // at least one attacker must fit into the remaining buffer
+                if (OvershootsBuffer(a, Spacing.Min, 1, isFirstBatch))
+                    return (a, set);
+
+                // find all valid spacings
+                for (Spacing s = a.minSpacing; s <= Spacing.Max; s++)
                 {
-                    if (usedAttackers_.Add(type))
-                        newAttacker_ = type;
+                    // if last batch, there must be enough space left in the wave to fill up the buffer
+                    if (isLastBatch)
+                    {
+                        int maxCount = AttackerStatsCalculations.MaxAttackerCount(s, currentPaths.Count, currentTicksLeft_, currentAttackersLeft_);
+                        if (!OvershootsBuffer(a, s, maxCount, isFirstBatch))
+                            continue;
+                    }
+
+                    set.SetBit((int)s);
                 }
 
-                return new(newAttacker_, b);
-            }
+                return (a, set);
+            });
 
-            return null;
+            var filtered = withSpacings.Where(p => !p.set.IsEmpty);
+
+            return new(filtered.Select(p => (p, p.a.weight)), random.NewSeed());
         }
 
-        WeightedRandomSet<AttackerStats> PrepareParallelAttackerSelection(float valueRate)
+        bool OvershootsBuffer(AttackerStats stats, Spacing spacing, int count, bool isFirstBatch)
         {
-            var filteredAttackers = availableAttackers.Where(a => a.MinEffectiveValue(valueRate, 1) * parallelMinCount < bufferLeft);
-            WeightedRandomSet<AttackerStats> selection = new(filteredAttackers.Select(a => (a, a.weight)), random.NewSeed());
-            return selection;
+            var rates = ratePerPath.PickOut(currentPaths);
+            var buffers = bufferLeftPerPath.PickOut(currentPaths);
+            float global = globalBufferLeft;
+            stats.GetRemainingBuffer(spacing, currentSplashDamageMultiplier, splashDamageBase, rates, count, isFirstBatch, ref buffers, ref global);
+            return global < 0;
         }
 
-        Batch? TryMakeParallelBatchOnce(float valueRate, int[] pathSelection, WeightedRandomSet<AttackerStats> selection)
+        Batch MakeSequentialBatchOf(AttackerStats selected, BitSet32 spacings, bool isFirstBatch)
         {
-            PickParallelAttackerTypes(valueRate, pathSelection, new(selection), out var types, out var mockStats);
+            // select random spacing
+            var spacingsArray = spacings.GetBits().Select(i => (Spacing)i).ToArray();
+            Spacing spacing = spacingsArray[random.Int(spacingsArray.Length)];
 
-            if (mockStats.MaxValueRate(1) <= valueRate)
-                return null;
-            int pathCount = types.Count(t => t is not null);
-            int maxCount = Mathf.Min(maxWaveLengthTicks / mockStats.minSpacing.GetTicks(), maxAttackersPerWave / pathCount);
-            float maxEffectiveValue = mockStats.GetEffectiveValue(mockStats.minSpacing, paths, valueRate) * maxCount;
-            if (maxEffectiveValue < bufferLeft * 0.8f)
-                return null;
+            // select random count
+            int maxCount = MaxCountSequentialBatch(selected, spacing, isFirstBatch, false);
+            int count = random.Int(1, maxCount + 1);
 
-            if (!TryPickParallelSpacing(valueRate, mockStats, pathCount, out var spacing, out var unitValue, out int count))
-                return null;
+            // update remaining room in the wave
+            currentTicksLeft_ -= (count - 1) * spacing.GetTicks();
+            currentAttackersLeft_ -= count * currentPaths.Count;
 
-            bufferLeft -= count * unitValue;
+            // update buffers
+            var rates = ratePerPath.PickOut(currentPaths);
+            var buffers = bufferLeftPerPath.PickOut(currentPaths);
+            selected.GetRemainingBuffer(spacing, currentSplashDamageMultiplier, splashDamageBase, rates, count, isFirstBatch, ref buffers, ref globalBufferLeft);
+            for (int i = 0; i < currentPaths.Count; i++)
+                bufferLeftPerPath[currentPaths[i]] = buffers[i];
+
+            // prepare result
+            var types = new AttackerStats[pathCount];
+            foreach (int path in currentPaths)
+                types[path] = selected;
             return new(count, spacing, types);
         }
 
-        void PickParallelAttackerTypes(float valueRate, int[] pathSelection, WeightedRandomSet<AttackerStats> selection, out AttackerStats[] types, out AttackerStats mockStats)
+        Batch MakeSequentialLastBatchOf(AttackerStats selected, BitSet32 spacings, bool isFirstBatch)
         {
-            types = new AttackerStats[paths];
-            mockStats = ScriptableObject.CreateInstance<AttackerStats>();
-            var newAttacker = newAttacker_;
-            foreach (int p in pathSelection)
+            var rates = ratePerPath.PickOut(currentPaths);
+
+            // find best spacing and count
+            float bestGlobalBuffer = float.PositiveInfinity;
+            float[] bestBuffers = null;
+            Spacing bestSpacing = default;
+            int bestCount = 0;
+            foreach (var spacing in spacings.GetBits().Select(i => (Spacing)i))
             {
-                AttackerStats selected;
-                while (true)
+                int count = MaxCountSequentialBatch(selected, spacing, isFirstBatch, false);
+                var buffers = bufferLeftPerPath.PickOut(currentPaths);
+                float global = globalBufferLeft;
+                selected.GetRemainingBuffer(spacing, currentSplashDamageMultiplier, splashDamageBase, rates, count, isFirstBatch, ref buffers, ref global);
+
+                if (global < bestGlobalBuffer)
                 {
-                    selected = selection.PopRandom();
-                    if (newAttacker == null || newAttacker == selected || usedAttackers_.Contains(selected))
+                    bestGlobalBuffer = global;
+                    bestBuffers = buffers;
+                    bestSpacing = spacing;
+                    bestCount = count;
+                }
+            }
+
+            // update remaining room in the wave
+            currentTicksLeft_ -= (bestCount - 1) * bestSpacing.GetTicks();
+            currentAttackersLeft_ -= bestCount * currentPaths.Count;
+
+            // update buffers
+            for (int i = 0; i < currentPaths.Count; i++)
+                bufferLeftPerPath[currentPaths[i]] = bestBuffers![i];
+            globalBufferLeft = bestGlobalBuffer;
+
+            // prepare result
+            var types = new AttackerStats[pathCount];
+            foreach (int path in currentPaths)
+                types[path] = selected;
+            return new(bestCount, bestSpacing, types);
+        }
+
+        int MaxCountSequentialBatch(AttackerStats stats, Spacing spacing, bool isFirstBatch, bool isLastBatch)
+        {
+            int max = AttackerStatsCalculations.MaxAttackerCount(spacing, currentPaths.Count, currentTicksLeft_, currentAttackersLeft_);
+            // if the current upper bound doesn't overshoot the limit, we are done
+            // if this isn't the last batch, we need to leave room for the last batch to use up the limit as much as possible
+            if (!OvershootsBuffer(stats, spacing, max, isFirstBatch))
+                return isLastBatch ? max : max / 2;
+
+            // do a binary search to find the limit
+            max--;
+            int min = 1;
+            while (min < max)
+            {
+                int mid = (min + max + 1) / 2;
+                if (OvershootsBuffer(stats, spacing, mid, isFirstBatch))
+                    max = mid - 1;
+                else
+                    min = mid;
+            }
+
+            return max;
+        }
+
+        Wave GenerateParallelWave(float newRate, float newBuffer)
+        {
+            currentTicksLeft_ = maxWaveLengthTicks;
+            currentAttackersLeft_ = maxAttackersPerWave;
+            foreach (int path in currentPaths)
+                bufferLeftPerPath[path] += bufferPerPath[path];
+
+            Spacing spacing = (Spacing)random.Int((int)Spacing.Max + 1);
+
+            var validAttackers = GetValidParallelAttackers(spacing);
+
+            var selectedAttackers = PickInitialParallelAttackers(validAttackers);
+
+            while (true)
+            {
+                int minCount = MinCountRequiredToUseAllPathBuffers(spacing, selectedAttackers);
+
+                if (!FitsWithinBudget(spacing, selectedAttackers, minCount, newRate, newBuffer, out int mostExpensive))
+                {
+                    selectedAttackers[mostExpensive] = null;
+                    selectedAttackers[mostExpensive] = GetRandomAttacker(validAttackers[mostExpensive], selectedAttackers);
+                    continue;
+                }
+
+                int maxCount = MaxCountParallelWave(spacing, selectedAttackers, newRate, newBuffer, minCount, out bool canFillBuffer);
+
+                if (!canFillBuffer)
+                {
+                    int cheapest = CheapestAttacker(spacing, selectedAttackers, maxCount, newAttacker_ == null);
+                    selectedAttackers[cheapest] = null;
+                    selectedAttackers[cheapest] = GetRandomAttacker(validAttackers[cheapest], selectedAttackers);
+                    continue;
+                }
+
+                DistributeNewRateAndBuffer(spacing, selectedAttackers, newRate, newBuffer, maxCount);
+
+                var attackerPerPath = new AttackerStats[pathCount];
+                for (int i = 0; i < currentPaths.Count; i++)
+                    attackerPerPath[currentPaths[i]] = selectedAttackers[i];
+                if (newAttacker_ is not null)
+                    usedAttackers_.Add(newAttacker_);
+                return new(newAttacker_, new Batch(maxCount, spacing, attackerPerPath));
+            }
+        }
+
+        WeightedRandomSet<AttackerStats>[] GetValidParallelAttackers(Spacing spacing)
+        {
+            int maxCount = AttackerStatsCalculations.MaxAttackerCount(spacing, currentPaths.Count, currentTicksLeft_, currentAttackersLeft_);
+
+            var result = new WeightedRandomSet<AttackerStats>[currentPaths.Count];
+
+            for (int i = 0; i < currentPaths.Count; i++)
+            {
+                int path = currentPaths[i];
+
+                var rate = new[] { ratePerPath[path] };
+                var pathBuffer = bufferLeftPerPath[path];
+
+                var selection = availableAttackers.Where(stats =>
+                {
+                    // comply with minimum spacing
+                    if (stats.minSpacing > spacing)
+                        return false;
+
+                    // at least minCount attackers must fit into the buffer
+                    var value = stats.AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, parallelMinCount, true)[0];
+                    if (value > pathBuffer + globalBufferLeft)
+                        return false;
+
+                    // it must be possible to use up the path buffer
+                    value = stats.AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, maxCount, true)[0];
+                    return value > pathBuffer;
+                });
+
+                result[i] = new(selection.Select(s => (s, s.weight)), random.NewSeed());
+            }
+
+            return result;
+        }
+
+        AttackerStats[] PickInitialParallelAttackers(WeightedRandomSet<AttackerStats>[] validAttackers)
+        {
+            var selectedAttackers = new AttackerStats[currentPaths.Count];
+            var randomOrder = Enumerable.Range(0, currentPaths.Count).ToArray();
+            random.Shuffle(randomOrder);
+            foreach (int i in randomOrder)
+                selectedAttackers[i] = GetRandomAttacker(validAttackers[i], selectedAttackers);
+            return selectedAttackers;
+        }
+
+        AttackerStats GetRandomAttacker(WeightedRandomSet<AttackerStats> validAttackers, IEnumerable<AttackerStats?> currentlyUsedAttackers)
+        {
+            newAttacker_ = null;
+            currentUsedAttackers_.Clear();
+            foreach (var a in currentlyUsedAttackers)
+            {
+                if (a is null)
+                    continue;
+
+                if (currentUsedAttackers_.Add(a) && !usedAttackers_.Contains(a))
+                    newAttacker_ = a;
+            }
+
+            if (newAttacker_ == null)
+            {
+                var selected = validAttackers.PopRandom();
+                if (currentUsedAttackers_.Add(selected) && !usedAttackers_.Contains(selected))
+                    newAttacker_ = selected;
+                return selected;
+            }
+
+            List<AttackerStats> invalid = new();
+            while (true)
+            {
+                var selected = validAttackers.PopRandom();
+                if (!usedAttackers_.Contains(selected) && newAttacker_ != selected)
+                {
+                    invalid.Add(selected);
+                    continue;
+                }
+
+                foreach (var a in invalid)
+                    validAttackers.AddOrUpdate(a, a.weight);
+
+                return selected;
+            }
+        }
+
+        int MinCountRequiredToUseAllPathBuffers(Spacing spacing, AttackerStats[] selectedAttackers)
+        {
+            int maxCount = AttackerStatsCalculations.MaxAttackerCount(spacing, currentPaths.Count, currentTicksLeft_, currentAttackersLeft_);
+
+            for (int count = 1; count < maxCount; count++)
+            {
+                bool allValid = true;
+                for (int i = 0; i < selectedAttackers.Length; i++)
+                {
+                    int path = currentPaths[i];
+                    float[] rate = { ratePerPath[path] };
+                    var value = selectedAttackers[i].AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, count, true)[0];
+                    if (value < bufferLeftPerPath[path])
                     {
-                        selection.AddOrUpdate(selected, selected.weight);
+                        allValid = false;
                         break;
                     }
                 }
 
-                var newMockStats = UpdateMockStats(mockStats, selected);
-                if (newMockStats.GetEffectiveValue(Spacing.Max, 1, valueRate) * parallelMinCount > bufferLeft)
-                    return;
-                mockStats = newMockStats;
-                types[p] = selected;
-                if (!usedAttackers_.Contains(selected))
-                    newAttacker = selected;
+                if (allValid)
+                    return count;
             }
+
+            return maxCount;
         }
 
-        static AttackerStats UpdateMockStats(AttackerStats mockStats, AttackerStats selected)
+        bool FitsWithinBudget(Spacing spacing, AttackerStats[] selectedAttackers, int count, float newRate, float newBuffer, out int mostExpensive)
         {
-            AttackerStats newMockStats = ScriptableObject.CreateInstance<AttackerStats>();
-            newMockStats.baseValue = mockStats.baseValue + selected.baseValue;
-            newMockStats.speed = (mockStats.speed * mockStats.baseValue + selected.speed * selected.baseValue) / newMockStats.baseValue;
-            newMockStats.minSpacing = (Spacing)Mathf.Max((int)mockStats.minSpacing, (int)selected.minSpacing);
-            return newMockStats;
-        }
-
-        bool TryPickParallelSpacing(float valueRate, AttackerStats mockStats, int pathCount, out Spacing spacing, out float unitValue, out int count)
-        {
-            spacing = default;
-            unitValue = 0;
-            count = 0;
-
-            var minSpacing = mockStats.MinFeasibleSpacing(valueRate, 1, bufferLeft);
-            var maxSpacing = mockStats.MaxFeasibleSpacing(valueRate, 1, maxWaveLengthTicks);
-            if (minSpacing > maxSpacing)
-                return false;
-
-            float best = 0;
-            for (Spacing s = minSpacing; s <= maxSpacing; s++)
+            float buffer = globalBufferLeft + newBuffer + newRate * spacing.GetSeconds() * (count - 1);
+            mostExpensive = 0;
+            float mostExpensiveValue = 0;
+            for (int i = 0; i < selectedAttackers.Length; i++)
             {
-                var uv = mockStats.GetEffectiveValue(s, 1, valueRate);
-                var c = PickParallelAttackerCount(s, uv, pathCount);
-                var value = uv * c;
-                if (value > best)
+                int path = currentPaths[i];
+                float[] rate = { ratePerPath[path] };
+                var value = selectedAttackers[i].AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, count, true)[0];
+                value -= bufferLeftPerPath[path];
+
+                if (value > mostExpensiveValue)
                 {
-                    best = value;
-                    spacing = s;
-                    unitValue = uv;
-                    count = c;
+                    mostExpensiveValue = value;
+                    mostExpensive = i;
+                }
+
+                buffer -= value;
+            }
+
+            return buffer >= 0;
+        }
+
+        int MaxCountParallelWave(Spacing spacing, AttackerStats[] selectedAttackers, float newRate, float newBuffer, int minCount, out bool canFillBuffer)
+        {
+            int maxCount = AttackerStatsCalculations.MaxAttackerCount(spacing, currentPaths.Count, currentTicksLeft_, currentAttackersLeft_);
+
+            canFillBuffer = true;
+            for (int count = minCount + 1; count <= maxCount + 1; count++)
+            {
+                if (!FitsWithinBudget(spacing, selectedAttackers, count, newRate, newBuffer, out _))
+                    return count - 1;
+            }
+
+            canFillBuffer = false;
+            return 0;
+        }
+
+        int CheapestAttacker(Spacing spacing, AttackerStats[] selectedAttackers, int count, bool onlyConsiderNewAttackers)
+        {
+            int cheapest = 0;
+            float cheapestValue = float.PositiveInfinity;
+
+            for (int i = 0; i < selectedAttackers.Length; i++)
+            {
+                AttackerStats a = selectedAttackers[i];
+                if (onlyConsiderNewAttackers && a != newAttacker_)
+                    continue;
+
+                int path = currentPaths[i];
+                float[] rate = { ratePerPath[path] };
+                var value = a.AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, count, true)[0];
+                value -= bufferLeftPerPath[path];
+
+                if (value < cheapestValue)
+                {
+                    cheapestValue = value;
+                    cheapest = i;
                 }
             }
 
-            return true;
+            return cheapest;
         }
 
-        int PickParallelAttackerCount(Spacing spacing, float unitValue, int pathCount)
+        void DistributeNewRateAndBuffer(Spacing spacing, AttackerStats[] selectedAttackers, float newRate, float newBuffer, int count)
         {
-            var count = 200;
-            count = Mathf.Min(count, maxWaveLengthTicks / spacing.GetTicks());
-            count = Mathf.Min(count, Mathf.FloorToInt(bufferLeft / unitValue));
-            count = Mathf.Min(count, maxAttackersPerWave / pathCount);
-            return count;
+            float[] values = new float[currentPaths.Count];
+            float totalValue = 0;
+            for (int i = 0; i < selectedAttackers.Length; i++)
+            {
+                int path = currentPaths[i];
+                float[] rate = { ratePerPath[path] };
+                var value = selectedAttackers[i].AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, count, true)[0];
+                value -= bufferLeftPerPath[path];
+
+                values[i] = value;
+                totalValue += value;
+            }
+
+            for (int i = 0; i < selectedAttackers.Length; i++)
+            {
+                int path = currentPaths[i];
+
+                // distribute proportionally to the extra value
+                float portion = values[i] / totalValue;
+                ratePerPath[path] += newRate * portion;
+                bufferPerPath[path] += newBuffer * portion;
+
+                // subtract from buffers
+                values[i] -= portion * (newBuffer + newRate * spacing.GetSeconds() * (count - 1));
+                bufferLeftPerPath[path] = 0;
+                globalBufferLeft -= values[i];
+            }
         }
     }
 
     internal static class AttackerStatsCalculations
     {
-        /// <summary>
-        /// Calculates the value rate of a given attacker type spawning with the given spacing on the given number of paths at once.
-        /// Value rate represents the damage per second the towers would need to deal to kill one attacker on each path in the time it takes before the next one spawns.
-        /// However, the value of an attacker is not equal to its health.
-        /// Some attackers might have greater value, because they are harder to kill, or because they have some powerful abilities.
-        /// Also, in the calculation, the sqrt of spacing time is used instead of the spacing time itself, because attackers closer together can be damaged at once by towers that deal damage in an area.
-        /// </summary>
-        public static float GetValueRate(this AttackerStats stats, Spacing spacing, int paths) => paths * stats.baseValue / Mathf.Sqrt(spacing.GetSeconds());
-
-        /// <summary>
-        /// Calculates the maximum value rate (see <see cref="GetValueRate"/>) for the given attacker type.
-        /// </summary>
-        public static float MaxValueRate(this AttackerStats stats, int paths) => stats.GetValueRate(stats.minSpacing, paths);
-
-        /// <summary>
-        /// Calculates the effective value an attacker will have left after being exposed to valueRate of damage for spacing of time.
-        /// First, it calculates how much value will the attacker have left, assuming it gets sqrt(spacing) seconds of damage.
-        /// Sqrt is used, because even with faster spacing, some can damage multiple attackers at once.
-        /// Effective value is this value that's left multiplied by the attacker's sqrt(speed).
-        /// This reflects that faster attackers will get to the hub sooner, so the towers will have less time to deal with them.
-        /// The relation is not linear, because most abilities don't care about attacker speed.
-        /// </summary>
-        public static float GetEffectiveValue(this AttackerStats stats, Spacing spacing, int paths, float valueRate)
+        public static float NthAttackerValue(this AttackerStats stats, Spacing spacing, float splashDamageMultiplier, float splashDamageBase, float rate, int n)
         {
-            float valueLeft = stats.baseValue * paths - valueRate * Mathf.Sqrt(spacing.GetSeconds());
-            return valueLeft * Mathf.Sqrt(stats.speed);
+            float b = Mathf.Pow(splashDamageBase, spacing.GetSeconds() * stats.speed);
+            float a = splashDamageMultiplier;
+
+            float numerator = 1 - a - b + a * b + a * Mathf.Pow(b * (1 - a), n);
+            float denominator = (1 - a) * (1 - b + a * b);
+            float multiplier = numerator / denominator;
+
+            float value = stats.baseValue * multiplier;
+            value -= rate * spacing.GetSeconds();
+            if (value < 0)
+                value = 0;
+
+            return value * stats.speed;
         }
 
-        /// <summary>
-        /// The minimum possible effective value (see <see cref="GetEffectiveValue"/>) if this attacker is selected.
-        /// </summary>
-        public static float MinEffectiveValue(this AttackerStats stats, float valueRate, int paths) => stats.GetEffectiveValue(Spacing.BatchSpacing, paths, valueRate);
-
-        /// <summary>
-        /// The maximum possible effective value (see <see cref="GetEffectiveValue"/>) if this attacker is selected.
-        /// </summary>
-        public static float MaxEffectiveValue(this AttackerStats stats, float valueRate, int paths, int maxDuration, int maxAttackers)
+        public static float AttackerValueLimit(this AttackerStats stats, Spacing spacing, float splashDamageMultiplier, float splashDamageBase, float rate)
         {
-            int maximumCount = Mathf.Min(maxDuration / stats.minSpacing.GetTicks(), maxAttackers / paths);
-            return stats.MinEffectiveValue(valueRate, paths) + stats.GetEffectiveValue(stats.minSpacing, paths, valueRate) * maximumCount;
+            float beta = Mathf.Pow(splashDamageBase, spacing.GetSeconds() * stats.speed);
+            float limitMultiplier = (1 - beta) / (1 + (splashDamageMultiplier - 1) * beta);
+
+            float value = stats.baseValue * limitMultiplier;
+            value -= rate * spacing.GetSeconds();
+            if (value < 0)
+                value = 0;
+            return value * stats.speed;
         }
 
-        /// <summary>
-        /// The minimum feasible spacing given that the effective value (see <see cref="GetEffectiveValue"/>) cannot go over maxValue.
-        /// </summary>
-        public static Spacing MinFeasibleSpacing(this AttackerStats stats, float valueRate, int paths, float maxValue)
+        public static float[] AttackersValue(this AttackerStats stats, Spacing spacing, float splashDamageMultiplier, float splashDamageBase, float[] rates, int count, bool isFirstBatch)
         {
-            for (Spacing s = stats.minSpacing; s < Spacing.Max; s++)
-                if (stats.GetEffectiveValue(s, paths, valueRate) <= maxValue)
-                    return s;
+            float[] result = new float[rates.Length];
 
-            return Spacing.Max;
+            float b = Mathf.Pow(splashDamageBase, spacing.GetSeconds() * stats.speed);
+            float ib = 1 - b;
+            float a = splashDamageMultiplier;
+
+            float sqrtDenominator = 1 + (a - 1) * b;
+            float denominator = sqrtDenominator * sqrtDenominator;
+
+            for (int i = 0; i < rates.Length; i++)
+            {
+                int n = stats.ContributingAttackers(spacing, splashDamageMultiplier, splashDamageBase, rates[i], count);
+
+                if (n == 0)
+                    continue;
+
+                float numerator = n * ib * ib - a * b * (Mathf.Pow(b * (1 - a), n) - n * ib - 1);
+                float multiplier = numerator / denominator;
+                float value = stats.baseValue * multiplier;
+
+                float firingTime = spacing.GetSeconds() * (n - 1);
+                if (!isFirstBatch)
+                    firingTime++;
+
+                value -= rates[i] * firingTime;
+                if (value < 0)
+                    value = 0;
+                result[i] = value * stats.speed;
+            }
+
+            return result;
         }
 
-        /// <summary>
-        /// The maximum feasible spacing given that the rate (see <see cref="GetValueRate"/>) must be at least valueRate, but the spacing must be at most maxTicks.
-        /// </summary>
-        public static Spacing MaxFeasibleSpacing(this AttackerStats stats, float valueRate, int paths, int maxTicks)
+        public static int MaxAttackerCount(Spacing spacing, int pathCount, int ticksLeft, int attackersLeft)
         {
-            for (Spacing s = Spacing.Max; s > stats.minSpacing; s--)
-                if (s.GetTicks() <= maxTicks && stats.GetValueRate(s, paths) > valueRate)
-                    return s;
+            return Mathf.Min(ticksLeft / spacing.GetTicks() + 1, attackersLeft / pathCount);
+        }
 
-            return stats.minSpacing;
+        public static int ContributingAttackers(this AttackerStats stats, Spacing spacing, float splashDamageMultiplier, float splashDamageBase, float rate, int count)
+        {
+            if (stats.AttackerValueLimit(spacing, splashDamageMultiplier, splashDamageBase, rate) > 0.001f)
+                return count;
+
+            for (int i = 1; i <= count; i++)
+                if (stats.NthAttackerValue(spacing, splashDamageMultiplier, splashDamageBase, rate, i) < 0.001f)
+                    return i - 1;
+
+            return count;
+        }
+
+        public static void GetRemainingBuffer(this AttackerStats stats, Spacing spacing, float splashDamageMultiplier, float splashDamageBase, float[] rates, int count, bool isFirstBatch, ref float[] buffers, ref float globalBuffer)
+        {
+            if (count <= 0)
+                return;
+
+            var value = stats.AttackersValue(spacing, splashDamageMultiplier, splashDamageBase, rates, count, isFirstBatch);
+
+            for (int i = 0; i < rates.Length; i++)
+            {
+                buffers[i] -= value[i];
+                if (buffers[i] < 0)
+                {
+                    globalBuffer += buffers[i];
+                    buffers[i] = 0;
+                }
+            }
         }
     }
 }

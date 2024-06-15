@@ -57,7 +57,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1371268028260157725, guid: 15a7a8f59df3a3746bf19aae6c757958, type: 3}
       propertyPath: damageReduction
-      value: 9
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1371268028260157725, guid: 15a7a8f59df3a3746bf19aae6c757958, type: 3}
       propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.size

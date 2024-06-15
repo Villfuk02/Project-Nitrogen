@@ -789,7 +789,7 @@ We want the tiles of the generated world to be at different heights, however, we
 Ultimately, this is a 2D generation task, with the addition that modules can appear at different height levels.
 
 At first, it might seem sensible to have one slot per world tile.
-However, each tiles on it sown will be mostly a flat square.
+However, each tile on its own will be mostly a flat square.
 The interesting terrain features will appear on the boundaries between the tiles.
 For example, two tiles at different height levels next to each other will have a cliff separating them.
 If we wanted to incorporate the cliff into the tile module, which tile does it belong to?
@@ -949,7 +949,7 @@ Some obstacles will appear more often or less often around other obstacles.
 This means that an obstacle's probability to be placed on a given tile will be influenced by the obstacles already placed on surrounding tiles.
 For each obstacle type, the terrain type can specify its \emph{affinity} for each other obstacle type.
 When trying to place the obstacle on a given tile, its placement probability will be modified for each already placed obstacle by the affinity for that obstacle times the \emph{closeness} to it.
-The closeness is some function that decreases with distance, similar to \emph{crowding penalty} we used in section~\ref{sec:analysis-our-simulated-annealing} when generating paths.
+The closeness is some function that decreases with distance, similar to the \emph{crowding penalty} we used in section~\ref{sec:analysis-our-simulated-annealing} when generating paths.
 
 Since each tile can only have one obstacle, the more important obstacles should be placed before others.
 For example, we want the resource providing obstacles to be placed first.
@@ -965,7 +965,7 @@ This should be all we need to procedurally place obstacles how we want.
 Placing the obstacles should be fairly straightforward given the parameters we decided on.
 
 The algorithm should place them phase by phase.
-For each phase, it will through all tiles, and for each tile, it will assign an obstacle to it with the probability that is calculated for that obstacle for that tile.
+For each phase, it will loop through all tiles, and for each tile, it will assign an obstacle to it with the probability that is calculated for that obstacle for that tile.
 The probability is 0 for invalid placements, like path tiles, tiles with another obstacle, or tiles with the wrong surface.
 When multiple obstacles from the same phase want to be placed on the same tile, we just select one of them at random.
 
@@ -1018,7 +1018,7 @@ If not, it returns 0.
 \end{algorithm}
 
 Of course, there are some optimizations we can make.
-For example, we don't have to go through all tiles, only those that don't have an obstacle, or a path going through them.
+For example, we don't have to go through all tiles, only those that don't have an obstacle and don't have a path going through them.
 
 \subsection{Generating Obstacle Models}
 
@@ -1064,7 +1064,7 @@ It is created by combining some base functions using arithmetic and other operat
 
 The most important base function is which tiles have the obstacle we care about and which don't.
 We could make a function that returns 1 for points within the tiles with the obstacle and 0 otherwise.
-However, this doesn't help us make smooth transitions, because we cannot distinguish points that are just outside a tile with the obstacle from positions far away.
+However, this doesn't help us make smooth transitions, because we cannot distinguish points that are just outside a tile with the obstacle from points that are far away.
 We would also like to know how far inside the tile with the obstacle is any given point.
 So, we need a \emph{signed distance function}, or \emph{SDF}, a function which tells the distance to a boundary, but has a different sign on the outside than the inside.
 We can see the SDF of some obstacle tiles in figure~\ref{fig:basic-fns}, along with an SDF for the path tiles, and a function that just returns the height of the terrain at any given point.
@@ -1282,7 +1282,7 @@ This is also true for each other attacker, so the towers effectively get $g$ sec
 \end{equation*}
 When we put all wave-dependent terms on the right and rearrange, we get that the player beats the wave if and only if
 \begin{equation}\label{eqn:beat-finite-wave}
-    B \geq nhs - (n - 1)Rgs.
+    B \geq s(nh - (n - 1)Rg).
 \end{equation}
 
 We cannot quantify the difficulty of the wave with one number anymore.
@@ -1294,7 +1294,7 @@ In the time it takes for the wave to spawn, the player's defenses can deal $Rg$ 
 Then $B$ can be thought of as an additional buffer of firepower they have to clean up the rest.
 
 In figure~\ref{fig:model3} we show the set of defenses that can beat a particular wave, and we show how it changes when the wave's parameters change.
-The blue area represents the defenses which can beat the wave, and the orange area represents defenses that don't exist because they would violate inequality~\ref{eqn:RB}.
+The blue area represents the defenses which can beat the wave, and the orange area represents defenses that can't exist because they would violate inequality~\ref{eqn:RB}.
 We also highlight two points in each chart, each of these points represents one example defense.
 $T_1$ consists of one tower with $d_t=5$ and $l_t=12$.
 $T_2$ consists of one tower with $d_t=10$ and $l_t=1.5$ which is an unusually small path coverage, to showcase what happens when $l_t/(sg) < 1$ as shown in figures~\ref{fig:model3-s2} and~\ref{fig:model3-g2}.
@@ -1420,11 +1420,11 @@ Otherwise, the derivation is the same as for \hyperref[sec:analysis-waves-finite
 \end{equation*}
 Then we substitute for $t_k$:
 \begin{equation*}
-    B/s + (n-1)Rg \geq nh - (n-1)\lambda^{sg}.
+    B/s + (n-1)Rg \geq nh - (n-1)h\lambda^{sg}.
 \end{equation*}
 If we put all wave-dependent terms on the right again, we get
 \begin{equation}\label{eqn:beat-wave-with-aoe}
-    B \geq nhs - (n-1)(Rg + \lambda^{sg})s.
+    B \geq s(nh - (n-1)(Rg + h\lambda^{sg})).
 \end{equation}
 We can see this condition is very similar to the one for model 3 (inequality~\ref{eqn:beat-finite-wave}).
 
@@ -1439,15 +1439,15 @@ To determine which defenses will beat a wave with $N$ batches, we could extend t
 The defenses simple have to beat all the batches one by one, but they still have the same buffer $B$.
 This gives us
 \begin{equation*}
-    B \geq \sum_{k=1}^{N} n_k h_k s_k - \sum_{k=1}^{N} (n_k - 1)(R g_k + \lambda^{s_k g_k})s_k.
+    B \geq \sum_{k=1}^{N} s_k (n_k h_k - (n_k - 1)(R g_k + h_k \lambda^{s_k g_k})).
 \end{equation*}
 
 However, there is more we need to consider.
 There is a pretty big issue which manifests for example, when the first batch spawns small attackers with large spacing, so the defenses can kill each of them before then next one spawns, and for the second batch this is no longer true.
-The current formula essentially allows dealing damage in advance to attackers that haven't spawned yet, because the therm $R g_k + \lambda^{s_k g_k}$ is not limited by the total health of the attacker.
+The current formula essentially allows dealing damage in advance to attackers that haven't spawned yet, because the therm $R g_k + h_k \lambda^{s_k g_k}$ is not limited by the total health of the attacker.
 To fix this, we need to introduce this limit, so we get
 \begin{equation*}
-    B \geq \sum_{k=1}^{N} n_k h_k s_k - \sum_{k=1}^{N} (n_k - 1)\min(R g_k + \lambda^{s_k g_k}, h_k)s_k.
+    B \geq \sum_{k=1}^{N} s_k (n_k h_k - (n_k - 1)\min(R g_k + h_k \lambda^{s_k g_k}, h_k)).
 \end{equation*}
 This wasn't a problem before, because this only happened for waves which the defenses beat anyway, so we didn't mention it.
 It is a problem now, because beating one batch doesn't guarantee beating all of them.
@@ -1455,7 +1455,7 @@ It is a problem now, because beating one batch doesn't guarantee beating all of 
 We specified that the spacing between batches will be 1 second, but the previous condition acts like the next batch begins right when the previous one ends.
 An updated condition could look like this:
 \begin{equation*}
-    B \geq \sum_{k=1}^{N} n_k h_k s_k - \sum_{k=1}^{N} (n_k - 1)\min(R g_k + \lambda^{s_k g_k}, h_k)s_k - \sum_{k=2}^{N} \min(R + \lambda^{s_k}, h_k)s_k.
+    B \geq \sum_{k=1}^{N} s_k (n_k h_k - (n_k - 1)\min(R g_k + h_k \lambda^{s_k g_k}, h_k)) - \sum_{k=2}^{N} s_k \cdot \min(R + h_k \lambda^{s_k}, h_k).
 \end{equation*}
 However, the collateral damage calculations are all wrong.
 We never investigated what happens with an uneven attacker spacing, but we don't even know what's the spacing going to be like.
@@ -1466,7 +1466,7 @@ So, we will ignore this problem, and hope that the waves we generate don't devia
 If this ends up being a problem, we can adjust the wave generation algorithm to only produce waves that aren't problematic.
 The only thing we'll change is that we'll ignore collateral damage across batches, giving us the following condition:
 \begin{equation}
-    B \geq \sum_{k=1}^{N} n_k h_k s_k - \sum_{k=1}^{N} (n_k - 1)\min(R g_k + \lambda^{s_k g_k}, h_k)s_k - \sum_{k=2}^{N} \min(R, h_k)s_k.
+    B \geq \sum_{k=1}^{N} s_k (n_k h_k - (n_k - 1)\min(R g_k + h_k \lambda^{s_k g_k}, h_k)) - \sum_{k=2}^{N} s_k \cdot \min(R, h_k).
 \end{equation}
 
 \subsection{Model 6: Multiple Paths}
