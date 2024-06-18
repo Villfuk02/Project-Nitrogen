@@ -832,6 +832,34 @@
       \field{pages}{1\bibrangedash 8}
       \range{pages}{8}
     \endentry
+    \entry{Mathematica}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=ab5e97ed23587138329ff60a8dd8ad95}{%
+           family={{Wolfram}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{ab5e97ed23587138329ff60a8dd8ad95}
+      \strng{fullhash}{ab5e97ed23587138329ff60a8dd8ad95}
+      \strng{bibnamehash}{ab5e97ed23587138329ff60a8dd8ad95}
+      \strng{authorbibnamehash}{ab5e97ed23587138329ff60a8dd8ad95}
+      \strng{authornamehash}{ab5e97ed23587138329ff60a8dd8ad95}
+      \strng{authorfullhash}{ab5e97ed23587138329ff60a8dd8ad95}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Wolfram Mathematica: Modern Technical Computing}
+      \field{urlday}{18}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.wolfram.com/mathematica/
+      \endverb
+      \verb{url}
+      \verb https://www.wolfram.com/mathematica/
+      \endverb
+    \endentry
     \entry{johnston2018random}{book}{}
       \name{author}{1}{}{%
         {{hash=e92745ac08515aac577188dcdd2d523c}{%
@@ -904,8 +932,8 @@
       \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
       \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
       \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Random Class (System) - Microsoft learn}

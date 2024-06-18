@@ -284,16 +284,16 @@ So, a state with less crowded tiles has a lower cost, and a state with more crow
 However, we can just calculate the relative improvement $r_i = f(s) - f(s')$ between the current state $s$ and the new state $s'$ to save on computation.
 The relative improvement still gives us enough information to create a good acceptance probability function, but it is simple to compute, because $s$ and $s'$ share most of their tiles.
 
-For $s'$ obtained by changing tile $v$ in $s$ to $w$, we can calculate $r_i$ as
+For $s'$ obtained by changing tile $v$ in $s$ to $w$, we can calculate $r_i$ as:
 \begin{equation*}
-    r_i = c_e(v) - c_e(w)  + 2 c_t(v,s) - 2 c_t(w,s) + 2c(w,v) - 2.
+    r_i = c_e(v) - c_e(w)  + 2 c_t(v,s) - 2 c_t(w,s) + 2c(w,v) - 2
 \end{equation*}
 We prove this in section~\ref{sec:analysis-proof-improvement}.
 This can be computed in $O(1)$ time if we keep the $c_t(t,s)$ of every tile $t$ in the world.
 We have to keep all $c_t$ updated when we change the current state to the new state.
 This update is simple for each tile $t$:
 \begin{equation*}
-    c_t(t,s') = c_t(t,s) - c(t,v) + c(t,w).
+    c_t(t,s') = c_t(t,s) - c(t,v) + c(t,w)
 \end{equation*}
 
 \head{Initial State}{sa-initial-state}
@@ -393,47 +393,47 @@ In figure~\ref{fig:simulated-annealing}, we can see how the paths evolve over ti
 \subsection{Simplifying the Relative Improvement Calculation}\label{sec:analysis-proof-improvement}
 
 In paragraph~\nameref{head:sa-cost-function} of the previous section, we defined the cost function we will use and its components:
-The cost function for state $s$ is
+The cost function for state $s$ is defined as follows:
 \begin{equation*}
-    f(s) = \sum_{t \in s} \left(c_e(t) + \sum_{u \in s} c(t,u) \right).
+    f(s) = \sum_{t \in s} \left(c_e(t) + \sum_{u \in s} c(t,u) \right)
 \end{equation*}
 Where $c(t,u)$ is the crowding penalty that tile $t$ gets from its distance to tile $u$, and $c_e(t)$ is the crowding penalty tile $t$ gets from its distance to the edge of the world.
 The total crowding penalty from tiles in state $s$ for a given tile $t$ is then $c_t(t,s) = \sum_{u \in s} c(t,u)$.
 We also stated that we will only calculate the relative improvement $r_i = f(s) - f(s')$ between the current state $s$ and the new state $s'$.
 
-In this section, we show that the relative improvement $r_i = f(s) - f(s')$ for $s'$ obtained by changing tile $v$ in $s$ to $w$ can be calculated as
+In this section, we show that the relative improvement $r_i = f(s) - f(s')$ for $s'$ obtained by changing tile $v$ in $s$ to $w$ can be calculated as follows:
 \begin{equation*}
-    r_i = c_e(v) - c_e(w)  + 2 c_t(v,s) - 2 c_t(w,s) + 2c(w,v) - 2.
+    r_i = c_e(v) - c_e(w)  + 2 c_t(v,s) - 2 c_t(w,s) + 2c(w,v) - 2
 \end{equation*}
 
 We start by substituting the definition for the cost function $f$.
 \begin{align*}
-    r_i & = f(s) - f(s')                                                                                                                 \\
-        & = \sum_{t \in s} \left(c_e(t) + \sum_{u \in s} c(t,u) \right) - \sum_{t \in s'} \left(c_e(t) + \sum_{u \in s'} c(t,u) \right). \\
+    r_i & = f(s) - f(s')                                                                                                                \\
+        & = \sum_{t \in s} \left(c_e(t) + \sum_{u \in s} c(t,u) \right) - \sum_{t \in s'} \left(c_e(t) + \sum_{u \in s'} c(t,u) \right)
 \end{align*}
 Now we separate $v$ from $s$ and $w$ from $s'$.
 \begin{align*}
      & = \sum_{t \in s} \left(c_e(t) + c(t,v) + \sum_{u \in s - v} c(t,u)\right) - \sum_{t \in s'} \left(c_e(t) + c(t,w) + \sum_{u \in s' - w} c(t,u) \right) \\
      & = \left(c_e(v) + c(v,v) + \sum_{u \in s - v} c(v,u)\right) + \sum_{t \in s - v} \left(c_e(t) + c(t,v) + \sum_{u \in s - v} c(t,u)\right)               \\
-     & \ - \left(c_e(w) + c(w,w) + \sum_{u \in s' - w} c(w,u) + \sum_{t \in s' - w} \left(c_e(t) + c(t,w) + \sum_{u \in s' - w} c(t,u) \right) \right).       \\
+     & \ - \left(c_e(w) + c(w,w) + \sum_{u \in s' - w} c(w,u) + \sum_{t \in s' - w} \left(c_e(t) + c(t,w) + \sum_{u \in s' - w} c(t,u) \right) \right)        \\
     \intertext{We use that $s - v = s' - w$, and we name $q$ the set of tiles both states have in common.}
      & = c_e(v) + c(v,v) + \sum_{u \in q} c(v,u) + \sum_{t \in q} \left(c_e(t) + c(t,v) + \sum_{u \in q} c(t,u)\right)                                        \\
      & \ - \left(c_e(w) + c(w,w) + \sum_{u \in q} c(w,u) + \sum_{t \in q} \left(c_e(t) + c(t,w) + \sum_{u \in q} c(t,u) \right)\right)                        \\
      & = c_e(v) + c(v,v) + \sum_{u \in q} c(v,u) + \sum_{t \in q} c_e(t) + \sum_{t \in q} c(t,v) + \sum_{t \in q} \sum_{u \in q} c(t,u)                       \\
      & \ - \left(c_e(w) + c(w,w) + \sum_{u \in q} c(w,u) + \sum_{t \in q} c_e(t) + \sum_{t \in q} c(t,w) + \sum_{t \in q} \sum_{u \in q} c(t,u)\right)        \\
      & = c_e(v) + c(v,v) + \sum_{u \in q} c(v,u) +  \sum_{t \in q} c(t,v)                                                                                     \\
-     & \ - \left(c_e(w) + c(w,w) + \sum_{u \in q} c(w,u) + \sum_{t \in q} c(t,w) \right).                                                                     \\
+     & \ - \left(c_e(w) + c(w,w) + \sum_{u \in q} c(w,u) + \sum_{t \in q} c(t,w) \right)                                                                      \\
     \intertext{The function $c$ is symmetric, because it depends only on the distance between the tiles, which is symmetric, so we get:}
-     & = c_e(v) + c(v,v) + 2 \sum_{t \in q} c(v,t) - \left(c_e(w) + c(w,w) + 2 \sum_{t \in q} c(w,t) \right).                                                 \\
+     & = c_e(v) + c(v,v) + 2 \sum_{t \in q} c(v,t) - \left(c_e(w) + c(w,w) + 2 \sum_{t \in q} c(w,t) \right)                                                  \\
     \intertext{The crowding a tile inflicts to itself is 1, so $c(v,v) = c(w,w)$.}
-     & = c_e(v) - c_e(w)  + 2 \sum_{t \in q} c(v,t) - 2 \sum_{t \in q} c(w,t) .                                                                               \\
+     & = c_e(v) - c_e(w)  + 2 \sum_{t \in q} c(v,t) - 2 \sum_{t \in q} c(w,t)                                                                                 \\
     \intertext{We can add the terms $2c(v,v) - 2c(v,v) + 2c(w,v) - 2c(w,v)$ because they sum to zero:}
      & = c_e(v) - c_e(w)  + 2 \sum_{t \in q} c(v,t) - 2 \sum_{t \in q} c(w,t)                                                                                 \\
-     & \ + 2c(v,v) - 2c(v,v) + 2c(w,v) - 2c(w,v),                                                                                                             \\
-    \intertext{and we collect the sums to sum over the elements of $s$:}
+     & \ + 2c(v,v) - 2c(v,v) + 2c(w,v) - 2c(w,v)                                                                                                              \\
+    \intertext{And we collect the sums to sum over the elements of $s$.}
      & = c_e(v) - c_e(w)  + 2 \sum_{t \in s} c(v,t) - 2 \sum_{t \in s} c(w,t) - 2c(v,v) + 2c(w,v)                                                             \\
      & = c_e(v) - c_e(w)  + 2 c_t(v,s) - 2 c_t(w,s) - 2c(v,v) + 2c(w,v)                                                                                       \\
-     & = c_e(v) - c_e(w)  + 2 c_t(v,s) - 2 c_t(w,s) + 2c(w,v) - 2 .                                                                                           \\
+     & = c_e(v) - c_e(w)  + 2 c_t(v,s) - 2 c_t(w,s) + 2c(w,v) - 2
 \end{align*}
 $\hfill\square$
 
@@ -892,7 +892,7 @@ This leads to the generator first collapsing slots in various parts of the world
 Then it has to somehow connect these to make the world follow the rules we set.
 This leads to much more diverse results, however, the success rate becomes very low, leading to slower generation.
 
-As a compromise, we tried to select the slots randomly, but give slots with lower entropy a greater weight, so they are more likely to be selected.
+As a compromise, we tried to still select the slots randomly, but give slots with lower entropy a greater weight, so they are more likely to be selected.
 Specifically, the weight of each slot is $1/entropy$, making it more likely to select more constrained slots, but still collapsing unconstrained slots once in a while.
 This leads to results similar to the ones with uniform randomness, but it increases the success rate.
 However, this results in the algorithm being even slower, probably because calculating the entropy of a slot is not trivial.
@@ -965,7 +965,6 @@ This should be all we need to procedurally place obstacles how we want.
 \subsection{Obstacle Placement Algorithm}
 
 Placing the obstacles should be fairly straightforward given the parameters we decided on.
-
 The algorithm should place them phase by phase.
 For each phase, it will loop through all tiles, and for each tile, it will assign an obstacle to it with the probability that is calculated for that obstacle for that tile.
 The probability is 0 for invalid placements, like path tiles, tiles with another obstacle, or tiles with the wrong surface.
@@ -1025,7 +1024,7 @@ For example, we don't have to go through all tiles, only those that don't have a
 \subsection{Generating Obstacle Models}
 
 We can now determine which tiles are blocked by which obstacles.
-But by requirement~\ref{RW:obstacle-models}, \enquote{each tile with an obstacle will usually contain a whole procedurally generated cluster of obstacle models}.
+But by requirement~RW\ref{RW:obstacle-models}, \enquote{each tile with an obstacle will usually contain a whole procedurally generated cluster of obstacle models}.
 How do we generate these models?
 
 For any given obstacle type, we can through all the tiles with that obstacle type and place some number of the corresponding model at random points within the tile.
@@ -1168,9 +1167,8 @@ By adding together more layers of the noise, each with a different scale and amp
 \head{Putting it All Together}{}
 In figure~\ref{fig:noise-expr-steps}, we show how we can build up a noise expression that we could use to place obstacle models.
 In addition to the basic functions and arithmetic operations, we also use a function called \mono{clamp} which clamps a value between the specified minimum and maximum.
-We also use some shortcuts for the values it computes in the individual steps, only to save space.
-
-In the first step, we
+We do this in three steps to show how the output of the noise expression changes with each addition.
+Each sub-figure represents one step, and later steps reference the noise expressions from the previous steps in their pseudocode, written as \mono{STEP\_\#}.
 
 \begin{center}
     \captionsetup{type=figure}
@@ -1182,17 +1180,17 @@ In the first step, we
     \begin{minipage}{.31\textwidth}
         \centering
         \includegraphics[width=0.95\textwidth]{img/noise expr step1.png}
-        \small{\mono{STEP1 =\\clamp(min:-2, max:0.2,\\obstacle(in:1,out:-3))}}
+        \small{\mono{STEP\_1 =\\clamp(min:-2, max:0.2,\\obstacle(in:1,out:-3))}}
     \end{minipage}%
     \begin{minipage}{.31\textwidth}
         \centering
         \includegraphics[width=0.95\textwidth]{img/noise expr step2.png}
-        \small{\mono{STEP2 =\\STEP1 +\\path(in:-2, out:0)}}
+        \small{\mono{STEP\_2 =\\STEP\_1 +\\path(in:-2, out:0)}}
     \end{minipage}%
     \begin{minipage}{.31\textwidth}
         \centering
         \includegraphics[width=0.95\textwidth]{img/noise expr step3.png}
-        \small{\mono{STEP2 +\\0.8 noise(scale:0.9) +\\0.54 noise(scale:0.45)}}
+        \small{\mono{STEP\_2 +\\0.8 noise(scale:0.9) +\\0.54 noise(scale:0.45)}}
     \end{minipage}
     \caption{Building up a noise expression step by step.}
     \label{fig:noise-expr-steps}
@@ -1244,13 +1242,14 @@ We also imagine each defensive tower $t$ to always deal some fixed amount of dam
 This means that the attacker will spend $l_t / s$ seconds in its range, taking $d_t \cdot l_t / s$ damage in total.
 
 A defense $T$ that consists of multiple towers can then deal damage equal to the sum of the individual towers.
-This means that the defense can beat the wave if and only if
-\begin{equation*}
-    \sum_{t \in T} d_t l_t / s \geq h.
-\end{equation*}
-We will refer to the total damage the towers would deal to an attacker with speed 1 as \emph{damage capacity} $C$, and
+This means that the defense can beat the wave if and only if the following inequality holds:
+\begin{equation}
+    \sum_{t \in T} d_t l_t / s \geq h
+\end{equation}
+We will refer to the total damage the towers would deal to an attacker with speed 1 as \emph{damage capacity} $C$.
+It can be calculated as follows:
 \begin{equation}\label{eqn:C}
-    C = \sum_{t \in T} d_t l_t.
+    C = \sum_{t \in T} d_t l_t
 \end{equation}
 This lets us write the condition more concisely as $C \geq hs$.
 
@@ -1273,28 +1272,33 @@ Intuitively, the towers need to be able to kill an attacker every $g$ seconds to
 
 When each attacker spends at least $g$ seconds within the range of each tower, then each tower $t$ deals in total $d_t g$ damage to each attacker.
 However, when the spacing is larger, some towers won't be able to deal damage to each attacker for $g$ seconds, but only $l_t / s$ as we determined in the previous model.
-So, each tower can only deal $d_t$ damage per second for $\min(l_t / s, g)$ seconds, so the towers will deal in total
-\begin{equation*}
+So, each tower can only deal $d_t$ damage per second for $\min(l_t / s, g)$ seconds.
+So, to each attacker, the towers will deal a total damage amount expressed by the following formula:
+\begin{equation}
     \sum_{t \in T} d_t \cdot \min(l_t / s, g)
-\end{equation*}
-damage to each attacker.
-
-It is more useful to think about the damage per second, so let $R$ be the total damage per second the player's defenses can deal to the attackers, or the \emph{damage rate}.
-One attacker spawns each $g$ seconds, so when we divide the previous equation by $g$, we get that
-\begin{equation}\label{eqn:R}
-    R = \sum_{t \in T} d_t \cdot \min(l_t / (s g), 1).
 \end{equation}
-We see that $R$ is at most $\sum_{t \in T} d_t$, and it is equal to it only if $l_t / (sg) \geq 1$ for each tower $t$.
-$R$ is also at most $\sum_{t \in T} d_t \cdot l_t / (s g)$, and it is equal to it in the other cases, when $l_t / (sg) \leq 1$.
-By equation~\ref{eqn:C}, $\sum_{t \in T} d_t \cdot l_t / (s g) = C/(s g)$, so we know that
+
+It is more useful to think about the damage per second, so let $R$ be the total damage per second the player's defenses can deal to the attackers, or the \emph{damage~rate}.
+One attacker spawns each $g$ seconds, so we can calculate the damage rate by dividing the previous formula by $g$:
+\begin{equation}\label{eqn:R}
+    R = \sum_{t \in T} d_t \cdot \min(l_t / (s g), 1)
+\end{equation}
+We see that $R$ is at most $\sum_{t \in T} d_t$, and it is equal to it only when $l_t / (s g) \geq 1$ for each tower $t$.
+
+$R$ is also at most $\sum_{t \in T} d_t \cdot l_t / (s g)$, and it is equal to it in the other cases.
+Since $s$ and $g$ are not dependent on the tower $t$, we can bring them in from of the sum:
+\begin{equation}
+    \frac{1}{s g} \sum_{t \in T} d_t \cdot l_t / (s g)
+\end{equation}
+This sum is by definition equal to $C$ (see equation~\ref{eqn:C}), so we can substitute to get the following relation between $R$ and $C$:
 \begin{equation}\label{eqn:RC}
     R \leq \frac{C}{s g}
 \end{equation}
-This is an important fact that will be useful later.
 
 Since one attacker spawns every $g$ seconds, the towers can deal at most $Rg$ damage to each attacker.
-So, the player will beat the game if and only if $Rg \geq h$.
-Sometimes, $R$ does not depend only on the player's defenses, but also on the attacker speed $s$ and spacing $g$.
+Each attacker has $h$\,HP, so the player will beat the wave if and only if $Rg \geq h$.
+
+As described before, sometimes $R$ does not depend only on the player's defenses, but also on the attacker speed $s$ and spacing $g$.
 However, this should be very rare, because the maximum spacing we will use is $g=2$ seconds, and no attacker will be faster than $s=4$ tiles per second, which is still extremely fast compared to most attackers.
 This means that every tower has to have $l_t \geq 8$ for $g$ and $s$ to never influence $R$, which is easily achievable with most tower types.
 For now, we can think of $R$ as being a constant determined by the player's defenses.
@@ -1311,12 +1315,13 @@ So, they would defeat the wave if and only if $C/s \geq nh$.
 The towers still target only the first attacker, so they will kill it first.
 Then, they can deal with the second attacker, but the second attacker is $g$ seconds behind the first, so they have $g$ more seconds to deal with it.
 This is also true for each other attacker, so the towers effectively get $g$ seconds of firing for free for each attacker beyond the first.
+Thus, a more accurate condition for beating the wave is the following inequality:
 \begin{equation*}
-    C/s + (n-1) R g \geq nh.
+    C/s + (n-1) R g \geq nh
 \end{equation*}
-When we put all wave-dependent terms on the right and rearrange, we get that the player beats the wave if and only if
+When we put all wave-dependent terms on the right and rearrange, we get that the player beats the wave if and only if the following condition is satisfied:
 \begin{equation}\label{eqn:beat-finite-wave}
-    C \geq s(nh - (n - 1)Rg).
+    C \geq s(nh - (n - 1)Rg)
 \end{equation}
 
 We cannot quantify the difficulty of the wave with one number anymore.
@@ -1324,7 +1329,8 @@ For example, there exists a defense $T_1$ which beats the wave, and another defe
 So, we have to accept that each defense has two characteristic values.
 
 We aim to illustrate how the required damage capacity and rate change based on the wave parameters using figure~\ref{fig:model3}.
-The blue area represents the defenses which can beat the wave, and the orange area represents defenses that can't exist because they would violate inequality~\ref{eqn:RC}.
+The blue area represents the defenses which can beat the wave, and the white area represents those which can't.
+The orange area shows defenses that can't exist because they would violate inequality~\ref{eqn:RC}.
 We also highlight two points in each plot, each of these points represents one example defense.
 $T_1$ consists of one tower with $d_t=5$ and $l_t=12$.
 $T_2$ consists of one tower with $d_t=10$ and $l_t=1.5$ which is an unusually small path coverage.
@@ -1333,13 +1339,13 @@ Figure~\ref{fig:model-3-base} shows a wave which we will use as a base case for 
 We can see that both $T_1$ and $T_2$ are able to beat it.
 In figure~\ref{fig:model-3-h20} we can see what happens when the attacker health becomes 20\,HP.
 Neither of the defenses are able to beat it now.
-Figure~\ref{fig:model-3-s2} shows that fast attackers are especially problematic for towers with small path coverage $l_t$.
+Figure~\ref{fig:model-3-s2} shows that increasing the speed $s$ to 2 causes problems for towers with small path coverage $l_t$.
 We can see that the damage rate of defense $T_2$ has decreased because each attacker spends less than $g$ seconds in the range of the only tower.
 
-In figure~\ref{fig:model-3-g0.5} we can see that with smaller spacing between the attackers, damage rate becomes less effective.
+In figure~\ref{fig:model-3-g0.5} we can see that with smaller spacing of $0.5$ seconds between the attackers, damage rate becomes less effective.
 A similar effect can be seen when we decrease the number of attackers.
-As shown in figure~\ref{fig:model-3-n1}, when the wave contains only one attacker, damage rate has no effect.
-On the other hand, when there are many attackers, the damage rate becomes much more important.
+As shown in figure~\ref{fig:model-3-n1}, when the wave contains only one attacker, damage rate is irrelevant.
+On the other hand, when there are many attackers, the damage rate becomes much more important than capacity.
 In figure~\ref{fig:model-3-n12} we can see $T_1$ cannot beat a wave with 12 attackers, but $T_2$ can.
 
 \begin{center}
@@ -1384,7 +1390,7 @@ In figure~\ref{fig:model-3-n12} we can see $T_1$ cannot beat a wave with 12 atta
     \label{fig:model3}
 \end{center}
 
-Thus, to describe the difficulty of a wave, we can't just use one number, because we need 2 variables to accurately describe which defenses can beat the wave and which cannot.
+Thus, we need both parameters $R$ and $C$ to accurately describe which defenses can beat the wave and which cannot.
 
 \subsection{Model 4: Damage in an Area}\label{sec:analysis-waves-aoe}
 Many towers will be able to deal damage to all attackers in some area.
@@ -1410,9 +1416,9 @@ Formally,
 Killing the first attacker will take $t_1 = h/R$ seconds as usual, and in the time, the second attacker will take $t_1 R_1$ collateral damage.
 In general, the $k$th attacker will take $t_1 R_{k-1}$ collateral damage from towers shooting at the first attacker.
 Let $t_k$ be the time it takes for the $k$th attacker to be killed by towers continuously shooting at it.
-It is equal to the remaining health the attacker will have after the ones before it have been killed, divided by $R$ or specifically
+It is equal to the remaining health the attacker will have after the ones before it have been killed, divided by $R$:
 \begin{equation}\label{eqn:time-to-kill}
-    t_k = \frac{1}{R}\left(h - \sum_{i=1}^{k-1} t_i R_{k-i} \right).
+    t_k = \frac{1}{R}\left(h - \sum_{i=1}^{k-1} t_i R_{k-i} \right)
 \end{equation}
 
 This formula isn't useful yet, because we still need too many variables to specify the player's defenses.
@@ -1431,42 +1437,42 @@ Since towers with larger damage range are generally going to be more expensive t
 
 Now we can precisely determine all $R_k$ for a given wave.
 From the definition, $R_k$ is the damage rate of towers with $r_t \geq ksg$, so $R_k = \alpha\beta^{ksg} R$.
-We can substitute this into equation~\ref{eqn:time-to-kill} to get the recurrence relation
-\begin{equation*}
-    t_k = \frac{1}{R}\left(h - \sum_{i=1}^{k-1} t_i \alpha\beta^{(k-i)sg} R\right).
-\end{equation*}
-We can calculate its closed-form solution:
-\begin{equation*}
+We can substitute this into equation~\ref{eqn:time-to-kill} to get the following recurrence relation:
+\begin{equation}
+    t_k = \frac{1}{R}\left(h - \sum_{i=1}^{k-1} t_i \alpha\beta^{(k-i)sg} R\right)
+\end{equation}
+We can calculate its closed-form solution\footnote{To calculate this, we first transformed the recurrence into one that depends only on the previous term, and then we used \emph{Wolfram Mathematica}~\cite{Mathematica} to calculate the closed-form solution.}:
+\begin{equation}
     t_k = \frac{h}{R}\left(\frac{
             1-\alpha-\beta^{sg}+\alpha\beta^{sg}+\alpha(1-\alpha)^k\beta^{sgk}
         }{
             (1-\alpha)(1-\beta^{sg}+\alpha\beta^{sg})
-        }\right).
-\end{equation*}
+        }\right)
+\end{equation}
 
 Now we can finally construct an updated condition for beating this wave.
 By definition of $t_k$, we know that each attacker will have $Rt_k$ HP when all attackers before it die.
 So, the player's defenses needs to deal in total $\sum_{k=1}^{n} Rt_k$ damage to all the attackers while they are the first attacker alive, instead of $hs$.
-Otherwise, the derivation is the same as for \hyperref[sec:analysis-waves-finite]{model~3}, so the player will beat a wave if
-\begin{equation*}
-    C/s + (n-1)Rg \geq \sum_{k=1}^{n} Rt_k.
-\end{equation*}
-If we put all wave-dependent terms on the right side of the equation and rearrange, we get
-\begin{equation*}
-    C \geq s\left(Rt_1 + \sum_{k=2}^{n} (Rt_k - Rg)\right).
-\end{equation*}
+Otherwise, the derivation is the same as for \hyperref[sec:analysis-waves-finite]{model~3}, so the player will beat a wave if the following inequality holds:
+\begin{equation}
+    C/s + (n-1)Rg \geq \sum_{k=1}^{n} Rt_k
+\end{equation}
+If we put all wave-dependent terms on the right side of the equation and rearrange, the following inequality:
+\begin{equation}
+    C \geq s\left(Rt_1 + \sum_{k=2}^{n} (Rt_k - Rg)\right)
+\end{equation}
 
 However, there is still one problem we overlooked.
 We are using $Rg$ as the extra damage each attacker beyond the first will take, because it is $g$ seconds behind the attacker before it.
 However, this damage can never be greater than the attacker's health, $Rt_k$ in this case.
 This wasn't a problem in \hyperref[sec:analysis-waves-finite]{model~3}, because this would only happen in waves the player would beat anyway.
-So, the fixed condition would be
-\begin{equation*}
-    C \geq s(Rt_1 + \sum_{k=2}^{n} \max(Rt_k - Rg, 0)).
-\end{equation*}
+So, we get the following updated condition:
+\begin{equation}
+    C \geq s\left(Rt_1 + \sum_{k=2}^{n} \max(Rt_k - Rg, 0)\right)
+\end{equation}
 
-If we substitute the definition of $t_k$, we get
-\begin{equation*}
+If we substitute the definition of $t_k$, we get the following inequality:
+\begin{equation}
     C \geq s\left(h + \sum_{k=2}^{n} \max \left(
         h\frac{
                 1-\alpha-\beta^{sg}+\alpha\beta^{sg}+\alpha(1-\alpha)^k\beta^{sgk}
@@ -1474,22 +1480,22 @@ If we substitute the definition of $t_k$, we get
                 (1-\alpha)(1-\beta^{sg}+\alpha\beta^{sg})
             }
         - Rg, 0
-        \right)\right).
-\end{equation*}
+        \right)\right)
+\end{equation}
 We would like to get rid of the summation, but this is tricky because of the maximum function.
 However, for the parameters we allow, $t_k$ is always decreasing with $k$.
 This means that for some $n^*$, the first $n^*$ terms of the summation will be greater than zero and the rest will be zero.
 This lets us discard the maximum function and simplify the condition further:
-\begin{equation*}
+\begin{equation}
     C \geq s\left(h - (n^*-1)Rg + h\sum_{k=2}^{n^*} \frac{
         1-\alpha-\beta^{sg}+\alpha\beta^{sg}+\alpha(1-\alpha)^k\beta^{sgk}
     }{
         (1-\alpha)(1-\beta^{sg}+\alpha\beta^{sg})
     }
-    \right).
-\end{equation*}
+    \right)
+\end{equation}
 
-Finally, we can calculate the explicit solution for the summation to obtain that the player's defenses will beat a wave if and only if
+Finally, we can calculate the closed-form solution\footnote{Again, made easier by \emph{Wolfram Mathematica}.} for the summation to obtain that the player's defenses will beat a wave if and only if the following condition is satisfied:
 \begin{equation}\label{eqn:beat-model-4}
     C \geq s\left(\frac{
     n^*(\beta^{sg}-1) - \alpha\beta^{sg}((1-\alpha)^{n^*}\beta^{sgn^*} + n^*(\beta^{sg}-1) - 1)
@@ -1497,17 +1503,17 @@ Finally, we can calculate the explicit solution for the summation to obtain that
         (1+(\alpha-1)\beta^{sg})^2
     }h
     - (n^*-1)Rg
-    \right),
+    \right)
 \end{equation}
-where $n^*$ is the smallest $k$ between 1 and $n$, such that
-\begin{equation*}
+Where $n^*$ is the smallest $k$ between 1 and $n$, such that the following inequality holds:
+\begin{equation}
     \frac{
         1-\alpha-\beta^{sg}+\alpha\beta^{sg}+\alpha(1-\alpha)^k\beta^{sgk}
     }{
         (1-\alpha)(1-\beta^{sg}+\alpha\beta^{sg})
-    } \leq \frac{Rg}{h},
-\end{equation*}
-or $n^* = n$ if no such $k$ exists.
+    } \leq \frac{Rg}{h}
+\end{equation}
+In case no such $k$ exists, we set $n^*$ to $n$.
 
 \subsection{Model 5: Multiple Batches}
 So far we have considered only waves with one attacker type.
@@ -1520,17 +1526,17 @@ To determine which defenses will beat a wave with $N$ batches, we can extend the
 We will refer to the right-hand side of inequality~\ref{eqn:beat-model-4} as the total value of the attackers.
 For simplicity, we can then denote the total attacker value with the parameters for batch $b_k$ as the batch value $V_k$.
 The defenses now have to beat all the batches one by one, but they still have the same damage capacity $C$ to work with.
-So, we can say the defenses will beat the wave if
-\begin{equation*}
-    C \geq \sum_{k=1}^{N} V_k.
-\end{equation*}
+So, we can say the defenses will beat the wave when the following inequality holds:
+\begin{equation}
+    C \geq \sum_{k=1}^{N} V_k
+\end{equation}
 
 We also specified that the spacing between batches will be 1 second, but the previous condition acts like the next batch begins right as the previous one ends.
 So, we need to add 1 additional second of firing to each wave beyond the first.
 An updated condition could look like this:
-\begin{equation*}
-    C \geq V_1 +\sum_{k=2}^{N} \max(V_k - s_kR, 0).
-\end{equation*}
+\begin{equation}
+    C \geq V_1 +\sum_{k=2}^{N} \max(V_k - s_kR, 0)
+\end{equation}
 Again, we limit the batches to have a non-negative value, because the towers cannot \enquote{restore the damage capacity} by dealing damage to dead attackers.
 
 Even though they are not visible now, the collateral damage calculations are all wrong.
@@ -1576,8 +1582,8 @@ This way of quantifying the wave difficulty should be good enough to let us prod
 \subsection{Wave Generation Overview}
 
 In the previous sections we decided that the map generator will specify the difficulty of each wave using the value rate and capacity.
-Value rate represents how much damage we expect the player's defenses to deal to an attacker per second.
-Value capacity represents how much damage we expect the defenses to deal to an attacker during its travel from the path start to the Hub.
+Rate basically represents how much damage we expect the player's defenses to deal to an attacker per second.
+Capacity basically represents how much damage we expect the defenses to deal to an attacker during its travel from the path start to the Hub.
 We derived some formulas which tell us the total attacker value, and we say that a defense can beat a wave if its value capacity is greater than the total attacker value.
 Now that we can quantify the difficulty of a wave, we can start generating them.
 Our goal for each wave is to generate a random wave, but it has to have a total value very close to the expected capacity without going over.
@@ -1618,7 +1624,6 @@ Since sequential and parallel waves will each be generated with a different algo
 
 \subsection{Generating Sequential Waves}
 
-\xxx{ TODO: rEwRiTE --- specify all other conditions, rejection sampling, go from there}
 A sequential wave consists of up to three batches of attackers, each with a different attacker type.
 We want to select a random number of a random attacker type with a random spacing for each batch, and we are trying to use up as much of the capacity without going over.
 Notably, the same attackers will spawn on each of the selected paths.
@@ -1651,13 +1656,13 @@ We then select a random attacker count between 1 and this maximum count.
 
 This guarantees that each wave we generate is valid.
 However, we still need to generate many waves to find one that uses up the capacity somewhat well.
-To fix this, for the last batch of the wave, we select the maximum amount of attackers we calculated, instead of a random amount.
+To fix this, for the last batch of the wave, we select the spacing and attacker count that minimize the remaining capacity.
 This, however, isn't enough to guarantee that every wave we generate is good.
 It is possible for the last batch to select an attacker and spacing, such that it's impossible to use up the remaining capacity.
 This can happen because with collateral damage, some attackers don't contribute to the total attacker value anymore after some count, as described in section~\ref{sec:analysis-waves-aoe}.
 Or simply because the previous batches used up too much of the wave duration or attacker count.
 
-To remediate this, we add another condition when determining the valid attackers for the last batch of the wave.
+To remedy this, we add another condition when determining the valid attackers for the last batch of the wave.
 We remove the attacker types with which we cannot use up the remaining capacity.
 However, both the maximum amount of attackers we can use, and their value depends on the spacing we choose.
 So we have to check each spacing, and reject the attacker types for which none of the spacings work.
@@ -1667,6 +1672,36 @@ This still doesn't ensure the previous waves didn't use up too much of the attac
 So, if a batch is unable to use up the remaining capacity completely, given the selected attacker type and spacing, we reduce its maximum count by one third, to leave some space for the next batches.
 Assuming there is enough different attacker types available, so that we never encounter a situation where there are no valid attackers available, this approach will always produce a valid wave that uses up most of the value capacity.
 
+The whole process of generating a sequential wave is summarized as algorithm~\ref{alg:wave-sequential}.
+
+\begin{algorithm}[H]
+    \caption{Generating a sequential wave}
+    \label{alg:wave-sequential}
+    \begin{algorithmic}[1]
+        \State distribute new rate and capacity evenly
+        \Statex
+        \For{$i$ from 1 to batch count $N$}
+        \State find all valid attacker types and spacings
+        \State $a \gets$ random valid attacker type
+        \Statex
+        \If{$i \neq N$}
+        \State $s \gets$ random valid spacing for $a$
+        \State $max \gets$ calculate maximum attacker count
+        \State $c \gets$ random attacker count between 1 and $max$
+        \State $b_i \gets (a,s,c)$
+        \Statex
+        \Else
+        \ForEach{valid spacing $s$ for $a$}
+        \State $c_s \gets$ calculate maximum attacker count
+        \EndFor
+        \State $b_i \gets (a; s$ and $c_s$ that maximize total value$)$
+        \EndIf
+        \EndFor
+        \State \textbf{return} $b_1 \dots b_N$
+        \Statex
+    \end{algorithmic}
+\end{algorithm}
+
 \subsection{Generating Parallel Waves}
 
 For generating a parallel wave, we will use a different approach.
@@ -1674,57 +1709,92 @@ A parallel wave consists of only one batch that can spawn different attacker typ
 But because it is one batch, all paths have the same number of attackers and the same spacing.
 Since we don't yet know the relative difficulty of the attackers we'll spawn on each path, we will keep the new value rate and capacity for this wave unassigned for now, and we will distribute them to the paths only after we have generated the wave.
 
-\xxx{ TODO: rewrite}
 Some requirements are the same as for a sequential wave: the wave cannot be longer than the maximum duration, it cannot have more than the maximum attacker count, and we want to use up as much of the capacity without going over.
-We will add some more that naturally extend from these:
-Since we want to use up most of the capacity, a natural requirement is also that
+We will add some more that naturally extend these:
+Since we want to use up most of the capacity, it would make sense to use up all individual path capacities.
+We will again use up the global capacity by increasing the number of attackers as much as we can.
+To do this effectively, we will want from each path to have enough capacity for at least few attackers on its own.
+This allows for more granularity, for example the difference in value between 3 and 4 attackers is smaller than between 1 and 2 attackers, so we can get closer to the capacity limit.
 
-First, we select a random spacing.
-Similarly to a sequential wave, we can filter out all the attacker types that are invalid given this spacing.
+To generate the wave, we first select a random spacing.
+Then we want to find a random set of attacker types, one attacker type for each path, such that it produces a valid wave, if we select the maximum amount that doesn't go over the maximum capacity.
+Similarly to a sequential wave, we can filter out all the attacker types that are invalid given the selected spacing.
 However, this time they can be different for every path.
-We ban all attacker types whose minimum spacing is greater than the selected spacing.
-Also, at least 3 of the type must fit within the path capacity plus the global capacity.
-We also check that it is possible the current path capacity using this attacker type.
-For serial waves, we checked that one attacker fits, but here we want to have more granular control over the wave value just by increasing or decreasing the number of attackers.
-The difference in relative value between 3 and 4 attackers is not as big as between 1 and 2 attackers, so we will be able to use up the capacity more.
+Based on our requirements, at least some attackers of the type must fit within the current path capacity plus the current global capacity.
+This amount will be specified as a parameter based on playtesting.
+We also check that it is possible to use up the current path capacity using this attacker type and spacing.
 
-Then we select a random attacker for each path from the set of valid attackers for that path.
-Now that we have a set of attackers, we have to run more tests to decide if it can be used.
-So we enter a loop, where we do some tests, and if the set of attackers fails one of the tests, we change one attacker in the set and try again.
+Again, we could select random sets of attackers from these options until we find one that is valid.
+However, these validity tests can help us determine which attacker to change in case the set is not valid.
+We start by selecting a random attacker for each path from the set of valid attackers for that path.
+Then we enter a loop, where we do some tests, and if the set fails one of the tests, we change one attacker type and try again.
 If all tests succeed, we then produce the finished wave and distribute the new rate and capacity accordingly.
-But first, let's look at the tests:
 
-Since we want to use up the capacity as much as possible, we also have to use up every path capacity.
-So, for the first test, we calculate the minimum number of attackers the wave must have in order to use up every path capacity.
+First, we test that it's possible to use up every path capacity:
+We calculate the minimum number of attackers the wave must have in order to use up every path capacity.
 We then check if this count is even a viable option for this wave.
-Specifically, we check whether this number of attackers would fit within the capacity, including the new rate and new capacity we still haven't assigned.
+Specifically, we check whether this number of attackers would fit within the total capacity, including the new rate and new capacity we still haven't assigned.
 To do this, we first calculate the value of the attackers for each path and sum these values together.
-We now compare this value to the total combined value of all the capacitys, including the new capacity.
-Since we know how many attackers are in the wave, we can also convert the new rate to the maximum amount of extra capacity it will provide by multiplying it by the number of attackers minus one.
-If the total value of the attackers is greater than the final capacity size, this attacker set is not valid.
-This result tells us that we need at least some amount of attackers to fill each path capacity, but this amount would not fit in the final capacity, so we can't use it.
+We now compare this value to the total combined value of all the capacities, including the new capacity and new rate.
+Since we know how many attackers are in the wave, we can convert the new rate to the maximum amount of extra capacity it will provide by multiplying it by the number of attackers after the first.
+If the total value of the attackers is greater than the final capacity, it means that we need at least some amount of attackers to fill each path capacity, but this amount would not fit within the final capacity, so this set is not valid.
 
-So we try again with a different set of attackers.
-We don't want to change the attackers we don't have to, so we only select a new random attacker for the path that had the \enquote{most expensive} attacker.
-The test failed, because some attacker had too much value compared to the rest, and its path's rate and capacity, so that is the one we change.
-Specifically, we change the attacker of the path whose value in the previous test overshot its path capacity the most.
+This usually happens because some attacker had too much value relative to its path's rate and capacity, compared to the other attackers.
+So, this is the one attacker will change for another random attacker.
+Specifically, we change the attacker type of the path whose value in the previous test overshot its path capacity by the most.
+Then we try the test again with this new set.
 
-If the test succeeds, we have a minimum number of attackers the wave can have in order to use up every path capacity.
+If the test succeeds, we know the minimum number of attackers the wave can have in order to use up every path capacity.
 We also want to ensure this set of attackers can use up most of the capacity, given the constraints on the maximum wave duration and attacker count.
-So, we calculate the maximum number of attackers these restrictions let us use, and then we check whether the value of this many attackers is more than the combined capacity in the same way as in the previous test.
+So, as a second test, we calculate the maximum number of attackers these restrictions let us use, and then we check whether the value of this many attackers plus one is more than the total capacity in the same way as in the previous test.
 If the value is less than the capacity, it means that the maximum allowed attacker count still doesn't let us use up the capacity as much as we would want.
-So, we try a different set off attackers, but this time we switch out the \enquote{cheapest attacker}.
+
+This time, the issue is that the attackers we want to use don't have enough value to use up the capacity.
+So, we change the attacker type of the path whose value in the previous test overshot its path capacity by the least.
 
 If both tests succeed, we have found a good enough set of attackers for this wave.
-Now we just calculate the maximum number of attackers that will fit within the capacity, and the wave is finished.
-However, we still have to somehow distribute the new rate and capacity to the individual paths.
+Now we just find the exact maximum number of attackers that will fit within the total capacity, and the wave is finished.
+We don't have a formula for this, but we can determine if a specific count fits within the total capacity or not, as we did in the tests.
+So, we can find the exact maximum count using binary search.
+
+We have now generated a valid parallel wave, but we still have to somehow distribute the new rate and capacity to the individual paths.
 To mimic what the player might do to handle this wave, we calculate by how much the attacker value overshoots the capacity of each path, and we distribute the new rate and capacity in the same proportion.
 
+Again, assuming there is enough different attacker types, this process always produces a valid wave that uses up most of the capacity.
+The whole process of generating a parallel wave is summarized as algorithm~\ref{alg:wave-parallel}.
+
+\begin{algorithm}[H]
+    \caption{Generating a parallel wave}
+    \label{alg:wave-parallel}
+    \begin{algorithmic}[1]
+        \State select a random spacing $s$
+        \State for each path find all valid attacker types
+        \State $S \gets$ random valid attacker for each path
+        \Statex
+        \State $min \gets$ calculate minimum attacker count to use up the all path capacities
+        \If{value of $min$ attackers > total capacity}
+        \State $p \gets$ path with the greatest value over the path capacity
+        \State $S_p \gets$ random valid attacker
+        \State \textbf{go to} 4 \Comment{Try again.}
+        \EndIf
+        \Statex
+        \State $max \gets$ calculate maximum attacker count
+        \If{value of $max + 1$ attackers < total capacity}
+        \State $p \gets$ path with the lowest value over the path capacity
+        \State $S_p \gets$ random valid attacker
+        \State \textbf{go to} 4 \Comment{Try again.}
+        \EndIf
+        \Statex
+        \State $c \gets$ calculate maximum count that doesn't overshoot total capacity
+        \State distribute new rate and capacity proportionally to the attacker values
+        \State \textbf{return} $(S, s, c)$
+        \Statex
+    \end{algorithmic}
+\end{algorithm}
 \section{Random Number Generators}\label{sec:analysis-rng}
 
-Randomized algorithms, like the ones we will use for procedural generation, depend on a \emph{random number generator} as their source of randomness.
-A \textbf{random number generator} (or \emph{RNG}) produces a sequence of numbers that looks random and is unpredictable.
-What are their uses and how they work is explained well in \citetitle{johnston2018random}~\cite{johnston2018random} by Johnston.
+The algorithms we use for procedural generation depend on a \emph{random number generator}, or \emph{RNG}, as their source of randomness.
+Their uses and how they work is explained well in \citetitle{johnston2018random}~\cite{johnston2018random} by Johnston.
 Some RNGs use specialized hardware to generate truly random data using an external source of entropy, these are called \emph{true random number generators}.
 However, we want a \emph{deterministic RNG}, also known as a \emph{pseudorandom number generator} (\emph{PRNG}).
 These produce the random data using a completely deterministic algorithm, but unless we know the current internal state of the generator, the outputs still can't be predicted.
@@ -1778,37 +1848,46 @@ We want the game simulation to be deterministic, frame rate independent, and gam
 But, we want everything to look and feel smooth.
 
 Games usually operate in a game loop, repeatedly taking inputs from the player, updating the game logic, and then outputting the new state to the player, like rendering a new frame.
-This approach is also used in the Unity engine.
-In Unity, the game logic has to be implemented in methods \mono{Update} and \mono{FixedUpdate} of our \mono{MonoBehaviour} scripts.
-Unity then calls these methods during runtime in the game loop.
+In Unity, the game logic has to be implemented in methods \mono{Update} and \mono{FixedUpdate} of our \mono{MonoBehaviour} scripts, which Unity calls in the game loop.
 \mono{Update} gets called before rendering every frame, whereas \mono{FixedUpdate} gets called on each fixed update.
 Fixed updates are performed a set amount of times per second, and the Unity physics engine also uses them.
-This means that Unity is build with the separation of game logic and visuals in mind.
+This means that Unity is built with the separation of game logic and visuals in mind, and we don't have to do anything complicated to achieve this.
 
-- 20 ticks per second is enough
+By default, \mono{FixedUpdates} are performed 50 times per second.
+If we decrease the number of ticks per second, we decrease the performance cost of our game, which is especially useful if we want to speed the game up.
+We don't need any kinematics from the physics engine, only collision detection, so we don't need this much temporal resolution.
+For our game, 20 ticks per second should be enough.
+This means the shortest interval between any two events will be $0.05$ seconds.
+This can be problematic, for example for towers with fast fire rate.
+For example, we cannot have a tower that shoots 8 projectiles per second, because it would need a $0.125$ second interval between shots, which is not a multiple of $0.05$.
+There are ways to circumvent this, but we think that this quantization isn't a problem for our game.
 
-- interpolate positions and visuals on Update
+Everything in our game will happen in $0.05$ second intervals.
+For example, a projectile will jump forward 20 times per second.
+We want everything to look as smooth as possible, so we will have to interpolate the positions of all moving objects and more.
+The game simulation doesn't need to know about any of this, so we will completely separate this logic from the game logic.
+The visualization logic will react to the simulation logic.
 
-- some visuals are game-speed agnostic, some are not
-
-- I thought about making some custom mini-framework for this, but many of the simulated variables the visuals are based on should be handled on case-by-case basis
-
-- interpolation examples: attackers, projectiles, ballistic projectiles
+Unity offers many useful systems for visuals, for example particle systems or animations.
+Most of the visuals should change speed with the simulation speed.
+Luckily for us, Unity has a built-in global variable that lets us change the speed of the game, including both the simulation speed and the speed of visuals.
+Some visuals will be game speed agnostic, like instant animations or the game user interface animations.
+This also isn't a problem since Unity lets us specify to use the unscaled time for individual effects.
 
 \section{Targeting Attackers}
 
-During a battle, how will the towers determine which attackers are in range, and which attacker to shoot at?
+An important question we should consider is during a battle, how will the towers determine which attackers are in range, and which attacker to shoot at?
 As described in section~\ref{sec:design-towers}, most towers will have a range in the shape of a cylinder, but some will have a different shape.
 Most towers will select only one attacker as their target, but some don't need a specific target, for example those that damage all attacker in their range.
 The towers will have unique behaviors, but the vast majority will need to know which attacker is in range at all times, so it makes sense to separate targeting from the rest of the tower's logic.
 The tower can then ask its targeting system which attackers are in range, or which attacker to shoot at.
 
-Technically, a tower needs to know which attackers are in range and which one of them to target only right before it shoots.
+Technically, a tower needs to know which attackers are in range and which one of them to target just before it shoots.
 However, we usually want to make the tower visually turn towards the attacker's position before it shoots, so we want to know its preferred target at all times.
 Checking every attacker in the world on every tick would cause performance issues, since there can be a lot of towers and attackers at once.
 So, we need to come up with a more efficient solution.
 Physics engines need to perform similar checks many times per second, so they are optimized to do them as efficiently as possible.
-Specifically, we think of our problem as collision detection: we want to know which attacker colliders collide with the tower's range collider.
+Specifically, we can think of our problem as a collision detection problem: we want to know which attacker colliders collide with the tower's range collider.
 So, we can use the Unity physics engine to detect which attackers are in range by representing the range with a collider.
 
 Unity provides callbacks for us whenever another object enters the collider of our range and whenever an object leaves the collider.
