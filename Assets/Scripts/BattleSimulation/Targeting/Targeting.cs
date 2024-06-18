@@ -86,8 +86,7 @@ namespace BattleSimulation.Targeting
         bool HasLineOfSight(Vector3 pos)
         {
             var position = transform.position;
-            Vector3 dir = pos - position;
-            return !Physics.Raycast(position, dir, out RaycastHit _, dir.magnitude, LayerMasks.coarseTerrainAndObstacles);
+            return !Physics.Linecast(position, pos, LayerMasks.coarseTerrainAndObstacles);
         }
 
         public bool IsInBounds(Vector3 pos) => targetingComponent != null && targetingComponent.IsInBounds(pos);

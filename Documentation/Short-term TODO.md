@@ -1,5 +1,6 @@
 ## questions
-
+- [ ] tipy k dokumentaci?
+- [ ] záleží na tom, že mám úvod očíslovaný?
 ## tweaks
 
 - [x] extend WFC to support edge types
@@ -12,18 +13,20 @@
 - [x] reimplement wave generator
 - [x] fine tune
 - [ ] refactor wave generator
+    - [ ] split into 3 more files
+- [ ] separate blueprint queries
+- [ ] add attacker queries
 - [ ] don't deselect abilities
 - [ ] seed disappears too soon
 - [ ] find new tutorial seed
 - [ ] frostbite frontier issues
 ## new since prev meeting
 - [ ] 2.4 - 2.9
-- [ ] 3.4.3+
-- [ ] 3.5
-- [ ] 3.6 - 3.6.3
+- [ ] 3.5.3+
+- [ ] 3.6
+- [ ] 3.9
 
 ## till next metting
-- [ ] meeting notes
 - [ ] ch3
     - [x] game engine
     - [x] procedural generation
@@ -47,27 +50,30 @@
         - [x] add on multi-batches
         - [x] add abilities
         - [x] add on attacker abilities
-        - [ ] fix m4 with alpha and beta
-        - [ ] alpha WILL change
-        - [ ] prepare for a wave
-        - [ ] rewrite path constraints based on reality
-        - [ ] general idea
-        - [ ] generate random sequential waves
-        - [ ] generate random parallel waves
-        - [ ] TODOs
-        - [ ] on the right of WHAT
+        - [x] describe the main point of the images in m3 and what happens
+        - [x] fix m4 with alpha and beta
+        - [x] alpha WILL change
+        - [x] buffer -> capacity
+        - [ ] rewrite generating
     - [x] RNG
-    - [ ] sections done 6/14 (x)(x)(x)(x)(x)( )( )( )( )( )( )( )( )(x)
+    - [ ] sim
+    - [x] targetting
+    - [ ] range vis
+    - [ ] commands
+    - [ ] blueprints
     - [ ] TODOs
-    - [ ] i.e.
-    - [ ] dots in abbreviations
 
 
 ## finishing
-- [ ] update tex template
+- [ ] update tex template (check page and chapter numbers)
+- [ ] metatdata
 - [ ] commas
 - [ ] https://blog.wordvice.com/when-to-use-commas-colons-semicolons-and-dashes/#:~:text=Use%20an%20em%20dash%20instead,less%20formal%20than%20a%20colon.
+- [ ] make author names consistent
 - [ ] TODOs
+- [ ] PDF/A
 - [ ] i.e.
 - [ ] dots in abbreviations
+- [ ] repeat citations where applicable
 - [ ] ~
+- [ ] float positioning

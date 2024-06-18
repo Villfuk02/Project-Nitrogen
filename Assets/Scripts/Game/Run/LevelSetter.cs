@@ -12,8 +12,6 @@ namespace Game.Run
     {
         public void SetupLevel(ulong randomSeed, int level)
         {
-            level += 5;
-
             if (level == 0)
             {
                 SetupTutorialSettings(randomSeed);
@@ -78,7 +76,7 @@ namespace Game.Run
                 return;
 
             wg.baseRate = 1.7f + 0.2f * level - 0.1f * pathCount;
-            wg.baseBuffer = (7 + 1 * level) * (20 + totalPathLength / (float)pathCount) * 0.05f;
+            wg.baseCapacity = (7 + 1 * level) * (20 + totalPathLength / (float)pathCount) * 0.045f;
             wg.linearScaling = 1;
             wg.quadraticScaling = 0.01f;
             wg.cubicScaling = 0.007f;

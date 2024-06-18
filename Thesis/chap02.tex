@@ -363,6 +363,7 @@ We feel that any more would make the waves messy and unnecessarily hard to commu
 In fact, each wave will be composed of one to three \emph{batches}.
 Each batch will be composed of a number of attackers of only one type, spaced evenly.
 But some waves will be just one batch, but this batch will send a different attacker type on each path on levels with multiple paths.
+Also, some waves won't spawn attackers on all paths.
 This should provide enough variety without being too hard to communicate to the player and too hard for a skilled player to predict the wave difficulty.
 To make it simple both for the player and for us when displaying the preview of the wave, the spacing between two batches will always be 1 second.
 
@@ -782,7 +783,7 @@ Another option would be to have the player start each battle with full hull, but
     \end{itemize}
 \end{notindemo}
 
-\subsection{Time controls}
+\subsection{Time controls}\label{sec:design-time-controls}
 
 \begin{notindemo}
     We want the player to be able to pause the game.
@@ -949,7 +950,7 @@ The color represents the type of the blueprint:
 \begin{itemize}
     \item blue for towers,
     \item green for economic buildings,
-    \item purple for special buildings
+    \item purple for special buildings,
     \item and orange for abilities.
 \end{itemize}
 Overlaid over the lower portion of the blueprint is its cost.
@@ -1044,7 +1045,7 @@ This fill represents the portion of the attacker's HP that's left out of their m
 \begin{center}
     \captionsetup{type=figure}
     \includegraphics[width=0.5\textwidth]{img/Attacker HP.pdf}
-    \caption{Two attackers with HP indicators. The one on the left has 4/5\,HP, the one on the right has about 150/250\,HP.}
+    \caption{Two attackers with HP indicators. The one on the left has 4/5\,HP, the one on the right has 25/35\,HP.}
     \label{fig:attacker-hp}
 \end{center}
 
@@ -1058,7 +1059,7 @@ Orange for 1\,HP sections, red for 10\,HP sections, dark red for 100\,HP section
 
 We always choose the largest section size that leads to the indicator having more than one section, so there is always 2 to 10 sections.
 It is also important to note, that the rightmost section will not necessarily represent the amount of HP it should.
-For example when an attacker has 250\,HP, their indicator will consist of two 100\,HP sections and one 50\,HP section.
+For example when an attacker has 35\,HP, their indicator will consist of three 10\,HP sections and one 5\,HP section.
 This last section will be scaled accordingly, in this case it will be only half as wide as the whole sections, as seen in figure~\ref{fig:attacker-hp}.
 
 \section{Selection and Highlighting}

@@ -4813,14 +4813,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 41b21d00b30f2304b94dbe125c704605, type: 2}
   maxWaveLengthTicks: 250
   maxAttackersPerWave: 120
-  parallelWaveChance: 1
+  parallelWaveChance: 0.3
   pathDropChance: 0.4
   maxBatchCount: 3
   parallelMinCount: 3
-  splashDamageMultiplier: 0.6
-  fullSplashDamageMultiplierWave: 7
+  splashDamageMultiplier: 0.5
+  fullSplashDamageMultiplierWave: 6
   splashDamageBase: 0.4
-  globalBufferPortion: 0.6
+  globalCapacityPortion: 0.6
   tutorialWaves:
   - newAttacker: {fileID: 0}
     batches:
@@ -4951,19 +4951,19 @@ MonoBehaviour:
       count: 60
       spacing: 0
   baseRate: 0
-  baseBuffer: 0
+  baseCapacity: 0
   linearScaling: 1
   quadraticScaling: 0
   cubicScaling: 0
   pathCount: 0
   tutorial: 0
-  totalBuffer: 0
+  totalCapacity: 0
   totalRate: 0
-  bufferPerPath: []
-  bufferLeftPerPath: []
+  capacityPerPath: []
+  capacityLeftPerPath: []
   ratePerPath: []
-  globalBuffer: 0
-  globalBufferLeft: 0
+  globalCapacity: 0
+  globalCapacityLeft: 0
   waves: []
   currentWaveNumber: 0
   currentMaxBatches: 0

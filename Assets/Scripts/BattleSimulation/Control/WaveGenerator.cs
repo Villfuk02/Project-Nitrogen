@@ -24,11 +24,11 @@ namespace BattleSimulation.Control
         [SerializeField] float splashDamageMultiplier;
         [SerializeField] int fullSplashDamageMultiplierWave;
         [SerializeField] float splashDamageBase;
-        [SerializeField] float globalBufferPortion;
+        [SerializeField] float globalCapacityPortion;
         [SerializeField] List<Wave> tutorialWaves;
         [Header("Settings - auto-assigned")]
         public float baseRate;
-        public float baseBuffer;
+        public float baseCapacity;
         public float linearScaling;
         public float quadraticScaling;
         public float cubicScaling;
@@ -36,13 +36,13 @@ namespace BattleSimulation.Control
         public Random random;
         public bool tutorial;
         [Header("Runtime variables")]
-        [SerializeField] float totalBuffer;
+        [SerializeField] float totalCapacity;
         [SerializeField] float totalRate;
-        [SerializeField] float[] bufferPerPath;
-        [SerializeField] float[] bufferLeftPerPath;
+        [SerializeField] float[] capacityPerPath;
+        [SerializeField] float[] capacityLeftPerPath;
         [SerializeField] float[] ratePerPath;
-        [SerializeField] float globalBuffer;
-        [SerializeField] float globalBufferLeft;
+        [SerializeField] float globalCapacity;
+        [SerializeField] float globalCapacityLeft;
         [SerializeField] List<Wave> waves;
         [SerializeField] int currentWaveNumber;
         readonly HashSet<AttackerStats> usedAttackers_ = new();
@@ -99,8 +99,8 @@ namespace BattleSimulation.Control
             currentWaveNumber = waves.Count;
             if (currentWaveNumber == 0)
             {
-                bufferLeftPerPath = new float[pathCount];
-                bufferPerPath = new float[pathCount];
+                capacityLeftPerPath = new float[pathCount];
+                capacityPerPath = new float[pathCount];
                 ratePerPath = new float[pathCount];
             }
 
@@ -109,24 +109,16 @@ namespace BattleSimulation.Control
             currentMaxBatches = Mathf.Min(1 + currentWaveNumber / 2, maxBatchCount);
             currentSplashDamageMultiplier = Mathf.Lerp(0, splashDamageMultiplier, currentWaveNumber / (float)fullSplashDamageMultiplierWave);
             SelectPaths();
-            UpdateTotalRatesAndBuffers(out float newRate, out float newBuffer);
+            UpdateTotalRatesAndCapacities(out float newRate, out float newCapacity);
 
-            print($"Generating wave {currentWaveNumber + 1}: total rate {totalRate}, total buffer {totalBuffer} (global {globalBufferLeft})");
+            print($"Generating wave {currentWaveNumber + 1}: total rate {totalRate}, total capacity {totalCapacity} (global {globalCapacityLeft})");
 
 
-            Wave w;
             // first wave can never be parallel
             if (currentWaveNumber > 0 && random.Bool(parallelWaveChance))
-            {
-                w = GenerateParallelWave(newRate, newBuffer);
-                print($"global buffer left: {globalBufferLeft}");
-                return w;
-            }
+                return GenerateParallelWave(newRate, newCapacity);
 
-            DistributeNewRateAndBufferFairly(newRate, newBuffer);
-            w = GenerateSequentialWave();
-            print($"global buffer left: {globalBufferLeft}");
-            return w;
+            return GenerateSequentialWave(newRate, newCapacity);
         }
 
         void SelectPaths()
@@ -142,23 +134,23 @@ namespace BattleSimulation.Control
             }
         }
 
-        void UpdateTotalRatesAndBuffers(out float newRate, out float newBuffer)
+        void UpdateTotalRatesAndCapacities(out float newRate, out float newCapacity)
         {
             float scaling = 1 +
                             linearScaling * currentWaveNumber +
                             quadraticScaling * currentWaveNumber * currentWaveNumber +
                             cubicScaling * currentWaveNumber * currentWaveNumber * currentWaveNumber;
             newRate = baseRate * scaling - totalRate;
-            newBuffer = baseBuffer * scaling - totalBuffer;
+            newCapacity = baseCapacity * scaling - totalCapacity;
             totalRate = baseRate * scaling;
-            totalBuffer = baseBuffer * scaling;
+            totalCapacity = baseCapacity * scaling;
 
-            globalBuffer += newBuffer * globalBufferPortion;
-            globalBufferLeft += globalBuffer;
-            newBuffer *= 1 - globalBufferPortion;
+            globalCapacity += newCapacity * globalCapacityPortion;
+            globalCapacityLeft += globalCapacity;
+            newCapacity *= 1 - globalCapacityPortion;
         }
 
-        void DistributeNewRateAndBufferFairly(float newRate, float newBuffer)
+        void DistributeNewRateAndCapacityFairly(float newRate, float newCapacity)
         {
             var sortedPaths = currentPaths.Select(p => (p, rate: ratePerPath[p])).OrderBy(p => p.rate).Select(p => p.p);
             List<int> equalPaths = new();
@@ -176,17 +168,17 @@ namespace BattleSimulation.Control
 
                 float rateDifference = ratePerPath[path] - ratePerPath[representative];
                 rateDifference = Mathf.Min(newRate / equalPaths.Count, rateDifference);
-                float bufferDifference = bufferPerPath[path] - bufferPerPath[representative];
-                bufferDifference = Mathf.Min(newBuffer / equalPaths.Count, bufferDifference);
+                float capacityDifference = capacityPerPath[path] - capacityPerPath[representative];
+                capacityDifference = Mathf.Min(newCapacity / equalPaths.Count, capacityDifference);
 
                 foreach (int equalPath in equalPaths)
                 {
                     ratePerPath[equalPath] += rateDifference;
-                    bufferPerPath[equalPath] += bufferDifference;
+                    capacityPerPath[equalPath] += capacityDifference;
                 }
 
                 newRate -= rateDifference * equalPaths.Count;
-                newBuffer -= bufferDifference * equalPaths.Count;
+                newCapacity -= capacityDifference * equalPaths.Count;
 
                 equalPaths.Add(path);
             }
@@ -194,16 +186,19 @@ namespace BattleSimulation.Control
             foreach (int path in currentPaths)
             {
                 ratePerPath[path] += newRate / currentPaths.Count;
-                bufferPerPath[path] += newBuffer / currentPaths.Count;
-                bufferLeftPerPath[path] += bufferPerPath[path];
+                capacityPerPath[path] += newCapacity / currentPaths.Count;
+                capacityLeftPerPath[path] += capacityPerPath[path];
             }
         }
 
-        Wave GenerateSequentialWave()
+        Wave GenerateSequentialWave(float newRate, float newCapacity)
         {
-            List<Batch> batches = new();
+            DistributeNewRateAndCapacityFairly(newRate, newCapacity);
+
             currentTicksLeft_ = maxWaveLengthTicks + Spacing.BatchSpacing.GetTicks();
             currentAttackersLeft_ = maxAttackersPerWave;
+
+            List<Batch> batches = new();
             for (int i = 0; i < currentMaxBatches; i++)
             {
                 if (currentAttackersLeft_ < currentPaths.Count)
@@ -231,6 +226,9 @@ namespace BattleSimulation.Control
         {
             var selection = PrepareSequentialBatchAttackerSelection(isFirstBatch, isLastBatch);
 
+            if (selection.Count == 0 && isLastBatch)
+                selection = PrepareSequentialBatchAttackerSelection(isFirstBatch, false);
+
             if (selection.Count == 0)
                 return null;
 
@@ -251,18 +249,18 @@ namespace BattleSimulation.Control
             {
                 BitSet32 set = new();
 
-                // at least one attacker must fit into the remaining buffer
-                if (OvershootsBuffer(a, Spacing.Min, 1, isFirstBatch))
+                // at least one attacker must fit into the remaining capacity
+                if (OvershootsCapacity(a, Spacing.Min, 1, isFirstBatch))
                     return (a, set);
 
                 // find all valid spacings
                 for (Spacing s = a.minSpacing; s <= Spacing.Max; s++)
                 {
-                    // if last batch, there must be enough space left in the wave to fill up the buffer
+                    // if last batch, there must be enough space left in the wave to fill up the capacity
                     if (isLastBatch)
                     {
                         int maxCount = AttackerStatsCalculations.MaxAttackerCount(s, currentPaths.Count, currentTicksLeft_, currentAttackersLeft_);
-                        if (!OvershootsBuffer(a, s, maxCount, isFirstBatch))
+                        if (!OvershootsCapacity(a, s, maxCount + 1, isFirstBatch))
                             continue;
                     }
 
@@ -277,12 +275,12 @@ namespace BattleSimulation.Control
             return new(filtered.Select(p => (p, p.a.weight)), random.NewSeed());
         }
 
-        bool OvershootsBuffer(AttackerStats stats, Spacing spacing, int count, bool isFirstBatch)
+        bool OvershootsCapacity(AttackerStats stats, Spacing spacing, int count, bool isFirstBatch)
         {
             var rates = ratePerPath.PickOut(currentPaths);
-            var buffers = bufferLeftPerPath.PickOut(currentPaths);
-            float global = globalBufferLeft;
-            stats.GetRemainingBuffer(spacing, currentSplashDamageMultiplier, splashDamageBase, rates, count, isFirstBatch, ref buffers, ref global);
+            var capacity = capacityLeftPerPath.PickOut(currentPaths);
+            float global = globalCapacityLeft;
+            stats.GetRemainingCapacity(spacing, currentSplashDamageMultiplier, splashDamageBase, rates, count, isFirstBatch, ref capacity, ref global);
             return global < 0;
         }
 
@@ -300,12 +298,12 @@ namespace BattleSimulation.Control
             currentTicksLeft_ -= (count - 1) * spacing.GetTicks();
             currentAttackersLeft_ -= count * currentPaths.Count;
 
-            // update buffers
+            // update capacity
             var rates = ratePerPath.PickOut(currentPaths);
-            var buffers = bufferLeftPerPath.PickOut(currentPaths);
-            selected.GetRemainingBuffer(spacing, currentSplashDamageMultiplier, splashDamageBase, rates, count, isFirstBatch, ref buffers, ref globalBufferLeft);
+            var capacities = capacityLeftPerPath.PickOut(currentPaths);
+            selected.GetRemainingCapacity(spacing, currentSplashDamageMultiplier, splashDamageBase, rates, count, isFirstBatch, ref capacities, ref globalCapacityLeft);
             for (int i = 0; i < currentPaths.Count; i++)
-                bufferLeftPerPath[currentPaths[i]] = buffers[i];
+                capacityLeftPerPath[currentPaths[i]] = capacities[i];
 
             // prepare result
             var types = new AttackerStats[pathCount];
@@ -319,21 +317,21 @@ namespace BattleSimulation.Control
             var rates = ratePerPath.PickOut(currentPaths);
 
             // find best spacing and count
-            float bestGlobalBuffer = float.PositiveInfinity;
-            float[] bestBuffers = null;
+            float bestGlobalCapacity = float.PositiveInfinity;
+            float[] bestCapacities = null;
             Spacing bestSpacing = default;
             int bestCount = 0;
             foreach (var spacing in spacings.GetBits().Select(i => (Spacing)i))
             {
                 int count = MaxCountSequentialBatch(selected, spacing, isFirstBatch, false);
-                var buffers = bufferLeftPerPath.PickOut(currentPaths);
-                float global = globalBufferLeft;
-                selected.GetRemainingBuffer(spacing, currentSplashDamageMultiplier, splashDamageBase, rates, count, isFirstBatch, ref buffers, ref global);
+                var capacities = capacityLeftPerPath.PickOut(currentPaths);
+                float global = globalCapacityLeft;
+                selected.GetRemainingCapacity(spacing, currentSplashDamageMultiplier, splashDamageBase, rates, count, isFirstBatch, ref capacities, ref global);
 
-                if (global < bestGlobalBuffer)
+                if (global < bestGlobalCapacity)
                 {
-                    bestGlobalBuffer = global;
-                    bestBuffers = buffers;
+                    bestGlobalCapacity = global;
+                    bestCapacities = capacities;
                     bestSpacing = spacing;
                     bestCount = count;
                 }
@@ -343,10 +341,10 @@ namespace BattleSimulation.Control
             currentTicksLeft_ -= (bestCount - 1) * bestSpacing.GetTicks();
             currentAttackersLeft_ -= bestCount * currentPaths.Count;
 
-            // update buffers
+            // update capacities
             for (int i = 0; i < currentPaths.Count; i++)
-                bufferLeftPerPath[currentPaths[i]] = bestBuffers![i];
-            globalBufferLeft = bestGlobalBuffer;
+                capacityLeftPerPath[currentPaths[i]] = bestCapacities![i];
+            globalCapacityLeft = bestGlobalCapacity;
 
             // prepare result
             var types = new AttackerStats[pathCount];
@@ -360,7 +358,7 @@ namespace BattleSimulation.Control
             int max = AttackerStatsCalculations.MaxAttackerCount(spacing, currentPaths.Count, currentTicksLeft_, currentAttackersLeft_);
             // if the current upper bound doesn't overshoot the limit, we are done
             // if this isn't the last batch, we need to leave room for the last batch to use up the limit as much as possible
-            if (!OvershootsBuffer(stats, spacing, max, isFirstBatch))
+            if (!OvershootsCapacity(stats, spacing, max, isFirstBatch))
                 return isLastBatch ? max : max / 2;
 
             // do a binary search to find the limit
@@ -369,7 +367,7 @@ namespace BattleSimulation.Control
             while (min < max)
             {
                 int mid = (min + max + 1) / 2;
-                if (OvershootsBuffer(stats, spacing, mid, isFirstBatch))
+                if (OvershootsCapacity(stats, spacing, mid, isFirstBatch))
                     max = mid - 1;
                 else
                     min = mid;
@@ -378,12 +376,12 @@ namespace BattleSimulation.Control
             return max;
         }
 
-        Wave GenerateParallelWave(float newRate, float newBuffer)
+        Wave GenerateParallelWave(float newRate, float newCapacity)
         {
             currentTicksLeft_ = maxWaveLengthTicks;
             currentAttackersLeft_ = maxAttackersPerWave;
             foreach (int path in currentPaths)
-                bufferLeftPerPath[path] += bufferPerPath[path];
+                capacityLeftPerPath[path] += capacityPerPath[path];
 
             Spacing spacing = (Spacing)random.Int((int)Spacing.Max + 1);
 
@@ -393,18 +391,18 @@ namespace BattleSimulation.Control
 
             while (true)
             {
-                int minCount = MinCountRequiredToUseAllPathBuffers(spacing, selectedAttackers);
+                int minCount = MinCountRequiredToUseAllPathCapacity(spacing, selectedAttackers);
 
-                if (!FitsWithinBudget(spacing, selectedAttackers, minCount, newRate, newBuffer, out int mostExpensive))
+                if (!FitsWithinBudget(spacing, selectedAttackers, minCount, newRate, newCapacity, out int mostExpensive))
                 {
                     selectedAttackers[mostExpensive] = null;
                     selectedAttackers[mostExpensive] = GetRandomAttacker(validAttackers[mostExpensive], selectedAttackers);
                     continue;
                 }
 
-                int maxCount = MaxCountParallelWave(spacing, selectedAttackers, newRate, newBuffer, minCount, out bool canFillBuffer);
+                int maxCount = MaxCountParallelWave(spacing, selectedAttackers, newRate, newCapacity, minCount, out bool canUseCapacity);
 
-                if (!canFillBuffer)
+                if (!canUseCapacity)
                 {
                     int cheapest = CheapestAttacker(spacing, selectedAttackers, maxCount, newAttacker_ == null);
                     selectedAttackers[cheapest] = null;
@@ -412,7 +410,7 @@ namespace BattleSimulation.Control
                     continue;
                 }
 
-                DistributeNewRateAndBuffer(spacing, selectedAttackers, newRate, newBuffer, maxCount);
+                DistributeNewRateAndCapacityParallelWave(spacing, selectedAttackers, newRate, newCapacity, maxCount);
 
                 var attackerPerPath = new AttackerStats[pathCount];
                 for (int i = 0; i < currentPaths.Count; i++)
@@ -434,7 +432,7 @@ namespace BattleSimulation.Control
                 int path = currentPaths[i];
 
                 var rate = new[] { ratePerPath[path] };
-                var pathBuffer = bufferLeftPerPath[path];
+                var pathCapacity = capacityLeftPerPath[path];
 
                 var selection = availableAttackers.Where(stats =>
                 {
@@ -442,14 +440,14 @@ namespace BattleSimulation.Control
                     if (stats.minSpacing > spacing)
                         return false;
 
-                    // at least minCount attackers must fit into the buffer
+                    // at least minCount attackers must fit into the capacity
                     var value = stats.AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, parallelMinCount, true)[0];
-                    if (value > pathBuffer + globalBufferLeft)
+                    if (value > pathCapacity + globalCapacityLeft)
                         return false;
 
-                    // it must be possible to use up the path buffer
+                    // it must be possible to use up the path capacity
                     value = stats.AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, maxCount, true)[0];
-                    return value > pathBuffer;
+                    return value > pathCapacity;
                 });
 
                 result[i] = new(selection.Select(s => (s, s.weight)), random.NewSeed());
@@ -506,7 +504,7 @@ namespace BattleSimulation.Control
             }
         }
 
-        int MinCountRequiredToUseAllPathBuffers(Spacing spacing, AttackerStats[] selectedAttackers)
+        int MinCountRequiredToUseAllPathCapacity(Spacing spacing, AttackerStats[] selectedAttackers)
         {
             int maxCount = AttackerStatsCalculations.MaxAttackerCount(spacing, currentPaths.Count, currentTicksLeft_, currentAttackersLeft_);
 
@@ -518,7 +516,7 @@ namespace BattleSimulation.Control
                     int path = currentPaths[i];
                     float[] rate = { ratePerPath[path] };
                     var value = selectedAttackers[i].AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, count, true)[0];
-                    if (value < bufferLeftPerPath[path])
+                    if (value < capacityLeftPerPath[path])
                     {
                         allValid = false;
                         break;
@@ -532,9 +530,9 @@ namespace BattleSimulation.Control
             return maxCount;
         }
 
-        bool FitsWithinBudget(Spacing spacing, AttackerStats[] selectedAttackers, int count, float newRate, float newBuffer, out int mostExpensive)
+        bool FitsWithinBudget(Spacing spacing, AttackerStats[] selectedAttackers, int count, float newRate, float newCapacity, out int mostExpensive)
         {
-            float buffer = globalBufferLeft + newBuffer + newRate * spacing.GetSeconds() * (count - 1);
+            float capacity = globalCapacityLeft + newCapacity + newRate * spacing.GetSeconds() * (count - 1);
             mostExpensive = 0;
             float mostExpensiveValue = 0;
             for (int i = 0; i < selectedAttackers.Length; i++)
@@ -542,7 +540,7 @@ namespace BattleSimulation.Control
                 int path = currentPaths[i];
                 float[] rate = { ratePerPath[path] };
                 var value = selectedAttackers[i].AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, count, true)[0];
-                value -= bufferLeftPerPath[path];
+                value -= capacityLeftPerPath[path];
 
                 if (value > mostExpensiveValue)
                 {
@@ -550,24 +548,24 @@ namespace BattleSimulation.Control
                     mostExpensive = i;
                 }
 
-                buffer -= value;
+                capacity -= value;
             }
 
-            return buffer >= 0;
+            return capacity >= 0;
         }
 
-        int MaxCountParallelWave(Spacing spacing, AttackerStats[] selectedAttackers, float newRate, float newBuffer, int minCount, out bool canFillBuffer)
+        int MaxCountParallelWave(Spacing spacing, AttackerStats[] selectedAttackers, float newRate, float newCapacity, int minCount, out bool canUseCapacity)
         {
             int maxCount = AttackerStatsCalculations.MaxAttackerCount(spacing, currentPaths.Count, currentTicksLeft_, currentAttackersLeft_);
 
-            canFillBuffer = true;
+            canUseCapacity = true;
             for (int count = minCount + 1; count <= maxCount + 1; count++)
             {
-                if (!FitsWithinBudget(spacing, selectedAttackers, count, newRate, newBuffer, out _))
+                if (!FitsWithinBudget(spacing, selectedAttackers, count, newRate, newCapacity, out _))
                     return count - 1;
             }
 
-            canFillBuffer = false;
+            canUseCapacity = false;
             return 0;
         }
 
@@ -585,7 +583,7 @@ namespace BattleSimulation.Control
                 int path = currentPaths[i];
                 float[] rate = { ratePerPath[path] };
                 var value = a.AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, count, true)[0];
-                value -= bufferLeftPerPath[path];
+                value -= capacityLeftPerPath[path];
 
                 if (value < cheapestValue)
                 {
@@ -597,7 +595,7 @@ namespace BattleSimulation.Control
             return cheapest;
         }
 
-        void DistributeNewRateAndBuffer(Spacing spacing, AttackerStats[] selectedAttackers, float newRate, float newBuffer, int count)
+        void DistributeNewRateAndCapacityParallelWave(Spacing spacing, AttackerStats[] selectedAttackers, float newRate, float newCapacity, int count)
         {
             float[] values = new float[currentPaths.Count];
             float totalValue = 0;
@@ -606,7 +604,7 @@ namespace BattleSimulation.Control
                 int path = currentPaths[i];
                 float[] rate = { ratePerPath[path] };
                 var value = selectedAttackers[i].AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, count, true)[0];
-                value -= bufferLeftPerPath[path];
+                value -= capacityLeftPerPath[path];
 
                 values[i] = value;
                 totalValue += value;
@@ -619,12 +617,12 @@ namespace BattleSimulation.Control
                 // distribute proportionally to the extra value
                 float portion = values[i] / totalValue;
                 ratePerPath[path] += newRate * portion;
-                bufferPerPath[path] += newBuffer * portion;
+                capacityPerPath[path] += newCapacity * portion;
 
-                // subtract from buffers
-                values[i] -= portion * (newBuffer + newRate * spacing.GetSeconds() * (count - 1));
-                bufferLeftPerPath[path] = 0;
-                globalBufferLeft -= values[i];
+                // subtract from capacities
+                values[i] -= portion * (newCapacity + newRate * spacing.GetSeconds() * (count - 1));
+                capacityLeftPerPath[path] = 0;
+                globalCapacityLeft -= values[i];
             }
         }
     }
@@ -712,7 +710,7 @@ namespace BattleSimulation.Control
             return count;
         }
 
-        public static void GetRemainingBuffer(this AttackerStats stats, Spacing spacing, float splashDamageMultiplier, float splashDamageBase, float[] rates, int count, bool isFirstBatch, ref float[] buffers, ref float globalBuffer)
+        public static void GetRemainingCapacity(this AttackerStats stats, Spacing spacing, float splashDamageMultiplier, float splashDamageBase, float[] rates, int count, bool isFirstBatch, ref float[] pathCapacities, ref float globalCapacity)
         {
             if (count <= 0)
                 return;
@@ -721,11 +719,11 @@ namespace BattleSimulation.Control
 
             for (int i = 0; i < rates.Length; i++)
             {
-                buffers[i] -= value[i];
-                if (buffers[i] < 0)
+                pathCapacities[i] -= value[i];
+                if (pathCapacities[i] < 0)
                 {
-                    globalBuffer += buffers[i];
-                    buffers[i] = 0;
+                    globalCapacity += pathCapacities[i];
+                    pathCapacities[i] = 0;
                 }
             }
         }
