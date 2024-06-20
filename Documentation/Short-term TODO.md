@@ -1,6 +1,5 @@
 ## questions
-- [ ] tipy k dokumentaci?
-- [ ] záleží na tom, že mám úvod očíslovaný?
+- [ ] mám ozdrojovat každou unity featuru co zmiňuju?
 ## tweaks
 
 - [x] extend WFC to support edge types
@@ -14,7 +13,12 @@
 - [x] fine tune
 - [ ] refactor wave generator
     - [ ] split into 3 more files
-- [ ] separate blueprint queries
+- [ ] blueprint UNASSIGNED constant
+- [ ] copy original blueprints
+- [ ] modify attacker descriptions
+- [ ] cache them in the queries ON CHANGE
+- [ ] compare descriptions and strikethrough
+- [ ] separate blueprint queries?
 - [ ] add attacker queries
 - [ ] don't deselect abilities
 - [ ] seed disappears too soon
@@ -22,23 +26,11 @@
 - [ ] frostbite frontier issues
 ## new since prev meeting
 - [ ] 2.4 - 2.9
-
+- [ ] equations in 3.6
+- [ ] 3.6.8+
+- [ ] 3.8+
 ## till next metting
-- [ ] meeting
-- [ ] ch3
-    - [x] game engine
-    - [x] procedural generation
-    - [x] paths
-    - [x] terrain generation
-    - [x] obstákuls
-    - [x] waves
-    - [x] RNG
-    - [x] sim
-    - [x] targetting
-    - [ ] range vis
-    - [ ] commands
-    - [ ] blueprints
-    - [ ] TODOs
+- [x] ch3
 
 
 ## finishing
@@ -50,8 +42,10 @@
 - [ ] make author names consistent
 - [ ] TODOs
 - [ ] PDF/A
+- [ ] numbers and units
 - [ ] i.e.
 - [ ] dots in abbreviations
 - [ ] repeat citations where applicable
+- [ ] find some good grammar checker
 - [ ] ~
 - [ ] float positioning

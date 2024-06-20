@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace BattleVisuals.Selection.Highlightable
 {
-
     public interface IHighlightable
     {
         static readonly int HIGHLIGHT_TRIGGER = Animator.StringToHash("Highlight");
@@ -13,5 +12,5 @@ namespace BattleVisuals.Selection.Highlightable
         public void Unhighlight();
     }
 
-    public enum HighlightType { Clear, Selected, Negative, Affected, Special, Hovered }
+    public enum HighlightType { Clear, Selected, Negative, Affected, Special, Hovered, Unassigned = 0xFF }
 }

@@ -556,17 +556,26 @@ namespace BattleSimulation.Control
 
         int MaxCountParallelWave(Spacing spacing, AttackerStats[] selectedAttackers, float newRate, float newCapacity, int minCount, out bool canUseCapacity)
         {
-            int maxCount = AttackerStatsCalculations.MaxAttackerCount(spacing, currentPaths.Count, currentTicksLeft_, currentAttackersLeft_);
+            int max = AttackerStatsCalculations.MaxAttackerCount(spacing, currentPaths.Count, currentTicksLeft_, currentAttackersLeft_);
 
-            canUseCapacity = true;
-            for (int count = minCount + 1; count <= maxCount + 1; count++)
+            if (FitsWithinBudget(spacing, selectedAttackers, max + 1, newRate, newCapacity, out _))
             {
-                if (!FitsWithinBudget(spacing, selectedAttackers, count, newRate, newCapacity, out _))
-                    return count - 1;
+                canUseCapacity = false;
+                return 0;
             }
 
-            canUseCapacity = false;
-            return 0;
+            int min = minCount;
+            while (min < max)
+            {
+                int mid = (min + max) / 2;
+                if (FitsWithinBudget(spacing, selectedAttackers, mid + 1, newRate, newCapacity, out _))
+                    min = mid + 1;
+                else
+                    max = mid;
+            }
+
+            canUseCapacity = true;
+            return max;
         }
 
         int CheapestAttacker(Spacing spacing, AttackerStats[] selectedAttackers, int count, bool onlyConsiderNewAttackers)

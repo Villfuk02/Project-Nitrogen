@@ -1,7 +1,7 @@
-using BattleSimulation.World.WorldData;
-using BattleVisuals.Selection.Highlightable;
 using System.Collections.Generic;
 using System.Linq;
+using BattleSimulation.World.WorldData;
+using BattleVisuals.Selection.Highlightable;
 using UnityEngine;
 using Utils;
 
@@ -18,7 +18,7 @@ namespace BattleVisuals.Selection
         [SerializeField] Material terrainMaterial;
         [Header("Settings")]
         [SerializeField] int pixelsPerUnit;
-        [SerializeField] int layers;
+        [SerializeField] int levels;
         [SerializeField] float areaSamplesPerFrameMultiplier;
         [Header("Runtime variables")]
         QuadTree<(HighlightType h, bool done)> rangeVisuals_;
@@ -26,7 +26,6 @@ namespace BattleVisuals.Selection
         int textureSize_;
         Vector2 offset_;
         Texture2D texture_;
-        byte[] resetArray_;
 
         void Awake()
         {
@@ -42,6 +41,7 @@ namespace BattleVisuals.Selection
                     break;
                 TryExpandNode(node, priorityTilePosition);
             }
+
             texture_.Apply(false);
         }
 
@@ -50,8 +50,6 @@ namespace BattleVisuals.Selection
             rangeVisuals_ = new(Vector2Int.zero, 0, CalculateRangeVisualAt, null);
             rangeVisualQueue_.Clear();
             rangeVisualQueue_.Enqueue(rangeVisuals_, 0);
-            for (int layer = 0; layer <= layers; layer++)
-                texture_.SetPixelData(resetArray_, layer);
             PaintNode(rangeVisuals_.pos, rangeVisuals_.depth, rangeVisuals_.value.h);
             texture_.Apply(false);
         }
@@ -60,8 +58,7 @@ namespace BattleVisuals.Selection
         {
             rangeVisuals_ = null;
             rangeVisualQueue_.Clear();
-            for (int layer = 0; layer <= layers; layer++)
-                texture_.SetPixelData(resetArray_, layer);
+            PaintNode(Vector2Int.zero, 0, HighlightType.Clear);
             texture_.Apply(false);
         }
 
@@ -76,6 +73,7 @@ namespace BattleVisuals.Selection
             (var h, bool done) = CalculateRangeVisualAt(PixelToTilePos(pixel, size), size / (float)pixelsPerUnit);
             return (h, done || size == 1);
         }
+
         (HighlightType h, bool done) CalculateRangeVisualAt(Vector2 point, float size)
         {
             var pos = WorldUtils.TilePosToWorldPos(new Vector3(point.x, point.y, World.data.tiles.GetHeightAt(point)));
@@ -93,6 +91,7 @@ namespace BattleVisuals.Selection
 
             node.InitializeChildren(CalculateRangeVisualAt);
             var children = node.children!.Value;
+            PaintNode(node.pos, node.depth, HighlightType.Unassigned);
             foreach (var child in children)
                 PaintNode(child.pos, child.depth, child.value.h);
 
@@ -115,15 +114,13 @@ namespace BattleVisuals.Selection
 
         void InitMaterial()
         {
-            textureSize_ = 1 << layers;
-            resetArray_ = Enumerable.Repeat((byte)0xFF, textureSize_ * textureSize_).ToArray();
+            textureSize_ = 1 << levels;
             texture_ = new(textureSize_, textureSize_, TextureFormat, true)
             {
                 filterMode = FilterMode.Point,
                 wrapMode = TextureWrapMode.Clamp
             };
-            for (int m = 0; m <= layers; m++)
-                texture_.SetPixelData(resetArray_, m);
+            PaintNode(Vector2Int.zero, 0, HighlightType.Clear);
             texture_.Apply(false);
             terrainMaterial.SetTexture(HighlightMap, texture_);
             float worldSize = textureSize_ / (float)pixelsPerUnit;
@@ -134,7 +131,7 @@ namespace BattleVisuals.Selection
 
         void PaintNode(Vector2Int pos, int depth, HighlightType highlightType)
         {
-            texture_.SetPixel(pos.x, pos.y, new((int)highlightType / 255f, 0, 0), layers - depth);
+            texture_.SetPixel(pos.x, pos.y, new((int)highlightType / 255f, 0, 0), levels - depth);
         }
 
         static void TrySimplify(QuadTree<(HighlightType h, bool done)> node)

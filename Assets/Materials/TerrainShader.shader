@@ -7,6 +7,7 @@ Shader"Custom/TerrainShader"
         _LowColor ("Lowest Base Color", Color) = (1, 1, 1, 1)
         _HighColor ("Highest Base Color", Color) = (1, 1, 1, 1)
         _MaxHeight ("Maximum Height", float) = 2
+        _VisLevels ("Visualization Levels", int) = 6
         _Color1 ("Selected Color", Color) = (1, 1, 1, 1)
         _Color2 ("Negative Color", Color) = (1, 1, 1, 1)
         _Color3 ("Affected Color", Color) = (1, 1, 1, 1)
@@ -52,19 +53,16 @@ float _OutlineRadius;
 float _BaseAlphaMultiplier;
 sampler2D _HighlightMap;
 float _MaxHeight;
+int _VisLevels;
 
 uint dataAt(float2 pos)
 {
-    uint mip = 0;
+    uint mip = _VisLevels;
     uint r = 255;
-    while (r >= 200)
+    while (r >= 200 && mip >= 0)
     {
         r = tex2Dlod(_HighlightMap, float4(pos / _WorldSize, 0, mip)).r * 255;
-        mip++;
-        if (mip > 10)
-        {
-            return 0;
-        }
+        mip--;
     }
     return r;    
 }

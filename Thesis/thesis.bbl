@@ -973,6 +973,34 @@
       \field{volume}{68}
       \field{year}{1999}
     \endentry
+    \entry{Mipmaps}{inproceedings}{}
+      \name{author}{1}{}{%
+        {{hash=6fafec0793a296fd6473dd5d1c313161}{%
+           family={Williams},
+           familyi={W\bibinitperiod},
+           given={Lance},
+           giveni={L\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{6fafec0793a296fd6473dd5d1c313161}
+      \strng{fullhash}{6fafec0793a296fd6473dd5d1c313161}
+      \strng{bibnamehash}{6fafec0793a296fd6473dd5d1c313161}
+      \strng{authorbibnamehash}{6fafec0793a296fd6473dd5d1c313161}
+      \strng{authornamehash}{6fafec0793a296fd6473dd5d1c313161}
+      \strng{authorfullhash}{6fafec0793a296fd6473dd5d1c313161}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 10th Annual Conference on Computer Graphics and Interactive Techniques}
+      \field{isbn}{0897911091}
+      \field{title}{Pyramidal parametrics}
+      \field{year}{1983}
+      \field{pages}{1\bibrangedash 11}
+      \range{pages}{11}
+    \endentry
   \enddatalist
 \endrefsection
 \endinput

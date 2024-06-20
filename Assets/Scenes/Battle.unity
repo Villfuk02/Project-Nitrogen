@@ -5085,7 +5085,7 @@ MonoBehaviour:
   highlightController: {fileID: 793714039}
   terrainMaterial: {fileID: 2100000, guid: 0ebc071c9663e6d4f9343281ccf613f7, type: 2}
   pixelsPerUnit: 16
-  layers: 8
+  levels: 8
   areaSamplesPerFrameMultiplier: 1
 --- !u!114 &793714041
 MonoBehaviour:

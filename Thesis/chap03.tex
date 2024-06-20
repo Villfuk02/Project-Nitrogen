@@ -1910,70 +1910,194 @@ Their order usually won't change between subsequent ticks, so we keep them in a 
 
 \section{Range Visualization}
 
-- Draw the range on the terrain mesh
+In section~\ref{sec:design-selection-highlights} we described that we want to draw the range of the tower that's currently selected, or the tower or ability that is being placed, directly on the terrain.
+We want to show if the tower could shoot at a small or large attacker, depending on their position in the world.
+These regions will then be differentiated using different colors.
+The tower ranges can have complicated shapes, and some towers need a line of sight to the attacker to be able to shoot them.
+To produce the visualization, we need to solve two problems: how to determine this range shape, and how to communicate it to the terrain shader.
 
-- two parts - getting the data, and rendering it
+\subsection{Determining The Range Shape}
 
-- simple for simple shapes, but complicated for los checks
+The shape of the range of a tower usually isn't so complex.
+This is because we are building them from primitive collider shapes, but it is also intentional, because complex shapes would be unnecessarily confusing to the player.
+However, we don't show only the bounds of the range, we show explicitly where an attacker can be for the tower to target it.
+This is complicated by line of sight checks, some tower being unable to shoot upwards or downwards, etc.
 
-- uhh divide into squares and test each point
+The simplest approach is to construct an approximation by testing points on the world in a square grid.
+The result of the point test will then determine the color of a small square centered on the point.
+Theoretically, if we sample enough points, we can create visualization that has greater resolution that the player's screen.
 
-- 16x16 big, but we don't know the final resolution
+So, for each special range type, we need an implementation of some sort of oracle that tells us for each point whether an attacker at that point would be visible or not.
+For some towers, this oracle will perform a simple check whether the point lies within the range, but for others, more checks will be performed, notably the line of sight checks which are expensive.
+Doing thousands of these point tests whenever the player selects a tower which performs line of sight checks would cause a noticeable stutter.
+So, we will create a low-resolution visualization first, and slowly refine it by performing more tests over the next frames.
 
-- los checks are expensive
+We will probably perform only few hundred line of sight checks per frame, and we don't want the visualization to keep changing for several seconds, so we will go with a rather small final resolution.
+A grid of $256 \times 256$ squares, which is 65536 in total, should be enough, giving us $16 \times 16$ samples per tile.
+The visualization will be obviously pixelated, but it should communicate the towers' range well.
 
-- make low res first and refine
+We can build this visualization as a \emph{quadtree}.
+A quadtree is a data structure in the form of a rooted tree, where the root node represents the whole world as one large square, and each internal node has four children which split the parent node into four smaller squares.
+We can start our visualization with the root node, and over time refine each leaf node by adding its four children.
+For each child we perform a point test in its center and assign to it the obtained value.
+This is repeated until all leaf nodes are of the required depth, which would be 8 for a $256 \times 256$ square grid.
+This means we perform one third more point tests, but we can have a valid representation of the range after every frame that gets better over time.
 
-- priority calculation
+We can choose in which order to expand the leaf nodes by calculating a priority for each and storing unrefined nodes in a priority queue.
+We should prioritize nodes which are larger, but also nodes whose siblings have different results than them, because this means they are near a boundary where the results change from one state to another.
 
-- the number of samples per frame is defined for each range visuals
+This representation also lets us easily perform \emph{quadtree compression} to save memory:
+Whenever all four children of an internal node match, and they are leaves that won't be refined further, we can delete them and mark their parent as also finished.
+This can happen recursively, so that large squares with the same color can be represented by just one node.
 
-- for simple shapes, also specify the distance to a boundary, ie abilities
+Furthermore, we don't have to refine some nodes at all, when we know for sure that all points tests within their square will yield the same result.
+To help with this, the point test oracles won't return only the result at that point, but also the guaranteed minimum distance to a point which gives a different result.
+When the distance is greater than half of the current square's diagonal, we don't have to refine it further.
+This distance is easy to determine for simple range shapes, but for towers with line of sight checks, it will always be reported as 0 for points inside the range.
 
-- sending to the graphics card
+\subsection{Representation for The GPU}
 
-- Options:
+Now that we can compute the visualization, we also need to render it.
+To do that, we need to send it to the GPU and display it using a shader.
+But how do we represent it in the GPU?
 
-- quadrant compression format, 2bytes per node
+The first option that comes to mind is to just take the quadtree we constructed and send it to the GPU.
+Of course, we would have to put the data into some shader buffer, probably by creating an array of nodes.
+We want to reduce the bandwidth as much as possible, so all children of a single node could be consecutive in the array, so each node would only need to store one index to the array to reference all its children.
+Theoretically, we would need at most $4/3 \times 65535$ nodes in order to represent the $256 \times 256$ resolution we selected, but thanks to quadrant compression, we usually won't as many.
+So, each node could be represented by 2 bytes, since we only need to save one index to the children or the result of the point test for leaf nodes.
 
-- more GPU time
+However, this approach is expensive on the CPU, because we need to prepare this data structure.
+And on the GPU too, because it needs to traverse the tree to its leaf to determine the color for each pixel with the terrain, but that isn't as big of a problem, since overall, the GPU is much more powerful.
 
-- 1byte per pixel
+A better option might be to store the data directly in a texture.
+In the GPU, we only have to access the texture once to determine the color of a given position on the terrain, making it much simpler.
+On the CPU side, it will be simpler too.
+For each node, we fill a square that is represented by it the texture with the value of the node, all the way to single pixels for the deepest nodes.
 
-- more CPU time
+This is much better, but we can save some more CPU computation with a trick:
+\emph{Mipmapping}, first described in the paper \citetitle{Mipmaps}~\cite{Mipmaps}, is a widely used technique where we generate several lower-resolution variants of a texture, which can then be used to reduce aliasing and performance cost when rendering surfaces from a great distance or when viewed at a shallow angle.
+The width and height of each additional image is a half of the previous level.
+These are usually automatically generated from the main texture, but we can make them look how we want, and we can use them how we want.
 
-- fast on GPU
+If we create a texture with mip levels all the way to a $1 \times 1$ image, and we imagine all the layers stacked on top of each other, stretched to be the same size as the terrain, we essentially get a quadtree.
+The root node of our quadtree is the only pixel in the highest layer, and each other pixel represents another node, each in the layer corresponding to its depth, directly below its parent.
+Now, the CPU only has to change one pixel for each node.
+However, the GPU has to access the texture multiple times per each pixel again, but that shouldn't be a problem.
+Including the mipmaps also makes the texture one third larger than without them.
+Whenever we change a part of a texture, it has to be copied to the GPU again.
+Since we do this every frame, bandwidth will probably be the limiting factor, but for our small 87\,KiB texture this shouldn't be an issue.
 
-- only 1 channel - cannot interpolate
+\subsection{Computing Everything on the GPU}
 
-- mipmaps -> one additional state
+We would like to mention that only after implementing the demo version of our game, we thought of a solution that can be used if higher resolution of the visualization is needed, or just to improve performance.
+This is the exact kind of task that GPUs are great at: computing the same thing for many different points at once.
+So, it would be the best to only send the world geometry to the GPU, and compute these range visualizations there.
+Testing which points are in the line of sight of some tower is the same, as if the tower was a point light, and we wanted to draw the shadows.
+This is a problem that has been heavily studied and there are many techniques we could use for it.
 
-- less CPU time
+\section{Blueprints and Info Panel Text}
 
-- 33\% more data
+In section~\ref{sec:design-blueprints} we described that in our game, the player will be able to build buildings or use abilities, only if they have their blueprint.
+Each blueprint will include a description that explains its function, including the exact values of important statistics.
 
-\section{Modifiable Commands}
+\subsection{Blueprint Representation}
 
-- we want various components to modify how other components function
+We also mentioned that the blueprints will be modifiable, be it permanently or temporarily.
+For example, we could have a building that increases the range of all buildings adjacent to it, or an augment that increases the damage of the blueprint it augments.
+To do this, we would like to know from each blueprint whether it has a given statistic and its value.
+It is also important to note that we want to access these statistics even without creating an instance of the thing the blueprint represents.
+So, all the statistics we could ever want to know or modify will not be stored in the class that represents blueprints, separately from the implementation of their behavior.
 
-- examples
+In Unity, we will implement blueprints as \emph{scriptable objects}.
+Unity allows us to edit the values of these in the editor, and to save them in the project as separate files.
+We can also include references to other resources in our project, for example the \emph{prefab} of the object that get instantiated when the blueprint is used in a battle.
+These prefabs are then where we put the scripts that implement the actual behavior of the building or ability.
+The blueprint itself will only hold the stats and the description.
+When the prefab is created, it will be assigned a copy of the blueprint, in order to have access to the blueprint statistics, which can be modified separately from the source blueprint.
 
-- also react to events as a bonus
+Similarly, we will use scriptable objects to represent attacker types.
+They will hold the stats and the description of the attacker type, and a reference to the prefab of the attacker itself.
 
-\section{Blueprints}
+\subsection{Info Panel Text}
+In section~\ref{sec:design-info-panel}, we describe that the information about anything the player has selected will be displayed on an info panel on the right side of the screen.
+For blueprints, this will be mainly their statistics and the description.
+For buildings, the info panel will display the up-to-date stats and description of their blueprint, but the buildings can also include some information of their own, for example, each tower will show the damage it has dealt throughout the battle.
+We also specified that the statistics that have changed from the original blueprint will be highlighted using colors, indicating whether they changed for better or for the worse.
+Additionally, any new or removed abilities will also be highlighted.
 
-- separation of stats from behavior
+To dynamically update the statistics, we will use placeholder tags in the descriptions, and then a preprocessor, which will find these tags and replace them with the up-to-date values, including the correct formatting.
+For example, the tag \mono{[DMG]} will be replaced by the damage statistic, correctly formatted, and prefixed with an icon that symbolizes the damage stat, to show that if something changes damage, this value will change.
+Of course, to compare the new value, we will also need to store the original value.
 
-- why are they implemented this way
+To display this formatting and icons within text, we will use the features of the Unity package \emph{Text Mesh Pro}.
+It lets us format the text with tags similar to HTML.
+For the icons, we can create a \emph{Text Mesh Pro sprite asset}, and then insert the icons into the text using the tag \mono{<sprite=ID>}.
 
-\subsection{Attacker Stats}
+\section{Modifiable Commands and Queries}
 
-- blueprints for attackers
+In our game, we want various objects to modify how other objects function.
+However, this can be very problematic if we don't select the right approach.
 
-\subsection{Dynamic Descriptions}
+For example, we could have a building that slows down attackers in its range by 25\%, or an attacker that speeds up by 1 tile per second once its HP drops below half.
+However, this can cause issues when implemented incorrectly:
+Imagine the attacker that speeds up has a base speed of 1 tile per second.
+Then, it enters the range of the building that slows it down to three quarters, dropping its speed to 0.75\,t/s.
+Then its speed increases by 1\,t/s, because its HP drops, so the new speed is 1.75\,t/s, but we would expect it to be 1.5\,t/s.
+Finally, when it leaves the range of the building, its speed increases by third of the current speed to revert the slowdown, ending up at 2.333 tiles per second.
+This is obviously not equal to the expected speed of 2 tiles per second.
 
-- explain what things do and their stats
+To illustrate another problem we might run into, we imagine a building that makes it so whenever you would get energy, you get that many materials instead.
+How would we implement it?
+We obviously don't want to modify the blueprints of other buildings, and there might be other sources of energy too.
+We could add a special case to the code that handles the player's current material and energy balance to check specifically for this building, and handle the conversion if needed.
+That cannot be a good solution.
+Furthermore, the sources of the energy would still show pop-ups that they produced some energy, even though they produced materials instead.
 
-- attackers and blueprints
+\subsection{Modifiable Commands}
 
-- dynamically reflect the changes made by other components
+Our solution for these issues is what we call \emph{modifiable commands and queries}.
+This system is an extension of the observer pattern.
+In this pattern, many \emph{subscribers} can subscribe to an \emph{event}, to be notified when the event occurs.
+This event can be triggered by any other object that has a reference to it, also known as \emph{publisher}.
+The advantage of this pattern is its weak coupling.
+The subscribers don't have to know anything about other subscribers or about the publishers and vice versa.
+
+To create modifiable commands, we add the option for subscribers to modify the data of the event, and we invoke the subscribers' callbacks in an order specified by the priority that was specified when they subscribed to the command.
+For example, when a building wants to produce energy, it invokes the modifiable command to add the given amount of energy.
+The command then notifies all the registered modifiers' callbacks, one by one.
+Each subscriber alters the amount of energy how it wants, and finally, the last subscriber, which we'll call the \emph{handler}, reads the energy amount and adds it to the total.
+The handler also doesn't have to be the last subscriber, there can be more subscribers after it which react to the event, for example by displaying the amount produced.
+We will call these \emph{reactions}, and we will refer to the subscribers that get notified before the handler as \emph{modifiers}.
+We will also let modifiers cancel the command completely.
+
+It doesn't make sense to have more than one handler for the command, so we will say that the handles always has priority 0, and there can only ever be one.
+The reactions shouldn't need to modify the command anymore, since it has already been handled by the handler, so we don't let them modify the command, only react to it.
+This means the signature of their callback will be different, and they will be registered separately from the modifiers.
+We will also force callbacks registered as a reaction to have a positive priority, so they happen after the handler.
+And that leaves negative priority values for modifiers.
+
+It is now easy to see how we would implement the example building that turns energy into materials.
+It would simply register a modifier to the command for producing energy, which would cancel the command and invoke a command to produce materials instead.
+
+\subsection{Modifiable Queries}
+
+We could solve the first example with the attacker speed similarly.
+Instead of just reading the speed value from the attacker stats, we will have a modifiable command for reading it.
+So, when anyone wants to know the attacker's speed, they invoke the command with the base speed 1 as the initial data, and after series of modifications, they handle the updated value.
+This ensures that multiple simultaneous modifiers don't produce an invalid value, and the order of application no longer matters, because they are ordered by their priority.
+
+However, we don't ever need to react to a query, furthermore it would make no sense for a modifier to cancel a query.
+Also, it makes no sense to handle the result using a callback that is then immediately unsubscribed.
+So, we remove these features and streamline the interface to get \emph{modifiable queries}.
+
+It would be very inefficient to go through this whole process a thousand times per second, when reading a value that is not currently changing, as can happen when creating the range visualization for a tower.
+So, we also cache the result of the modifiable query to save on computation.
+The cache gets invalidated whenever a modifier is subscribed, unsubscribed, or whenever someone calls the function to explicitly invalidate the cache.
+
+\subsection{Event Reaction Chain}
+
+For modifiable queries, we used only the first half of the modifiable command pipeline.
+If we take just the second half, we get just an event system, but with reactions ordered by priority.
+This is also useful for us, because the reactions could create race conditions otherwise.
+We call this the \emph{event reaction chain} just to differentiate it from Unity events, Unity event system and .NET events.

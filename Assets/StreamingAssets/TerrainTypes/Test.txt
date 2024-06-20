@@ -228,15 +228,15 @@ obstacles {
 
     * BigRocks {
         type l
-        max 10
+        max 6
         base_probability 0.2
-        affinities -1 0 -1
+        affinities -0.2 0 -1
     }
 
     * SmallRocks {
         type s
-        base_probability 0.25
-        affinities -0.1 0 0.4 -0.1
+        base_probability 0.2
+        affinities -0.1 0 0.2 -0.1
     }
 }
 
@@ -298,7 +298,7 @@ scatterer {
         tries_per_tile 10
         placement_radius 0.25
         persistent_radius 0.25
-        size_gain 0.5
+        size_gain 0.2
         radius_gain -2
         angle_spread 15
         value_threshold 0
@@ -328,7 +328,7 @@ scatterer {
         angle_spread 40
         value_threshold -0.2
         value {
-            clamp -10 0.5 {
+            clamp -10 0.3 {
                 clamp -10 0.2 {
                     obstacle SmallRocks 1 -3
                 }
