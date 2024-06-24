@@ -18,6 +18,7 @@ namespace BattleSimulation.Attackers
         public static readonly ModifiableCommand<(Attacker target, Damage damage)> DAMAGE = new();
         public static readonly ModifiableCommand<(Attacker target, float amount)> HEAL = new();
         public static readonly ModifiableCommand<(Attacker target, Damage cause)> DIE = new();
+        public static readonly ModifiableQuery<Attacker, float> SPEED = new(a => a.stats.speed);
 
         public delegate void SpawnAttackersRelative(Attacker attacker, AttackerStats stats, int count, float offsetRadius);
 
@@ -42,7 +43,6 @@ namespace BattleSimulation.Attackers
         public UnityEvent onRemoved;
         public UnityEvent<Attacker> onReachedHub;
         [Header("Runtime variables")]
-        public AttackerStats originalStats;
         public AttackerStats stats;
         public float pathSegmentProgress;
         public Vector2Int pathSegmentTarget;
@@ -55,13 +55,14 @@ namespace BattleSimulation.Attackers
         public int health;
         bool removed_;
         public bool IsDead { get; private set; }
+        public float Speed => SPEED.Query(this);
 
         public virtual void FixedUpdate()
         {
             if (IsDead)
                 return;
 
-            pathSegmentProgress += Time.fixedDeltaTime * stats.speed;
+            pathSegmentProgress += Time.fixedDeltaTime * Speed;
 
             while (pathSegmentProgress >= 1)
                 if (!TryAdvanceSegment())
@@ -114,8 +115,7 @@ namespace BattleSimulation.Attackers
 
         public void Init(AttackerStats stats, Vector2Int start, Vector2Int firstNode, uint pathSplitIndex)
         {
-            originalStats = stats;
-            this.stats = originalStats.Clone();
+            this.stats = stats.Clone();
             health = stats.maxHealth;
 
             lastTarget = startPosition = start;

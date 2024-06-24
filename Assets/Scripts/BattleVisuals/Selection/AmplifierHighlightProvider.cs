@@ -9,14 +9,14 @@ namespace BattleVisuals.Selection
         public override bool IsTileAffected(Vector2Int tile)
         {
             TryGetTile(out var myTile);
-            float range = b.Blueprint.range;
+            float range = b.currentBlueprint.range;
             var offset = tile - myTile.pos;
             return offset.sqrMagnitude <= range * range;
         }
 
         public override bool IsBuildingAffected(Building b)
         {
-            return b.Blueprint.type == Blueprint.Type.Tower && b.Blueprint.HasDamage;
+            return b.currentBlueprint.type == Blueprint.Type.Tower && b.currentBlueprint.HasDamage;
         }
     }
 }

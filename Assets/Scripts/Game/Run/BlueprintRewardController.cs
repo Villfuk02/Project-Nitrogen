@@ -93,7 +93,7 @@ namespace Game.Run
 
         public void MakeBlueprintSelection()
         {
-            currentOffer_ = allBlueprints.OrderBy(b => (b.type, b.materialCost, b.energyCost)).ToList();
+            currentOffer_ = allBlueprints.OrderBy(b => b.GetOrderIndex()).ToList();
             StartCoroutine(SetupWhenReady(bsc => bsc.Setup(runPersistence.blueprints, currentOffer_, null, "Finish", OnFinishedPickingSelection, true)));
         }
 
@@ -134,7 +134,7 @@ namespace Game.Run
             {
                 runPersistence.blueprints.Add(addedBlueprint);
                 currentOffer_.Remove(addedBlueprint);
-                runPersistence.blueprints = runPersistence.blueprints.OrderBy(b => (b.type, b.materialCost, b.energyCost)).ToList();
+                runPersistence.blueprints = runPersistence.blueprints.OrderBy(b => b.GetOrderIndex()).ToList();
             }
         }
 

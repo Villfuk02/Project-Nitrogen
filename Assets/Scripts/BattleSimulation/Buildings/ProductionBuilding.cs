@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 using BattleSimulation.Control;
+using Utils;
 
 namespace BattleSimulation.Buildings
 {
@@ -15,13 +16,9 @@ namespace BattleSimulation.Buildings
             base.OnPlaced();
             WaveController.ON_WAVE_FINISHED.RegisterReaction(Produce, 100);
 
-            BattleController.UPDATE_MATERIALS_PER_WAVE.RegisterModifier(ProvideMaterialsIncome, -100);
-            BattleController.UPDATE_ENERGY_PER_WAVE.RegisterModifier(ProvideEnergyIncome, -100);
-            BattleController.UPDATE_FUEL_PER_WAVE.RegisterModifier(ProvideFuelIncome, -100);
-
-            BattleController.UPDATE_MATERIALS_PER_WAVE.Invoke(0);
-            BattleController.UPDATE_ENERGY_PER_WAVE.Invoke(0);
-            BattleController.UPDATE_FUEL_PER_WAVE.Invoke(0);
+            BattleController.MATERIALS_PER_WAVE.RegisterModifier(ProvideMaterialsIncome, -100);
+            BattleController.ENERGY_PER_WAVE.RegisterModifier(ProvideEnergyIncome, -100);
+            BattleController.FUEL_PER_WAVE.RegisterModifier(ProvideFuelIncome, -100);
         }
 
         protected override void OnDestroy()
@@ -29,13 +26,9 @@ namespace BattleSimulation.Buildings
             if (Placed)
             {
                 WaveController.ON_WAVE_FINISHED.UnregisterReaction(Produce);
-                BattleController.UPDATE_MATERIALS_PER_WAVE.UnregisterModifier(ProvideMaterialsIncome);
-                BattleController.UPDATE_ENERGY_PER_WAVE.UnregisterModifier(ProvideEnergyIncome);
-                BattleController.UPDATE_FUEL_PER_WAVE.UnregisterModifier(ProvideFuelIncome);
-
-                BattleController.UPDATE_MATERIALS_PER_WAVE.Invoke(0);
-                BattleController.UPDATE_ENERGY_PER_WAVE.Invoke(0);
-                BattleController.UPDATE_FUEL_PER_WAVE.Invoke(0);
+                BattleController.MATERIALS_PER_WAVE.UnregisterModifier(ProvideMaterialsIncome);
+                BattleController.ENERGY_PER_WAVE.UnregisterModifier(ProvideEnergyIncome);
+                BattleController.FUEL_PER_WAVE.UnregisterModifier(ProvideFuelIncome);
             }
 
             base.OnDestroy();
@@ -43,47 +36,44 @@ namespace BattleSimulation.Buildings
 
         protected virtual void Produce()
         {
-            if (Blueprint.HasFuelProduction)
+            if (currentBlueprint.HasFuelProduction)
             {
-                (object, float amt) data = (this, Blueprint.fuelProduction);
+                (object, float amt) data = (this, currentBlueprint.fuelProduction);
                 if (BattleController.ADD_FUEL.InvokeRef(ref data))
                     fuelProduced += (int)data.amt;
             }
 
-            if (Blueprint.HasMaterialProduction)
+            if (currentBlueprint.HasMaterialProduction)
             {
-                (object, float amt) data = (this, Blueprint.materialProduction);
+                (object, float amt) data = (this, currentBlueprint.materialProduction);
                 if (BattleController.ADD_MATERIAL.InvokeRef(ref data))
                     materialsProduced += (int)data.amt;
             }
 
-            if (Blueprint.HasEnergyProduction)
+            if (currentBlueprint.HasEnergyProduction)
             {
-                (object, float amt) data = (this, Blueprint.energyProduction);
+                (object, float amt) data = (this, currentBlueprint.energyProduction);
                 if (BattleController.ADD_ENERGY.InvokeRef(ref data))
                     energyProduced += (int)data.amt;
             }
         }
 
-        bool ProvideMaterialsIncome(ref float income)
+        void ProvideMaterialsIncome(Unit _, ref float income)
         {
-            if (Blueprint.HasMaterialProduction)
-                income += Blueprint.materialProduction;
-            return true;
+            if (currentBlueprint.HasMaterialProduction)
+                income += currentBlueprint.materialProduction;
         }
 
-        bool ProvideEnergyIncome(ref float income)
+        void ProvideEnergyIncome(Unit _, ref float income)
         {
-            if (Blueprint.HasEnergyProduction)
-                income += Blueprint.energyProduction;
-            return true;
+            if (currentBlueprint.HasEnergyProduction)
+                income += currentBlueprint.energyProduction;
         }
 
-        bool ProvideFuelIncome(ref float income)
+        void ProvideFuelIncome(Unit _, ref float income)
         {
-            if (Blueprint.HasFuelProduction)
-                income += Blueprint.fuelProduction;
-            return true;
+            if (currentBlueprint.HasFuelProduction)
+                income += currentBlueprint.fuelProduction;
         }
 
         public override IEnumerable<string> GetExtraStats()

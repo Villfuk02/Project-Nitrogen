@@ -13,15 +13,10 @@ namespace BattleSimulation.Towers
         [Header("Runtime variables - Gatling Gun")]
         public int continuousShootingTicks;
 
-        protected override void OnInit()
-        {
-            base.OnInit();
-            GET_BLUEPRINT.RegisterModifier(UpdateStats, -1000);
-        }
-
         protected override void OnPlaced()
         {
             base.OnPlaced();
+            Blueprint.Interval.RegisterModifier(UpdateInterval, -1000);
             WaveController.ON_WAVE_FINISHED.RegisterReaction(ResetSpeed, 1000);
             ResetSpeed();
         }
@@ -29,31 +24,33 @@ namespace BattleSimulation.Towers
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            GET_BLUEPRINT.UnregisterModifier(UpdateStats);
             if (Placed)
+            {
+                Blueprint.Interval.UnregisterModifier(UpdateInterval);
                 WaveController.ON_WAVE_FINISHED.UnregisterReaction(ResetSpeed);
+            }
         }
 
-        protected override void FixedUpdateInternal()
+        protected override void FixedUpdate()
         {
-            base.FixedUpdateInternal();
+            base.FixedUpdate();
             if (targeting.target == null)
                 continuousShootingTicks = Mathf.Max(continuousShootingTicks - slowdownRate, 0);
             else
-                continuousShootingTicks = Mathf.Min(continuousShootingTicks + 1, Blueprint.delay);
+                continuousShootingTicks = Mathf.Min(continuousShootingTicks + 1, currentBlueprint.delay);
         }
 
-        void UpdateStats(ref (Blueprinted blueprinted, Blueprint blueprint) param)
+        void UpdateInterval(IBlueprintProvider provider, ref float interval)
         {
-            if (!Placed || param.blueprinted != this)
+            if (provider is not Blueprinted b || b != this || !Placed)
                 return;
-            float speed = Mathf.Lerp(baseSpeed, 1, continuousShootingTicks / (float)param.blueprint.delay);
-            param.blueprint.interval = Mathf.RoundToInt(param.blueprint.interval / speed);
+            float speed = Mathf.Lerp(baseSpeed, 1, continuousShootingTicks / (float)currentBlueprint.delay);
+            interval = Mathf.Max(interval / speed, 1);
         }
 
         protected override void Shoot(Attacker target)
         {
-            shotTimer = Blueprint.interval;
+            shotTimer = currentBlueprint.interval;
             ShootInternal(target);
             onShoot.Invoke(target);
         }

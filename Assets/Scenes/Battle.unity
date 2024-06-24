@@ -5409,7 +5409,7 @@ MonoBehaviour:
   battleController: {fileID: 568931855}
   infoPanel: {fileID: 884524845}
   infoPanelTitle: {fileID: 929038896}
-  sentryPosition: {x: 7, y: 3}
+  sentryPosition: {x: 4, y: 3}
   shown: 0
   newTutorialText: 
 --- !u!114 &865701826

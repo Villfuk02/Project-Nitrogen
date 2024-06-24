@@ -15,7 +15,7 @@ namespace BattleVisuals.Selection
 
         public override bool IsBuildingAffected(Building b)
         {
-            return b.Blueprint.type != Blueprint.Type.Ability && b.Blueprint.HasRange;
+            return b.currentBlueprint.type != Blueprint.Type.Ability && b.currentBlueprint.HasRange;
         }
     }
 }

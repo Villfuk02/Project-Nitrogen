@@ -17,9 +17,9 @@ namespace BattleSimulation.Towers
         [Header("Runtime variables")]
         public int shotTimer;
 
-        protected override void FixedUpdateInternal()
+        protected override void FixedUpdate()
         {
-            base.FixedUpdateInternal();
+            base.FixedUpdate();
             if (!Placed)
                 return;
 
@@ -33,14 +33,14 @@ namespace BattleSimulation.Towers
 
         protected virtual void Shoot(Attacker target)
         {
-            shotTimer = Blueprint.interval;
+            shotTimer = currentBlueprint.interval;
             ShootInternal(target);
             onShoot.Invoke(target);
         }
 
         protected abstract void ShootInternal(Attacker target);
 
-        protected virtual Damage GetDamage(Attacker attacker) => new(Blueprint.damage, Blueprint.damageType, this);
+        protected virtual Damage GetDamage(Attacker attacker) => new(currentBlueprint.damage, currentBlueprint.damageType, this);
 
         protected virtual void PlayHitSound(Projectile projectile, Attacker attacker, int damage)
         {

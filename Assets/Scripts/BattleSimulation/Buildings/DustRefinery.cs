@@ -1,5 +1,4 @@
 using UnityEngine;
-using Utils;
 
 namespace BattleSimulation.Buildings
 {
@@ -11,7 +10,7 @@ namespace BattleSimulation.Buildings
         protected override void OnPlaced()
         {
             base.OnPlaced();
-            OriginalBlueprint.materialCost += costIncrease;
+            originalBlueprint.materialCost += costIncrease;
         }
     }
 }

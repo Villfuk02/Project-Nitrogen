@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using BattleSimulation.Attackers;
 using BattleSimulation.Control;
 using BattleSimulation.Projectiles;
+using Game.Blueprint;
 using Game.Damage;
 using Game.Shared;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace BattleSimulation.Towers
         [SerializeField] Projectile lastChargedProjectile;
         [SerializeField] int energyProduced;
 
-        bool IsCharged => ticksSinceLastShot >= Blueprint.delay;
+        bool IsCharged => ticksSinceLastShot >= currentBlueprint.delay;
 
         protected override void OnPlaced()
         {
@@ -37,13 +38,13 @@ namespace BattleSimulation.Towers
                 WaveController.START_WAVE.UnregisterReaction(OnWaveStarted);
         }
 
-        protected override void FixedUpdateInternal()
+        protected override void FixedUpdate()
         {
             bool prevCharged = IsCharged;
             ticksSinceLastShot++;
             if (Placed && !prevCharged && IsCharged)
                 PlayChargeUpSound();
-            base.FixedUpdateInternal();
+            base.FixedUpdate();
         }
 
         protected override void ShootInternal(Attacker target)
@@ -74,19 +75,19 @@ namespace BattleSimulation.Towers
             if (attacker.IsDead)
                 return false;
             bool charged = projectile == lastChargedProjectile;
-            Damage dmg = new(Blueprint.damage, Blueprint.damageType, this);
+
+            Damage dmg;
             if (charged)
-            {
-                dmg.amount += additionalDmg;
-                dmg.type |= Damage.Type.Energy;
-            }
+                dmg = new(Blueprint.Damage.Query(this, baseBlueprint.damage + additionalDmg), Blueprint.DamageType.Query(this, baseBlueprint.damageType | Damage.Type.Energy), this);
+            else
+                dmg = GetDamage(attacker);
 
             (Attacker a, Damage dmg) hitParam = (attacker, dmg);
             if (!Attacker.HIT.InvokeRef(ref hitParam))
                 return false;
             if (charged)
             {
-                (object source, float amount) energyProductionParam = (this, Blueprint.energyProduction);
+                (object source, float amount) energyProductionParam = (this, currentBlueprint.energyProduction);
                 if (BattleController.ADD_ENERGY.InvokeRef(ref energyProductionParam))
                     energyProduced += (int)energyProductionParam.amount;
                 SoundController.PlaySound(SoundController.Sound.EnergizedImpact, 0.75f, 1, 0.1f, projectile.transform.position);

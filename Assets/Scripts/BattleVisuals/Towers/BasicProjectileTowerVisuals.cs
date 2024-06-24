@@ -21,7 +21,7 @@ namespace BattleVisuals.Towers
             if (!t.Placed)
                 return;
 
-            if (1 - t.shotTimer / (float)t.Blueprint.interval < rotationLockRatio)
+            if (1 - t.shotTimer / (float)t.currentBlueprint.interval < rotationLockRatio)
                 return;
 
             var targetRotation = GetTargetRotation();

@@ -1,6 +1,6 @@
-using BattleSimulation.World;
 using System;
 using System.Collections.Generic;
+using BattleSimulation.World;
 using Utils;
 
 namespace Game.InfoPanel
@@ -13,8 +13,9 @@ namespace Game.InfoPanel
         public TileDescriptionProvider(Tile tile)
         {
             tile_ = tile;
-            descriptionFormatter_ = DescriptionFormat.Tile(tile);
+            descriptionFormatter_ = DescriptionFormat.TileFormatter(tile);
         }
+
         protected override string GenerateDescription() => descriptionFormatter_.Format(GenerateRawDescription());
 
         string GenerateRawDescription()
@@ -37,6 +38,5 @@ namespace Game.InfoPanel
 
             return string.Join("[BRK]", texts);
         }
-
     }
 }

@@ -103,7 +103,7 @@ namespace Game.Run
 
         public void Hover(BlueprintDisplay self)
         {
-            infoPanel.ShowBlueprint(self.blueprint, self.blueprint, null, false, false);
+            infoPanel.ShowBlueprint(self.blueprint, null, false, false);
         }
 
         public void Unhover()
@@ -123,12 +123,12 @@ namespace Game.Run
                     if (!ValidInventorySelection(selected, self.blueprint))
                         return;
                     selectedFromInventory = self.blueprint;
-                    infoPanel.ShowBlueprint(self.blueprint, self.blueprint, null, true, true);
+                    infoPanel.ShowBlueprint(self.blueprint, null, true, true);
                 }
                 else
                 {
                     selected = self.blueprint;
-                    infoPanel.ShowBlueprint(self.blueprint, self.blueprint, null, true, true);
+                    infoPanel.ShowBlueprint(self.blueprint, null, true, true);
                     selectedFromInventory = null;
                 }
             }

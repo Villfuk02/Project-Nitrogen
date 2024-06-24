@@ -6,13 +6,7 @@ namespace Game.Damage
 {
     public struct Damage
     {
-        [Flags] public enum Type
-        {
-            HealthLoss = 1 << 0,
-            Physical = 1 << 1,
-            Energy = 1 << 2,
-            Explosive = 1 << 3
-        }
+        [Flags] public enum Type { HealthLoss = 1 << 0, Physical = 1 << 1, Energy = 1 << 2, Explosive = 1 << 3 }
 
         public float amount;
         public Type type;
@@ -27,9 +21,9 @@ namespace Game.Damage
 
         public readonly override string ToString() => $"{amount} damage (type={type}, source={source})";
 
-        public static string FormatDamage(int value, int original, bool originalExists, Type type, TextUtils.Improvement improvement)
+        public static string FormatDamage(int value, int original, Type type, TextUtils.Improvement improvement)
         {
-            return $"{type.ToHumanReadable(true)}{TextUtils.FormatIntStat(null, value, original, originalExists, improvement)}";
+            return $"{type.ToHumanReadable(true)}{TextUtils.FormatIntStat(null, value, original, improvement)}";
         }
 
         public static string FormatDamageType(Type type, Type original)

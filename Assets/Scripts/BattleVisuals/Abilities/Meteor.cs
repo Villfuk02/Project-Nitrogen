@@ -21,8 +21,8 @@ namespace BattleVisuals.Abilities
         {
             var t = transform;
             t.localPosition = (Vector3.up + Random.onUnitSphere * 0.3f) * startHeight;
-            speed_ = -t.localPosition / sim.Blueprint.delay * TimeUtils.TICKS_PER_SEC;
-            SoundController.PlaySound(SoundController.Sound.Fall, 0.75f, 0.63f / (sim.Blueprint.delay * TimeUtils.SECS_PER_TICK), 0, transform.position);
+            speed_ = -t.localPosition / sim.currentBlueprint.delay * TimeUtils.TICKS_PER_SEC;
+            SoundController.PlaySound(SoundController.Sound.Fall, 0.75f, 0.63f / (sim.currentBlueprint.delay * TimeUtils.SECS_PER_TICK), 0, transform.position);
         }
 
         void Update()

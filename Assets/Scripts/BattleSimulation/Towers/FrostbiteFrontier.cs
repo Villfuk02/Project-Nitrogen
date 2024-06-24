@@ -15,23 +15,23 @@ namespace BattleSimulation.Towers
         {
             base.OnPlaced();
             Attacker.DAMAGE.RegisterModifier(DamageAttacker, -100);
+            Attacker.SPEED.RegisterModifier(UpdateSpeed, -100);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             if (Placed)
+            {
                 Attacker.DAMAGE.UnregisterModifier(DamageAttacker);
+                Attacker.SPEED.UnregisterModifier(UpdateSpeed);
+            }
         }
 
-        public void OnAttackerEnter(Attacker attacker)
+        void UpdateSpeed(Attacker attacker, ref float speed)
         {
-            attacker.stats.speed *= 1 - speedReduction;
-        }
-
-        public void OnAttackerLeave(Attacker attacker)
-        {
-            attacker.stats.speed /= 1 - speedReduction;
+            if (targeting.IsAmongTargets(attacker))
+                speed *= 1 - speedReduction;
         }
 
         bool DamageAttacker(ref (Attacker target, Damage dmg) param)

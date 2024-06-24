@@ -44,7 +44,7 @@ namespace Game.Blueprint
             blueprint = b;
             blueprintBackground.color = GetColorFromType(blueprint.type);
             icon.sprite = blueprint.icon;
-            UpdateText(blueprint.energyCost, blueprint.materialCost, Color.white);
+            UpdateText(Blueprint.EnergyCost.Query(blueprint), Blueprint.MaterialCost.Query(blueprint), Color.white);
         }
 
         void Update()

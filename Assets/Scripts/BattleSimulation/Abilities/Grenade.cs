@@ -13,7 +13,7 @@ namespace BattleSimulation.Abilities
         void Explode()
         {
             foreach (var a in targeting.GetValidTargets())
-                a.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out _);
+                a.TryHit(new(currentBlueprint.damage, currentBlueprint.damageType, this), out _);
             Destroy(gameObject, 3f);
         }
     }

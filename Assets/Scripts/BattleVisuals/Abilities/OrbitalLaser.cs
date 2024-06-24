@@ -25,7 +25,7 @@ namespace BattleVisuals.Abilities
 
         void Start()
         {
-            duration = orbitalLaser.Blueprint.durationTicks * TimeUtils.SECS_PER_TICK;
+            duration = orbitalLaser.currentBlueprint.durationTicks * TimeUtils.SECS_PER_TICK;
             audioSource.pitch = audioSource.clip.length / duration;
         }
 

@@ -16,10 +16,7 @@ namespace BattleSimulation.Buildings
         {
             base.OnPlaced();
             WaveController.ON_WAVE_FINISHED.RegisterReaction(Produce, 100);
-
-            BattleController.UPDATE_ENERGY_PER_WAVE.RegisterModifier(ProvideEnergyIncome, -100);
-
-            BattleController.UPDATE_ENERGY_PER_WAVE.Invoke(0);
+            BattleController.ENERGY_PER_WAVE.RegisterModifier(ProvideEnergyIncome, -100);
         }
 
         protected override void OnDestroy()
@@ -27,9 +24,7 @@ namespace BattleSimulation.Buildings
             if (Placed)
             {
                 WaveController.ON_WAVE_FINISHED.UnregisterReaction(Produce);
-                BattleController.UPDATE_ENERGY_PER_WAVE.UnregisterModifier(ProvideEnergyIncome);
-
-                BattleController.UPDATE_ENERGY_PER_WAVE.Invoke(0);
+                BattleController.ENERGY_PER_WAVE.UnregisterModifier(ProvideEnergyIncome);
             }
 
             base.OnDestroy();
@@ -37,7 +32,7 @@ namespace BattleSimulation.Buildings
 
         public void UpdateProduction(int height)
         {
-            production = height * Blueprint.energyProduction;
+            production = height * currentBlueprint.energyProduction;
         }
 
         void Produce()
@@ -47,10 +42,9 @@ namespace BattleSimulation.Buildings
                 energyProduced += (int)data.amt;
         }
 
-        bool ProvideEnergyIncome(ref float income)
+        void ProvideEnergyIncome(Unit _, ref float income)
         {
             income += production;
-            return true;
         }
 
         public override IEnumerable<string> GetExtraStats()
@@ -64,7 +58,7 @@ namespace BattleSimulation.Buildings
                 yield return sb.ToString();
             }
 
-            yield return $"Production [#+]{TextUtils.FormatIntStat(TextUtils.Icon.Energy, production, OriginalBlueprint.energyProduction, true, TextUtils.Improvement.More)}";
+            yield return $"Production [#+]{TextUtils.FormatIntStat(TextUtils.Icon.Energy, production, baseBlueprint.energyProduction, TextUtils.Improvement.More)}";
 
             foreach (string s in base.GetExtraStats())
                 yield return s;

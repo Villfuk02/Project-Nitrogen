@@ -10,8 +10,7 @@ namespace BattleSimulation.Targeting
         [Header("Settings")]
         [SerializeField] float forwardsOffset;
         [Header("Runtime variables")]
-        [SerializeField] float targetRange;
-        public float currentRange;
+        public float realRange;
         [SerializeField] Vector3 lastPos;
         [SerializeField] Quaternion lastRot;
 
@@ -22,7 +21,8 @@ namespace BattleSimulation.Targeting
 
         public override void SetRange(float range)
         {
-            targetRange = range;
+            base.SetRange(range);
+
             if (checkLineOfSight)
             {
                 var position = transform.position;
@@ -31,7 +31,7 @@ namespace BattleSimulation.Targeting
                     range = hit.distance + forwardsOffset;
             }
 
-            currentRange = range;
+            realRange = range;
 
             col.size = new(col.size.x, col.size.y, range);
             col.center = Vector3.forward * (range / 2 - forwardsOffset);
@@ -45,7 +45,7 @@ namespace BattleSimulation.Targeting
             {
                 lastPos = p;
                 lastRot = q;
-                SetRange(targetRange);
+                SetRange(currentRange);
             }
 
             return true;

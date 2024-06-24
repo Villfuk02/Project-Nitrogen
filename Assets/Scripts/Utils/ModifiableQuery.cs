@@ -2,12 +2,28 @@
 
 namespace Utils
 {
-    public class ModifiableQuery<TData, TResult>
+    public class ModifiableQuery<TInput, TData, TResult>
     {
-        public delegate void Modifier(ref TData data);
+        public delegate void Modifier(TInput input, ref TData data);
+
+        public delegate TData Provider(TInput input);
+
         public delegate TResult Acceptor(TData data);
+
         readonly OrderedList<int, Modifier> modifiers_ = new();
-        Acceptor acceptor_;
+        protected Acceptor acceptor;
+        readonly Provider provider_;
+
+        public ModifiableQuery(Provider provider)
+        {
+            provider_ = provider;
+        }
+
+        public ModifiableQuery(Provider provider, Acceptor acceptor)
+        {
+            provider_ = provider;
+            this.acceptor = acceptor;
+        }
 
         public void RegisterModifier(Modifier modifier, int priority)
         {
@@ -15,30 +31,47 @@ namespace Utils
             modifiers_.Add(priority, modifier);
         }
 
-        public void UnregisterModifier(Modifier modifier) => modifiers_.Remove(modifier);
+        public void UnregisterModifier(Modifier modifier)
+        {
+            modifiers_.Remove(modifier);
+        }
+
         public void RegisterAcceptor(Acceptor acceptor)
         {
-            if (acceptor_ != null)
+            if (this.acceptor != null)
                 throw new InvalidOperationException("An acceptor was already registered");
-            acceptor_ = acceptor;
+            this.acceptor = acceptor;
         }
 
         public void UnregisterAcceptor(Acceptor acceptor)
         {
-            if (acceptor_ != acceptor)
+            if (this.acceptor != acceptor)
                 throw new InvalidOperationException("This acceptor is not the one that was registered");
-            acceptor_ = null;
+            this.acceptor = null;
         }
 
-        public TResult Query(TData data)
+        public TResult Query(TInput input) => Query(input, provider_(input));
+
+        public TResult Query(TInput input, TData customData)
         {
-            if (acceptor_ == null)
+            if (acceptor == null)
                 throw new InvalidOperationException("No acceptor was registered");
 
-            foreach (var (_, modifier) in modifiers_)
-                modifier.Invoke(ref data);
+            TData data = customData;
 
-            return acceptor_.Invoke(data);
+            foreach (var (_, modifier) in modifiers_)
+                modifier.Invoke(input, ref data);
+
+            var result = acceptor.Invoke(data);
+            return result;
+        }
+    }
+
+    public class ModifiableQuery<TInput, TData> : ModifiableQuery<TInput, TData, TData>
+    {
+        public ModifiableQuery(Provider provider) : base(provider)
+        {
+            acceptor = data => data;
         }
     }
 }

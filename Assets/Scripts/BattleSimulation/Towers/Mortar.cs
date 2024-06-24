@@ -10,7 +10,7 @@ namespace BattleSimulation.Towers
         protected override void ShootInternal(Attacker target)
         {
             var p = Instantiate(projectilePrefab, World.WorldData.World.instance.transform).GetComponent<BallisticProjectile>();
-            p.Init(projectileOrigin.position, this, target.target.position, Blueprint.delay * TimeUtils.SECS_PER_TICK, Blueprint.radius);
+            p.Init(projectileOrigin.position, this, target.target.position, currentBlueprint.delay * TimeUtils.SECS_PER_TICK, currentBlueprint.radius);
             SoundController.PlaySound(SoundController.Sound.ShootHeavy, 0.75f, 1, 0.2f, transform.position);
         }
 

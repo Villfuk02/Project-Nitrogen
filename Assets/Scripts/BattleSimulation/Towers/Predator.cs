@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BattleSimulation.Attackers;
+using Game.Blueprint;
 using Game.Damage;
 using Game.Shared;
 using UnityEngine;
@@ -15,13 +16,17 @@ namespace BattleSimulation.Towers
         {
             base.OnPlaced();
             Attacker.DIE.RegisterReaction(OnAttackerDied, 1000);
+            Blueprint.Damage.RegisterModifier(UpdateDamage, -1000000);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             if (Placed)
+            {
                 Attacker.DIE.UnregisterReaction(OnAttackerDied);
+                Blueprint.Damage.UnregisterModifier(UpdateDamage);
+            }
         }
 
         void OnAttackerDied((Attacker attacker, Damage cause) param)
@@ -29,7 +34,6 @@ namespace BattleSimulation.Towers
             if (!ReferenceEquals(param.cause.source, this))
                 return;
             kills++;
-            baseBlueprint.damage++;
             SoundController.PlaySound(SoundController.Sound.Upgrade, 0.4f, 1, 0, transform.position);
         }
 
@@ -40,6 +44,12 @@ namespace BattleSimulation.Towers
 
             foreach (string s in base.GetExtraStats())
                 yield return s;
+        }
+
+        void UpdateDamage(IBlueprintProvider provider, ref float damage)
+        {
+            if (provider as Blueprinted == this)
+                damage += kills;
         }
     }
 }

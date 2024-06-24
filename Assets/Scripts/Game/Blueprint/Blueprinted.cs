@@ -1,39 +1,24 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Utils;
 
 namespace Game.Blueprint
 {
-    public abstract class Blueprinted : MonoBehaviour
+    public abstract class Blueprinted : MonoBehaviour, IBlueprintProvider
     {
-        public static readonly ModifiableQuery<(Blueprinted blueprinted, Blueprint blueprint), Blueprint> GET_BLUEPRINT = new();
-
-        static Blueprinted()
-        {
-            GET_BLUEPRINT.RegisterAcceptor(param => param.blueprint);
-        }
-
         [Header("References")]
         [SerializeField] GameObject visuals;
-
-        [Header("Runtime variables")]
-        protected Blueprint baseBlueprint;
-
-        public Blueprint Blueprint { get; private set; }
-
-        public Blueprint OriginalBlueprint { get; private set; }
+        protected Blueprint originalBlueprint;
+        public Blueprint baseBlueprint;
+        public Blueprint currentBlueprint;
         public bool Placed { get; private set; }
-
-        [SerializeField] int lastBlueprintHash;
 
         public void InitBlueprint(Blueprint blueprint)
         {
             visuals.SetActive(false);
-            OriginalBlueprint = blueprint;
-            baseBlueprint = blueprint.Clone();
-            UpdateBlueprint();
+            originalBlueprint = blueprint;
+            baseBlueprint = Blueprint.CloneModifiedValues(blueprint);
+            currentBlueprint = Blueprint.CloneModifiedValues(this);
             OnInit();
-            OnSetupChanged();
         }
 
         public void Place()
@@ -44,33 +29,23 @@ namespace Game.Blueprint
         }
 
         protected virtual void OnPlaced() { }
-        public virtual void OnSetupChanged() { }
         protected virtual void OnInit() { }
+
+        public void OnSetupPlacement()
+        {
+            currentBlueprint = Blueprint.CloneModifiedValues(this);
+        }
 
         public virtual IEnumerable<string> GetExtraStats()
         {
             yield break;
         }
 
-        void FixedUpdate()
+        protected virtual void FixedUpdate()
         {
-            UpdateBlueprint();
-            int hash = Blueprint.GetStatsHash();
-            if (lastBlueprintHash != hash)
-            {
-                lastBlueprintHash = hash;
-                OnSetupChanged();
-            }
-
-            FixedUpdateInternal();
-            UpdateBlueprint();
+            currentBlueprint = Blueprint.CloneModifiedValues(this);
         }
 
-        protected virtual void FixedUpdateInternal() { }
-
-        void UpdateBlueprint()
-        {
-            Blueprint = GET_BLUEPRINT.Query((this, baseBlueprint.Clone()));
-        }
+        public Blueprint GetBaseBlueprint() => baseBlueprint;
     }
 }

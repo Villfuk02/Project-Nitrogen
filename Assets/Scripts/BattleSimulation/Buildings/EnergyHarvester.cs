@@ -25,7 +25,7 @@ namespace BattleSimulation.Buildings
 
         void OnAddedMaterial((object source, float amount) param)
         {
-            (object, float amt) data = (param.source, Blueprint.energyProduction * 0.01f * param.amount);
+            (object, float amt) data = (param.source, currentBlueprint.energyProduction * 0.01f * param.amount);
             if (BattleController.ADD_ENERGY.InvokeRef(ref data))
                 energyProduced += (int)data.amt;
         }

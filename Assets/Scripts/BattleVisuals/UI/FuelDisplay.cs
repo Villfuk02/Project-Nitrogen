@@ -31,21 +31,11 @@ namespace BattleVisuals.UI
         int income_;
         float arrowSpacing_;
 
-        void Awake()
-        {
-            BattleController.UPDATE_FUEL_PER_WAVE.RegisterHandler(UpdateFuelIncome);
-        }
-
-        void OnDestroy()
-        {
-            BattleController.UPDATE_FUEL_PER_WAVE.UnregisterHandler(UpdateFuelIncome);
-        }
-
         void Update()
         {
             UpdateFill();
             UpdateFuelText();
-            UpdateIncomeTextColor();
+            UpdateIncome();
             UpdatePredictionArrows();
         }
 
@@ -75,8 +65,11 @@ namespace BattleVisuals.UI
             goalText.text = (bc.fuelGoal - fuelDisplay).ToString();
         }
 
-        void UpdateIncomeTextColor()
+        void UpdateIncome()
         {
+            income_ = BattleController.FUEL_PER_WAVE.Query(new());
+            incomeText.text = $"+{income_:F0}";
+
             var c = incomeColor;
             c.a = Mathf.Lerp(0, c.a, (maxWidth - currentWidth - incomeWidth) / incomeWidth);
             incomeText.color = c;
@@ -108,14 +101,6 @@ namespace BattleVisuals.UI
             {
                 predictionArrows_[i].anchoredPosition = Vector2.right * (startPosition + arrowSpacing_ * (i + 1));
             }
-        }
-
-        bool UpdateFuelIncome(ref float income)
-        {
-            income = Mathf.FloorToInt(income);
-            income_ = (int)income;
-            incomeText.text = $"+{income:F0}";
-            return true;
         }
     }
 }

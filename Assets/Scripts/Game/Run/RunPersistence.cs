@@ -51,7 +51,7 @@ namespace Game.Run
             hull = maxHull;
             blueprintRewards.Init(random_.NewSeed());
             if (!noStartingBlueprints)
-                blueprints = blueprintRewards.allBlueprints.Where(b => b.rarity == Blueprint.Blueprint.Rarity.Starter).OrderBy(b => (b.type, b.materialCost, b.energyCost)).ToList();
+                blueprints = blueprintRewards.allBlueprints.Where(b => b.rarity == Blueprint.Blueprint.Rarity.Starter).OrderBy(b => b.GetOrderIndex()).ToList();
         }
 
         bool DamageHull(ref int dmg)

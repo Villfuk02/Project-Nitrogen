@@ -10,8 +10,6 @@ namespace BattleSimulation.Targeting
         [Header("Settings")]
         public bool canTargetDownwards;
         public bool canTargetUpwards;
-        [Header("Runtime variables")]
-        public float currentRange;
 
         protected override void InitComponents()
         {
@@ -23,7 +21,7 @@ namespace BattleSimulation.Targeting
 
         public override void SetRange(float range)
         {
-            currentRange = range;
+            base.SetRange(range);
 
             radiusTrigger.radius = range;
             radiusTrigger.height = 10 + range * 2;

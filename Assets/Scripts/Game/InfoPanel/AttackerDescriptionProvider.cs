@@ -1,6 +1,6 @@
-using BattleSimulation.Attackers;
 using System.Collections.Generic;
 using System.Text;
+using BattleSimulation.Attackers;
 
 namespace Game.InfoPanel
 {
@@ -8,18 +8,19 @@ namespace Game.InfoPanel
     {
         readonly Attacker? attacker_;
         readonly AttackerStats.AttackerStats stats_;
-        readonly DescriptionFormatter<(AttackerStats.AttackerStats, AttackerStats.AttackerStats, Attacker)> descriptionFormatter_;
+        readonly DescriptionFormatter<(AttackerStats.AttackerStats, Attacker)> descriptionFormatter_;
 
         public AttackerDescriptionProvider(Attacker attacker)
         {
             attacker_ = attacker;
             stats_ = attacker.stats;
-            descriptionFormatter_ = DescriptionFormat.Attacker(stats_, attacker.originalStats, attacker);
+            descriptionFormatter_ = DescriptionFormat.AttackerFormatter(stats_, attacker);
         }
-        public AttackerDescriptionProvider(AttackerStats.AttackerStats stats, AttackerStats.AttackerStats original)
+
+        public AttackerDescriptionProvider(AttackerStats.AttackerStats stats)
         {
             stats_ = stats;
-            descriptionFormatter_ = DescriptionFormat.Attacker(stats, original, null);
+            descriptionFormatter_ = DescriptionFormat.AttackerFormatter(stats, null);
         }
 
         protected override string GenerateDescription() => descriptionFormatter_.Format(GenerateRawDescription());

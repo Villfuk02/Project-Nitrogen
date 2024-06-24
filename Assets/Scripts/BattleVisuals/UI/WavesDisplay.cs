@@ -32,17 +32,6 @@ namespace BattleVisuals.UI
         float offset_;
         int fuelProduction_;
 
-        void Awake()
-        {
-            BattleController.UPDATE_FUEL_PER_WAVE.RegisterReaction(UpdateFuelIncome, 10);
-            BattleController.UPDATE_FUEL_PER_WAVE.Invoke(0);
-        }
-
-        void OnDestroy()
-        {
-            BattleController.UPDATE_FUEL_PER_WAVE.UnregisterReaction(UpdateFuelIncome);
-        }
-
         void Start()
         {
             int paths = World.data.firstPathTiles.Length;
@@ -68,6 +57,7 @@ namespace BattleVisuals.UI
 
         string GetWavesLeftText()
         {
+            fuelProduction_ = BattleController.FUEL_PER_WAVE.Query(new());
             if (fuelProduction_ <= 0)
                 return "???";
             int remaining = (bc.fuelGoal - bc.fuel + fuelProduction_ - 1) / fuelProduction_;
@@ -115,11 +105,6 @@ namespace BattleVisuals.UI
                 offset_ += lastWidth_ - wavesLayout.rect.width;
             lastWidth_ = wavesLayout.rect.width;
             wavesLayout.anchoredPosition = Vector2.right * offset_;
-        }
-
-        void UpdateFuelIncome(float income)
-        {
-            fuelProduction_ = (int)income;
         }
     }
 }

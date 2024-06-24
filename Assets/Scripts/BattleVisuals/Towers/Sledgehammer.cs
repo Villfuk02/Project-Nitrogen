@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using Utils;
 
@@ -35,7 +34,7 @@ namespace BattleVisuals.Towers
 
         void UpdatePosition()
         {
-            float t = time < dropTime ? time * time / (dropTime * dropTime) : 1 - (time - dropTime) / (sledgehammer.Blueprint.interval * TimeUtils.SECS_PER_TICK - dropTime * 2);
+            float t = time < dropTime ? time * time / (dropTime * dropTime) : 1 - (time - dropTime) / (sledgehammer.currentBlueprint.interval * TimeUtils.SECS_PER_TICK - dropTime * 2);
             head.localPosition = Vector3.up * Mathf.Lerp(maxHeight, minHeight, t);
         }
     }

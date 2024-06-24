@@ -12,24 +12,24 @@ namespace BattleSimulation.Buildings
         protected override void OnPlaced()
         {
             base.OnPlaced();
-            GET_BLUEPRINT.RegisterModifier(UpdateStats, -1000);
+            Blueprint.Range.RegisterModifier(UpdateRange, -1000);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             if (Placed)
-                GET_BLUEPRINT.UnregisterModifier(UpdateStats);
+                Blueprint.Range.UnregisterModifier(UpdateRange);
         }
 
-        void UpdateStats(ref (Blueprinted blueprinted, Blueprint blueprint) param)
+        void UpdateRange(IBlueprintProvider provider, ref float range)
         {
-            if (param.blueprint.type == Blueprint.Type.Ability || !param.blueprint.HasRange)
+            if (provider is not Blueprinted blueprinted || provider.GetBaseBlueprint().type == Blueprint.Type.Ability || !provider.GetBaseBlueprint().HasRange)
                 return;
-            float distSqr = (param.blueprinted.transform.position.XZ() - transform.position.XZ()).sqrMagnitude;
+            float distSqr = (blueprinted.transform.position.XZ() - transform.position.XZ()).sqrMagnitude;
             if (distSqr > 2.01f)
                 return;
-            param.blueprint.range *= 1 + rangeIncrease;
+            range *= 1 + rangeIncrease;
         }
     }
 }

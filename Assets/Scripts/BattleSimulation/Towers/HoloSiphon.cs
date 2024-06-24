@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using BattleSimulation.Attackers;
 using BattleSimulation.Control;
+using Game.Blueprint;
 using Game.Shared;
 using UnityEngine;
 
@@ -14,18 +15,26 @@ namespace BattleSimulation.Towers
         [SerializeField] int wavesLeft;
         public Attacker selectedTarget;
 
+        protected override void OnInit()
+        {
+            base.OnInit();
+            baseBlueprint.type = Blueprint.Type.Tower;
+        }
+
         protected override void OnPlaced()
         {
             base.OnPlaced();
-            wavesLeft = Blueprint.durationWaves;
+            wavesLeft = currentBlueprint.durationWaves;
             WaveController.ON_WAVE_FINISHED.RegisterReaction(DecrementWaves, 100);
 
             foreach (var a in targeting.GetValidTargets())
-                if (a.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
+            {
+                if (a.TryHit(new(currentBlueprint.damage, currentBlueprint.damageType, this), out var dmg))
                 {
                     SoundController.PlaySound(SoundController.Sound.SiphonFinish, 0.45f, 1, 0.2f, a.target.position);
                     damageDealt += dmg;
                 }
+            }
         }
 
         protected override void OnDestroy()
@@ -35,9 +44,9 @@ namespace BattleSimulation.Towers
                 WaveController.ON_WAVE_FINISHED.UnregisterReaction(DecrementWaves);
         }
 
-        protected override void FixedUpdateInternal()
+        protected override void FixedUpdate()
         {
-            base.FixedUpdateInternal();
+            base.FixedUpdate();
             if (!Placed)
                 return;
 
@@ -54,7 +63,7 @@ namespace BattleSimulation.Towers
             selectedTarget = targeting.target;
             chargeTimer = 0;
             if (selectedTarget != null)
-                retargetTimer = Blueprint.interval;
+                retargetTimer = currentBlueprint.interval;
         }
 
         void UpdateCharge()
@@ -62,9 +71,9 @@ namespace BattleSimulation.Towers
             if (targeting.IsInRangeAndValid(selectedTarget))
             {
                 chargeTimer++;
-                if (chargeTimer >= Blueprint.delay)
+                if (chargeTimer >= currentBlueprint.delay)
                 {
-                    if (selectedTarget.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
+                    if (selectedTarget.TryHit(new(currentBlueprint.damage, currentBlueprint.damageType, this), out var dmg))
                     {
                         SoundController.PlaySound(SoundController.Sound.SiphonFinish, 0.6f, 1, 0.2f, selectedTarget.target.position);
                         damageDealt += dmg;

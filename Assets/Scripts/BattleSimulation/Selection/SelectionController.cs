@@ -44,8 +44,8 @@ namespace BattleSimulation.Selection
 
             if (placing != null && placing.Setup(hovered, rotation, hoverTilePosition, transform))
             {
+                placing.blueprinted.OnSetupPlacement();
                 resetVisuals.Invoke();
-                placing.blueprinted.OnSetupChanged();
             }
 
             HandleSelectOrPlace();
@@ -73,11 +73,17 @@ namespace BattleSimulation.Selection
             {
                 if (placing.IsValid() && blueprintMenu.TryPlace())
                 {
+                    bool reselect = placing.blueprinted.currentBlueprint.type == Blueprint.Type.Ability && placing.blueprinted.currentBlueprint.cooldown <= 0;
+                    int s = blueprintMenu.selected;
+
                     placing.Place();
                     placing = null;
                     DeselectFromMenu();
                     DeselectInWorld();
                     resetVisuals.Invoke();
+
+                    if (reselect)
+                        SelectFromMenu(s);
                 }
                 else
                 {
@@ -234,8 +240,8 @@ namespace BattleSimulation.Selection
 
         public void HoverFromMenu(int index)
         {
-            if (blueprintMenu.TryGetBlueprints(index, out var blueprint, out var original, out var cooldown))
-                infoPanel.ShowBlueprint(blueprint, original, cooldown, true, false);
+            if (blueprintMenu.TryGetBlueprints(index, out var blueprint, out var cooldown))
+                infoPanel.ShowBlueprint(blueprint, cooldown, true, false);
         }
 
         public void UnhoverFromMenu()
@@ -253,13 +259,12 @@ namespace BattleSimulation.Selection
             if (onlyDeselect)
                 return;
 
-            if (!blueprintMenu.TrySelect(index, out var blueprint, out _, out var cooldown))
+            if (!blueprintMenu.TrySelect(index, out var blueprint, out var cooldown))
                 return;
 
             placing = Instantiate(blueprint.prefab, transform).GetComponent<Placement>();
             placing.GetComponent<Blueprinted>().InitBlueprint(blueprint);
             placing.Setup(hovered, rotation, hoverTilePosition, transform);
-            placing.blueprinted.OnSetupChanged();
             resetVisuals.Invoke();
             infoPanel.ShowBlueprinted(placing.GetComponent<Blueprinted>(), cooldown, true, true);
         }
@@ -284,7 +289,7 @@ namespace BattleSimulation.Selection
             selected = dummySelectable;
             resetVisuals.Invoke();
             isSelectedBuilding_ = false;
-            infoPanel.ShowAttacker(stats, stats, true, true);
+            infoPanel.ShowAttacker(stats, true, true);
         }
     }
 }

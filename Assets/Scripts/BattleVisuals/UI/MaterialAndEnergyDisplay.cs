@@ -21,39 +21,19 @@ namespace BattleVisuals.UI
         [SerializeField] int energyDisplay;
         [SerializeField] int materialDisplay;
 
-        void Awake()
-        {
-            BattleController.UPDATE_MATERIALS_PER_WAVE.RegisterHandler(UpdateMaterialsIncome);
-            BattleController.UPDATE_ENERGY_PER_WAVE.RegisterHandler(UpdateEnergyIncome);
-        }
-
-        void OnDestroy()
-        {
-            BattleController.UPDATE_MATERIALS_PER_WAVE.UnregisterHandler(UpdateMaterialsIncome);
-            BattleController.UPDATE_ENERGY_PER_WAVE.UnregisterHandler(UpdateEnergyIncome);
-        }
-
         void Update()
         {
             float energyFillAmount = Mathf.Clamp01(bc.energy / (float)bc.maxEnergy);
             energyFill.fillAmount = Mathf.Lerp(energyFill.fillAmount, energyFillAmount, Time.deltaTime * 4);
             MathUtils.StepTowards(ref energyDisplay, bc.energy, convergenceDivisor);
             energyText.text = $"{energyDisplay}<size=15>/{bc.maxEnergy}</size>";
+            int energyIncome = BattleController.ENERGY_PER_WAVE.Query(new());
+            energyIncomeText.text = energyIncome == 0 ? "" : $"+{Mathf.RoundToInt(energyIncome)}";
 
             MathUtils.StepTowards(ref materialDisplay, bc.material, convergenceDivisor);
             materialText.text = materialDisplay.ToString();
-        }
-
-        bool UpdateMaterialsIncome(ref float income)
-        {
-            materialIncomeText.text = income == 0 ? "" : $"+{Mathf.RoundToInt(income)}";
-            return true;
-        }
-
-        bool UpdateEnergyIncome(ref float income)
-        {
-            energyIncomeText.text = income == 0 ? "" : $"+{Mathf.RoundToInt(income)}";
-            return true;
+            int materialIncome = BattleController.MATERIALS_PER_WAVE.Query(new());
+            materialIncomeText.text = materialIncome == 0 ? "" : $"+{Mathf.RoundToInt(materialIncome)}";
         }
     }
 }

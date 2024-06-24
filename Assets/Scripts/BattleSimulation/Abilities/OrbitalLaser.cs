@@ -18,13 +18,6 @@ namespace BattleSimulation.Abilities
         [SerializeField] bool finished;
         readonly HashSet<Attacker> alreadyHit_ = new();
 
-        public override void OnSetupChanged()
-        {
-            base.OnSetupChanged();
-            if (!Placed)
-                ticksLeft = Blueprint.durationTicks;
-        }
-
         protected override void OnPlaced()
         {
             WaveController.ON_WAVE_FINISHED.RegisterReaction(OnWaveFinished, 100);
@@ -50,25 +43,44 @@ namespace BattleSimulation.Abilities
                 WaveController.ON_WAVE_FINISHED.UnregisterReaction(OnWaveFinished);
         }
 
-        protected override void FixedUpdateInternal()
+        protected override void FixedUpdate()
         {
-            base.FixedUpdateInternal();
-            if (!Placed || finished)
+            base.FixedUpdate();
+
+            if (!Placed)
+            {
+                ticksLeft = currentBlueprint.durationTicks;
                 return;
+            }
+
+            if (finished)
+                return;
+
             if (ticksLeft == 0)
                 End();
-            Vector3 prevPosition = Vector3.Lerp(startPos, endPos, 1 - ticksLeft / (float)Blueprint.durationTicks);
-            ticksLeft--;
-            Vector3 newPosition = Vector3.Lerp(startPos, endPos, 1 - ticksLeft / (float)Blueprint.durationTicks);
-            Vector3 offset = newPosition - prevPosition;
+
+            UpdatePosition(out var prevPosition, out var offset);
+            HitAttackers(prevPosition, offset);
+        }
+
+        void HitAttackers(Vector3 prevPosition, Vector3 offset)
+        {
             foreach (var hit in Physics.CapsuleCastAll(prevPosition + Vector3.down * 10, prevPosition + Vector3.up * 10, radius, offset, offset.magnitude, LayerMasks.attackerTargets))
             {
                 Attacker a = hit.rigidbody.GetComponent<Attacker>();
                 if (!alreadyHit_.Add(a))
                     continue;
-                if (a.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out _))
+                if (a.TryHit(new(currentBlueprint.damage, currentBlueprint.damageType, this), out _))
                     SoundController.PlaySound(SoundController.Sound.LaserBurn, 1, 1, 0.2f, a.target.position);
             }
+        }
+
+        void UpdatePosition(out Vector3 prevPosition, out Vector3 offset)
+        {
+            prevPosition = Vector3.Lerp(startPos, endPos, 1 - ticksLeft / (float)currentBlueprint.durationTicks);
+            ticksLeft--;
+            var newPosition = Vector3.Lerp(startPos, endPos, 1 - ticksLeft / (float)currentBlueprint.durationTicks);
+            offset = newPosition - prevPosition;
         }
 
         void OnWaveFinished()

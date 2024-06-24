@@ -1,6 +1,7 @@
 using BattleSimulation.Attackers;
 using Game.Damage;
 using UnityEngine;
+using Utils;
 
 namespace BattleSimulation.Towers
 {
@@ -8,8 +9,8 @@ namespace BattleSimulation.Towers
     {
         protected override Damage GetDamage(Attacker attacker)
         {
-            int dmg = Mathf.RoundToInt(Blueprint.damage * (1 + Vector3.Distance(attacker.target.position, targeting.transform.position) / Blueprint.range));
-            return new(dmg, Blueprint.damageType, this);
+            int dmg = Mathf.RoundToInt(currentBlueprint.damage * (1 + Vector2.Distance(attacker.target.position.XZ(), targeting.transform.position.XZ()) / currentBlueprint.range));
+            return new(dmg, currentBlueprint.damageType, this);
         }
     }
 }

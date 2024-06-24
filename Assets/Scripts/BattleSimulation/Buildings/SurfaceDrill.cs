@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using BattleSimulation.Control;
 using UnityEngine;
+using Utils;
 
 namespace BattleSimulation.Buildings
 {
@@ -18,14 +19,12 @@ namespace BattleSimulation.Buildings
             if (onFuelTile)
             {
                 WaveController.ON_WAVE_FINISHED.RegisterReaction(ProduceFuel, 100);
-                BattleController.UPDATE_FUEL_PER_WAVE.RegisterModifier(ProvideFuelIncome, -100);
-                BattleController.UPDATE_FUEL_PER_WAVE.Invoke(0);
+                BattleController.FUEL_PER_WAVE.RegisterModifier(ProvideFuelIncome, -100);
             }
             else
             {
                 WaveController.ON_WAVE_FINISHED.RegisterReaction(ProduceMaterials, 100);
-                BattleController.UPDATE_MATERIALS_PER_WAVE.RegisterModifier(ProvideMaterialsIncome, -100);
-                BattleController.UPDATE_MATERIALS_PER_WAVE.Invoke(0);
+                BattleController.MATERIALS_PER_WAVE.RegisterModifier(ProvideMaterialsIncome, -100);
             }
         }
 
@@ -36,14 +35,12 @@ namespace BattleSimulation.Buildings
                 if (onFuelTile)
                 {
                     WaveController.ON_WAVE_FINISHED.UnregisterReaction(ProduceFuel);
-                    BattleController.UPDATE_FUEL_PER_WAVE.UnregisterModifier(ProvideFuelIncome);
-                    BattleController.UPDATE_FUEL_PER_WAVE.Invoke(0);
+                    BattleController.FUEL_PER_WAVE.UnregisterModifier(ProvideFuelIncome);
                 }
                 else
                 {
                     WaveController.ON_WAVE_FINISHED.UnregisterReaction(ProduceMaterials);
-                    BattleController.UPDATE_MATERIALS_PER_WAVE.UnregisterModifier(ProvideMaterialsIncome);
-                    BattleController.UPDATE_MATERIALS_PER_WAVE.Invoke(0);
+                    BattleController.MATERIALS_PER_WAVE.UnregisterModifier(ProvideMaterialsIncome);
                 }
             }
 
@@ -52,28 +49,26 @@ namespace BattleSimulation.Buildings
 
         void ProduceFuel()
         {
-            (object, float amt) data = (this, Blueprint.fuelProduction);
+            (object, float amt) data = (this, currentBlueprint.fuelProduction);
             if (BattleController.ADD_FUEL.InvokeRef(ref data))
                 fuelProduced += (int)data.amt;
         }
 
         void ProduceMaterials()
         {
-            (object, float amt) data = (this, Blueprint.materialProduction);
+            (object, float amt) data = (this, currentBlueprint.materialProduction);
             if (BattleController.ADD_MATERIAL.InvokeRef(ref data))
                 materialsProduced += (int)data.amt;
         }
 
-        bool ProvideMaterialsIncome(ref float income)
+        void ProvideMaterialsIncome(Unit _, ref float income)
         {
-            income += Blueprint.materialProduction;
-            return true;
+            income += currentBlueprint.materialProduction;
         }
 
-        bool ProvideFuelIncome(ref float income)
+        void ProvideFuelIncome(Unit _, ref float income)
         {
-            income += Blueprint.fuelProduction;
-            return true;
+            income += currentBlueprint.fuelProduction;
         }
 
         public override IEnumerable<string> GetExtraStats()

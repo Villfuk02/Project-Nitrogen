@@ -7,10 +7,13 @@ namespace BattleSimulation.Abilities
         [Header("References")]
         [SerializeField] protected Targeting.Targeting targeting;
 
-        public override void OnSetupChanged()
+        protected override void FixedUpdate()
         {
-            base.OnSetupChanged();
-            targeting.SetRange(Blueprint.radius);
+            float radius = currentBlueprint.radius;
+            if (targeting.currentRange != radius)
+                targeting.SetRange(radius);
+
+            base.FixedUpdate();
         }
     }
 }

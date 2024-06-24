@@ -29,9 +29,10 @@ namespace BattleSimulation.Abilities
                 WaveController.ON_WAVE_FINISHED.UnregisterReaction(OnWaveFinished);
         }
 
-        protected override void FixedUpdateInternal()
+        protected override void FixedUpdate()
         {
-            base.FixedUpdateInternal();
+            base.FixedUpdate();
+
             if (!Placed || strikes < 0)
                 return;
             if (strikes == 0)
@@ -49,7 +50,7 @@ namespace BattleSimulation.Abilities
         void Strike()
         {
             strikes--;
-            timer_ = Blueprint.interval;
+            timer_ = currentBlueprint.interval;
             var targets = targeting.GetValidTargets().ToArray();
             if (targets.Length <= 0)
                 return;
@@ -60,7 +61,7 @@ namespace BattleSimulation.Abilities
         void Hit(Attacker attacker)
         {
             onHit.Invoke(attacker.target);
-            attacker.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out _);
+            attacker.TryHit(new(currentBlueprint.damage, currentBlueprint.damageType, this), out _);
         }
 
         void OnWaveFinished()

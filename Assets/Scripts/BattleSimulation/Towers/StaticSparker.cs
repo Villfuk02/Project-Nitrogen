@@ -25,9 +25,9 @@ namespace BattleSimulation.Towers
             random_ = BattleController.GetNewRandom();
         }
 
-        protected override void FixedUpdateInternal()
+        protected override void FixedUpdate()
         {
-            base.FixedUpdateInternal();
+            base.FixedUpdate();
             if (!Placed)
                 return;
 
@@ -41,12 +41,12 @@ namespace BattleSimulation.Towers
 
         void Shoot(Attacker primaryTarget)
         {
-            shotTimer = Blueprint.interval;
+            shotTimer = currentBlueprint.interval;
             SoundController.PlaySound(SoundController.Sound.Zap, 0.4f, 1.2f, 0.2f, transform.position);
-            var damage = Blueprint.damage;
+            var damage = currentBlueprint.damage;
             ShootOne(sparkOrigin, primaryTarget, damage);
 
-            var potentialSecondaryHits = Physics.SphereCastAll(primaryTarget.target.position + Vector3.down * 5, Blueprint.radius, Vector3.up, 10, LayerMasks.attackerTargets);
+            var potentialSecondaryHits = Physics.SphereCastAll(primaryTarget.target.position + Vector3.down * 5, currentBlueprint.range, Vector3.up, 10, LayerMasks.attackerTargets);
             var attackers = potentialSecondaryHits.Select(h => h.rigidbody.GetComponent<Attacker>()).OrderBy(a => a.startPathSplitIndex).ToArray();
             random_.Shuffle(attackers);
 
@@ -65,7 +65,7 @@ namespace BattleSimulation.Towers
         void ShootOne(Transform from, Attacker target, int baseDamage)
         {
             onShoot.Invoke((from, target));
-            bool hit = target.TryHit(new(baseDamage, Blueprint.damageType, this), out var dmg);
+            bool hit = target.TryHit(new(baseDamage, currentBlueprint.damageType, this), out var dmg);
             if (hit)
                 damageDealt += dmg;
         }

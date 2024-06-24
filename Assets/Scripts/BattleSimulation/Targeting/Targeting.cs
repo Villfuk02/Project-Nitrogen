@@ -23,6 +23,7 @@ namespace BattleSimulation.Targeting
         [SerializeField] UnityEvent<Attacker> onTargetFound;
         [SerializeField] UnityEvent<Attacker> onTargetLost;
         [Header("Runtime values")]
+        public float currentRange;
         public Attacker target;
         protected HashSet<Attacker> attackersInRange = new();
         protected List<Attacker> partiallySortedAttackersInRange = new();
@@ -90,7 +91,11 @@ namespace BattleSimulation.Targeting
         }
 
         public bool IsInBounds(Vector3 pos) => targetingComponent != null && targetingComponent.IsInBounds(pos);
-        public abstract void SetRange(float range);
+
+        public virtual void SetRange(float range)
+        {
+            currentRange = range;
+        }
 
         public IEnumerable<Attacker> GetValidTargets()
         {

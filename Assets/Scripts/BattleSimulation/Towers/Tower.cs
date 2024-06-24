@@ -11,10 +11,13 @@ namespace BattleSimulation.Towers
         [Header("Runtime variables")]
         protected int damageDealt;
 
-        public override void OnSetupChanged()
+        protected override void FixedUpdate()
         {
-            base.OnSetupChanged();
-            targeting.SetRange(Blueprint.range);
+            base.FixedUpdate();
+
+            float range = currentBlueprint.range;
+            if (targeting.currentRange != range)
+                targeting.SetRange(range);
         }
 
         public override IEnumerable<string> GetExtraStats()

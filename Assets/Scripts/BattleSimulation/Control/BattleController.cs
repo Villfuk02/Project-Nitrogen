@@ -15,11 +15,11 @@ namespace BattleSimulation.Control
         public static readonly ModifiableCommand<(object source, float amount)> ADD_MATERIAL = new();
         public static readonly ModifiableCommand<(object source, float amount)> ADD_ENERGY = new();
         public static readonly ModifiableCommand<(object source, float amount)> ADD_FUEL = new();
-        public static readonly ModifiableQuery<(float energy, float materials), (Affordable affordable, int energy, int materials)> CAN_AFFORD = new();
+        public static readonly ModifiableQuery<(int energy, int materials), (float energy, float materials), (Affordable affordable, int energy, int materials)> CAN_AFFORD = new(c => c);
         public static readonly ModifiableCommand<(int energy, int materials)> SPEND = new();
-        public static readonly ModifiableCommand<float> UPDATE_MATERIALS_PER_WAVE = new();
-        public static readonly ModifiableCommand<float> UPDATE_ENERGY_PER_WAVE = new();
-        public static readonly ModifiableCommand<float> UPDATE_FUEL_PER_WAVE = new();
+        public static readonly ModifiableQuery<Unit, float, int> MATERIALS_PER_WAVE = new(_ => 0, v => (int)v);
+        public static readonly ModifiableQuery<Unit, float, int> ENERGY_PER_WAVE = new(_ => 0, v => (int)v);
+        public static readonly ModifiableQuery<Unit, float, int> FUEL_PER_WAVE = new(_ => 0, v => (int)v);
         public static readonly ModifiableCommand WIN_LEVEL = new();
 
         static Random battleRandom_;

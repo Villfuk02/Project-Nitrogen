@@ -1,4 +1,3 @@
-using BattleSimulation.Targeting;
 using BattleVisuals.Selection.Highlightable;
 using UnityEngine;
 using Utils;
@@ -12,7 +11,7 @@ namespace BattleVisuals.Selection
         public override (HighlightType highlight, float radius) GetAffectedArea(Vector3 baseWorldPos)
         {
             float dist = (transform.localPosition.XZ() - baseWorldPos.XZ()).magnitude;
-            float radius = ((RadiusTargeting)t).currentRange;
+            float radius = t.currentRange;
             if (dist <= radius)
                 return (HighlightType.Special, radius - dist);
 

@@ -13,16 +13,14 @@ namespace BattleSimulation.Selection
     {
         public class MenuEntry
         {
-            public readonly Blueprint original;
-            public readonly Blueprint current;
+            public readonly Blueprint blueprint;
             public readonly int index;
             public int cooldown;
 
             public MenuEntry(Blueprint original, int index)
             {
-                this.original = original;
-                current = original.Clone();
-                cooldown = current.startingCooldown;
+                blueprint = original.Clone();
+                cooldown = blueprint.startingCooldown;
                 this.index = index;
             }
         }
@@ -69,25 +67,23 @@ namespace BattleSimulation.Selection
             selected = -1;
         }
 
-        public bool TryGetBlueprints(int index, out Blueprint blueprint, out Blueprint original, out Func<int>? cooldown)
+        public bool TryGetBlueprints(int index, out Blueprint blueprint, out Func<int>? cooldown)
         {
             blueprint = null;
-            original = null;
             cooldown = null;
 
             if (index < 0 || index >= CurrentEntries.Count)
                 return false;
 
             MenuEntry entry = CurrentEntries[index];
-            blueprint = entry.current;
-            original = entry.original;
+            blueprint = entry.blueprint;
             cooldown = () => entry.cooldown;
             return true;
         }
 
-        public bool TrySelect(int index, out Blueprint blueprint, out Blueprint original, out Func<int> cooldown)
+        public bool TrySelect(int index, out Blueprint blueprint, out Func<int> cooldown)
         {
-            if (!TryGetBlueprints(index, out blueprint, out original, out cooldown))
+            if (!TryGetBlueprints(index, out blueprint, out cooldown))
                 return false;
             selected = index;
             return true;
@@ -97,10 +93,10 @@ namespace BattleSimulation.Selection
         {
             if (CurrentEntries[selected].cooldown > 0)
                 return false;
-            var blueprint = CurrentEntries[selected].current;
-            if (!BattleController.AdjustAndTrySpend(blueprint.energyCost, blueprint.materialCost))
+            var blueprint = CurrentEntries[selected].blueprint;
+            if (!BattleController.AdjustAndTrySpend(Blueprint.EnergyCost.Query(blueprint), Blueprint.MaterialCost.Query(blueprint)))
                 return false;
-            CurrentEntries[selected].cooldown = blueprint.cooldown;
+            CurrentEntries[selected].cooldown = Blueprint.Cooldown.Query(blueprint);
             return true;
         }
 
@@ -134,7 +130,7 @@ namespace BattleSimulation.Selection
 
         public IEnumerable<Blueprint> GetBlueprints()
         {
-            return abilities.Concat(buildings).Select(e => e.current);
+            return abilities.Concat(buildings).Select(e => e.blueprint);
         }
     }
 }

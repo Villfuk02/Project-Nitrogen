@@ -9,13 +9,6 @@ namespace BattleSimulation.Abilities
         public int delayLeft;
         bool waveEnded_;
 
-        public override void OnSetupChanged()
-        {
-            base.OnSetupChanged();
-            if (!Placed)
-                delayLeft = Blueprint.delay;
-        }
-
         protected override void OnPlaced()
         {
             WaveController.ON_WAVE_FINISHED.RegisterReaction(OnWaveFinished, 100);
@@ -27,11 +20,16 @@ namespace BattleSimulation.Abilities
                 WaveController.ON_WAVE_FINISHED.UnregisterReaction(OnWaveFinished);
         }
 
-        protected override void FixedUpdateInternal()
+        protected override void FixedUpdate()
         {
-            base.FixedUpdateInternal();
+            base.FixedUpdate();
+
             if (!Placed)
+            {
+                delayLeft = currentBlueprint.delay;
                 return;
+            }
+
             if (delayLeft == 0 && !waveEnded_)
                 Explode();
             delayLeft--;
@@ -40,7 +38,7 @@ namespace BattleSimulation.Abilities
         void Explode()
         {
             foreach (var a in targeting.GetValidTargets())
-                a.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out _);
+                a.TryHit(new(currentBlueprint.damage, currentBlueprint.damageType, this), out _);
             Destroy(gameObject, 3f);
         }
 

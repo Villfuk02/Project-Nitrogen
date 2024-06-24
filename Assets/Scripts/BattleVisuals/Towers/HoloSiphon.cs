@@ -42,7 +42,7 @@ namespace BattleVisuals.Towers
                 playingParticles = false;
             }
 
-            Color c = particleColor.Evaluate(hasTarget ? sim.chargeTimer / (float)sim.Blueprint.delay : 0);
+            Color c = particleColor.Evaluate(hasTarget ? sim.chargeTimer / (float)sim.currentBlueprint.delay : 0);
             var main = localParticles.main;
             main.startColor = c;
             main = targetParticles.main;
@@ -50,7 +50,7 @@ namespace BattleVisuals.Towers
 
             if (hasTarget && sim.selectedTarget != prevTarget)
             {
-                siphonSoundEffect.pitch = siphonSoundEffect.clip.length / (sim.Blueprint.delay * TimeUtils.SECS_PER_TICK);
+                siphonSoundEffect.pitch = siphonSoundEffect.clip.length / (sim.currentBlueprint.delay * TimeUtils.SECS_PER_TICK);
                 siphonSoundEffect.Play();
             }
             else if (!hasTarget || sim.selectedTarget != prevTarget)

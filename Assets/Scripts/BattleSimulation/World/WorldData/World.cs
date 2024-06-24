@@ -12,6 +12,7 @@ namespace BattleSimulation.World.WorldData
 
         void Awake()
         {
+            Ready = false;
             instance = this;
         }
 

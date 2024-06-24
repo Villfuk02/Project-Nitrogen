@@ -12,37 +12,13 @@ namespace Utils
         public static readonly string CHANGED_COLOR = "#" + ColorUtility.ToHtmlStringRGBA(0.7f * Color.yellow + 0.3f * Color.white);
         public static readonly string NEW_COLOR = "#" + ColorUtility.ToHtmlStringRGBA(0.7f * Color.yellow + 0.3f * Color.red);
 
-        public enum Improvement
-        {
-            More,
-            Less,
-            Undeclared
-        }
+        public enum Improvement { More, Less, Undeclared }
 
         public enum Icon
         {
-            Materials,
-            Fuel,
-            Energy,
-            Damage,
-            Dps,
-            Fire,
-            DmgHpLoss,
-            Hull,
-            DmgPhysical,
-            Range,
-            Interval,
-            Production,
-            Boss,
-            Health,
-            Large,
-            Small,
-            Speed,
-            DmgExplosive,
-            Radius,
-            Duration,
-            Delay,
-            DmgEnergy
+            Materials, Fuel, Energy, Damage, Dps, Fire, DmgHpLoss, Hull, DmgPhysical, Range,
+            Interval, Production, Boss, Health, Large, Small, Speed, DmgExplosive, Radius, Duration,
+            Delay, DmgEnergy
         }
 
         public static string Sprite(this Icon icon) => $"<sprite={(int)icon}>";
@@ -55,19 +31,19 @@ namespace Utils
             return text.Colored(string.IsNullOrEmpty(original) ? NEW_COLOR : CHANGED_COLOR);
         }
 
-        public static string FormatIntStat(Icon? icon, int value, int original, bool originalExists, Improvement improvement)
+        public static string FormatIntStat(Icon? icon, int value, int original, Improvement improvement)
         {
-            return ColorImprovement($"{icon?.Sprite()}{value}", value, original, originalExists, improvement);
+            return ColorImprovement($"{icon?.Sprite()}{value}", value, original, improvement);
         }
 
-        public static string FormatFloatStat(Icon? icon, float value, float original, bool originalExists, Improvement improvement)
+        public static string FormatFloatStat(Icon? icon, float value, float original, Improvement improvement)
         {
-            return ColorImprovement($"{icon?.Sprite()}{value.ToString("0.##", CultureInfo.InvariantCulture)}", value, original, originalExists, improvement);
+            return ColorImprovement($"{icon?.Sprite()}{value.ToString("0.##", CultureInfo.InvariantCulture)}", value, original, improvement);
         }
 
-        public static string FormatTicksStat(Icon? icon, int ticks, int original, bool originalExists, Improvement improvement)
+        public static string FormatTicksStat(Icon? icon, int ticks, int original, Improvement improvement)
         {
-            return ColorImprovement($"{icon?.Sprite()}{(ticks * TimeUtils.SECS_PER_TICK).ToString("0.##", CultureInfo.InvariantCulture)}s", ticks, original, originalExists, improvement);
+            return ColorImprovement($"{icon?.Sprite()}{(ticks * TimeUtils.SECS_PER_TICK).ToString("0.##", CultureInfo.InvariantCulture)}s", ticks, original, improvement);
         }
 
         public static string FormatProduction(int fuel, int materials, int energy, int originalFuel, int originalMaterials, int originalEnergy)
@@ -75,32 +51,30 @@ namespace Utils
             StringBuilder sb = new();
             sb.Append(Icon.Production.Sprite());
             if (fuel > 0)
-                sb.Append(FormatIntStat(Icon.Fuel, fuel, originalFuel, originalFuel > 0, Improvement.More));
+                sb.Append(FormatIntStat(Icon.Fuel, fuel, originalFuel, Improvement.More));
             if (materials > 0)
-                sb.Append(FormatIntStat(Icon.Materials, materials, originalMaterials, originalMaterials > 0, Improvement.More));
+                sb.Append(FormatIntStat(Icon.Materials, materials, originalMaterials, Improvement.More));
             if (energy > 0)
-                sb.Append(FormatIntStat(Icon.Energy, energy, originalEnergy, originalEnergy > 0, Improvement.More));
+                sb.Append(FormatIntStat(Icon.Energy, energy, originalEnergy, Improvement.More));
             return sb.ToString();
         }
 
         public static string FormatDuration(int ticks, int originalTicks, int waves, int originalWaves)
         {
             if (ticks > 0)
-                return FormatTicksStat(Icon.Duration, ticks, originalTicks, originalTicks > 0, Improvement.More);
-            return $"{FormatIntStat(Icon.Duration, waves, originalWaves, originalWaves > 0, Improvement.More)} waves";
+                return FormatTicksStat(Icon.Duration, ticks, originalTicks, Improvement.More);
+            return $"{FormatIntStat(Icon.Duration, waves, originalWaves, Improvement.More)} waves";
         }
 
         public static string FormatCooldownSuffix(int cooldown, int originalCooldown)
         {
             if (cooldown > 0)
-                return $"/{FormatIntStat(null, cooldown, originalCooldown, true, Improvement.Less)} waves";
+                return $"/{FormatIntStat(null, cooldown, originalCooldown, Improvement.Less)} waves";
             return " waves";
         }
 
-        public static string ColorImprovement<T>(string text, T stat, T original, bool existedBefore, Improvement improvement) where T : IComparable<T>
+        public static string ColorImprovement<T>(string text, T stat, T original, Improvement improvement) where T : IComparable<T>
         {
-            if (!existedBefore)
-                return text.Colored(NEW_COLOR);
             int comparison = stat.CompareTo(original);
             if (comparison == 0)
                 return text;

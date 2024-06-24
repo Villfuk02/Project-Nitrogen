@@ -8,23 +8,14 @@ namespace Game.InfoPanel
 {
     public class BlueprintDescriptionProvider : DescriptionProvider
     {
-        readonly DescriptionFormat.BlueprintProvider getBlueprint_;
-        readonly Blueprinted? blueprinted_;
-        readonly DescriptionFormatter<(DescriptionFormat.BlueprintProvider, Blueprint.Blueprint)> descriptionFormatter_;
+        readonly IBlueprintProvider provider_;
+        readonly DescriptionFormatter<IBlueprintProvider> descriptionFormatter_;
         readonly Func<int>? getCooldown_;
 
-        public BlueprintDescriptionProvider(Blueprinted blueprinted, Func<int>? getCooldown = null)
+        public BlueprintDescriptionProvider(IBlueprintProvider provider, Func<int>? getCooldown = null)
         {
-            blueprinted_ = blueprinted;
-            getBlueprint_ = () => blueprinted.Blueprint;
-            descriptionFormatter_ = DescriptionFormat.Blueprint(getBlueprint_, blueprinted.OriginalBlueprint);
-            getCooldown_ = getCooldown;
-        }
-
-        public BlueprintDescriptionProvider(Blueprint.Blueprint blueprint, Blueprint.Blueprint original, Func<int>? getCooldown = null)
-        {
-            getBlueprint_ = () => blueprint;
-            descriptionFormatter_ = DescriptionFormat.Blueprint(getBlueprint_, original);
+            provider_ = provider;
+            descriptionFormatter_ = DescriptionFormat.BlueprintFormatter(provider);
             getCooldown_ = getCooldown;
         }
 
@@ -32,29 +23,31 @@ namespace Game.InfoPanel
 
         string GenerateRawDescription()
         {
-            bool initialized = blueprinted_ != null;
+            Blueprinted blueprinted = provider_ as Blueprinted;
             StringBuilder sb = new();
             List<string> statBlock = new();
-            Blueprint.Blueprint blueprint = getBlueprint_();
+            Blueprint.Blueprint blueprint = provider_.GetBaseBlueprint();
 
 
             if (getCooldown_ is not null)
             {
                 if (getCooldown_() > 0)
                     AppendStat($"Cooldown {getCooldown_()}[+CD]".Colored(TextUtils.CHANGED_COLOR));
-                else if (blueprint.cooldown > 0)
+                else if (Blueprint.Blueprint.Cooldown.Query(blueprint) > 0)
                     AppendStat($"Cooldown {getCooldown_()}[+CD]");
             }
-            else if (!initialized || !blueprinted_.Placed)
+            else if (blueprinted == null || !blueprinted.Placed)
             {
-                if (blueprint.cooldown > 0)
+                int cooldown = Blueprint.Blueprint.Cooldown.Query(blueprint);
+                int startingCooldown = Blueprint.Blueprint.StartingCooldown.Query(blueprint);
+                if (cooldown > 0)
                     AppendStat("[$CD]");
-                if (blueprint.startingCooldown > 0 || blueprint.cooldown > 0)
+                if (startingCooldown > 0 || cooldown > 0)
                     AppendStat("[$SCD]");
             }
 
-            if (initialized)
-                foreach (var stat in blueprinted_.GetExtraStats())
+            if (blueprinted != null)
+                foreach (var stat in blueprinted.GetExtraStats())
                     AppendStat(stat);
 
             foreach (var stat in blueprint.statsToDisplay)

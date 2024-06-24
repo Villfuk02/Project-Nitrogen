@@ -9,6 +9,7 @@ using Game.Shared;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 namespace Game.InfoPanel
 {
@@ -196,14 +197,14 @@ namespace Game.InfoPanel
             return false;
         }
 
-        public void ShowBlueprint(Blueprint.Blueprint blueprint, Blueprint.Blueprint original, Func<int>? cooldown, bool highPriority, bool fallback)
+        public void ShowBlueprint(Blueprint.Blueprint blueprint, Func<int>? cooldown, bool highPriority, bool fallback)
         {
             Data d = new()
             {
                 blueprinted = null,
-                descriptionProvider = new BlueprintDescriptionProvider(blueprint, original, cooldown),
+                descriptionProvider = new BlueprintDescriptionProvider(blueprint, cooldown),
                 sprite = blueprint.icon,
-                title = blueprint.name
+                title = TextUtils.FormatStringStat(Blueprint.Blueprint.Name.Query(blueprint), blueprint.name)
             };
             DisplayData(d, highPriority, fallback);
         }
@@ -214,8 +215,8 @@ namespace Game.InfoPanel
             {
                 blueprinted = blueprinted,
                 descriptionProvider = new BlueprintDescriptionProvider(blueprinted, cooldown),
-                title = blueprinted.Blueprint.name,
-                sprite = blueprinted.Blueprint.icon
+                title = TextUtils.FormatStringStat(Blueprint.Blueprint.Name.Query(blueprinted), blueprinted.GetBaseBlueprint().name),
+                sprite = blueprinted.GetBaseBlueprint().icon
             };
             DisplayData(d, highPriority, fallback);
         }
@@ -232,12 +233,12 @@ namespace Game.InfoPanel
             DisplayData(d, highPriority, fallback);
         }
 
-        public void ShowAttacker(AttackerStats.AttackerStats stats, AttackerStats.AttackerStats original, bool highPriority, bool fallback)
+        public void ShowAttacker(AttackerStats.AttackerStats stats, bool highPriority, bool fallback)
         {
             Data d = new()
             {
                 blueprinted = null,
-                descriptionProvider = new AttackerDescriptionProvider(stats, original),
+                descriptionProvider = new AttackerDescriptionProvider(stats),
                 title = stats.name,
                 sprite = stats.icon
             };

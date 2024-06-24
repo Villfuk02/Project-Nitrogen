@@ -15,9 +15,9 @@ namespace BattleSimulation.Towers
         [Header("Runtime variables")]
         [SerializeField] protected int shotTimer;
 
-        protected override void FixedUpdateInternal()
+        protected override void FixedUpdate()
         {
-            base.FixedUpdateInternal();
+            base.FixedUpdate();
             if (!Placed)
                 return;
 
@@ -28,14 +28,14 @@ namespace BattleSimulation.Towers
 
         void Shoot()
         {
-            shotTimer = Blueprint.interval;
+            shotTimer = currentBlueprint.interval;
             onShoot.Invoke();
             int hitsLeft = hits;
             foreach (var target in targeting.GetValidTargets().OrderBy(LateralDistance))
             {
                 if (hitsLeft <= 0)
                     break;
-                if (target.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
+                if (target.TryHit(new(currentBlueprint.damage, currentBlueprint.damageType, this), out var dmg))
                 {
                     damageDealt += dmg;
                     SoundController.PlaySound(SoundController.Sound.RayBurn, 0.85f, 1, 0.1f, target.target.position, SoundController.Priority.Low);

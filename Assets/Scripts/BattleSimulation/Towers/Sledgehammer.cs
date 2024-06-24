@@ -20,9 +20,9 @@ namespace BattleSimulation.Towers
             base.OnPlaced();
         }
 
-        protected override void FixedUpdateInternal()
+        protected override void FixedUpdate()
         {
-            base.FixedUpdateInternal();
+            base.FixedUpdate();
             if (!Placed)
                 return;
 
@@ -42,14 +42,14 @@ namespace BattleSimulation.Towers
         void StartShot()
         {
             shotDelayTimer = 0;
-            shotTimer = Blueprint.interval;
+            shotTimer = currentBlueprint.interval;
             onShoot.Invoke();
         }
 
         void Shoot()
         {
             foreach (var target in targeting.GetValidTargets())
-                if (target.TryHit(new(Blueprint.damage, Blueprint.damageType, this), out var dmg))
+                if (target.TryHit(new(currentBlueprint.damage, currentBlueprint.damageType, this), out var dmg))
                     damageDealt += dmg;
             SoundController.PlaySound(SoundController.Sound.ImpactHuge, 1, 1, 0.2f, transform.position);
         }

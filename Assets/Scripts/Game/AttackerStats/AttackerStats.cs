@@ -9,24 +9,9 @@ namespace Game.AttackerStats
     [CreateAssetMenu(fileName = "New Attacker Stats", menuName = "Attacker Stats")]
     public class AttackerStats : ScriptableObject
     {
-        public enum Size
-        {
-            Small,
-            Large,
-            Boss
-        }
+        public enum Size { Small, Large, Boss }
 
-        public enum Spacing
-        {
-            Tiny,
-            Small,
-            Medium,
-            Sec,
-            TwoSecs,
-            Min = Tiny,
-            Max = TwoSecs,
-            BatchSpacing = Sec
-        }
+        public enum Spacing { Tiny, Small, Medium, Sec, TwoSecs, Min = Tiny, Max = TwoSecs, BatchSpacing = Sec }
 
         public new string name;
         public GameObject prefab;

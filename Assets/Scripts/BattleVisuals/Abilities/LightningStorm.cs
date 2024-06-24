@@ -25,12 +25,14 @@ namespace BattleVisuals.Abilities
 
         void Start()
         {
-            radius_ = Mathf.Max(0.25f, sim.Blueprint.radius);
+            radius_ = Mathf.Max(0.25f, sim.currentBlueprint.radius);
             var particlesShape = particles.shape;
             particlesShape.scale = new(radius_, 0.25f, radius_);
             var particlesEmission = particles.emission;
             particlesEmission.rateOverTimeMultiplier = particlesMultiplier * radius_ * radius_;
             particlesEmission.SetBurst(0, new(0, 3 * particlesMultiplier * radius_ * radius_));
+            lightEffect.intensity = 0;
+            boltTimer_ = 1000;
         }
 
         void Update()

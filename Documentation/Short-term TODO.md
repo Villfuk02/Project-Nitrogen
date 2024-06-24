@@ -11,19 +11,16 @@
 - [x] implement better simulated annealing step
 - [x] reimplement wave generator
 - [x] fine tune
-- [ ] refactor wave generator
-    - [ ] split into 3 more files
-- [ ] blueprint UNASSIGNED constant
-- [ ] copy original blueprints
-- [ ] modify attacker descriptions
-- [ ] cache them in the queries ON CHANGE
+- [x] copy original blueprints' values
+- [x] add queries
+- [x] make matter replicator show green
+- [x] make predator green
+- [x] make streamline show green
+- [x] don't deselect abilities
+- [x] seed disappears too soon
+- [x] find new tutorial seed
 - [ ] compare descriptions and strikethrough
-- [ ] separate blueprint queries?
-- [ ] add attacker queries
-- [ ] don't deselect abilities
-- [ ] seed disappears too soon
-- [ ] find new tutorial seed
-- [ ] frostbite frontier issues
+- [ ] modify attacker descriptions
 ## new since prev meeting
 - [ ] 2.4 - 2.9
 - [ ] equations in 3.6
@@ -31,6 +28,8 @@
 - [ ] 3.8+
 ## till next metting
 - [x] ch3
+- [ ] chceck for lies in last sec, mention int -> float -> int
+- [ ] ch4
 
 
 ## finishing
