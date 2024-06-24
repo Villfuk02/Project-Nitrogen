@@ -109,6 +109,19 @@ cross/.default={1pt}}
 \usepackage{amssymb}
 \usepackage{subcaption}
 \captionsetup[subfigure]{justification=centering}
+\usepackage{adjustbox}
+\usepackage[edges]{forest}
+
+\forestset{
+  forked edge'/.style={
+    edge={rotate/.option=!parent.grow},
+    edge path'={
+      (.child anchor)
+      -- ++(-\forestoption{fork sep},0)
+      |- (!u.parent anchor)
+    },
+  },
+}
 
 % You might want to use cleveref for references
 % \usepackage{cleveref}

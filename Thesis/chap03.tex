@@ -2091,10 +2091,6 @@ However, we don't ever need to react to a query, furthermore it would make no se
 Also, it makes no sense to handle the result using a callback that is then immediately unsubscribed.
 So, we remove these features and streamline the interface to get \emph{modifiable queries}.
 
-It would be very inefficient to go through this whole process a thousand times per second, when reading a value that is not currently changing, as can happen when creating the range visualization for a tower.
-So, we also cache the result of the modifiable query to save on computation.
-The cache gets invalidated whenever a modifier is subscribed, unsubscribed, or whenever someone calls the function to explicitly invalidate the cache.
-
 \subsection{Event Reaction Chain}
 
 For modifiable queries, we used only the first half of the modifiable command pipeline.

@@ -28,8 +28,15 @@
 - [ ] 3.8+
 ## till next metting
 - [x] ch3
-- [ ] chceck for lies in last sec, mention int -> float -> int
 - [ ] ch4
+    - [x] proj structure 
+    - [ ] game
+    - [ ] world generation
+    - [ ] battle simulation
+    - [ ] battle visuals
+    - [ ] data
+    - [ ] utils
+    - [ ] other assets ?
 
 
 ## finishing
@@ -46,5 +53,5 @@
 - [ ] dots in abbreviations
 - [ ] repeat citations where applicable
 - [ ] find some good grammar checker
-- [ ] ~
+- [ ] ~ and hboxes
 - [ ] float positioning

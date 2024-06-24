@@ -623,7 +623,7 @@
     \entry{WFCMarian}{misc}{}
       \name{author}{1}{}{%
         {{hash=b30731c3fe009a48293ea85daced328f}{%
-           family={Marian},
+           family={{Marian}},
            familyi={M\bibinitperiod}}}%
       }
       \strng{namehash}{b30731c3fe009a48293ea85daced328f}
@@ -1000,6 +1000,146 @@
       \field{year}{1983}
       \field{pages}{1\bibrangedash 11}
       \range{pages}{11}
+    \endentry
+    \entry{SoftMask}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=a20e773e53e852493bf261ab3cf66d5f}{%
+           family={{mob-sakai}},
+           familyi={m\bibinitperiod}}}%
+      }
+      \strng{namehash}{a20e773e53e852493bf261ab3cf66d5f}
+      \strng{fullhash}{a20e773e53e852493bf261ab3cf66d5f}
+      \strng{bibnamehash}{a20e773e53e852493bf261ab3cf66d5f}
+      \strng{authorbibnamehash}{a20e773e53e852493bf261ab3cf66d5f}
+      \strng{authornamehash}{a20e773e53e852493bf261ab3cf66d5f}
+      \strng{authorfullhash}{a20e773e53e852493bf261ab3cf66d5f}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{SoftMaskForUGUI}
+      \field{urlday}{24}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/mob-sakai/SoftMaskForUGUI
+      \endverb
+      \verb{url}
+      \verb https://github.com/mob-sakai/SoftMaskForUGUI
+      \endverb
+    \endentry
+    \entry{PriorityQueue}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=dc8fe585c3138648c6970e53f1ccdb9a}{%
+           family={{.NET Platform contributors}},
+           familyi={.\bibinitperiod}}}%
+      }
+      \strng{namehash}{dc8fe585c3138648c6970e53f1ccdb9a}
+      \strng{fullhash}{dc8fe585c3138648c6970e53f1ccdb9a}
+      \strng{bibnamehash}{dc8fe585c3138648c6970e53f1ccdb9a}
+      \strng{authorbibnamehash}{dc8fe585c3138648c6970e53f1ccdb9a}
+      \strng{authornamehash}{dc8fe585c3138648c6970e53f1ccdb9a}
+      \strng{authorfullhash}{dc8fe585c3138648c6970e53f1ccdb9a}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{\mono{PriorityQueue.cs}}
+      \field{urlday}{24}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/dotnet/runtime/blob/357525a31801e32250d2a3880e33d82aa95cca7c/src/libraries/System.Collections/src/System/Collections/Generic/PriorityQueue.cs
+      \endverb
+      \verb{url}
+      \verb https://github.com/dotnet/runtime/blob/357525a31801e32250d2a3880e33d82aa95cca7c/src/libraries/System.Collections/src/System/Collections/Generic/PriorityQueue.cs
+      \endverb
+    \endentry
+    \entry{EditorInit}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=11f4b50206cd90894f1f9b426d9b5651}{%
+           family={{Z4urce}},
+           familyi={Z\bibinitperiod}}}%
+      }
+      \strng{namehash}{11f4b50206cd90894f1f9b426d9b5651}
+      \strng{fullhash}{11f4b50206cd90894f1f9b426d9b5651}
+      \strng{bibnamehash}{11f4b50206cd90894f1f9b426d9b5651}
+      \strng{authorbibnamehash}{11f4b50206cd90894f1f9b426d9b5651}
+      \strng{authornamehash}{11f4b50206cd90894f1f9b426d9b5651}
+      \strng{authorfullhash}{11f4b50206cd90894f1f9b426d9b5651}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Editor Init}
+      \field{urlday}{24}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://stackoverflow.com/a/55863444
+      \endverb
+      \verb{url}
+      \verb https://stackoverflow.com/a/55863444
+      \endverb
+    \endentry
+    \entry{PopCount}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=8849c33dfc2464b47035f51cbb4edf05}{%
+           family={{Stack Overflow community wiki}},
+           familyi={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{8849c33dfc2464b47035f51cbb4edf05}
+      \strng{fullhash}{8849c33dfc2464b47035f51cbb4edf05}
+      \strng{bibnamehash}{8849c33dfc2464b47035f51cbb4edf05}
+      \strng{authorbibnamehash}{8849c33dfc2464b47035f51cbb4edf05}
+      \strng{authornamehash}{8849c33dfc2464b47035f51cbb4edf05}
+      \strng{authorfullhash}{8849c33dfc2464b47035f51cbb4edf05}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Hamming Weight Function}
+      \field{urlday}{24}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://stackoverflow.com/a/109025
+      \endverb
+      \verb{url}
+      \verb https://stackoverflow.com/a/109025
+      \endverb
+    \endentry
+    \entry{OpenSans}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=54ad01716825c52e98d4e0c77953aa50}{%
+           family={{Open Sans Project contributors}},
+           familyi={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{54ad01716825c52e98d4e0c77953aa50}
+      \strng{fullhash}{54ad01716825c52e98d4e0c77953aa50}
+      \strng{bibnamehash}{54ad01716825c52e98d4e0c77953aa50}
+      \strng{authorbibnamehash}{54ad01716825c52e98d4e0c77953aa50}
+      \strng{authornamehash}{54ad01716825c52e98d4e0c77953aa50}
+      \strng{authorfullhash}{54ad01716825c52e98d4e0c77953aa50}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Open Sans Font}
+      \field{urlday}{24}
+      \field{urlmonth}{6}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/googlefonts/opensans
+      \endverb
+      \verb{url}
+      \verb https://github.com/googlefonts/opensans
+      \endverb
     \endentry
   \enddatalist
 \endrefsection

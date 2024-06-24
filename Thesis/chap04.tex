@@ -1,3 +1,156 @@
 \chapter{Developer Documentation}
 
-\emph{empty}
+In this chapter we aim to describe the architecture of the demo version of the game, and explain how it is implemented.
+In the first section~\ref{sec:docs-proj} we describe the overall structure, and in the later sections we go into more detail about the implementation.
+
+\section{Project Structure}\label{sec:docs-proj}
+
+In Unity, each project is composed of individual scenes.
+The scenes contain game objects to which are attached scripts that provide their behavior.
+These are all saved in the project's asset folder, along with all other resources like prefabs, models, materials, textures, sounds and more.
+They are separated to folders based on their type, for example all scenes are in the \emph{Scenes} folder.
+
+\subsection{Scenes}
+
+The demo version of our game is composed of 5 scenes.
+We provide a brief summary of each, but we will describe them in more detail later.
+This summary will be useful for the rest of the chapter, allowing us to see which parts of the game occur chronologically after other parts.
+\begin{itemize}
+    \item \textbf{Loading} is the first scene that gets loaded when the game starts.
+          This scene contains only scripts that load data and game objects that persist throughout the entire lifetime of the application.
+          After the loading is done, this scene transitions to \emph{Menu}.
+    \item \textbf{Menu} contains the game title, and a button to start a run, a button to set up a custom run, and a button to exit the game.
+          The start button takes the player to the \emph{Battle} scene, whereas the custom run button leads to the \emph{Run Settings} scene.
+    \item \textbf{Run Settings} lets the player customize the run by selecting a custom seed or by opting to select their starting blueprints.
+          There is also a button that lets the player play again the in-game tutorial.
+          Starting a run from here also takes the player to the \emph{Battle} scene, unless they chose to select starting blueprints in which case they go to the \emph{Blueprint Selection} scene.
+    \item \textbf{Battle} is the scene where the battles happen.
+          Here the player plays one level of the game as described in previous sections, until they win the level or lose.
+          If they lose, their only option is to return to \emph{Menu}.
+          When they win, they continue to the \emph{Blueprint Selection} scene.
+    \item In \textbf{Blueprint Selection}, the player is shown their current blueprints and new blueprints to choose from.
+          When they finish choosing, they continue to the next \emph{Battle}.
+\end{itemize}
+
+\subsection{Scripts}
+
+There are some game objects which persist between scene transitions, but most of them are confined only to one scene.
+Each battle happens in one scene, but it still contains multiple systems which are loosely coupled.
+The structure of the project and its systems is best seen in the structure of the \emph{Scripts} folder, which is shown in figure~\ref{fig:proj}.
+Here, each node represents one folder, which can contain scripts or other folders.
+The structure of the rest of this chapter will mimic the structure of our scripts.
+
+\begin{figure}[H]
+    \centering
+    \begin{forest}
+        forked edges,
+        for tree={
+                grow'=east,
+                anchor=base west,
+                l sep+=0.5em,
+                fork sep=0.5em,
+                tier/.option=level,
+                calign=first,
+                s sep=0mm
+            },
+        parent anchor=east,
+        [Scripts
+                    [\mono{BattleSimulation}
+                        [\mono{Abilities}]
+                        [\mono{Attackers}]
+                        [\mono{Buildings}]
+                        [\mono{Control}]
+                        [\mono{Projectiles}]
+                        [\mono{Selection}]
+                        [\mono{Targeting}]
+                        [\mono{Towers}]
+                        [\mono{World}
+                            [\mono{WorldBuilder}]
+                            [\mono{WorldData}]
+                        ]
+                    ]
+                    [\mono{BattleVisuals}
+                        [\mono{Abilities}]
+                        [\mono{Attackers}]
+                        [\mono{Camera}]
+                        [\mono{Effects}]
+                        [\mono{Projectiles}]
+                        [\mono{Selection}
+                            [\mono{Highlightable}]
+                        ]
+                        [\mono{Towers}]
+                        [\mono{UI}]
+                        [\mono{World}]
+                    ]
+                    [\mono{Data}
+                        [\mono{Loader}]
+                        [\mono{Parsers}]
+                        [\mono{WorldGen}]
+                    ]
+                    [\mono{Game}
+                        [\mono{AttackerStats}]
+                        [\mono{Blueprint}]
+                        [\mono{Damage}]
+                        [\mono{InfoPanel}]
+                        [\mono{Run}]
+                        [\mono{Shared}]
+                        [\mono{Tutorial}]
+                    ]
+                    [\mono{Utils}
+                        [\mono{DotNetHacks}]
+                        [\mono{Random}]
+                    ]
+                    [\mono{WorldGen}
+                        [\mono{Decorations}]
+                        [\mono{Obstacles}]
+                        [\mono{Path}]
+                        [\mono{WFC}]
+                        [\mono{WorldSettings}]
+                    ]
+            ]
+    \end{forest}
+    \caption{Namespace and folder structure of our scripts.}
+    \label{fig:proj}
+\end{figure}
+
+We also name the namespaces in our project according to the folder structure.
+Furthermore, the project is split into assemblies, where each folder is basically one assembly.
+However, assembly references can't form cycles, so all scripts in the folder \mono{WorldGen}, except for the subfolder \mono{WorldSettings} are one assembly.
+Furthermore, there are a few assemblies that contain only one interface, which facilitates dependency inversion in places where we would need to create a cycle in assembly references.
+These are \mono{BattleVisuals.Selection.Highlightable} and \mono{Data.Loader}.
+
+Here, we provide a short overview of the top level script folders and the implementation of the systems they contain:
+\begin{itemize}
+    \item \nameref{sec:docs-sim}~--- game logic of all systems that are contained in a battle.
+    \item \nameref{sec:docs-vis}~--- logic for the visuals during a battle like animations, particle effects and the user interface.
+    \item \nameref{sec:docs-data}~--- parsing and loading data in the \emph{Loading} scene.
+    \item \nameref{sec:docs-game}~--- systems and concepts that are present outside battle, across multiple battles or throughout the whole application runtime.
+    \item \nameref{sec:docs-utils}~--- various utility functions and data structures used throughout the project.
+    \item \nameref{sec:docs-worldgen}~--- procedural generation of the world for each level.
+\end{itemize}
+The following sections of this chapter will go into more detail.
+
+\subsection{Third-Party Assets}
+In the project, we use some assets that were not created by the author of this thesis in addition to the Unity game engine.
+We would like to acknowledge and disclaim these assets here:
+\begin{itemize}
+    \item The Unity package \textbf{UI Soft Mask} by mob-sakai~\cite{SoftMask}.
+    \item We adapted the implementation of a \textbf{Priority Queue} from the \emph{.NET Platform}~\cite{PriorityQueue}.
+    \item We also adapted an \textbf{Editor Init} script by \emph{Z4urce}~\cite{EditorInit}, used to select the scene to load when we run the game in the Unity editor.
+    \item And a function for calculating the number of set bits in an \mono{int}, or \textbf{Hamming Weight}, from this \emph{stack overflow} answer~\cite{PopCount}.
+    \item The font used for all text in the game is \textbf{Open Sans} by the \emph{Open Sans Project contributors}~\cite{OpenSans}.
+\end{itemize}
+
+\section{Game}\label{sec:docs-game}
+
+\section{World Generation}\label{sec:docs-worldgen}
+
+\section{Battle Simulation}\label{sec:docs-sim}
+
+\section{Battle Visuals}\label{sec:docs-vis}
+
+\section{Data}\label{sec:docs-data}
+
+\section{Utils}\label{sec:docs-utils}
+
+\section{Other Assets (maybe unnecessary)}
