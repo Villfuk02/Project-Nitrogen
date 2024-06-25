@@ -1,6 +1,6 @@
-using Game.Shared;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Utils;
 
 namespace BattleVisuals.Camera
 {

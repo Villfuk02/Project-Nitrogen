@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Game.Shared;
 using UnityEngine;
 using Utils;
 
@@ -83,8 +82,8 @@ namespace Game.Blueprint
         public List<string> statsToDisplay;
         public List<string> descriptions;
 
-        public float BaseDps => Shared.Damage.CalculateDps(damage, interval);
-        public static float Dps(IBlueprintProvider provider) => Shared.Damage.CalculateDps(Damage.Query(provider), Interval.Query(provider));
+        public float BaseDps => Utils.Damage.CalculateDps(damage, interval);
+        public static float Dps(IBlueprintProvider provider) => Utils.Damage.CalculateDps(Damage.Query(provider), Interval.Query(provider));
 
         public Blueprint Clone()
         {

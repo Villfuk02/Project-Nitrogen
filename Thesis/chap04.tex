@@ -96,7 +96,9 @@ The structure of the rest of this chapter will mimic the structure of our script
                         [\mono{AttackerStats}]
                         [\mono{Blueprint}]
                         [\mono{InfoPanel}]
-                        [\mono{Run}]
+                        [\mono{Run}
+                            [\mono{Events}]
+                        ]
                         [\mono{Shared}]
                         [\mono{Tutorial}]
                     ]
@@ -171,13 +173,56 @@ Furthermore, it contains the script \mono{Blueprinted} which is the common base 
 
 \subsection{Info Panel}
 
-
+The folder \emph{Scripts/Game/InfoPanel} contains the implementation of the info panel, saved as the prefab \emph{Prefabs/InfoPanel}, which is used in the \emph{Battle} scene and \emph{BlueprintSelection} scene to show info about the selected object.
+The script \mono{InfoPanel} handles the behavior of the game object.
+The description displayed for the selected object is provided by a corresponding derived class of the \mono{DescriptionProvider} class.
+All of these use the \mono{DescriptionFormatter} class to process a string which contains tags into icons, dynamic values and colored text, as described in section~\ref{sec:analysis-description-tags}.
 
 \subsection{Run}
 
+In the folder \emph{Scripts/Game/Run} are various scripts related to each individual run of the game.
+The purpose of the script \mono{RunStarter} is to instantiate and configure the prefab \emph{Prefabs/RunPersistence} when starting a run.
+It is used both in the scene \emph{Menu} and \emph{Run Settings}.
+It also uses the script \mono{SeedEncoder} which is used to translate the seed string the player entered into a numeric value, or to generate the string representation of a random seed.
+
+The run persistence game object the persists throughout the entirety of the player's run, and contains some other scripts from this folder:
+The script \mono{RunPersistence} keeps track of the variables that persist throughout a run, between levels, and the behavior tied to them.
+For example the run seed, the current level and the player's hull and blueprint collection.
+The script \mono{LevelDisplay} then displays the run seed and current level of the top right corner of the screen.
+Whenever \mono{RunPersistence} starts a new level, it tells \mono{LevelSetter} to set it up.
+Based on the current level number, \mono{LevelSetter} sets up the parameters of the world generator (section \xxx{TODO}), wave generator (\xxx{TODO}), and battle controller (\xxx{TODO}).
+
+After the player successfully completes a level, they go to the \emph{Blueprint Selection} scene.
+The blueprint selection logic is facilitated by the \mono{BlueprintSelectionController} script, which exists only in this scene.
+But first, the blueprints currently on offer are randomly selected by the \mono{BlueprintRewardController}, which is also attached to the run persistence game object.
+
+The subfolder \emph{Scripts/Game/Run/Events} contains only the script \mono{RunEvents}.
+This script contains static modifiable commands and acts as an interface between the \mono{RunPersistence} script and other scripts in the game from other assemblies.
+
 \subsection{Shared}
 
+The folder \emph{Scripts/Game/Shared} contains various useful scripts that are used throughout the whole game.
+\mono{PersistentData} saves and loads data that is supposed to persist between individual runs of the application, for example whether the player has completed the tutorial or whether the game sounds should be muted.
+
+The \mono{SceneController} lets other scripts change scenes by fading the screen to black, and fading in once the new scree is loaded.
+This script is attached to a game object in the \emph{Loading} scene, and persists between scenes, so it is available throughout the whole runtime of the game.
+The game object contains also the solid black canvas that covers the screen when fading between scenes.
+Even over this curtain is a text element that shows the application version, initialized by the script \mono{VersionDisplay}.
+
+The script \mono{SoundController} is also attached to a game object that persists throughout the lifetime of the application.
+It provides to other scripts a simple way to play sound effects, using a pool of instances of the prefab \emph{Prefabs/AudioSource}.
+\mono{PlaySound} then facilitates this function using a method with no arguments, by specifying the parameters of the sound to be played in the script's fields.
+This is useful, because Unity events cannot call methods with more than one argument.
+The script \mono{ButtonSounds} automatically makes any button or UI element it is attached to make button sounds.
+Finally, the script \mono{MuteButton} controls the behavior of the mute button in the top right corner of the screen.
+
 \subsection{Tutorial}
+
+As one might expect, the folder \emph{Scripts/Game/Tutorial} contains the scripts which implement the in-game tutorial.
+Both of the scripts are a part of the \emph{Battle} scene.
+\mono{TutorialController} controls the logic of the tutorial being split into steps, and it has a Unity event for each step, so that we can assign what happens in each step in the Unity editor.
+The script \mono{TutorialActions} then contains many actions that are used in the tutorial, which manipulate various values and call methods of other scripts in the scene.
+It also contains come checks that advance the \mono{TutorialController} to the next step once their condition is satisfied.
 
 \section{World Generation}\label{sec:docs-worldgen}
 

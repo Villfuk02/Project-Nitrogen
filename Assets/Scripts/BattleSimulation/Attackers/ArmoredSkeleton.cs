@@ -1,6 +1,6 @@
-using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
+using Utils;
 
 namespace BattleSimulation.Attackers
 {

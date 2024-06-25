@@ -57,7 +57,7 @@ int _VisLevels;
 
 uint dataAt(float2 pos)
 {
-    uint mip = _VisLevels;
+    int mip = _VisLevels;
     uint r = 255;
     while (r >= 200 && mip >= 0)
     {

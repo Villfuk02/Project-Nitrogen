@@ -1,6 +1,6 @@
 using BattleSimulation.Attackers;
-using Game.Shared;
 using UnityEngine;
+using Utils;
 
 namespace BattleSimulation.Towers
 {

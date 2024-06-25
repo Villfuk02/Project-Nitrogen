@@ -3,7 +3,7 @@ using BattleSimulation.Attackers;
 using BattleSimulation.World;
 using Game.AttackerStats;
 using Game.Blueprint;
-using Game.Shared;
+using Utils;
 using AttackerDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<(Game.AttackerStats.AttackerStats stats, BattleSimulation.Attackers.Attacker attacker)>;
 using BlueprintDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<Game.Blueprint.IBlueprintProvider>;
 using TileDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<BattleSimulation.World.Tile>;

@@ -28,15 +28,20 @@
 - [ ] 3.8+
 ## till next metting
 - [x] ch3
-- [ ] ch4
+- [ ] ch4 (30.6)
     - [x] proj structure 
-    - [ ] game
-    - [ ] world generation
-    - [ ] battle simulation
-    - [ ] battle visuals
-    - [ ] data
-    - [ ] utils
+    - [ ] game (25.6)
+    - [ ] world generation (26.6)
+    - [ ] battle simulation (27.6)
+    - [ ] battle visuals (28.6)
+    - [ ] data (29.6)
+    - [ ] utils (30.6)
     - [ ] other assets ?
+- [ ] ch5 (3.7)
+- [ ] ch6 (4.7)
+- [ ] ch7 (5.7)
+- [ ] conclusion (6.7)
+- [ ] finishing touches (8.7)
 
 
 ## finishing
@@ -56,3 +61,4 @@
 - [ ] find some good grammar checker
 - [ ] ~ and hboxes
 - [ ] float positioning
+- [ ] thankies

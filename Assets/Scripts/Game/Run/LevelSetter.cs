@@ -75,7 +75,7 @@ namespace Game.Run
             if (wg.overrideRunSettings)
                 return;
 
-            wg.baseRate = 1.7f + 0.2f * level - 0.1f * pathCount;
+            wg.baseRate = 1.5f + 0.2f * level - 0.1f * pathCount;
             wg.baseCapacity = (7 + 1 * level) * (20 + totalPathLength / (float)pathCount) * 0.045f;
             wg.linearScaling = 1;
             wg.quadraticScaling = 0.01f;
