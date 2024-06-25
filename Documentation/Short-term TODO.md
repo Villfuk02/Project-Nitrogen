@@ -48,6 +48,7 @@
 - [ ] make author names consistent
 - [ ] TODOs
 - [ ] PDF/A
+- [ ] figure names
 - [ ] numbers and units
 - [ ] i.e.
 - [ ] dots in abbreviations

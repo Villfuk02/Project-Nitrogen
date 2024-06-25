@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using BattleSimulation.Attackers;
 using BattleSimulation.Control;
-using Game.Damage;
 using Game.Shared;
 using UnityEngine;
 using Utils;

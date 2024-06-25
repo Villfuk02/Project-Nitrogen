@@ -50,11 +50,11 @@ namespace WorldGen.Decorations
         void Initialize()
         {
             decorations_ = WorldGenerator.TerrainType.ScattererData.decorations;
-            WorldGenerator.TerrainType.ScattererData.isPath = pos => WorldUtils.IsInRange(pos, WorldUtils.WORLD_SIZE) && Tiles[pos].dist != int.MaxValue;
+            WorldGenerator.TerrainType.ScattererData.isPath = pos => VectorUtils.IsInRange(pos, WorldUtils.WORLD_SIZE) && Tiles[pos].dist != int.MaxValue;
             var obstacles = WorldGenerator.TerrainType.ScattererData.isObstacle.Keys.Select(n => WorldGenerator.TerrainType.Obstacles.Obstacles[n]).ToArray();
             foreach (var obstacle in obstacles)
             {
-                WorldGenerator.TerrainType.ScattererData.isObstacle[obstacle.Name] = pos => WorldUtils.IsInRange(pos, WorldUtils.WORLD_SIZE) && Tiles[pos].obstacle == obstacle;
+                WorldGenerator.TerrainType.ScattererData.isObstacle[obstacle.Name] = pos => VectorUtils.IsInRange(pos, WorldUtils.WORLD_SIZE) && Tiles[pos].obstacle == obstacle;
             }
 
             foreach (var fractalNoiseNode in WorldGenerator.TerrainType.NoiseNodes)

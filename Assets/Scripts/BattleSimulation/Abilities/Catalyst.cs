@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using BattleSimulation.Attackers;
 using BattleSimulation.Control;
-using Game.Damage;
 using Game.Shared;
 using UnityEngine;
 

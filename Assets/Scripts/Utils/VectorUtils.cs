@@ -11,9 +11,10 @@ namespace Utils
         public static IEnumerator<Vector2Int> GetEnumerator(this Vector2Int bounds)
         {
             for (int x = 0; x < bounds.x; x++)
-                for (int y = 0; y < bounds.y; y++)
-                    yield return new(x, y);
+            for (int y = 0; y < bounds.y; y++)
+                yield return new(x, y);
         }
+
         public static Vector2Int Round(this Vector2 v) => new(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y));
         public static Vector3Int Round(this Vector3 v) => new(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y), Mathf.RoundToInt(v.z));
         public static int ManhattanMagnitude(this Vector2Int v) => Mathf.Abs(v.x) + Mathf.Abs(v.y);
@@ -25,5 +26,15 @@ namespace Utils
         public static int ManhattanDistance(this Vector3Int a, Vector3Int b) => ManhattanMagnitude(a - b);
         public static float ManhattanDistance(this Vector3 a, Vector3 b) => ManhattanMagnitude(a - b);
         public static Vector2 XZ(this Vector3 v) => new(v.x, v.z);
+
+        /// <summary>
+        /// Is v.x in the range [0..size.x-1] and v.y in the range [0..size.y-1]?
+        /// </summary>
+        public static bool IsInRange(Vector2Int v, Vector2Int size) => v is { x: >= 0, y: >= 0 } && v.x < size.x && v.y < size.y;
+
+        /// <summary>
+        /// Is v.x in the range [0..size.x] and v.y in the range [0..size.y]?
+        /// </summary>
+        public static bool IsInRange(Vector2 v, Vector2 size) => v is { x: >= 0, y: >= 0 } && v.x <= size.x && v.y <= size.y;
     }
 }

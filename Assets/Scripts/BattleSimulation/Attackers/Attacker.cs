@@ -1,7 +1,6 @@
 using System;
 using BattleVisuals.Selection.Highlightable;
 using Game.AttackerStats;
-using Game.Damage;
 using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;

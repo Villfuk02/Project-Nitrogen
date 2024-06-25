@@ -3,7 +3,7 @@ using BattleSimulation.Attackers;
 using BattleSimulation.World;
 using Game.AttackerStats;
 using Game.Blueprint;
-using Game.Damage;
+using Game.Shared;
 using AttackerDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<(Game.AttackerStats.AttackerStats stats, BattleSimulation.Attackers.Attacker attacker)>;
 using BlueprintDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<Game.Blueprint.IBlueprintProvider>;
 using TileDescriptionFormatter = Game.InfoPanel.DescriptionFormatter<BattleSimulation.World.Tile>;
@@ -43,8 +43,8 @@ namespace Game.InfoPanel
         {
             { "NAM", (s => FormatStringStat(BP.Name.Query(s), s.GetBaseBlueprint().name), "Name") },
             { "RNG", (s => FormatFloatStat(Icon.Range, BP.Range.Query(s), s.GetBaseBlueprint().range, Improvement.More), "Range") },
-            { "DMG", (s => Damage.Damage.FormatDamage(BP.Damage.Query(s), s.GetBaseBlueprint().damage, s.GetBaseBlueprint().damageType, Improvement.More), "Damage") },
-            { "DTL", (s => Damage.Damage.FormatDamageType(BP.DamageType.Query(s), s.GetBaseBlueprint().damageType), "Damage type") },
+            { "DMG", (s => Damage.FormatDamage(BP.Damage.Query(s), s.GetBaseBlueprint().damage, s.GetBaseBlueprint().damageType, Improvement.More), "Damage") },
+            { "DTL", (s => Damage.FormatDamageType(BP.DamageType.Query(s), s.GetBaseBlueprint().damageType), "Damage type") },
             { "DTI", (s => BP.DamageType.Query(s).ToHumanReadable(true), "Damage type") },
             { "INT", (s => FormatTicksStat(Icon.Interval, BP.Interval.Query(s), s.GetBaseBlueprint().interval, Improvement.Less), "Interval") },
             { "DPS", (s => FormatFloatStat(Icon.Dps, BP.Dps(s), s.GetBaseBlueprint().BaseDps, Improvement.More), "Damage/s") },

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.Shared;
 using UnityEngine;
 using Utils;
 
@@ -43,9 +44,9 @@ namespace Game.Blueprint
         public bool HasDamage => damage >= 0;
         public static readonly ModifiableQuery<IBlueprintProvider, float, int> Damage = new(b => b.GetBaseBlueprint().damage, v => (int)v);
 
-        public Damage.Damage.Type damageType = 0;
+        public Damage.Type damageType = 0;
         public bool HasDamageType => damageType > 0;
-        public static readonly ModifiableQuery<IBlueprintProvider, Damage.Damage.Type> DamageType = new(b => b.GetBaseBlueprint().damageType);
+        public static readonly ModifiableQuery<IBlueprintProvider, Damage.Type> DamageType = new(b => b.GetBaseBlueprint().damageType);
 
         public int interval = -1;
         public bool HasInterval => interval >= 0;
@@ -82,8 +83,8 @@ namespace Game.Blueprint
         public List<string> statsToDisplay;
         public List<string> descriptions;
 
-        public float BaseDps => Game.Damage.Damage.CalculateDps(damage, interval);
-        public static float Dps(IBlueprintProvider provider) => Game.Damage.Damage.CalculateDps(Damage.Query(provider), Interval.Query(provider));
+        public float BaseDps => Shared.Damage.CalculateDps(damage, interval);
+        public static float Dps(IBlueprintProvider provider) => Shared.Damage.CalculateDps(Damage.Query(provider), Interval.Query(provider));
 
         public Blueprint Clone()
         {

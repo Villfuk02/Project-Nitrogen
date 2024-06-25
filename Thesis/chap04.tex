@@ -1,7 +1,7 @@
 \chapter{Developer Documentation}
 
-In this chapter we aim to describe the architecture of the demo version of the game, and explain how it is implemented.
-In the first section~\ref{sec:docs-proj} we describe the overall structure, and in the later sections we go into more detail about the implementation.
+In this chapter we aim to describe the implementation of the demo version of our game.
+In the first section~\ref{sec:docs-proj} we describe the overall structure, and in the later sections we go into more detail about the individual parts.
 
 \section{Project Structure}\label{sec:docs-proj}
 
@@ -9,6 +9,11 @@ In Unity, each project is composed of individual scenes.
 The scenes contain game objects to which are attached scripts that provide their behavior.
 These are all saved in the project's asset folder, along with all other resources like prefabs, models, materials, textures, sounds and more.
 They are separated to folders based on their type, for example all scenes are in the \emph{Scenes} folder.
+
+In addition to the project assets, an important part of the project are the project settings.
+However, these are all mostly set to their default value from the standard \emph{3D (Built-in render pipeline)} project template.
+The settings that were changed are all uninteresting adjustments that an experienced Unity user would expect us to configure how we did, based on the explanation of our project provided in this chapter and chapter~\ref{analysis}.
+These include for example settings in categories \emph{Tags and Layers}, \emph{Physics} and \emph{Player}.
 
 \subsection{Scenes}
 
@@ -37,7 +42,7 @@ This summary will be useful for the rest of the chapter, allowing us to see whic
 There are some game objects which persist between scene transitions, but most of them are confined only to one scene.
 Each battle happens in one scene, but it still contains multiple systems which are loosely coupled.
 The structure of the project and its systems is best seen in the structure of the \emph{Scripts} folder, which is shown in figure~\ref{fig:proj}.
-Here, each node represents one folder, which can contain scripts or other folders.
+Here, each node represents one folder, which can contain scripts and other folders.
 The structure of the rest of this chapter will mimic the structure of our scripts.
 
 \begin{figure}[H]
@@ -90,7 +95,6 @@ The structure of the rest of this chapter will mimic the structure of our script
                     [\mono{Game}
                         [\mono{AttackerStats}]
                         [\mono{Blueprint}]
-                        [\mono{Damage}]
                         [\mono{InfoPanel}]
                         [\mono{Run}]
                         [\mono{Shared}]
@@ -134,7 +138,7 @@ The following sections of this chapter will go into more detail.
 In the project, we use some assets that were not created by the author of this thesis in addition to the Unity game engine.
 We would like to acknowledge and disclaim these assets here:
 \begin{itemize}
-    \item The Unity package \textbf{UI Soft Mask} by mob-sakai~\cite{SoftMask}.
+    \item The Unity package \textbf{UI Soft Mask} by \emph{mob-sakai}~\cite{SoftMask}.
     \item We adapted the implementation of a \textbf{Priority Queue} from the \emph{.NET Platform}~\cite{PriorityQueue}.
     \item We also adapted an \textbf{Editor Init} script by \emph{Z4urce}~\cite{EditorInit}, used to select the scene to load when we run the game in the Unity editor.
     \item And a function for calculating the number of set bits in an \mono{int}, or \textbf{Hamming Weight}, from this \emph{stack overflow} answer~\cite{PopCount}.
@@ -142,6 +146,38 @@ We would like to acknowledge and disclaim these assets here:
 \end{itemize}
 
 \section{Game}\label{sec:docs-game}
+
+In this section we will describe the purpose of the scripts in the folder \emph{Scripts/Game}, and other assets that are relevant to their function.
+As stated before, this folder contains the implementation of concepts that are present throughout the game, not confined to one battle.
+We will describe each of these in a separate subsection.
+
+\subsection{Attacker Stats}
+
+The folder \emph{Scripts/Game/AttackerStats} contains only the implementation of the \mono{AttackerStats} scriptable object.
+This lets us define all attacker types as individual files and edit them in the Unity editor.
+They are stored in the \emph{AttackerStats} folder.
+Each attacker stats scriptable object also references the corresponding attacker prefab.
+The structure of each of these prefabs is described in section \xxx{TODO: Attackers}.
+
+\subsection{Blueprints}
+
+Similarly to attacker stats, the folder \emph{Scripts/Game/Blueprints} contains the implementation of the \mono{Blueprint} scriptable object.
+All blueprints in the game are stored in the \emph{Blueprints} folder, further organized by the blueprint type.
+Each blueprint also references the corresponding building or ability, whose structure will be described in section \xxx{TODO: Battle Simulation}.
+
+Additionally, the folder contains a few interfaces used by objects that handle blueprints.
+It also includes the \mono{BlueprintDisplay} script, which implements the behavior of the prefab \emph{Prefabs/Blueprint} which is used to display the blueprints in the game.
+Furthermore, it contains the script \mono{Blueprinted} which is the common base class for both buildings and abilities.
+
+\subsection{Info Panel}
+
+
+
+\subsection{Run}
+
+\subsection{Shared}
+
+\subsection{Tutorial}
 
 \section{World Generation}\label{sec:docs-worldgen}
 

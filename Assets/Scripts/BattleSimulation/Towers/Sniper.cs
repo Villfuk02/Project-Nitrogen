@@ -1,5 +1,5 @@
 using BattleSimulation.Attackers;
-using Game.Damage;
+using Game.Shared;
 using UnityEngine;
 using Utils;
 

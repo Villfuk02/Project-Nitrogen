@@ -3,7 +3,6 @@ using BattleSimulation.Attackers;
 using BattleSimulation.Control;
 using BattleSimulation.Projectiles;
 using Game.Blueprint;
-using Game.Damage;
 using Game.Shared;
 using UnityEngine;
 using Utils;

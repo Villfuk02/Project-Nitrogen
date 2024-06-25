@@ -273,7 +273,7 @@ namespace WorldGen.Path
             }
 
             // remove positions out of bounds
-            return candidates.Where(p => WorldUtils.IsInRange(p.to, WorldUtils.WORLD_SIZE)).ToArray();
+            return candidates.Where(p => VectorUtils.IsInRange(p.to, WorldUtils.WORLD_SIZE)).ToArray();
         }
 
         float GetAcceptanceProbability(Vector2Int from, Vector2Int to)

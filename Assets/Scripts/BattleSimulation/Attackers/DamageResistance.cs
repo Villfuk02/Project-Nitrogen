@@ -1,4 +1,4 @@
-using Game.Damage;
+using Game.Shared;
 using UnityEngine;
 
 namespace BattleSimulation.Attackers

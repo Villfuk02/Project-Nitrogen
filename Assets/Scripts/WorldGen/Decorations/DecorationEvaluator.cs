@@ -57,7 +57,7 @@ namespace WorldGen.Decorations
                 for (int i = 0; i < 2 * radius; i++)
                 {
                     Vector2Int tile = cornerTile - i * WorldUtils.CARDINAL_DIRS[direction];
-                    if (!WorldUtils.IsInRange(tile, WorldUtils.WORLD_SIZE) || isInside(tile) == inside)
+                    if (!VectorUtils.IsInRange(tile, WorldUtils.WORLD_SIZE) || isInside(tile) == inside)
                         continue;
                     float dist = GetSignedDistance(position_, tile);
                     minDist = Mathf.Min(minDist, dist);

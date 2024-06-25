@@ -1,6 +1,5 @@
 using BattleSimulation.Attackers;
 using BattleSimulation.Projectiles;
-using Game.Damage;
 using Game.Shared;
 using UnityEngine;
 using UnityEngine.Events;
