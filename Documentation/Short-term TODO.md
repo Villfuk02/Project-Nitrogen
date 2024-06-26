@@ -23,14 +23,14 @@
 - [ ] modify attacker descriptions
 ## new since prev meeting
 - [ ] 2.4 - 2.9
-- [ ] equations in 3.6
-- [ ] 3.6.8+
-- [ ] 3.8+
+- [ ] 3.6
+- [ ] 3.8 - 3.12
+- [ ] 4 - 4.1
 ## till next metting
 - [x] ch3
 - [ ] ch4 (30.6)
     - [x] proj structure 
-    - [ ] game (25.6)
+    - [x] game (25.6)
     - [ ] world generation (26.6)
     - [ ] battle simulation (27.6)
     - [ ] battle visuals (28.6)
@@ -55,6 +55,7 @@
 - [ ] PDF/A
 - [ ] figure names
 - [ ] numbers and units
+- [ ] 1st
 - [ ] i.e.
 - [ ] dots in abbreviations
 - [ ] repeat citations where applicable
