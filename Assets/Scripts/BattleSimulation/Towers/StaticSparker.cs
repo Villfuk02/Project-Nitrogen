@@ -47,7 +47,7 @@ namespace BattleSimulation.Towers
             var damage = currentBlueprint.damage;
             ShootOne(sparkOrigin, primaryTarget, damage);
 
-            var potentialSecondaryHits = Physics.SphereCastAll(primaryTarget.target.position + Vector3.down * 5, currentBlueprint.range, Vector3.up, 10, LayerMasks.attackerTargets);
+            var potentialSecondaryHits = Physics.SphereCastAll(primaryTarget.target.position + Vector3.down * 5, currentBlueprint.radius, Vector3.up, 10, LayerMasks.attackerTargets);
             var attackers = potentialSecondaryHits.Select(h => h.rigidbody.GetComponent<Attacker>()).OrderBy(a => a.startPathSplitIndex).ToArray();
             random_.Shuffle(attackers);
 

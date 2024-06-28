@@ -4811,6 +4811,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a6625c81cdaf75347bc014cf45ec36a3, type: 2}
   - {fileID: 11400000, guid: c11d1872e6862ff41928e450950f09eb, type: 2}
   - {fileID: 11400000, guid: 41b21d00b30f2304b94dbe125c704605, type: 2}
+  defaultAttacker: {fileID: 11400000, guid: e4ef408fcb4cc6247a200364ae0d3861, type: 2}
   maxWaveLengthTicks: 250
   maxAttackersPerWave: 120
   parallelWaveChance: 0.3

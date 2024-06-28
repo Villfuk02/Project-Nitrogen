@@ -1,5 +1,7 @@
 ## questions
-- [ ] mám ozdrojovat každou unity featuru co zmiňuju?
+- [ ] summarize parameters to be tweaked after each section
+- [ ] how to ch5
+
 ## tweaks
 
 - [x] extend WFC to support edge types
@@ -23,28 +25,25 @@
 - [ ] modify attacker descriptions
 ## new since prev meeting
 - [ ] 2.4 - 2.9
-- [ ] 3.6
-- [ ] 3.8 - 3.12
-- [ ] 4 - 4.1
+- [ ] 3.8.9 - 3.12
+- [ ] 4
 ## till next metting
-- [x] ch3
 - [ ] ch4 (30.6)
-    - [x] proj structure 
-    - [x] game (25.6)
-    - [ ] world generation (26.6)
-    - [ ] battle simulation (27.6)
-    - [ ] battle visuals (28.6)
-    - [ ] data (29.6)
-    - [ ] utils (30.6)
-    - [ ] other assets ?
+    - [x] 4.1
+    - [ ] 4.2
+    - [ ] 4.3
 - [ ] ch5 (3.7)
 - [ ] ch6 (4.7)
 - [ ] ch7 (5.7)
+    - [ ] mention that parameters were tweaked to balance the game
+    - [ ] iterative
+    - [ ] few more fallbacks in wave generation
 - [ ] conclusion (6.7)
 - [ ] finishing touches (8.7)
 
 
 ## finishing
+- [ ] ask about uploads
 - [ ] update tex template (check page and chapter numbers)
 - [ ] metatdata
 - [ ] attachments

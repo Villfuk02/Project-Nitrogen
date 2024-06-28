@@ -16,7 +16,7 @@ namespace BattleVisuals.Selection
         [SerializeField] LayoutElement hotbarContainer;
         [Header("Settings")]
         [SerializeField] float hiddenDisplacement;
-        [SerializeField] float switchSpeed;
+        [SerializeField] float hotbarSwitchSpeed;
         [Header("Runtime variables")]
         [SerializeField] List<BlueprintMenuItem> menuItems;
         [SerializeField] float hotbarState;
@@ -63,7 +63,7 @@ namespace BattleVisuals.Selection
 
         void UpdateHotbarPositions()
         {
-            hotbarState = Mathf.Lerp(hotbarState, menu.waveStarted ? 1 : 0, Time.deltaTime * switchSpeed);
+            hotbarState = Mathf.Lerp(hotbarState, menu.waveStarted ? 1 : 0, Time.deltaTime * hotbarSwitchSpeed);
             abilityHotbar.anchoredPosition = hiddenDisplacement * (1 - hotbarState) * Vector2.down;
             buildingHotbar.anchoredPosition = hiddenDisplacement * hotbarState * Vector2.down;
             if (hotbarContainer.minWidth == 0)

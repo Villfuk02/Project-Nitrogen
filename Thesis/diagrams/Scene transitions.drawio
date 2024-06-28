@@ -1,0 +1,124 @@
+<mxfile host="Electron" modified="2024-06-27T14:34:12.530Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.4.13 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="rTf8nF_GPTwsSgOawNDj" version="24.4.13" type="device">
+  <diagram name="Page-1" id="gc11dA9ylnj6EJj1kWeL">
+    <mxGraphModel dx="989" dy="577" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="gkW6MSQl63DJu1st89hK-1" value="Loading" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="240" y="200" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-2" value="Run Settings" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="240" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-3" value="Blueprint Selection" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="520" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-4" value="Menu" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="240" y="280" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-5" value="Battle" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="520" y="280" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-6" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="120" y="220" as="sourcePoint" />
+            <mxPoint x="239.31" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-7" value="Application start" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" connectable="0" parent="gkW6MSQl63DJu1st89hK-6">
+          <mxGeometry x="-0.0816" y="1" relative="1" as="geometry">
+            <mxPoint x="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-8" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="240" as="sourcePoint" />
+            <mxPoint x="299.66" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-9" value="Done loading" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" connectable="0" parent="gkW6MSQl63DJu1st89hK-8">
+          <mxGeometry x="-0.0816" y="1" relative="1" as="geometry">
+            <mxPoint x="-1" y="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-10" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="320" as="sourcePoint" />
+            <mxPoint x="299.66" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-11" value="Custom run" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" connectable="0" parent="gkW6MSQl63DJu1st89hK-10">
+          <mxGeometry x="-0.0816" y="1" relative="1" as="geometry">
+            <mxPoint x="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-15" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="540.34" y="320" as="sourcePoint" />
+            <mxPoint x="540" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-16" value="Victory" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" connectable="0" parent="gkW6MSQl63DJu1st89hK-15">
+          <mxGeometry x="-0.0816" y="1" relative="1" as="geometry">
+            <mxPoint x="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-19" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="620" y="360" as="sourcePoint" />
+            <mxPoint x="620" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-20" value="Done selecting" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" connectable="0" parent="gkW6MSQl63DJu1st89hK-19">
+          <mxGeometry x="-0.0816" y="1" relative="1" as="geometry">
+            <mxPoint x="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-21" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="520" y="310" as="sourcePoint" />
+            <mxPoint x="360" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-22" value="Exit to menu / Defeat" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" connectable="0" parent="gkW6MSQl63DJu1st89hK-21">
+          <mxGeometry x="-0.0816" y="1" relative="1" as="geometry">
+            <mxPoint x="-4" y="-2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-25" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="360" y="290" as="sourcePoint" />
+            <mxPoint x="520" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-26" value="Start" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" connectable="0" parent="gkW6MSQl63DJu1st89hK-25">
+          <mxGeometry x="-0.0816" y="1" relative="1" as="geometry">
+            <mxPoint x="4" y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-27" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="360" y="370" as="sourcePoint" />
+            <mxPoint x="520" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-28" value="Start" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" connectable="0" parent="gkW6MSQl63DJu1st89hK-27">
+          <mxGeometry x="-0.0816" y="1" relative="1" as="geometry">
+            <mxPoint x="4" y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-29" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="360" y="390" as="sourcePoint" />
+            <mxPoint x="520" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gkW6MSQl63DJu1st89hK-30" value="Select starting blueprints" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=&quot;Latin Mono Regular 12&quot;;" vertex="1" connectable="0" parent="gkW6MSQl63DJu1st89hK-29">
+          <mxGeometry x="-0.0816" y="1" relative="1" as="geometry">
+            <mxPoint x="4" y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

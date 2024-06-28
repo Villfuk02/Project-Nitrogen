@@ -15,6 +15,7 @@ namespace BattleSimulation.Control
         [Header("Settings")]
         public bool overrideRunSettings;
         [SerializeField] AttackerStats[] availableAttackers;
+        [SerializeField] AttackerStats defaultAttacker;
         [SerializeField] int maxWaveLengthTicks;
         [SerializeField] int maxAttackersPerWave;
         [SerializeField] float parallelWaveChance;
@@ -218,7 +219,28 @@ namespace BattleSimulation.Control
                     newAttacker_ = selected;
             }
 
+            if (batches.Count == 0)
+                batches.Add(CreateDefaultBatch());
+
             return new(newAttacker_, batches.ToArray());
+        }
+
+        Batch CreateDefaultBatch()
+        {
+            var rates = ratePerPath.PickOut(currentPaths);
+            var capacities = capacityLeftPerPath.PickOut(currentPaths);
+
+            defaultAttacker.GetRemainingCapacity(Spacing.Max, currentSplashDamageMultiplier, splashDamageBase, rates, 1, true, ref capacities, ref globalCapacityLeft);
+
+            // update capacities
+            for (int i = 0; i < currentPaths.Count; i++)
+                capacityLeftPerPath[currentPaths[i]] = capacities[i];
+
+            // prepare result
+            var types = new AttackerStats[pathCount];
+            foreach (int path in currentPaths)
+                types[path] = defaultAttacker;
+            return new(1, Spacing.Max, types);
         }
 
 
@@ -385,7 +407,9 @@ namespace BattleSimulation.Control
 
             Spacing spacing = (Spacing)random.Int((int)Spacing.Max + 1);
 
-            var validAttackers = GetValidParallelAttackers(spacing);
+            var validAttackers = GetValidParallelAttackers(spacing, parallelMinCount);
+            if (validAttackers.Any(a => a.Count == 0))
+                validAttackers = GetValidParallelAttackers(spacing, 1);
 
             var selectedAttackers = PickInitialParallelAttackers(validAttackers);
 
@@ -423,7 +447,7 @@ namespace BattleSimulation.Control
             return GenerateSequentialWave(newRate, newCapacity);
         }
 
-        WeightedRandomSet<AttackerStats>[] GetValidParallelAttackers(Spacing spacing)
+        WeightedRandomSet<AttackerStats>[] GetValidParallelAttackers(Spacing spacing, int minCount)
         {
             int maxCount = AttackerStatsCalculations.MaxAttackerCount(spacing, currentPaths.Count, currentTicksLeft_, currentAttackersLeft_);
 
@@ -443,7 +467,7 @@ namespace BattleSimulation.Control
                         return false;
 
                     // at least minCount attackers must fit into the capacity
-                    var value = stats.AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, parallelMinCount, true)[0];
+                    var value = stats.AttackersValue(spacing, currentSplashDamageMultiplier, splashDamageBase, rate, minCount, true)[0];
                     if (value > pathCapacity + globalCapacityLeft)
                         return false;
 

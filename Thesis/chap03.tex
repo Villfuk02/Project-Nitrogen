@@ -1316,9 +1316,9 @@ The towers still target only the first attacker, so they will kill it first.
 Then, they can deal with the second attacker, but the second attacker is $g$ seconds behind the first, so they have $g$ more seconds to deal with it.
 This is also true for each other attacker, so the towers effectively get $g$ seconds of firing for free for each attacker beyond the first.
 Thus, a more accurate condition for beating the wave is the following inequality:
-\begin{equation*}
+\begin{equation}
     C/s + (n-1) R g \geq nh
-\end{equation*}
+\end{equation}
 When we put all wave-dependent terms on the right and rearrange, we get that the player beats the wave if and only if the following condition is satisfied:
 \begin{equation}\label{eqn:beat-finite-wave}
     C \geq s(nh - (n - 1)Rg)
@@ -1457,7 +1457,7 @@ Otherwise, the derivation is the same as for \hyperref[sec:analysis-waves-finite
 \begin{equation}
     C/s + (n-1)Rg \geq \sum_{k=1}^{n} Rt_k
 \end{equation}
-If we put all wave-dependent terms on the right side of the equation and rearrange, the following inequality:
+If we put all wave-dependent terms on the right side of the equation and rearrange, we get the following inequality:
 \begin{equation}
     C \geq s\left(Rt_1 + \sum_{k=2}^{n} (Rt_k - Rg)\right)
 \end{equation}
@@ -1495,7 +1495,7 @@ This lets us discard the maximum function and simplify the condition further:
     \right)
 \end{equation}
 
-Finally, we can calculate the closed-form solution\footnote{Again, made easier by \emph{Wolfram Mathematica}.} for the summation to obtain that the player's defenses will beat a wave if and only if the following condition is satisfied:
+Finally, we can calculate the closed-form solution\footnote{\emph{Wolfram Mathematica} was used to find the closed-form solution.} for the summation to obtain that the player's defenses will beat a wave if and only if the following condition is satisfied:
 \begin{equation}\label{eqn:beat-model-4}
     C \geq s\left(\frac{
     n^*(\beta^{sg}-1) - \alpha\beta^{sg}((1-\alpha)^{n^*}\beta^{sgn^*} + n^*(\beta^{sg}-1) - 1)
@@ -1522,7 +1522,7 @@ Each batch contains some number of attackers of the same attacker type, spaced a
 We can specify a set of wave parameters for each batch $b_k$ instead of having one for the wave as a whole.
 These parameters have a subscript which denotes which batch they correspond to, for example the first batch ($b_1$) contains $n_1$ attackers with $h_1$\,HP and speed $s_1$, with a gap of $g_1$ seconds between them.
 
-To determine which defenses will beat a wave with $N$ batches, we can extend the condition for model 4.
+To determine which defenses will beat a wave with $N$ batches, we can extend the condition for \hyperref[sec:analysis-waves-aoe]{model~4}.
 We will refer to the right-hand side of inequality~\ref{eqn:beat-model-4} as the total value of the attackers.
 For simplicity, we can then denote the total attacker value with the parameters for batch $b_k$ as the batch value $V_k$.
 The defenses now have to beat all the batches one by one, but they still have the same damage capacity $C$ to work with.
@@ -1629,6 +1629,7 @@ We want to select a random number of a random attacker type with a random spacin
 Notably, the same attackers will spawn on each of the selected paths.
 This means that we also expect the selected paths to have the same rate and capacity.
 
+\head{Distribute new rate and capacity evenly.}{}
 So, the first thing the algorithm does is distribute the new rate and capacity.
 We would like all paths to be equal, but we have to respect the rate and capacity values they have now, and we can distribute only the rate and capacity that are new for this wave.
 So, we at least make them as even as possible.
@@ -1636,6 +1637,7 @@ This can be done by always giving to all paths with the lowest amount the amount
 Once they are all even, we split evenly the rest.
 However, there is no guarantee that the rates and capacities of all paths will be equal.
 
+\head{Use rejection sampling.}{}
 Now we can actually generate the wave.
 The most straightforward approach would probably use rejection sampling.
 Generate the specified number of completely random batches and check if whether the total value doesn't overshoot the capacity.
@@ -1644,6 +1646,7 @@ To use up the capacity as much as possible, we can generate many waves and selec
 This approach could work, but it has obvious flaws that cause it to produce invalid results very often.
 We can improve this by removing them from the options for random selection.
 
+\head{Improve it by removing invalid options in advance.}{}
 For each batch, we first find all the valid attacker types this batch could consist of.
 We cannot use an attacker we have already used in a previous batch of this wave, so we filter out those.
 Also, if an attacker's value is so great, that spawning only one on each path overshoots the capacity, it is invalid.
@@ -1654,6 +1657,7 @@ It is also possible the wave overshoots the maximum capacity.
 So, after picking a random attacker type and a random spacing for a batch, we calculate the maximum number of these attackers the batch can have while staying within these limits.
 We then select a random attacker count between 1 and this maximum count.
 
+\head{Make sure every generated wave uses up the capacity.}{}
 This guarantees that each wave we generate is valid.
 However, we still need to generate many waves to find one that uses up the capacity somewhat well.
 To fix this, for the last batch of the wave, we select the spacing and attacker count that minimize the remaining capacity.
@@ -1709,6 +1713,7 @@ A parallel wave consists of only one batch that can spawn different attacker typ
 But because it is one batch, all paths have the same number of attackers and the same spacing.
 Since we don't yet know the relative difficulty of the attackers we'll spawn on each path, we will keep the new value rate and capacity for this wave unassigned for now, and we will distribute them to the paths only after we have generated the wave.
 
+\head{Comparison to generating a sequential wave:}{}
 Some requirements are the same as for a sequential wave: the wave cannot be longer than the maximum duration, it cannot have more than the maximum attacker count, and we want to use up as much of the capacity without going over.
 We will add some more that naturally extend these:
 Since we want to use up most of the capacity, it would make sense to use up all individual path capacities.
@@ -1730,6 +1735,7 @@ We start by selecting a random attacker for each path from the set of valid atta
 Then we enter a loop, where we do some tests, and if the set fails one of the tests, we change one attacker type and try again.
 If all tests succeed, we then produce the finished wave and distribute the new rate and capacity accordingly.
 
+\head{Check if we can use up the path capacities.}{}
 First, we test that it's possible to use up every path capacity:
 We calculate the minimum number of attackers the wave must have in order to use up every path capacity.
 We then check if this count is even a viable option for this wave.
@@ -1744,6 +1750,7 @@ So, this is the one attacker will change for another random attacker.
 Specifically, we change the attacker type of the path whose value in the previous test overshot its path capacity by the most.
 Then we try the test again with this new set.
 
+\head{Check if we can use up the global capacity.}{}
 If the test succeeds, we know the minimum number of attackers the wave can have in order to use up every path capacity.
 We also want to ensure this set of attackers can use up most of the capacity, given the constraints on the maximum wave duration and attacker count.
 So, as a second test, we calculate the maximum number of attackers these restrictions let us use, and then we check whether the value of this many attackers plus one is more than the total capacity in the same way as in the previous test.
@@ -1752,6 +1759,7 @@ If the value is less than the capacity, it means that the maximum allowed attack
 This time, the issue is that the attackers we want to use don't have enough value to use up the capacity.
 So, we change the attacker type of the path whose value in the previous test overshot its path capacity by the least.
 
+\head{Select attacker count and distribute new rate and capacity.}{}
 If both tests succeed, we have found a good enough set of attackers for this wave.
 Now we just find the exact maximum number of attackers that will fit within the total capacity, and the wave is finished.
 We don't have a formula for this, but we can determine if a specific count fits within the total capacity or not, as we did in the tests.
@@ -1791,6 +1799,7 @@ The whole process of generating a parallel wave is summarized as algorithm~\ref{
         \Statex
     \end{algorithmic}
 \end{algorithm}
+
 \section{Random Number Generators}\label{sec:analysis-rng}
 
 The algorithms we use for procedural generation depend on a \emph{random number generator}, or \emph{RNG}, as their source of randomness.
@@ -1874,7 +1883,7 @@ Luckily for us, Unity has a built-in global variable that lets us change the spe
 Some visuals will be game speed agnostic, like instant animations or the game user interface animations.
 This also isn't a problem since Unity lets us specify to use the unscaled time for individual effects.
 
-\section{Targeting Attackers}
+\section{Targeting Attackers}\label{sec:analysis-targeting}
 
 An important question we should consider is during a battle, how will the towers determine which attackers are in range, and which attacker to shoot at?
 As described in section~\ref{sec:design-towers}, most towers will have a range in the shape of a cylinder, but some will have a different shape.
@@ -1908,7 +1917,7 @@ So, we can save on many linecasts by testing the attackers in order from the hig
 This means that we need to sort the attackers by priority.
 Their order usually won't change between subsequent ticks, so we keep them in a sorted order in the list of all attackers in range.
 
-\section{Range Visualization}
+\section{Range Visualization}\label{sec:analysis-range}
 
 In section~\ref{sec:design-selection-highlights} we described that we want to draw the range of the tower that's currently selected, or the tower or ability that is being placed, directly on the terrain.
 We want to show if the tower could shoot at a small or large attacker, depending on their position in the world.
@@ -2034,7 +2043,7 @@ To display this formatting and icons within text, we will use the features of th
 It lets us format the text with tags similar to HTML.
 For the icons, we can create a \emph{Text Mesh Pro sprite asset}, and then insert the icons into the text using the tag \mono{<sprite=ID>}.
 
-\section{Modifiable Commands and Queries}
+\section{Modifiable Commands and Queries}\label{sec:analysis-modifiable-commands}
 
 In our game, we want various objects to modify how other objects function.
 However, this can be very problematic if we don't select the right approach.
