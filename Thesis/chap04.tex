@@ -323,29 +323,81 @@ There are two scripts that handle the tutorial:
 So, all things that happen during the tutorial can be assigned in the Unity editor.
 
 The script \mono{TutorialActions} then contains methods which do various modifications to various objects within the scene, so these actions can be subscribed to the \mono{TutorialController} Unity events.
-\mono{TutorialActions} also contains various checks and based on thos, ittells the \mono{TutorialController} when to go to the next step.
+\mono{TutorialActions} also contains various checks based on which it tells the \mono{TutorialController} when to go to the next step.
 
 \section{Data Flow and Procedural Generation}\label{sec:docs-data}
 
-- loading
+In this section we'll take a look at the processes that happen from the application start, all the way to generating worlds and waves.
 
-- objects that persist throughout the whole app
+\subsection{Loading}
 
-- scenes and sounds
+When the application starts, a \enquote{Made with Unity} splash screen is shown, and then the \emph{Loading} scene is loaded.
+This scene contains some game objects that will persist throughout the entirety of the application runtime.
+These are the \mono{SceneController} and \mono{SoundController}, each with a script of the same name attached to it.
+They use the singleton design pattern and static methods to allow other scripts to use their functionality without obtaining a reference to them first.
 
-- menuing
+\mono{SoundController} is used to play sounds using one function call, which is convenient, because we need to create stationary audio sources all the time.
+It also pools its \emph{AudioSource} prefabs to save on resources.
 
-- starting a run
+\mono{SceneController} is used to change scenes.
+Unity lets us change scenes with a static function call on the \mono{SceneManager}, but \mono{SceneController} fades out the screen first, then it changes the scene, and it fades back in after.
 
-- run persistence objects and data flow
+The loading scene also contains an object with the \mono{StartLoader} script, which loads various data from the disk into memory, and then it calls to change the scene to \emph{Menu}.
+We can register to it any number of \mono{ILoader} scripts, which do the loading and store the data in singleton classes.
 
-- blueprint selection
+Currently, the only loader we use is \mono{TerrainTypeLoader}, which loads the terrain types from the \emph{StreamingAssets/TerrainTypes} folder.
+For each terrain type file, the \mono{TerrainTypeLoader} creates a new \mono{TerrainType} object using the function \mono{Parse} it has.
+The parsing is done using a simple parser implemented in the folder \emph{Scripts/Data/Parsers}.
+The terrain type file format will be described in section \xxx{TODO}.
 
-- run seed and procedural generation
+\subsection{Menus and Starting a Run}
 
-- world generation
+The \emph{Menu} scene contains mostly just three buttons and an object with the \mono{RunStarter} script.
+All three buttons call a method on the \mono{RunStarter} when pressed.
+When the \enquote{Start} button is pressed, the \mono{RunStarter} instantiates the \emph{RunPersistence} prefab, configures it, and calls the \mono{NextLevel()} method on its \mono{RunPersistence} script.
 
-- world builder
+Pressing the \enquote{Custom Run} button takes the player to the \emph{Run Settings} scene.
+It contains more UI elements, but another object with a \mono{RunStarter} script is present.
+Here, the player can change the run settings by interacting with the UI elements, which in turn notify the \mono{RunStarter} about these changes.
+When the player starts the run, the instantiated \emph{RunPersistence} prefab is then configured according to the settings.
+If the \enquote{Select starting blueprints} option is enabled, instead of going to the first level, the scene \emph{Blueprint Selection} is loaded, where the player can select the starting blueprints.
 
-- wave generation
+\subsection{Run Persistence and Blueprint Rewards}
 
+The \emph{RunPersistence} object persists between scenes and only destroy itself when a run ends.
+It holds all scripts that need to remember some state throughout the whole run:
+The \mono{RunPersistence} script keeps track of the player's hull and blueprints, the run seed, the current level, and it gives orders to the other scripts.
+When it's initialized, it also initializes the \mono{BlueprintRewardController} script with a random seed, derived from the run seed.
+
+Whenever the \mono{RunPersistence} wants to go to the \emph{Blueprint Selection} scene, it asks the \mono{BlueprintRewardController}.
+For the rewards after the first tutorial level, or when selecting starting blueprints, the \mono{BlueprintRewardController} prepares predefined blueprint selection, but for normal blueprint rewards, it picks the selection randomly, based on its seed.
+It then changes the scene to the \emph{Blueprint Selection} scene, and initializes the \mono{BlueprintSelectionController} script in it with the selection.
+The \mono{BlueprintSelectionController} handles the blueprint selection, and then it returns what the player chose in a callback to the \mono{RunPersistence}, which updates the player's blueprint collection.
+Then, the game proceeds to the next level.
+
+\subsection{Procedural Level Generation}
+
+Whenever the \emph{Battle} scene is loaded, the \mono{WorldGenerator} finds the \mono{RunPersistence} and asks it to set up the level settings.
+For this, the \mono{RunPersistence} uses the \mono{LevelSetter} script, which finds the relevant scripts in the scene and sets them up.
+It generates a new seed for the world generator and configures the number of paths and their lengths, based on the level number, storing this information in the \mono{WorldSettings} script.
+It also configures the \mono{WaveGenerator}'s seed and parameters, and the fuel goal in the \mono{BattleController}.
+
+As we described in section~\ref{sec:analysis-rng}, we use \emph{seed branching} everywhere throughout the procedural generation.
+This means that whenever some system needs RNG, it gets a seed from another system, and from this seed it creates its own RNG instance to use.
+Figure~\ref{fig:seed-branching} shows how the seeds get propagated across the game's systems.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=\textwidth]{img/seed splitting.pdf}
+    \caption{Seed propagation using seed branching.}
+    \label{fig:seed-branching}
+\end{center}
+
+The world generator uses other scripts from the \emph{WorldGen} folder, and proceeds in steps as described in section~\ref{sec:analysis-procedural-generation}.
+These steps are done in so that the game doesn't become unresponsive.
+After each step, it saves the generated data int a singleton instance of \mono{WorldData}.
+
+In Unity, we cannot instantiate objects from a background thread.
+So, in the main thread, the script \mono{WorldBuilder} checks for the \mono{WorldData} being filled in, and according to those, it builds the terrain, obstacles and paths.
+This is still done using Unity coroutines across multiple frames to not lag the game.
+Currently, the screen is faded out using the \mono{SceneController} during world generation, but later we'd like to add an animation, which would make any stutters obvious.

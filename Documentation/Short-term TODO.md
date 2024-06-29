@@ -27,10 +27,11 @@
 - [ ] 2.4 - 2.9
 - [ ] 3.8.9 - 3.12
 - [ ] 4
+- [ ] 6
 ## till next metting
 - [ ] ch4 (30.6)
     - [x] 4.1
-    - [ ] 4.2
+    - [x] 4.2
     - [ ] 4.3
 - [ ] ch5 (3.7)
 - [ ] ch6 (4.7)
@@ -51,6 +52,7 @@
 - [ ] https://blog.wordvice.com/when-to-use-commas-colons-semicolons-and-dashes/#:~:text=Use%20an%20em%20dash%20instead,less%20formal%20than%20a%20colon.
 - [ ] make author names consistent
 - [ ] TODOs
+- [ ] fix image fonts
 - [ ] PDF/A
 - [ ] figure names
 - [ ] numbers and units
