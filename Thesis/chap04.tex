@@ -2,8 +2,10 @@
 
 In this chapter we aim to describe the implementation of the demo version of our game.
 In the first section~\ref{sec:docs-proj} we describe the overall structure, and in the later sections we go into more detail about the individual parts.
-Section~\ref{sec:docs-battle} describes what goes on from the application start to the end, including all procedural generation, but not what happens during a battle.
-We will focus on battles first, in section~\ref{sec:docs-data}.
+\xxx{
+    Section~\ref{sec:docs-data} describes what goes on from the application start to the end, including all procedural generation, but not what happens during a battle.
+    We will focus on battles first, in section~\ref{sec:docs-battle}.
+}
 
 \section{Project Structure}\label{sec:docs-proj}
 
@@ -23,6 +25,14 @@ The demo version of our game is composed of 5 scenes.
 We provide a brief summary of each, but we will describe them in more detail later.
 This summary will be useful for the rest of the chapter, allowing us to see which parts of the game occur chronologically after other parts.
 For convenience, the transitions between the scenes are shown in figure~\ref{fig:scene-transitions}.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.9\textwidth]{img/Scene transitions.pdf}
+    \caption{Scene transitions.}
+    \label{fig:scene-transitions}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Loading} is the first scene that gets loaded when the game starts.
           This scene contains only scripts that load data and game objects that persist throughout the entire lifetime of the application.
@@ -32,30 +42,41 @@ For convenience, the transitions between the scenes are shown in figure~\ref{fig
     \item \textbf{Run Settings} lets the player customize the run by selecting a custom seed or by opting to select their starting blueprints.
           There is also a button that lets the player play again the in-game tutorial.
           Starting a run from here also takes the player to the \emph{Battle} scene, unless they chose to select starting blueprints in which case they go to the \emph{Blueprint Selection} scene.
-    \item \textbf{Battle} is the scene where the battles happen.
-          Here the player plays one level of the game as described in previous sections, until they win the level or lose.
+    \item \textbf{Battle} is the scene where the battles take place.
+          First, the world is procedurally generated.
+          Then the player plays one level of the game, until they win the level or lose.
           If they lose, their only option is to return to \emph{Menu}.
           When they win, they continue to the \emph{Blueprint Selection} scene.
     \item In \textbf{Blueprint Selection}, the player is shown their current blueprints and new blueprints to choose from.
           When they finish choosing, they continue to the next \emph{Battle}.
 \end{itemize}
 
-
-\begin{center}
-    \captionsetup{type=figure}
-    \includegraphics[width=0.9\textwidth]{img/Scene transitions.pdf}
-    \caption{Scene transitions.}
-    \label{fig:scene-transitions}
-\end{center}
-
-
 \subsection{Scripts}
 
-There are some game objects which persist between scene transitions, but most of them are confined only to one scene.
-Each battle happens in one scene, but it still contains multiple systems which are loosely coupled.
-The structure of the project and its systems is reflected in the structure of the \emph{Scripts} folder.
-The scripts are also separated into namespaces and assemblies based on this structure.
-In the later sections of this chapter we describe how the scripts interact.
+Most game object exist only within one scene, but some persist between scene transitions.
+Each battle happens in one scene, but it still contains multiple separate systems.
+This means that we cannot judge the structure of the project just by the scenes.
+The structure of \emph{Scripts} folder should be more informative.
+The scripts are divided based on their function into these 6 subfolders:
+\begin{itemize}
+    \item \textbf{BattleSimulation}~--- game logic of the systems present in a battle. Used in the \emph{Battle} scene.
+    \item \textbf{BattleVisuals}~--- logic for the visuals during a battle like animations, particle effects and the user interface. Used in the \emph{Battle} scene.
+    \item \textbf{Data}~--- parsing and loading data from the disk in the \emph{Loading} scene. It also contains singleton classes the data is loaded into to be used by other scripts in the application.
+    \item \textbf{Game}~--- systems and concepts that are present outside battle, across multiple battles or throughout the whole application runtime.
+    \item \textbf{Utils}~--- various utility functions and data structures used throughout the project.
+    \item \textbf{WorldGen}~--- procedural generation of the world for each level, used in the \emph{Battle} scene.
+\end{itemize}
+
+Each of these folders is split further into more subfolders, each usually representing one game system.
+The scripts are also separated into namespaces which exactly match the folder structure.
+We also usually place one assembly definition asset in each folder, which make unity separate these scripts into different assemblies in the project solution.
+This is done shorten compilation times because the codebase is rather large.
+
+We will further describe the scripts in the subfolders in the following sections, but first we'd like to mention the function of the scripts \mono{SceneController} and \mono{SoundController} in the \emph{Game/Shared} script folder.
+Both these scripts are attached to game objects in the \emph{Loading} scene which persist between scenes throughout the whole application lifetime.
+They are both singletons that provide some functionality for other scripts using static functions.
+The \mono{SoundController} lets other scripts play stationary sound effects, and is used all throughout the application.
+\mono{SceneController} lets other scripts seamlessly change scenes by fading out the screen to black, then changing the scene, and fading back in once the new scene is loaded.
 
 We would also like to mention that in the code, in \mono{MonoBehaviour} scripts, we use some conventions that might seem odd to programmers who don't use Unity.
 For example, many private fields have the attribute \mono{[SerializeField]} which makes them show up in the Unity editor in the inspector.
@@ -137,26 +158,7 @@ Since properties don't show up in the inspector, we use public fields in many pl
         \caption{Namespace and folder structure of our scripts.}
         \label{fig:proj}
     \end{figure}
-
-    We also name the namespaces in our project according to the folder structure.
-    Furthermore, the project is split into assemblies, where each folder is basically one assembly.
-    However, assembly references can't form cycles, so all scripts in the folder \mono{WorldGen}, except for the subfolder \mono{WorldSettings} are one assembly.
-    Furthermore, there are a few assemblies that contain only one interface, which facilitates dependency inversion in places where we would need to create a cycle in assembly references.
-    These are \mono{BattleVisuals.Selection.Highlightable} and \mono{Data.Loader}.
-
-    Here, we provide a short overview of the top level script folders and the implementation of the systems they contain:
-    \begin{itemize}
-        \item \nameref{sec:docs-sim}~--- game logic of all systems that are contained in a battle.
-        \item \nameref{sec:docs-vis}~--- logic for the visuals during a battle like animations, particle effects and the user interface.
-        \item \nameref{sec:docs-data}~--- parsing and loading data in the \emph{Loading} scene.
-        \item \nameref{sec:docs-game}~--- systems and concepts that are present outside battle, across multiple battles or throughout the whole application runtime.
-        \item \nameref{sec:docs-utils}~--- various utility functions and data structures used throughout the project.
-        \item \nameref{sec:docs-worldgen}~--- procedural generation of the world for each level.
-    \end{itemize}
-    The following sections of this chapter will go into more detail.
-
 \fi
-
 
 \subsection{Third-Party Assets}
 In the project, we use some assets that were not created by the author of this thesis in addition to the Unity game engine.
@@ -171,32 +173,75 @@ We would like to acknowledge and disclaim these assets here:
 
 \section{Battle}\label{sec:docs-battle}
 
-During a battle, the game reacts to the player's inputs, so a battle cannot be viewed as a linear program, which takes inputs and transforms them into outputs.
-Instead, there are shorter procedures happening all the time, triggered either by the player's inputs or in-game events, which modify the state of the game.
-Also, many game objects autonomously repeat a simple procedure every frame, for example, an attacker moves some distance along its path every tick.
-We will describe these procedures in the following subsections.
-First, we will describe the game logic, and in the later sections we will explain how the game visuals work.
+In this section, we discuss the systems that play a role during a battle.
+When the \emph{Battle} scene is loaded, some scripts generate the world and some other scripts initialize various parts of the scene.
+Throughout this, the screen is faded out to black.
+It fades in and lets the player interact with the scene only after all the initialization is done.
 
-In this section we assume the world is already generated and the game is ready for the player's inputs.
-The scene is composed of the generated world, the UI and singleton objects with scripts that handle the global game systems.
-For example, the \mono{BattleController} keeps track of the player's resources and whether the player has won or lost this battle.
-Or the \mono{BlueprintMenu}, which holds the blueprints available to the player and their current cooldowns.
-There are also singletons which don't come from the \emph{Battle} scene, but persist between the scenes.
-For example, \mono{RunPersistence} keeps track of the player's hull and their blueprint collection.
+From the player's perspective, after the game fades in, the battle alternates between the building phase and the wave phase, as shown in figure~\ref{fig:battle-phases}.
+In the building phase, the player can build buildings.
+When they start the next wave, the game goes to the wave phase, where the player can use abilities, but cannot build buildings.
+Once all attackers are killed, the game goes back to the building phase.
+This repeats until the player wins this level or lose the game.
 
-\subsection{Selecting a Blueprint}
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.8\textwidth]{img/battle scene phases.pdf}
+    \caption{\emph{Battle} scene phases.}
+    \label{fig:battle-phases}
+\end{center}
 
-First, we'll take a look at what happens when the player selects a blueprint.
-Let's assume they select the blueprint by clicking on it in the blueprint menu.
-To click on it, the player will first have to position the mouse cursor over the blueprint, and even that triggers some reactions.
+We will explain the initialization and procedural generation in section \xxx{TODO}.
+In this section, we'll describe only the processes involved in the gameplay.
+First we'll explain the game logic, and then the visualizations used to communicate information to the player.
 
-Each blueprint in the blueprint menu is an instance of the \emph{BlueprintMenuItem} prefab.
-They were created by the script \mono{BlueprintMenuDisplay}, and during initialization, it registered mouse event callbacks to the \mono{SelectionController}.
-The \mono{SelectionController} manages what object is currently selected and/or hovered over.
-It gets only notified that a blueprint at some index in the blueprint menu was clicked, so it asks the \mono{BlueprintMenu} what blueprint is in the menu at this position.
-Based on that, it notifies the \mono{InfoPanel} what it should display, or that it should hide when nothing is hovered or selected.
+To most systems in involved in the battle, it doesn't matter if the game is currently in the building or wave phase, they behave the same at all times.
+Only few things change when a wave starts or ends, which we describe in section \xxx{TODO}.
+
+\subsection{Scene contents}
+
+Before we explain what goes on during a battle, we should introduce the contents of the battle scene.
+When loaded, the \emph{Battle} scene contains only the UI, and various singleton objects with scripts that each take care of one game system.
+We will explain these when they become relevant.
+
+During the procedural generation and initialization, more game objects are created in the scene and various scripts are initialized with data.
+For example, the results of the world generation are stored in the \mono{WorldData} singleton script.
+The world terrain is created in the scene under the \emph{World} game object, including the obstacle models and visualization of the attacker paths.
+Also, an instance of the \emph{Tile} prefab is created for each world tile, and references to the tiles are also stored in \mono{WorldData} script for easy access.
+For the rest of this section, we assume the scene is already initialized and ready for the player's inputs.
+
+During the battle, there are also some game objects which persist between scenes and don't originally come from the \emph{Battle} scene.
+These are the \mono{SceneController} and \mono{SoundController} we introduced in section \xxx{TODO}.
+Additionally, there is \emph{Run Persistence}, which keeps track of the player's blueprints and hull.
+We will describe it in more detail in section \xxx{TODO}.
+
+\subsection{Selecting in the World}
+
+During the battle, one of the most important things the player can do is to build buildings or use abilities.
+To do that, the player first needs to select the blueprint they want to use.
+The \mono{SelectionController} is responsible for what the player hovers over and what is selected at all times.
+In this subsection, we will illustrate the \mono{SelectionController}'s function by explaining what happens when the player selects objects within the game world.
+Selecting and placing blueprints is more complicated, and it will be explained in the next subsection \xxx{TODO}.
+
+- what it does from game logic side
+
+- visualization, talk later
+
+- also hover
 
 \subsection{Placing a Blueprint}
+
+- player-side state diagram, including in-world selection?
+
+- for each nontrivial transition, create a sequence diagram
+
+
+
+
+
+
+\xxx{END OF UPDATED TEXT}
+
 
 When a given blueprint gets selected, the \mono{SelectionController} instantiates its associated prefab.
 However, the blueprinted objects are programmed with this in mind, so for example, a tower won't shoot at attackers until it's actually placed.
@@ -327,6 +372,10 @@ The script \mono{TutorialActions} then contains methods which do various modific
 
 \section{Data Flow and Procedural Generation}\label{sec:docs-data}
 
+\xxx{TODO: split into two sections}
+
+\xxx{TODO: also mention wave preview and blueprint menu display}
+
 In this section we'll take a look at the processes that happen from the application start, all the way to generating worlds and waves.
 
 \subsection{Loading}
@@ -385,6 +434,7 @@ It also configures the \mono{WaveGenerator}'s seed and parameters, and the fuel 
 As we described in section~\ref{sec:analysis-rng}, we use \emph{seed branching} everywhere throughout the procedural generation.
 This means that whenever some system needs RNG, it gets a seed from another system, and from this seed it creates its own RNG instance to use.
 Figure~\ref{fig:seed-branching} shows how the seeds get propagated across the game's systems.
+\xxx{TODO: explain the language used in the figure.}
 
 \begin{center}
     \captionsetup{type=figure}
@@ -401,3 +451,5 @@ In Unity, we cannot instantiate objects from a background thread.
 So, in the main thread, the script \mono{WorldBuilder} checks for the \mono{WorldData} being filled in, and according to those, it builds the terrain, obstacles and paths.
 This is still done using Unity coroutines across multiple frames to not lag the game.
 Currently, the screen is faded out using the \mono{SceneController} during world generation, but later we'd like to add an animation, which would make any stutters obvious.
+
+- building the UI

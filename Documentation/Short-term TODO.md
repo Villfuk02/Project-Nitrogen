@@ -29,17 +29,18 @@
 - [ ] 4
 - [ ] 6
 ## till next metting
-- [ ] ch4 (30.6)
-    - [x] 4.1
-    - [x] 4.2
-    - [ ] 4.3
-- [ ] ch5 (3.7)
-- [ ] ch6 (4.7)
-- [ ] ch7 (5.7)
+- [ ] konzultace 17:00
+- [ ] ch4 (??)
+- [ ] ch5 (1.7)
+    - [ ] attackers
+    - [ ] blueprints
+    - [ ] terrain types
+- [ ] ch6 (2.7)
+- [ ] ch7 (4.7)
     - [ ] mention that parameters were tweaked to balance the game
     - [ ] iterative
     - [ ] few more fallbacks in wave generation
-- [ ] conclusion (6.7)
+- [ ] conclusion and abstract (6.7)
 - [ ] finishing touches (8.7)
 
 

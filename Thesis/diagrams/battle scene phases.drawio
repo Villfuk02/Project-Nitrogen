@@ -1,0 +1,47 @@
+<mxfile host="Electron" modified="2024-07-01T13:10:22.348Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.4.13 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="2VanQoRZ6bbVg6CnH9Dr" version="24.4.13" type="device">
+  <diagram name="Page-1" id="PAqJ3YmhOcJzq5fDpwv0">
+    <mxGraphModel dx="989" dy="577" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Hy2XRtjGEwtJJ9aIUxxK-1" value="Initialize systems&lt;br&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;and generate world&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="120" y="210" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Hy2XRtjGEwtJJ9aIUxxK-2" value="Ready" style="endArrow=classic;html=1;rounded=0;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;" edge="1" parent="1">
+          <mxGeometry x="-0.1667" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="240" y="239.66" as="sourcePoint" />
+            <mxPoint x="360" y="239.66" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Hy2XRtjGEwtJJ9aIUxxK-4" value="Building phase" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="360" y="210" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Hy2XRtjGEwtJJ9aIUxxK-5" value="Start wave" style="endArrow=classic;html=1;rounded=0;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="480" y="230" as="sourcePoint" />
+            <mxPoint x="600" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Hy2XRtjGEwtJJ9aIUxxK-6" value="Wave phase" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="600" y="210" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Hy2XRtjGEwtJJ9aIUxxK-7" value="Kill all attackers" style="endArrow=classic;html=1;rounded=0;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="250" as="sourcePoint" />
+            <mxPoint x="480" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Hy2XRtjGEwtJJ9aIUxxK-8" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=2;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="330" y="267" as="sourcePoint" />
+            <mxPoint x="330" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Hy2XRtjGEwtJJ9aIUxxK-10" value="Fade in" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="300" y="270" width="60" height="10" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
