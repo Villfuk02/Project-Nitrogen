@@ -85,7 +85,7 @@ namespace Game.Run
 
         static void SetupBattleController(int level)
         {
-            BattleController bc = GameObject.FindGameObjectWithTag(TagNames.BATTLE_CONTROLLER).GetComponent<BattleController>();
+            PlayerState bc = GameObject.FindGameObjectWithTag(TagNames.BATTLE_CONTROLLER).GetComponent<PlayerState>();
 
             bc.fuelGoal = 90 + level * 10;
         }
@@ -101,7 +101,7 @@ namespace Game.Run
             wg.pathCount = 1;
             wg.tutorial = true;
 
-            BattleController bc = GameObject.FindGameObjectWithTag(TagNames.BATTLE_CONTROLLER).GetComponent<BattleController>();
+            PlayerState bc = GameObject.FindGameObjectWithTag(TagNames.BATTLE_CONTROLLER).GetComponent<PlayerState>();
 
             bc.fuelGoal = 110;
         }

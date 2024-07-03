@@ -8,6 +8,7 @@ using Game.Run;
 using Game.Shared;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils;
 
 namespace Game.Tutorial
@@ -31,7 +32,8 @@ namespace Game.Tutorial
         [SerializeField] WaveController waveController;
         [SerializeField] BlueprintMenu blueprintMenu;
         [SerializeField] BlueprintMenuDisplay blueprintMenuDisplay;
-        [SerializeField] BattleController battleController;
+        [FormerlySerializedAs("battleController")] [SerializeField]
+        PlayerState playerState;
         [SerializeField] InfoPanel.InfoPanel infoPanel;
         [SerializeField] TextMeshProUGUI infoPanelTitle;
         [Header("Settings")]
@@ -60,9 +62,9 @@ namespace Game.Tutorial
                 controller.TriggerPhase(3);
             if (Mathf.Abs(cameraTransform.rotation - Mathf.RoundToInt(cameraTransform.rotation)) > 0.1f)
                 controller.TriggerPhase(4);
-            if (battleController.material == 0)
+            if (playerState.material == 0)
                 controller.TriggerPhase(9);
-            if (battleController.material == 0)
+            if (playerState.material == 0)
                 controller.TriggerPhase(12);
             if (!infoPanel.visible)
                 controller.TriggerPhase(18);
@@ -196,13 +198,13 @@ namespace Game.Tutorial
 
         public void RemoveResources()
         {
-            battleController.material = 0;
-            battleController.energy = 0;
+            playerState.material = 0;
+            playerState.energy = 0;
         }
 
         public void AddMaterials(int materials)
         {
-            battleController.material += materials;
+            playerState.material += materials;
         }
 
         public void AddDrillBlueprint()
@@ -216,7 +218,7 @@ namespace Game.Tutorial
 
         public void AddEnergy(int energy)
         {
-            battleController.energy += energy;
+            playerState.energy += energy;
         }
 
         public void AddGrenadeBlueprint()

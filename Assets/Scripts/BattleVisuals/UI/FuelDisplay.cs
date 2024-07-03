@@ -11,7 +11,7 @@ namespace BattleVisuals.UI
     {
         [Header("References")]
         [SerializeField] GameObject predictionArrowPrefab;
-        [SerializeField] BattleController bc;
+        [SerializeField] PlayerState bc;
         [SerializeField] Image fill;
         [SerializeField] TextMeshProUGUI fuelText;
         [SerializeField] TextMeshProUGUI incomeText;
@@ -67,7 +67,7 @@ namespace BattleVisuals.UI
 
         void UpdateIncome()
         {
-            income_ = BattleController.FUEL_PER_WAVE.Query(new());
+            income_ = PlayerState.FUEL_PER_WAVE.Query(new());
             incomeText.text = $"+{income_:F0}";
 
             var c = incomeColor;

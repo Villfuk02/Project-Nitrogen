@@ -1,0 +1,149 @@
+<mxfile host="Electron" modified="2024-07-02T14:16:30.091Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.4.13 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="J87CiUg73R9dlzNOZGS7" version="24.4.13" type="device">
+  <diagram name="Page-1" id="-4wNeR7A6BVTjxg2-oLj">
+    <mxGraphModel dx="1434" dy="836" grid="1" gridSize="10" guides="0" tooltips="1" connect="0" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-1" value="Nothing selected" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;" parent="1" vertex="1">
+          <mxGeometry x="240" y="340" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-2" value="Initial state" style="endArrow=classic;html=1;rounded=0;fontFamily=&quot;Latin Modern Regular 12&quot;;fontSize=12;startArrow=none;startFill=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="290" y="300" as="sourcePoint" />
+            <mxPoint x="290" y="340" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-4" value="Select a world object" style="endArrow=classic;html=1;rounded=0;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="260" y="380" as="sourcePoint" />
+            <mxPoint x="220" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-6" value="Deselect" style="endArrow=classic;html=1;rounded=0;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;edgeStyle=elbowEdgeStyle;" parent="1" edge="1">
+          <mxGeometry x="-0.3333" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="180" y="440" as="sourcePoint" />
+            <mxPoint x="240" y="360" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="180" y="400" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-7" value="Blueprint selected" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;fontColor=#000000;strokeColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="340" y="440" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-8" value="Select a blueprint" style="endArrow=classic;html=1;rounded=0;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;" parent="1" edge="1">
+          <mxGeometry x="0.0462" y="2" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="380" as="sourcePoint" />
+            <mxPoint x="360" y="440" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-9" value="Select a blueprint" style="endArrow=classic;html=1;rounded=0;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;fontColor=#0000FF;strokeColor=#0000FF;" parent="1" edge="1">
+          <mxGeometry x="-0.06" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="240" y="450" as="sourcePoint" />
+            <mxPoint x="340" y="450" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-25" value="Hover over &lt;br&gt;an invalid position" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;fontColor=#000000;strokeColor=#000000;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="420" y="480" as="targetPoint" />
+            <mxPoint x="560" y="480" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="560" y="500" />
+              <mxPoint x="420" y="500" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-13" value="Blueprint selected&lt;div&gt;and set up&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;fontColor=#000000;strokeColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="540" y="440" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-16" value="Deselect" style="endArrow=classic;html=1;rounded=0;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;edgeStyle=elbowEdgeStyle;" parent="1" edge="1">
+          <mxGeometry x="-0.2857" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="440" as="sourcePoint" />
+            <mxPoint x="340" y="370" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="400" y="400" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-17" value="Deselect" style="endArrow=classic;html=1;rounded=0;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;edgeStyle=elbowEdgeStyle;" parent="1" edge="1">
+          <mxGeometry x="-0.697" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="560" y="440" as="sourcePoint" />
+            <mxPoint x="340" y="360" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="560" y="400" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-18" value="Hover over &lt;br style=&quot;font-size: 12px;&quot;&gt;a valid position" style="endArrow=classic;html=1;rounded=0;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;fontColor=#000000;strokeColor=#000000;" parent="1" edge="1">
+          <mxGeometry x="-0.04" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="460" as="sourcePoint" />
+            <mxPoint x="540" y="460" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-24" value="World object selected" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;" parent="1" vertex="1">
+          <mxGeometry x="140" y="440" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-27" value="Place" style="endArrow=classic;html=1;rounded=0;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;edgeStyle=elbowEdgeStyle;" parent="1" edge="1">
+          <mxGeometry x="-0.7436" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="620" y="440" as="sourcePoint" />
+            <mxPoint x="340" y="350" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="620" y="390" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-28" value="Hover over a different&lt;div style=&quot;font-size: 12px;&quot;&gt;valid position&lt;/div&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;fontColor=#000000;strokeColor=#000000;" parent="1" edge="1">
+          <mxGeometry x="0.3326" relative="1" as="geometry">
+            <mxPoint x="580" y="480.03" as="targetPoint" />
+            <mxPoint x="640.03" y="460.05999999999995" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="700" y="460.03" />
+              <mxPoint x="700" y="500.03" />
+              <mxPoint x="580" y="500.03" />
+              <mxPoint x="580" y="480.03" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-30" value="Select a different&lt;br style=&quot;font-size: 12px;&quot;&gt;world object" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;fontColor=#0000FF;strokeColor=#0000FF;" parent="1" edge="1">
+          <mxGeometry x="0.2493" relative="1" as="geometry">
+            <mxPoint x="219.97" y="479.94" as="targetPoint" />
+            <mxPoint x="139.94" y="459.99999999999994" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="109.97" y="460" />
+              <mxPoint x="109.97" y="500" />
+              <mxPoint x="219.97" y="500" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-31" value="Select a &lt;br style=&quot;font-size: 12px;&quot;&gt;different blueprint" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontFamily=&quot;Latin Modern Regular 12&quot;;fontColor=#0000FF;strokeColor=#0000FF;" parent="1" edge="1">
+          <mxGeometry x="0.3913" relative="1" as="geometry">
+            <mxPoint x="360" y="480.05999999999995" as="targetPoint" />
+            <mxPoint x="340" y="470.03" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="260" y="470.05999999999995" />
+              <mxPoint x="260" y="500.05999999999995" />
+              <mxPoint x="360" y="500.05999999999995" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11N2Rb--BL6Nh5nXsJrg-33" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="590" y="350" as="sourcePoint" />
+            <mxPoint x="590" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

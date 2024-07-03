@@ -38,18 +38,18 @@ namespace BattleVisuals.Effects
 
             Attacker.DAMAGE.RegisterReaction(SpawnDamage, 100);
             Attacker.HEAL.RegisterReaction(SpawnHeal, 100);
-            BattleController.ADD_MATERIAL.RegisterReaction(SpawnMaterial, 100);
-            BattleController.ADD_ENERGY.RegisterReaction(SpawnEnergy, 100);
-            BattleController.ADD_FUEL.RegisterReaction(SpawnFuel, 100);
+            PlayerState.ADD_MATERIAL.RegisterReaction(SpawnMaterial, 100);
+            PlayerState.ADD_ENERGY.RegisterReaction(SpawnEnergy, 100);
+            PlayerState.ADD_FUEL.RegisterReaction(SpawnFuel, 100);
         }
 
         void OnDestroy()
         {
             Attacker.DAMAGE.UnregisterReaction(SpawnDamage);
             Attacker.HEAL.UnregisterReaction(SpawnHeal);
-            BattleController.ADD_MATERIAL.UnregisterReaction(SpawnMaterial);
-            BattleController.ADD_ENERGY.UnregisterReaction(SpawnEnergy);
-            BattleController.ADD_FUEL.UnregisterReaction(SpawnFuel);
+            PlayerState.ADD_MATERIAL.UnregisterReaction(SpawnMaterial);
+            PlayerState.ADD_ENERGY.UnregisterReaction(SpawnEnergy);
+            PlayerState.ADD_FUEL.UnregisterReaction(SpawnFuel);
         }
 
         void Update()

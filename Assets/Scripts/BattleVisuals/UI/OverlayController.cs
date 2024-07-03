@@ -12,7 +12,7 @@ namespace BattleVisuals.UI
 
         void Awake()
         {
-            BattleController.WIN_LEVEL.RegisterReaction(OnVictory, 100);
+            PlayerState.WIN_LEVEL.RegisterReaction(OnVictory, 100);
             RunEvents.defeat.RegisterReaction(OnDefeat, 100);
 
             Hide();
@@ -20,7 +20,7 @@ namespace BattleVisuals.UI
 
         void OnDestroy()
         {
-            BattleController.WIN_LEVEL.UnregisterReaction(OnVictory);
+            PlayerState.WIN_LEVEL.UnregisterReaction(OnVictory);
             RunEvents.defeat.UnregisterReaction(OnDefeat);
         }
 

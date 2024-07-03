@@ -9,7 +9,7 @@ namespace BattleVisuals.UI
     public class MaterialAndEnergyDisplay : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] BattleController bc;
+        [SerializeField] PlayerState bc;
         [SerializeField] TextMeshProUGUI energyText;
         [SerializeField] TextMeshProUGUI materialText;
         [SerializeField] TextMeshProUGUI energyIncomeText;
@@ -27,12 +27,12 @@ namespace BattleVisuals.UI
             energyFill.fillAmount = Mathf.Lerp(energyFill.fillAmount, energyFillAmount, Time.deltaTime * 4);
             MathUtils.StepTowards(ref energyDisplay, bc.energy, convergenceDivisor);
             energyText.text = $"{energyDisplay}<size=15>/{bc.maxEnergy}</size>";
-            int energyIncome = BattleController.ENERGY_PER_WAVE.Query(new());
+            int energyIncome = PlayerState.ENERGY_PER_WAVE.Query(new());
             energyIncomeText.text = energyIncome == 0 ? "" : $"+{Mathf.RoundToInt(energyIncome)}";
 
             MathUtils.StepTowards(ref materialDisplay, bc.material, convergenceDivisor);
             materialText.text = materialDisplay.ToString();
-            int materialIncome = BattleController.MATERIALS_PER_WAVE.Query(new());
+            int materialIncome = PlayerState.MATERIALS_PER_WAVE.Query(new());
             materialIncomeText.text = materialIncome == 0 ? "" : $"+{Mathf.RoundToInt(materialIncome)}";
         }
     }

@@ -1,0 +1,157 @@
+<mxfile host="Electron" modified="2024-07-02T18:39:39.247Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.4.13 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="obaHcOhZvzkZgBr2A5_N" version="24.4.13" type="device">
+  <diagram name="Page-1" id="-fzCIf-CA1cX_L5HMafl">
+    <mxGraphModel dx="819" dy="478" grid="1" gridSize="10" guides="0" tooltips="1" connect="0" arrows="0" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-1" value="Add energy&lt;br&gt;command" style="rhombus;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="160" y="360" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-3" value="Solar Panel" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="20" y="360" width="80" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-5" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="kqKWhMMOoiWkvxPiHcDl-8">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="100" y="399.71" as="sourcePoint" />
+            <mxPoint x="160" y="399.71" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-6" value="10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=16;fontFamily=&quot;Latin Modern Regular 12&quot;;fontStyle=1" vertex="1" connectable="0" parent="kqKWhMMOoiWkvxPiHcDl-5">
+          <mxGeometry x="-0.0905" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-7" value="Energy amplifier" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=bottom;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="250" y="440" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-8" value="Produce" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="30" y="390" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-9" value="Amplify energy" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="260" y="450" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-10" value="10" style="endArrow=classic;html=1;rounded=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;edgeStyle=elbowEdgeStyle;fontStyle=1;fontSize=16;fontFamily=&quot;Latin Modern Regular 12&quot;;" edge="1" parent="1" target="kqKWhMMOoiWkvxPiHcDl-9">
+          <mxGeometry x="-0.5" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="240" y="400" as="sourcePoint" />
+            <mxPoint x="290" y="350" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="280" y="400" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-11" value="15" style="endArrow=classic;html=1;rounded=0;edgeStyle=elbowEdgeStyle;fontStyle=1;fontSize=16;fontFamily=&quot;Latin Modern Regular 12&quot;;exitX=0.75;exitY=0;exitDx=0;exitDy=0;elbow=vertical;" edge="1" parent="1" source="kqKWhMMOoiWkvxPiHcDl-9">
+          <mxGeometry x="0.3333" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="350" y="350" as="sourcePoint" />
+            <mxPoint x="410" y="400" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="400" y="400" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-13" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#000000;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="410" y="390" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-15" value="Priority:&lt;br&gt;-100" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="270" y="360" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-16" value="Priority:&lt;br&gt;0" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="390" y="360" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-17" value="Priority:&lt;br&gt;100" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="510" y="360" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-18" value="Priority:&lt;br&gt;200" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="630" y="360" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-19" value="Player state" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=bottom;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="370" y="440" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-20" value="Add energy" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="380" y="450" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-21" value="" style="endArrow=classic;html=1;rounded=0;fontFamily=&quot;Latin Modern Regular 12&quot;;fontSize=16;fontStyle=1" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="420" y="410" as="sourcePoint" />
+            <mxPoint x="420" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-22" value="15" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=&quot;Latin Modern Regular 12&quot;;fontSize=16;fontStyle=1" vertex="1" connectable="0" parent="kqKWhMMOoiWkvxPiHcDl-21">
+          <mxGeometry x="-0.2429" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-23" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="430" y="400" as="sourcePoint" />
+            <mxPoint x="720" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-28" value="Number effects" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=bottom;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="490" y="440" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-29" value="Show number" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="500" y="450" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-30" value="Sound effects" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=bottom;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="610" y="440" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-31" value="Play sound" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=&quot;Latin Modern Regular 12&quot;;" vertex="1" parent="1">
+          <mxGeometry x="620" y="450" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-24" value="" style="endArrow=classic;html=1;rounded=0;fontFamily=&quot;Latin Modern Regular 12&quot;;fontSize=16;fontStyle=1" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="540" y="400" as="sourcePoint" />
+            <mxPoint x="540" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-25" value="15" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=&quot;Latin Modern Regular 12&quot;;fontSize=16;fontStyle=1" vertex="1" connectable="0" parent="kqKWhMMOoiWkvxPiHcDl-24">
+          <mxGeometry x="-0.2429" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-26" value="" style="endArrow=classic;html=1;rounded=0;fontFamily=&quot;Latin Modern Regular 12&quot;;fontSize=16;fontStyle=1" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="660" y="400" as="sourcePoint" />
+            <mxPoint x="660" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-27" value="15" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=&quot;Latin Modern Regular 12&quot;;fontSize=16;fontStyle=1" vertex="1" connectable="0" parent="kqKWhMMOoiWkvxPiHcDl-26">
+          <mxGeometry x="-0.2429" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-32" value="" style="endArrow=baseDash;startArrow=classic;html=1;rounded=0;endFill=0;strokeColor=#808080;fontColor=#666666;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="240" y="340" as="sourcePoint" />
+            <mxPoint x="360" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-33" value="Modifiers" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=2;fontFamily=&quot;Latin Modern Regular 12&quot;;fontSize=12;" vertex="1" connectable="0" parent="kqKWhMMOoiWkvxPiHcDl-32">
+          <mxGeometry x="0.0952" y="-1" relative="1" as="geometry">
+            <mxPoint x="-6" y="-11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-34" value="Handler" style="endArrow=baseDash;html=1;rounded=0;fontStyle=2;fontFamily=&quot;Latin Modern Regular 12&quot;;fontSize=12;startArrow=baseDash;startFill=0;endFill=0;strokeColor=#808080;fontColor=#666666;" edge="1" parent="1">
+          <mxGeometry y="10" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="380" y="340" as="sourcePoint" />
+            <mxPoint x="460" y="340" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-35" value="" style="endArrow=classic;startArrow=baseDash;html=1;rounded=0;endFill=1;startFill=0;strokeColor=#808080;fontColor=#666666;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="480" y="340" as="sourcePoint" />
+            <mxPoint x="720" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kqKWhMMOoiWkvxPiHcDl-36" value="Reactions" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=2;fontFamily=&quot;Latin Modern Regular 12&quot;;fontSize=12;" vertex="1" connectable="0" parent="kqKWhMMOoiWkvxPiHcDl-35">
+          <mxGeometry x="0.0952" y="-1" relative="1" as="geometry">
+            <mxPoint x="-71" y="-11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

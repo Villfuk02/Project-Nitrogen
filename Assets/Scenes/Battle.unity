@@ -2766,7 +2766,7 @@ MonoBehaviour:
   buildingHotbar: {fileID: 2086962980}
   hotbarContainer: {fileID: 90412347}
   hiddenDisplacement: 300
-  switchSpeed: 8
+  hotbarSwitchSpeed: 8
   menuItems: []
   hotbarState: 0
 --- !u!1 &435656846
@@ -4071,7 +4071,7 @@ GameObject:
   - component: {fileID: 568931858}
   - component: {fileID: 568931859}
   m_Layer: 0
-  m_Name: Battle Controller
+  m_Name: Player State
   m_TagString: BattleController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5407,7 +5407,7 @@ MonoBehaviour:
   waveController: {fileID: 125072571}
   blueprintMenu: {fileID: 1234769087}
   blueprintMenuDisplay: {fileID: 408895620}
-  battleController: {fileID: 568931855}
+  playerState: {fileID: 568931855}
   infoPanel: {fileID: 884524845}
   infoPanelTitle: {fileID: 929038896}
   sentryPosition: {x: 4, y: 3}

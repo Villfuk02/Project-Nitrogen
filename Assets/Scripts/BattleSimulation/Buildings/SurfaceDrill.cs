@@ -19,12 +19,12 @@ namespace BattleSimulation.Buildings
             if (onFuelTile)
             {
                 WaveController.ON_WAVE_FINISHED.RegisterReaction(ProduceFuel, 100);
-                BattleController.FUEL_PER_WAVE.RegisterModifier(ProvideFuelIncome, -100);
+                PlayerState.FUEL_PER_WAVE.RegisterModifier(ProvideFuelIncome, -100);
             }
             else
             {
                 WaveController.ON_WAVE_FINISHED.RegisterReaction(ProduceMaterials, 100);
-                BattleController.MATERIALS_PER_WAVE.RegisterModifier(ProvideMaterialsIncome, -100);
+                PlayerState.MATERIALS_PER_WAVE.RegisterModifier(ProvideMaterialsIncome, -100);
             }
         }
 
@@ -35,12 +35,12 @@ namespace BattleSimulation.Buildings
                 if (onFuelTile)
                 {
                     WaveController.ON_WAVE_FINISHED.UnregisterReaction(ProduceFuel);
-                    BattleController.FUEL_PER_WAVE.UnregisterModifier(ProvideFuelIncome);
+                    PlayerState.FUEL_PER_WAVE.UnregisterModifier(ProvideFuelIncome);
                 }
                 else
                 {
                     WaveController.ON_WAVE_FINISHED.UnregisterReaction(ProduceMaterials);
-                    BattleController.MATERIALS_PER_WAVE.UnregisterModifier(ProvideMaterialsIncome);
+                    PlayerState.MATERIALS_PER_WAVE.UnregisterModifier(ProvideMaterialsIncome);
                 }
             }
 
@@ -50,14 +50,14 @@ namespace BattleSimulation.Buildings
         void ProduceFuel()
         {
             (object, float amt) data = (this, currentBlueprint.fuelProduction);
-            if (BattleController.ADD_FUEL.InvokeRef(ref data))
+            if (PlayerState.ADD_FUEL.InvokeRef(ref data))
                 fuelProduced += (int)data.amt;
         }
 
         void ProduceMaterials()
         {
             (object, float amt) data = (this, currentBlueprint.materialProduction);
-            if (BattleController.ADD_MATERIAL.InvokeRef(ref data))
+            if (PlayerState.ADD_MATERIAL.InvokeRef(ref data))
                 materialsProduced += (int)data.amt;
         }
 

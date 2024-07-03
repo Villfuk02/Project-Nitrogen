@@ -20,7 +20,7 @@ namespace BattleSimulation.Abilities
         {
             base.OnPlaced();
             WaveController.ON_WAVE_FINISHED.RegisterReaction(OnWaveFinished, 100);
-            random_ = BattleController.GetNewRandom();
+            random_ = PlayerState.GetNewRandom();
         }
 
         protected void OnDestroy()

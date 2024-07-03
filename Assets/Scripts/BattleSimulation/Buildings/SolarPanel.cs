@@ -16,7 +16,7 @@ namespace BattleSimulation.Buildings
         {
             base.OnPlaced();
             WaveController.ON_WAVE_FINISHED.RegisterReaction(Produce, 100);
-            BattleController.ENERGY_PER_WAVE.RegisterModifier(ProvideEnergyIncome, -100);
+            PlayerState.ENERGY_PER_WAVE.RegisterModifier(ProvideEnergyIncome, -100);
         }
 
         protected override void OnDestroy()
@@ -24,7 +24,7 @@ namespace BattleSimulation.Buildings
             if (Placed)
             {
                 WaveController.ON_WAVE_FINISHED.UnregisterReaction(Produce);
-                BattleController.ENERGY_PER_WAVE.UnregisterModifier(ProvideEnergyIncome);
+                PlayerState.ENERGY_PER_WAVE.UnregisterModifier(ProvideEnergyIncome);
             }
 
             base.OnDestroy();
@@ -38,7 +38,7 @@ namespace BattleSimulation.Buildings
         void Produce()
         {
             (object, float amt) data = (this, production);
-            if (BattleController.ADD_ENERGY.InvokeRef(ref data))
+            if (PlayerState.ADD_ENERGY.InvokeRef(ref data))
                 energyProduced += (int)data.amt;
         }
 

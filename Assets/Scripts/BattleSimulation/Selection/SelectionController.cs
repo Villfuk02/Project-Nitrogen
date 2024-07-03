@@ -43,10 +43,7 @@ namespace BattleSimulation.Selection
             UpdateHover();
 
             if (placing != null && placing.Setup(hovered, rotation, hoverTilePosition, transform))
-            {
-                placing.blueprinted.OnSetupPlacement();
-                resetVisuals.Invoke();
-            }
+                SetupChanged();
 
             HandleSelectOrPlace();
             HandleDelete();
@@ -263,10 +260,16 @@ namespace BattleSimulation.Selection
                 return;
 
             placing = Instantiate(blueprint.prefab, transform).GetComponent<Placement>();
-            placing.GetComponent<Blueprinted>().InitBlueprint(blueprint);
+            placing.blueprinted.InitBlueprint(blueprint);
             placing.Setup(hovered, rotation, hoverTilePosition, transform);
+            SetupChanged();
+            infoPanel.ShowBlueprinted(placing.blueprinted, cooldown, true, true);
+        }
+
+        void SetupChanged()
+        {
+            placing.blueprinted.OnSetupPlacement();
             resetVisuals.Invoke();
-            infoPanel.ShowBlueprinted(placing.GetComponent<Blueprinted>(), cooldown, true, true);
         }
 
         public void DeselectFromMenu()

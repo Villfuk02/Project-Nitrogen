@@ -16,9 +16,9 @@ namespace BattleSimulation.Buildings
             base.OnPlaced();
             WaveController.ON_WAVE_FINISHED.RegisterReaction(Produce, 100);
 
-            BattleController.MATERIALS_PER_WAVE.RegisterModifier(ProvideMaterialsIncome, -100);
-            BattleController.ENERGY_PER_WAVE.RegisterModifier(ProvideEnergyIncome, -100);
-            BattleController.FUEL_PER_WAVE.RegisterModifier(ProvideFuelIncome, -100);
+            PlayerState.MATERIALS_PER_WAVE.RegisterModifier(ProvideMaterialsIncome, -100);
+            PlayerState.ENERGY_PER_WAVE.RegisterModifier(ProvideEnergyIncome, -100);
+            PlayerState.FUEL_PER_WAVE.RegisterModifier(ProvideFuelIncome, -100);
         }
 
         protected override void OnDestroy()
@@ -26,9 +26,9 @@ namespace BattleSimulation.Buildings
             if (Placed)
             {
                 WaveController.ON_WAVE_FINISHED.UnregisterReaction(Produce);
-                BattleController.MATERIALS_PER_WAVE.UnregisterModifier(ProvideMaterialsIncome);
-                BattleController.ENERGY_PER_WAVE.UnregisterModifier(ProvideEnergyIncome);
-                BattleController.FUEL_PER_WAVE.UnregisterModifier(ProvideFuelIncome);
+                PlayerState.MATERIALS_PER_WAVE.UnregisterModifier(ProvideMaterialsIncome);
+                PlayerState.ENERGY_PER_WAVE.UnregisterModifier(ProvideEnergyIncome);
+                PlayerState.FUEL_PER_WAVE.UnregisterModifier(ProvideFuelIncome);
             }
 
             base.OnDestroy();
@@ -39,21 +39,21 @@ namespace BattleSimulation.Buildings
             if (currentBlueprint.HasFuelProduction)
             {
                 (object, float amt) data = (this, currentBlueprint.fuelProduction);
-                if (BattleController.ADD_FUEL.InvokeRef(ref data))
+                if (PlayerState.ADD_FUEL.InvokeRef(ref data))
                     fuelProduced += (int)data.amt;
             }
 
             if (currentBlueprint.HasMaterialProduction)
             {
                 (object, float amt) data = (this, currentBlueprint.materialProduction);
-                if (BattleController.ADD_MATERIAL.InvokeRef(ref data))
+                if (PlayerState.ADD_MATERIAL.InvokeRef(ref data))
                     materialsProduced += (int)data.amt;
             }
 
             if (currentBlueprint.HasEnergyProduction)
             {
                 (object, float amt) data = (this, currentBlueprint.energyProduction);
-                if (BattleController.ADD_ENERGY.InvokeRef(ref data))
+                if (PlayerState.ADD_ENERGY.InvokeRef(ref data))
                     energyProduced += (int)data.amt;
             }
         }

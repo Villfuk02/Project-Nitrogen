@@ -14,7 +14,7 @@ namespace BattleVisuals.UI
         [SerializeField] GameObject waveDisplayPrefab;
         [SerializeField] GameObject pathLabelPrefab;
         [SerializeField] WaveController wc;
-        [SerializeField] BattleController bc;
+        [SerializeField] PlayerState bc;
         [SerializeField] TextMeshProUGUI waveNumber;
         [SerializeField] TextMeshProUGUI remainingText;
         [SerializeField] RectTransform wavesLayout;
@@ -57,7 +57,7 @@ namespace BattleVisuals.UI
 
         string GetWavesLeftText()
         {
-            fuelProduction_ = BattleController.FUEL_PER_WAVE.Query(new());
+            fuelProduction_ = PlayerState.FUEL_PER_WAVE.Query(new());
             if (fuelProduction_ <= 0)
                 return "???";
             int remaining = (bc.fuelGoal - bc.fuel + fuelProduction_ - 1) / fuelProduction_;

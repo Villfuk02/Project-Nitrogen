@@ -10,7 +10,7 @@ namespace BattleVisuals.UI
     public class HullDisplay : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] BattleController bc;
+        [SerializeField] PlayerState bc;
         [SerializeField] Image fill;
         [SerializeField] Image backgroundFill;
         [SerializeField] TextMeshProUGUI hullText;

@@ -14,7 +14,6 @@ namespace BattleSimulation.Control
     public class WaveController : MonoBehaviour
     {
         public static readonly ModifiableCommand START_WAVE = new();
-        public static readonly EventReactionChain ON_WAVE_SPAWNED = new();
         public static readonly EventReactionChain ON_WAVE_FINISHED = new();
         [Header("References")]
         public WaveGenerator waveGenerator;
@@ -106,7 +105,6 @@ namespace BattleSimulation.Control
             if (currentWave.batches.Count == 0)
             {
                 spawning = false;
-                ON_WAVE_SPAWNED.Broadcast();
                 return;
             }
 
@@ -162,7 +160,7 @@ namespace BattleSimulation.Control
             Vector2Int firstTile = World.WorldData.World.data.firstPathTiles[path];
             a.Init(attacker.Clone(), startingPoint, firstTile, ++currentIndexes[path]);
             a.onRemoved.AddListener(AttackerRemoved);
-            a.onReachedHub.AddListener(BattleController.AttackerReachedHub);
+            a.onReachedHub.AddListener(PlayerState.AttackerReachedHub);
         }
 
         public void SpawnRelative(Attacker parent, AttackerStats stats, float progressOffset)
@@ -171,7 +169,7 @@ namespace BattleSimulation.Control
             Attacker a = Instantiate(stats.prefab, transform).GetComponent<Attacker>();
             a.Init(stats.Clone(), parent.startPosition, parent.firstNode, parent.startPathSplitIndex);
             a.onRemoved.AddListener(AttackerRemoved);
-            a.onReachedHub.AddListener(BattleController.AttackerReachedHub);
+            a.onReachedHub.AddListener(PlayerState.AttackerReachedHub);
             float progress = World.WorldData.World.data.tiles[parent.firstNode].dist + 1 - parent.GetDistanceToHub();
             a.AddPathProgress(progress + progressOffset, ++currentIndexes[^1]);
         }

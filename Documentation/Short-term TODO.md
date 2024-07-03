@@ -1,6 +1,6 @@
 ## questions
 - [ ] summarize parameters to be tweaked after each section
-- [ ] how to ch5
+
 
 ## tweaks
 
@@ -25,23 +25,36 @@
 - [ ] modify attacker descriptions
 ## new since prev meeting
 - [ ] 2.4 - 2.9
-- [ ] 3.8.9 - 3.12
 - [ ] 4
-- [ ] 6
 ## till next metting
-- [ ] konzultace 17:00
-- [ ] ch4 (??)
-- [ ] ch5 (1.7)
+- [ ] ch4 (5.7)
+    - [x] 4.1
+    - [ ] 4.2 (3.7)
+        - [x] 4.2.1
+        - [x] 4.2.2
+        - [x] 4.2.3
+        - [x] 4.2.4
+        - [x] 4.2.5
+        - [x] 4.2.6
+        - [x] 4.2.7
+        - [x] 4.2.8
+        - [x] 4.2.9
+        - [x] 4.2.10
+        - [ ] TODOs
+    - [ ] 4.3 (4.7)
+    - [ ] 4.4 (5.7)
+- [ ] konzultace 1.7 16:00
+- [ ] ch5 (7.7)
     - [ ] attackers
     - [ ] blueprints
     - [ ] terrain types
-- [ ] ch6 (2.7)
-- [ ] ch7 (4.7)
+- [ ] ch6 (8.7)
+- [ ] ch7 (9.7)
     - [ ] mention that parameters were tweaked to balance the game
     - [ ] iterative
     - [ ] few more fallbacks in wave generation
-- [ ] conclusion and abstract (6.7)
-- [ ] finishing touches (8.7)
+- [ ] conclusion and abstract (10.7)
+- [ ] finishing touches (11.7)
 
 
 ## finishing
@@ -54,6 +67,7 @@
 - [ ] make author names consistent
 - [ ] TODOs
 - [ ] fix image fonts
+- [ ] figure font size
 - [ ] PDF/A
 - [ ] figure names
 - [ ] numbers and units

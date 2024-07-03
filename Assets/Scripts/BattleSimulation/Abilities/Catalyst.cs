@@ -47,7 +47,7 @@ namespace BattleSimulation.Abilities
         void OnAttackerKilled((Attacker target, Damage cause) param)
         {
             if (afflicted_.Contains(param.target))
-                BattleController.ADD_MATERIAL.Invoke((param.target, currentBlueprint.materialProduction));
+                PlayerState.ADD_MATERIAL.Invoke((param.target, currentBlueprint.materialProduction));
         }
 
         void OnWaveFinished()

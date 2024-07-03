@@ -13,7 +13,6 @@ namespace BattleSimulation.Attackers
     {
         public const float SMALL_TARGET_HEIGHT = 0.15f;
         public const float LARGE_TARGET_HEIGHT = 0.3f;
-        public static readonly ModifiableCommand<(Attacker target, Damage damage)> HIT = new();
         public static readonly ModifiableCommand<(Attacker target, Damage damage)> DAMAGE = new();
         public static readonly ModifiableCommand<(Attacker target, float amount)> HEAL = new();
         public static readonly ModifiableCommand<(Attacker target, Damage cause)> DIE = new();
@@ -230,10 +229,6 @@ namespace BattleSimulation.Attackers
             if (IsDead)
                 return false;
             (Attacker a, Damage dmg) hitParam = (this, damage);
-            if (!HIT.InvokeRef(ref hitParam))
-                return false;
-            if (hitParam.dmg.amount == 0)
-                return true;
             if (DAMAGE.InvokeRef(ref hitParam))
                 damageDealt = (int)hitParam.dmg.amount;
             return true;

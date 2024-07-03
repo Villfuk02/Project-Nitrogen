@@ -75,35 +75,25 @@ namespace BattleSimulation.Towers
                 return false;
             bool charged = projectile == lastChargedProjectile;
 
-            Damage dmg;
-            if (charged)
-                dmg = new(Blueprint.Damage.Query(this, baseBlueprint.damage + additionalDmg), Blueprint.DamageType.Query(this, baseBlueprint.damageType | Damage.Type.Energy), this);
-            else
-                dmg = GetDamage(attacker);
-
-            (Attacker a, Damage dmg) hitParam = (attacker, dmg);
-            if (!Attacker.HIT.InvokeRef(ref hitParam))
-                return false;
             if (charged)
             {
-                (object source, float amount) energyProductionParam = (this, currentBlueprint.energyProduction);
-                if (BattleController.ADD_ENERGY.InvokeRef(ref energyProductionParam))
-                    energyProduced += (int)energyProductionParam.amount;
-                SoundController.PlaySound(SoundController.Sound.EnergizedImpact, 0.75f, 1, 0.1f, projectile.transform.position);
-            }
-
-            int hitDmgDealt = 0;
-            if (hitParam.dmg.amount > 0)
-            {
-                (Attacker a, Damage dmg) dmgParam = hitParam;
-                if (Attacker.DAMAGE.InvokeRef(ref dmgParam))
+                Damage dmg = new(Blueprint.Damage.Query(this, additionalDmg), Blueprint.DamageType.Query(this, Damage.Type.Energy), this);
+                if (attacker.TryHit(dmg, out int dmgOut))
                 {
-                    hitDmgDealt = (int)dmgParam.dmg.amount;
-                    damageDealt += hitDmgDealt;
+                    damageDealt += dmgOut;
+
+                    (object source, float amount) energyProductionParam = (this, currentBlueprint.energyProduction);
+                    if (PlayerState.ADD_ENERGY.InvokeRef(ref energyProductionParam))
+                        energyProduced += (int)energyProductionParam.amount;
+                    SoundController.PlaySound(SoundController.Sound.EnergizedImpact, 0.75f, 1, 0.1f, projectile.transform.position);
                 }
             }
 
-            PlayHitSound(projectile, attacker, hitDmgDealt);
+            if (attacker.TryHit(GetDamage(attacker), out int dmgOut2))
+            {
+                damageDealt += dmgOut2;
+                PlayHitSound(projectile, attacker, dmgOut2);
+            }
 
             return true;
         }

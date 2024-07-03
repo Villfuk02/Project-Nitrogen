@@ -94,7 +94,7 @@ namespace BattleSimulation.Selection
             if (CurrentEntries[selected].cooldown > 0)
                 return false;
             var blueprint = CurrentEntries[selected].blueprint;
-            if (!BattleController.AdjustAndTrySpend(Blueprint.EnergyCost.Query(blueprint), Blueprint.MaterialCost.Query(blueprint)))
+            if (!PlayerState.AdjustAndTrySpend(Blueprint.EnergyCost.Query(blueprint), Blueprint.MaterialCost.Query(blueprint)))
                 return false;
             CurrentEntries[selected].cooldown = Blueprint.Cooldown.Query(blueprint);
             return true;

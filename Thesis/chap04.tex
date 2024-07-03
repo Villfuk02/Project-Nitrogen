@@ -51,7 +51,7 @@ For convenience, the transitions between the scenes are shown in figure~\ref{fig
           When they finish choosing, they continue to the next \emph{Battle}.
 \end{itemize}
 
-\subsection{Scripts}
+\subsection{Scripts}\label{sec:docs-scripts}
 
 Most game object exist only within one scene, but some persist between scene transitions.
 Each battle happens in one scene, but it still contains multiple separate systems.
@@ -173,7 +173,7 @@ We would like to acknowledge and disclaim these assets here:
 
 \section{Battle}\label{sec:docs-battle}
 
-In this section, we discuss the systems that play a role during a battle.
+In this section, we discuss the systems that come into play during a battle.
 When the \emph{Battle} scene is loaded, some scripts generate the world and some other scripts initialize various parts of the scene.
 Throughout this, the screen is faded out to black.
 It fades in and lets the player interact with the scene only after all the initialization is done.
@@ -196,7 +196,7 @@ In this section, we'll describe only the processes involved in the gameplay.
 First we'll explain the game logic, and then the visualizations used to communicate information to the player.
 
 To most systems in involved in the battle, it doesn't matter if the game is currently in the building or wave phase, they behave the same at all times.
-Only few things change when a wave starts or ends, which we describe in section \xxx{TODO}.
+Only few things change when a wave starts or ends, which we describe in section~\ref{sec:docs-waves}.
 
 \subsection{Scene contents}
 
@@ -211,170 +211,294 @@ Also, an instance of the \emph{Tile} prefab is created for each world tile, and 
 For the rest of this section, we assume the scene is already initialized and ready for the player's inputs.
 
 During the battle, there are also some game objects which persist between scenes and don't originally come from the \emph{Battle} scene.
-These are the \mono{SceneController} and \mono{SoundController} we introduced in section \xxx{TODO}.
-Additionally, there is \emph{Run Persistence}, which keeps track of the player's blueprints and hull.
+These are the \mono{SceneController} and \mono{SoundController} we introduced in section~\ref{sec:docs-scripts}.
+Additionally, there is \emph{Run Persistence} game object, which contains scripts that persist throughout the player's run.
+The only script relevant during battle it has is \mono{RunPersistence}, which keeps track of the player's blueprints and hull.
 We will describe it in more detail in section \xxx{TODO}.
 
-\subsection{Selecting in the World}
+\subsection{Selecting World Objects}
 
 During the battle, one of the most important things the player can do is to build buildings or use abilities.
 To do that, the player first needs to select the blueprint they want to use.
-The \mono{SelectionController} is responsible for what the player hovers over and what is selected at all times.
+The \mono{SelectionController} keeps track of what objects the player selects or hovers over.
 In this subsection, we will illustrate the \mono{SelectionController}'s function by explaining what happens when the player selects objects within the game world.
-Selecting and placing blueprints is more complicated, and it will be explained in the next subsection \xxx{TODO}.
+Selecting and placing blueprints is more complicated, and it will be explained in the next subsection~\ref{sec:docs-place-blueprint}.
+The game also visualizes which objects are currently selected or hovered, and it shows additional information on the info panel.
+This is ultimately the reason why the player would select a world object.
+These visual components will be explained in section~\ref{sec:docs-highlights}, and how the info panel works is described in section~\ref{sec:docs-info-panel}.
 
-- what it does from game logic side
+In the world, the only selectable objects are tiles and attackers.
+When the player selects a building, they have in fact selected the tile the building is built on.
+Every frame, the \mono{SelectionController} performs a raycast to determine which selectable object is the cursor over, if any.
+The selectable objects have a game objects with a collider on the physics layer \emph{Selection} and a \mono{Selectable} script.
+If a selectable world object is hovered over, a reference to its \mono{Selectable} script is saved in the \mono{SelectionController} as currently hovered.
+Whenever the currently hovered object changes (even to \emph{null}), the info panel is notified to show information about the hovered object (or hide).
 
-- visualization, talk later
+When the player clicks while an object is hovered, it is selected:
+The \mono{selected} field in the \mono{SelectionController} is set to the hovered object and the info panel is notified.
+While something is selected, the \mono{SelectionController} still updates which object is hovered.
+When the player deselects the object, the field is unset, and again, the info panel are notified.
 
-- also hover
+\subsection{Selecting and Placing a Blueprint}\label{sec:place-blueprint}
 
-\subsection{Placing a Blueprint}
+Let's start with an example of what happens when from the player's perspective when they place a blueprint:
+The player clicks on a blueprint of a tower in the blueprint menu.
+It is now selected.
+Then, they hover over the tile they want to place the tower on.
+The game shows a visualization of the range the tower would have if it was placed there.
+We say the selected blueprint is set up as if it was placed there.
+Finally, the player clicks to place the tower on the selected tile.
 
-- player-side state diagram, including in-world selection?
+We can see that each of the player's actions had an effect on the state of the selection.
+In this section, we'll take a look at what happens in response to each of the player's actions in order to achieve this behavior.
+For reference, the possible selection states and action that transition between them are shown in figure~\ref{fig:selection-states}.
+Each arrow represents what the player can do in the current state and what is the new state after the action is performed.
+Few actions are show with blue arrows instead of black.
+These are still actions the player can take, but in the code, they are performed as a deselection followed by a selection.
 
-- for each nontrivial transition, create a sequence diagram
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=\textwidth]{img/selection states.pdf}
+    \caption{Selection states.}
+    \label{fig:selection-states}
+\end{center}
 
+We have already explained what happens when a world object is selected or deselected, but things are a bit more complicated with blueprints.
+We will now explain each of the remaining actions in the diagram.
 
+\head{Selecting a Blueprint}{}
+A blueprint can be selected by clicking on it in the blueprint menu user interface (see section~\ref{sec:design-blueprint-menu}) or by pressing a number key on the keyboard that corresponds to its position in the blueprint menu.
+Either way, the \mono{SelectionController} gets only the blueprint's index in the blueprint menu.
+If this index corresponds to the currently selected blueprint, it gets deselected.
+But now, we'll look at what happens when a blueprint gets selected.
+During this, the \mono{SelectionController} interacts with other scripts.
+Figure~\ref{fig:placing-blueprint} contains a sequence diagram for reference.
 
+First, the \mono{SelectionController} obtains the actual blueprint at the given index from the \mono{BlueprintMenu}.
+Then it takes the prefab associated with this blueprint and instantiates it.
+Each blueprinted object prefab has on it two scripts that are relevant for us right now:
+A script derived from \mono{Placement}, which decides where the blueprint can be placed.
+And a script derived from \mono{Blueprinted}, which handles the behavior of the blueprinted object when placed in the world.
+For example, the \emph{Budget Sentry} has the script \mono{SimpleBuildingPlacment} for placement and its behavior is implemented by the script \mono{BasicProjectileTower}.
 
+After instantiating the prefab, the \mono{SelectionController} saves a reference to its \mono{Placement} script which signifies that this is the currently selected object.
+It then initializes the \mono{Blueprinted} script by giving it a copy of the original blueprint.
+Similarly to selecting a world object, it notifies the info panel to show the relevant information.
+This is not shown in the sequence diagram to avoid clutter.
 
+\head{Setting Up the Blueprint}{}
+We want to accurately preview the effects a blueprint will have, or how it will be affected by other buildings once placed.
+To do this, we need to position the blueprinted object in the world as if it actually was placed.
+On every update, the \mono{SelectionController} tells the \mono{Placement} to set up the object as if it was placed in the position the player currently hovers over.
+The \mono{Placement} returns whether the setup changed from the last frame, and if it did, the \mono{SelectionController} also notifies the \mono{Blueprinted} script.
 
-\xxx{END OF UPDATED TEXT}
+It is possible that the current position is not a valid placement for the blueprint.
+In that case, the \mono{Placement} marks the setup as invalid.
+This is represented in figure~\ref{fig:selection-states} as the state \enquote{Blueprint selected}.
+However, for the \mono{SelectionController}, there is no distinction between a valid and invalid setup.
+From its perspective, the states \enquote{Blueprint selected} and \enquote{Blueprint selected and set up} are just one state.
+To the player, they are pretty distinct, because the various visualizations behave differently based on whether the current placement is valid or not, and they communicate the difference to the player.
+How these visualizations work is explained in section~\ref{sec:docs-highlights}.
 
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=\textwidth]{img/placing a blueprint.pdf}
+    \caption{Sequence diagram of events related to placing a blueprint.}
+    \label{fig:placing-blueprint}
+\end{center}
 
-When a given blueprint gets selected, the \mono{SelectionController} instantiates its associated prefab.
-However, the blueprinted objects are programmed with this in mind, so for example, a tower won't shoot at attackers until it's actually placed.
-Also, the visual parts of the buildings or abilities start disables, so they are not visible, and their scripts don't run.
-If the blueprint gets deselected without placing it, the blueprinted object gets destroyed.
+\head{Placing the Blueprint}{}
+When the player clicks to place the selected blueprint, the \mono{SelectionController} first asks the \mono{Placement} if this position is valid.
+If it is, the \mono{SelectionController} asks \mono{BlueprintMenu} to try to place the blueprint.
+This only means that the \mono{BlueprintMenu} checks if the player can afford the cost and that the blueprint isn't on cooldown.
+If this succeeds, the \mono{BlueprintMenu} invokes a command to subtract the cost of the blueprint from the player's resources, and it makes the blueprint go on cooldown if applicable.
 
-When \mono{SelectionController} instantiates the blueprinted object, it finds a \mono{Placement} script on it.
-\mono{Placement} is an abstract class and its derived classes implement the logic for where can this blueprint be placed.
-At every \mono{Update()}, the \mono{Selection} controller gives the \mono{Placement} information about what's the mouse cursor currently hovered over, and the \mono{Placement} positions the object as if it was placed right now.
-Thanks to this, we can show if the placement is valid or the updated information about the object if it would be affected for example by a special building.
+If the blueprint cannot be placed, the \mono{SelectionController} just plays an error sound to provide feedback to the player.
+Otherwise, it calls the \mono{Place} method on the blueprinted object's \mono{Placement}.
+Then the \mono{SelectionController} deselects the blueprint.
+However, in figure~\ref{fig:selection-states} the \enquote{Place} action forks and leads to two different states.
+This just signifies that after placing an ability, the blueprint gets automatically selected again.
 
-When the player clicks to place the selected blueprint, \mono{SelectionController} asks \mono{BlueprintMenu} if the blueprint is ready to be placed, and the \mono{Placement} if this position is valid.
-If this succeeds, the \mono{BlueprintMenu} and \mono{Placement} are notified, and the \mono{SelectionController} deselects the blueprint.
-Here, \mono{BlueprintMenu} communicates with \mono{BattleController} using its modifiable queries and commands (see section~\ref{sec:analysis-modifiable-commands}) to know whether the player can afford the given blueprint, and then to pay the blueprint's cost.
-\mono{BlueprintMenu} also keeps track of the blueprints' cooldowns.
-
-When the \mono{Placement} script is told to place the blueprint, it relays this to the \mono{Blueprinted} script.
-\mono{Blueprinted} is an abstract class whose derived classes implement the behavior of the given blueprinted object.
-Each building or ability uses a different implementation, which is processed mainly during \mono{FixedUpdate()}.
-
-Buildings also often register modifiers or reactions to some modifiable query or command when placed.
-For example, most production blueprints produce resources every turn, so they register a modifier to the modifiable query which asks for the production par turn.
+After being actually placed, the \mono{Blueprinted} script enables the visual parts of the blueprinted objects, but the rest is left up to the implementation of the given object.
+Usually, their initialization includes registering some modifiers and reactions to modifiable commands (see section~\ref{sec:analysis-modifiable-commands}).
+For example, most production blueprints produce resources every turn, so they register a modifier to the modifiable query which determines the production par turn displayed to the player.
 They also register a reaction to the event that a wave has ended, because they produce the resources specifically after every wave.
 
-\subsection{Wave}
+\head{Deselecting the Blueprint}{}
+If the selected blueprint gets deselected without placing it, the blueprinted object gets destroyed and the \mono{BlueprintMenu} is notified that the blueprint is no longer selected.
+This can also be seen in figure~\ref{fig:selection-states}, but note that the exact sequence of events shown in the diagram is invalid.
+It is not possible to deselect a blueprint after it has already been placed.
 
-Waves are handled by the \mono{WaveController} script.
+\head{Hovering over a Blueprint}{}
+We would also like to mention how we handle hovering over a blueprint in the blueprint menu, because it is different from hovering over a selectable world object.
+In fact, the \mono{SelectionController} doesn't know when the player hovers over a blueprint.
+As far as it knows, the player doesn't hover over anything.
+The blueprints in the blueprint menu detect the hover on their own and react to the hover accordingly, including notifying the info panel.
+The script that makes this work is the \mono{BlueprintDisplay} script on each of the blueprint menu items.
+This is done this way, because the blueprint display prefabs are also used in the \emph{Blueprint Selection} scene, where they behave the same.
+
+\subsection{Player State}
+
+Another important singleton script in the \emph{Battle} scene is the \mono{PlayerState}.
+Compared to the \mono{SelectionController}, its function is much simpler.
+It keeps track of the player's energy, materials and fuel, and if the battle has been won or lost.
+Other scripts can use its static modifiable commands to add or spend resources.
+
+Once the fuel amount reached the fuel goal for this level, it invokes its modifiable command \mono{WIN\_LEVEL}.
+In reaction to this, the \mono{OverlayController} shows the victory overlay with a button to proceed to the next level.
+What happens next is explained in section \xxx{TODO}.
+
+\subsection{Attacker Waves}\label{sec:docs-waves}
+
+The \mono{WaveController} script controls what happens during a wave.
 When the player requests to start a new wave, it invokes the \mono{START\_WAVE} modifiable command.
-This command has modifiers that check if it's valid to start a new wave, and it also has reactions, for example the \mono{BlueprintMenu} switches which blueprints are available from buildings to abilities.
+This command has a modifier registered by \mono{PlayerState}, which cancels the command if the battle has been won or lost.
+Various scripts react to this command, for example the \mono{BlueprintMenu} changes which blueprints are available from buildings to abilities.
 
 When the wave is started, the \mono{WaveController} requests the contents of the wave from the \mono{WaveGenerator}, and it starts spawning the specified attackers.
 To spawn an attacker, it instantiates the prefab specified by the attacker stats, and it initializes the attacker's \mono{Attacker} script.
-The attackers then move and behave on their own, as implemented in their \mono{Attacker} script.
+The attacker then moves and behaves on its own, as implemented in its \mono{Attacker} script.
 
 The \mono{WaveController} does not keep track of the attackers, only their count.
 Whenever it spawns an attacker, it increments the count, and whenever an attacker dies or reaches the Hub, the count is decremented.
-Once all attackers have been spawned, and there are no attackers left, the wave ends, and the \mono{ON\_WAVE\_FINISHED} event is invoked.
-This event has many reactions, for example the \mono{BlueprintMenu} switches the blueprint offer back to buildings, and it decrements all cooldowns
-Also, this is when most production buildings produce resources.
+Once all attackers have been spawned and there are no attackers left in the world, the wave ends, and the \mono{ON\_WAVE\_FINISHED} event is invoked.
+This event has many reactions, for example the \mono{BlueprintMenu} switches the blueprint offer back to buildings, and it decrements all cooldowns.
+Also, most production buildings produce resources in reaction to \mono{ON\_WAVE\_FINISHED}.
 
-Whenever an attacker reaches the Hub, before destroying itself and reporting it to the \mono{WaveController}, it also invokes the command \mono{damageHull} in \mono{RunEvents}, so \mono{RunPersistence} can decrease the player's hull.
+Whenever an attacker reaches the Hub, it invokes the command \mono{damageHull}.
+The \mono{RunPersistence} reacts to this and decreases the player's hull.
 If the hull reaches 0, the command \mono{defeat} is invoked.
 This lets all game systems know that they should stop, and to display the \emph{defeat} overlay.
 
-Similarly, once the player's fuel amount reaches the goal, \mono{BattleController} invokes the \mono{WIN\_LEVEL} command.
-This also makes most systems from working and displays the \emph{victory} overlay.
-When the player clicks the \enquote{Next Level} button, the \mono{BattleController} notifies the \mono{RunPersistence} to go to the next level.
+The interactions described in this subsection are shown in figure~\ref{fig:wave-controller-interactions}.
+The diamonds are modifiable commands or events, and for their interactions, we use a convention similar to the diagrams in section~\ref{sec:analysis-modifiable-commands}.
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=\textwidth]{img/wave controller connections.pdf}
+    \caption{Interactions of \mono{WaveController} with other scripts.}
+    \label{fig:wave-controller-interactions}
+\end{center}
 
 \subsection{Shooting at Attackers}
 
-As we described in section~\ref{sec:analysis-targeting}, when an attacker collider enters a targeting collider, the \mono{TargetingCollider} script finds the \mono{Attacker} script attached to the attacker.
-The \mono{Targeting} script on a tower can have many \mono{TargetingCollider}s as children, and they can be combined with any boolean operations to create various range shapes.
-Only when the attacker enters the actual range of the tower, the \mono{Targetting} adds it to its list of attackers in range, and analogously, it gets removed from the list when it leaves the range.
+During a wave, the towers the player has built shoot at the attackers.
+As we described in section~\ref{sec:analysis-targeting}, the towers know that an attacker is in range, if it is within the tower's targeting collider.
+They use the \mono{Targeting} script to know which attackers are in range, which attackers are in line of sight, and which attacker they should shoot at, based on the current targeting priority.
 
-Most towers don't care about an attacker entering or leaving their range.
-Instead, they check every tick they could shoot if they have a target, and if so, they shoot at it.
-Some towers hit their target instantly, but others shoot a projectile, which will take few ticks to hit the target, or it might even miss.
+A tower's range can be composed of many \mono{TargetingCollider}s, and they can be combined with any boolean operations to create various range shapes.
+Whenever an attacker enters or leaves a \mono{TargetingCollider}, it notifies its parent.
+Based on the state reported by other children, the parent decided whether to notify its parent.
+The scripts that can be children in this targeting tree implement the interface \mono{ITargetingChild} and parents implement \mono{ITargetingParent}.
+The root of this tree is the \mono{Targeting} script itself, which uses this information to track which attackers are in range.
+
+Most towers ask the \mono{Targeting} every tick they could shoot whether they have a target, and if so, they shoot at it.
+Some towers hit their target instantly, but others shoot a projectile, which will take few ticks to hit the target.
+Some projectiles might even miss the target.
 The behavior of various projectiles is implemented in the derived classes of \mono{Projectile} used in their prefabs.
-Once they hit their target, they notify the tower they originated from.
+Once they hit their target, they notify the tower that shot them.
 
-To hit an attacker, the tower asks whether this really was a hit, using the \mono{HIT} command for the given attacker.
-If it was a hit, it then tries to damage the attacker using the \mono{DAMAGE} command.
-Similarly, when the player uses an ability to damage attackers, the ability determines its targets, usually using a sphere cast, and tries to \mono{HIT} and \mono{DAMAGE} them.
+To damage an attacker, the tower should use its method \mono{TryHit}.
+The attacker then invokes the \mono{DAMAGE} command, and it also handles this command by decreasing its own HP accordingly.
+Similarly, when the player uses an ability to damage attackers, the ability determines its targets, usually using a sphere cast, and damages them via the \mono{TryHit}.
 
-\subsection{Info Panel and Blueprints}
+\xxx{TODO diagram similar to waves}
 
-The info panel exists both in the \emph{Battle} and \emph{Blueprint Selection} scene, and the public methods of the \mono{InfoPanel} script get called directly by various scripts.
+\subsection{Info Panel}\ref{sec:docs-info-panel}
+
+In the following subsections we'll take a look at the more visual elements of the game, whose main job is to communicate information to the player.
+We'll start with the info panel.
+
+The info panel exists both in the \emph{Battle} and \emph{Blueprint Selection} scene.
+The public methods of its \mono{InfoPanel} script get called directly by various scripts.
 To show info about a certain object, the right method is called, and the object is passed as an argument.
-The info panel is then set up accordingly, including an instance of the right \mono{DescriptionProvider} script.
-Every frame, it asks the \mono{DescriptionProvider} for the current description.
-Each \mono{DescriptionProvider} first generates the description with tags as specified in section~\ref{sec:analysis-description-tags}, and then it uses the \mono{DescriptionFormatter} to format them into the corresponding formatted text and icons.
+The \mono{InfoPanel} saves these references, so it always works with up-to-date information.
+The \mono{Hide} method can be used to hide the panel.
 
-Many tags used in the descriptions of buildings or blueprints represent a value that can be modified.
+To show information about some object, the info panel creates an instance of the corresponding \mono{DescriptionProvider} script.
+The \mono{InfoPanel} then asks the \mono{DescriptionProvider} every frame for the current description.
+This way, the descriptions can change in real time.
+Each \mono{DescriptionProvider} first generates the description with tags as specified in section~\ref{sec:analysis-description-tags}, and then it uses \mono{DescriptionFormatter} to format them into the corresponding formatted text and icons.
+
+Most tags used in the descriptions of buildings or blueprints represent a value that can be modified.
 The \mono{Blueprint} script contains a modifiable query for each modifiable value it holds.
 The values stored in the blueprint are the base values, and the real up-to-date values are to be obtained through these queries.
 For formatting the descriptions, the \mono{DescriptionFormatter} compares these modified values to the base values, and it colors the text based on if the modified value has changed for the better, worse or not at all.
 
-The info panel also shows some control buttons when a building is selected.
-It shows a delete button to delete the building, and for towers, it also shows arrow buttons that allow the player to change the tower's targeting priority.
-Since the info panel has a reference to the building it's displaying information about, it can just directly call the building's public methods for this functionality.
-It's important to note that when a building gets destroyed, it has to unregister all modifiers and reactions it has registered.
+In figure~\ref{fig:description-formatting} we show an example of how a description is produced.
 
-\subsection{Highlights}
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=\textwidth]{img/description formatting.pdf}
+    \caption{Generating the description to be shown in the info panel.}
+    \label{fig:description-formatting}
+\end{center}
+
+When a building is selected, the info panel also shows a delete button.
+For towers, it also shows arrows that allow the player to change the tower's targeting priority.
+Since the info panel has a reference to the building it's displaying information about, it can just directly call the building's public methods for this functionality.
+It's important to note that when a building gets destroyed, the building has to unregister all modifiers and reactions it has registered.
+
+\subsection{Visuals and Interpolation}
+
+Scripts that take care of visuals are separated from the game logic.
+The visuals scripts have references to the game logic scripts they care about, and they read their public fields, or react to various events.
+For example, the scripts that display the player's energy and materials just read the values directly from the \mono{PlayerState} script.
+However, sometimes we add some events to the game logic scripts, whose only purpose is to let the visuals know when something happens.
+For example, the \mono{SelectionController} has the Unity event \mono{resetVisuals} which is used to let visuals scripts know that the setup of the blueprint currently being built has changed, so they should reflect this change.
+
+Various visuals scripts also react to the game events.
+For example, the \mono{NumberEffects} script spawns a number effect above an attacker whenever the attacker gets damaged, and it creates number effects whenever resources get produced.
+These number effects show the amount of damage that was dealt, or the amount and type of the resource produced.
+
+Each blueprinted object also has some scripts that control its visuals.
+For example, the script that takes care of the visualization of most projectile-shooting towers is \mono{BasicProjectileTowerVisuals}.
+It makes the tower's turret point towards the attacker the tower is targeting, but it also interpolates the rotation to be smooth.
+It also subscribes to the tower's \mono{onShoot} Unity event to play an animation when the tower shoots.
+
+We would also like to mention that both attackers and projectiles move the world as a part of the game logic.
+Of course, they change their position only 20 times per second, but to the player, their travel needs to look smooth.
+So, their visuals scripts simulate their movement in the same way as the game logic scripts, only with a greater temporal resolution.
+
+\subsection{Highlights and Range Visualization}\ref{sec:docs-highlights}
+
+When the player selects a building, attacker, or a blueprint, it is highlighted, so the player knows it's selected.
+Furthermore, we might highlight other relevant objects differently to show that they are somehow affected by the selected object.
+For example, when the player selects a tower, it highlights the attackers in its range in yellow.
+We also want to show the affected region of the world, by coloring the terrain accordingly.
+For example for towers, we draw their range.
+This is described in section~\ref{sec:design-selection-highlights}.
 
 The \mono{HighlightController} looks at the \mono{SelectionController}'s selected and/or hovered objects every frame and determines which objects in the world should be highlighted.
-If the selected object has a \mono{HighlightProvider}, or when a tile has a building with a \mono{HighlightProvider} on it, the \mono{HighlightController} asks it what \mono{IHighlightable} objects should be highlighted, and with which color.
+However, each selected object wants to highlight objects differently.
+This behavior is implemented in the object's script derived from \mono{HighlightProvider}.
+If the selected object has a \mono{HighlightProvider}, or when a selected tile has a building with a \mono{HighlightProvider} on it, the \mono{HighlightController} asks it what objects should be highlighted, and with which color.
 It then tells these object to change their highlights accordingly.
-Each derived class of a \mono{HighlightProvider} will have a different way of determining what should be highlighted.
+The objects that can show highlights implement the interface \mono{IHighlightable}.
 
-It also closely communicates with the \mono{SelectionController} when placing a blueprint.
-It highlights the selected tile, or attacker, or it shows just a point highlight which highlights the selected position in the world, based on the \mono{Placement}.
-Also, this highlight is red for placements that would be invalid.
+The \mono{HighlightController} also closely monitors the \mono{SelectionController} when placing a blueprint.
+It highlights the selected tile, or attacker, or it shows just a point highlight which highlights the selected position in the world, based on the blueprinted object's \mono{Placement}.
 
 Each \mono{HighlightProvider} also implements a function that returns the color of the range visualization for any given point, as described in section~\ref{sec:analysis-range}.
 The script \mono{RangeVisualization} then creates the range visualization over many frames, based on the \mono{HighlightProvider} that's currently selected according to the \mono{HighlightController}.
 
 In addition to our specification in section~\ref{sec:analysis-range}, when placing a blueprint, the \mono{HighlightProvider} also shows in blue the valid positions to place it.
-For this, it needs a reference to the given \mono{Placement} script.
+For this, it needs a reference to the given \mono{Placement} script to ask it which positions are valid.
 
-\subsection{Visuals and Interpolation}
-
-Each blueprinted object has some scripts that control its visuals.
-These usually have a reference to the script that handles the game logic, and they read the script's public variables.
-The game logic scripts also expose several Unity events we can use.
-
-For example, the script that takes care of the visualization of most projectile-shooting towers is \mono{BasicProjectileTowerVisuals}.
-It controls the rotation of the tower's turret to point towards the attacker the tower is targeting, but it also interpolates the rotation to be smooth.
-It also subscribes to the tower's \mono{onShoot} Unity event to play an animation when the tower shoots.
-
-There are also various scripts that handle the appearance of the various UI elements.
-These mostly behave independently by having a reference to the relevant game logic script, and they read its variables.
-Blueprint menu items each have a \mono{BlueprintDisplay} script that handles most of the behavior, but the behavior is also modified by their \mono{BlueprintMenuItem} script, which gets data from the \mono{BlueprintMenuDisplay} script.
-
-The various visuals scripts also react to the game events.
-For example, the \mono{NumberEffects} script spawns a number effect above an attacker whenever the attacker gets damaged, and it creates number effects whenever resources get produced.
-These number effects show the amount of damage that was dealt, or the amount and type of the resource produced.
+\xxx{TODO diagram similar to waves}
 
 \subsection{Tutorial}
 
-The tutorial is handled by a system separate from other scripts, however it calls their public methods, and modifies their data to achieve the behavior we want.
+The tutorial is handled by a system separate from other scripts.
+It calls their public methods, and modifies their data to achieve the behavior we want.
 There are two scripts that handle the tutorial:
 
 \mono{TutorialController} manages at which step of the tutorial is the player currently, and for each step, it has a Unity event that gets invoked at the start of the step.
-So, all things that happen during the tutorial can be assigned in the Unity editor.
+This way, all things that happen during the tutorial can be assigned in the Unity editor.
 
 The script \mono{TutorialActions} then contains methods which do various modifications to various objects within the scene, so these actions can be subscribed to the \mono{TutorialController} Unity events.
 \mono{TutorialActions} also contains various checks based on which it tells the \mono{TutorialController} when to go to the next step.
 
-\section{Data Flow and Procedural Generation}\label{sec:docs-data}
-
-\xxx{TODO: split into two sections}
-
-\xxx{TODO: also mention wave preview and blueprint menu display}
+\section{Starting a run and Procedural Generation}\label{sec:docs-data}
 
 In this section we'll take a look at the processes that happen from the application start, all the way to generating worlds and waves.
 
@@ -384,12 +508,6 @@ When the application starts, a \enquote{Made with Unity} splash screen is shown,
 This scene contains some game objects that will persist throughout the entirety of the application runtime.
 These are the \mono{SceneController} and \mono{SoundController}, each with a script of the same name attached to it.
 They use the singleton design pattern and static methods to allow other scripts to use their functionality without obtaining a reference to them first.
-
-\mono{SoundController} is used to play sounds using one function call, which is convenient, because we need to create stationary audio sources all the time.
-It also pools its \emph{AudioSource} prefabs to save on resources.
-
-\mono{SceneController} is used to change scenes.
-Unity lets us change scenes with a static function call on the \mono{SceneManager}, but \mono{SceneController} fades out the screen first, then it changes the scene, and it fades back in after.
 
 The loading scene also contains an object with the \mono{StartLoader} script, which loads various data from the disk into memory, and then it calls to change the scene to \emph{Menu}.
 We can register to it any number of \mono{ILoader} scripts, which do the loading and store the data in singleton classes.
@@ -429,7 +547,7 @@ Then, the game proceeds to the next level.
 Whenever the \emph{Battle} scene is loaded, the \mono{WorldGenerator} finds the \mono{RunPersistence} and asks it to set up the level settings.
 For this, the \mono{RunPersistence} uses the \mono{LevelSetter} script, which finds the relevant scripts in the scene and sets them up.
 It generates a new seed for the world generator and configures the number of paths and their lengths, based on the level number, storing this information in the \mono{WorldSettings} script.
-It also configures the \mono{WaveGenerator}'s seed and parameters, and the fuel goal in the \mono{BattleController}.
+It also configures the \mono{WaveGenerator}'s seed and parameters, and the fuel goal in the \mono{PlayerState}.
 
 As we described in section~\ref{sec:analysis-rng}, we use \emph{seed branching} everywhere throughout the procedural generation.
 This means that whenever some system needs RNG, it gets a seed from another system, and from this seed it creates its own RNG instance to use.
@@ -452,4 +570,4 @@ So, in the main thread, the script \mono{WorldBuilder} checks for the \mono{Worl
 This is still done using Unity coroutines across multiple frames to not lag the game.
 Currently, the screen is faded out using the \mono{SceneController} during world generation, but later we'd like to add an animation, which would make any stutters obvious.
 
-- building the UI
+- building the UI - blueprint menu

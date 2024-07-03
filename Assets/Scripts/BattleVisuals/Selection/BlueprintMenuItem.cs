@@ -38,24 +38,24 @@ namespace BattleVisuals.Selection
 
             int energy = Blueprint.EnergyCost.Query(display.blueprint);
             int materials = Blueprint.MaterialCost.Query(display.blueprint);
-            var (affordable, _, _) = BattleController.CAN_AFFORD.Query((energy, materials));
+            var (affordable, _, _) = PlayerState.CAN_AFFORD.Query((energy, materials));
 
             display.UpdateText(energy, materials, GetTextColor(entry.cooldown > 0, affordable));
 
-            bool ready = entry.cooldown == 0 && affordable != BattleController.Affordable.No;
+            bool ready = entry.cooldown == 0 && affordable != PlayerState.Affordable.No;
             display.highlight.color = GetHighlightColor(ready, selected);
         }
 
-        Color GetTextColor(bool onCooldown, BattleController.Affordable affordable)
+        Color GetTextColor(bool onCooldown, PlayerState.Affordable affordable)
         {
             Color c = affordable switch
             {
-                BattleController.Affordable.Yes => readyTextColor,
-                BattleController.Affordable.UseMaterialsAsEnergy => useMaterialsTextColor,
-                BattleController.Affordable.No => cantAffordTextColor,
+                PlayerState.Affordable.Yes => readyTextColor,
+                PlayerState.Affordable.UseMaterialsAsEnergy => useMaterialsTextColor,
+                PlayerState.Affordable.No => cantAffordTextColor,
                 _ => throw new ArgumentOutOfRangeException(nameof(affordable), affordable, null)
             };
-            if (onCooldown && affordable != BattleController.Affordable.No)
+            if (onCooldown && affordable != PlayerState.Affordable.No)
                 return c * onCooldownTextColor;
             return c;
         }

@@ -23,7 +23,7 @@ namespace BattleSimulation.Towers
         protected override void OnPlaced()
         {
             base.OnPlaced();
-            random_ = BattleController.GetNewRandom();
+            random_ = PlayerState.GetNewRandom();
         }
 
         protected override void FixedUpdate()

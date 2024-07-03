@@ -1973,7 +1973,7 @@ But how do we represent it in the GPU?
 The first option that comes to mind is to just take the quadtree we constructed and send it to the GPU.
 Of course, we would have to put the data into some shader buffer, probably by creating an array of nodes.
 We want to reduce the bandwidth as much as possible, so all children of a single node could be consecutive in the array, so each node would only need to store one index to the array to reference all its children.
-Theoretically, we would need at most $4/3 \times 65535$ nodes in order to represent the $256 \times 256$ resolution we selected, but thanks to quadrant compression, we usually won't as many.
+Theoretically, we would need at most $4/3 \times 65535$ nodes in order to represent the $256 \times 256$ resolution we selected, but thanks to quadtree compression, we usually won't need as many.
 So, each node could be represented by 2 bytes, since we only need to save one index to the children or the result of the point test for leaf nodes.
 
 However, this approach is expensive on the CPU, because we need to prepare this data structure.
@@ -2055,8 +2055,16 @@ Then, it enters the range of the building that slows it down to three quarters, 
 Then its speed increases by 1\,t/s, because its HP drops, so the new speed is 1.75\,t/s, but we would expect it to be 1.5\,t/s.
 Finally, when it leaves the range of the building, its speed increases by third of the current speed to revert the slowdown, ending up at 2.333 tiles per second.
 This is obviously not equal to the expected speed of 2 tiles per second.
+This situation is illustrated in figure~\ref{fig:speed-changes}.
 
-To illustrate another problem we might run into, we imagine a building that makes it so whenever you would get energy, you get that many materials instead.
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.6\textwidth]{img/speed changes.pdf}
+    \caption{Possible discrepancy when multiple effects change an attacker's speed.}
+    \label{fig:speed-changes}
+\end{center}
+
+To illustrate another problem we might run into, we imagine a building that makes it so whenever the player would get energy, they get that many materials instead.
 How would we implement it?
 We obviously don't want to modify the blueprints of other buildings, and there might be other sources of energy too.
 We could add a special case to the code that handles the player's current material and energy balance to check specifically for this building, and handle the conversion if needed.
@@ -2072,13 +2080,26 @@ This event can be triggered by any other object that has a reference to it, also
 The advantage of this pattern is its weak coupling.
 The subscribers don't have to know anything about other subscribers or about the publishers and vice versa.
 
-To create modifiable commands, we add the option for subscribers to modify the data of the event, and we invoke the subscribers' callbacks in an order specified by the priority that was specified when they subscribed to the command.
+To create modifiable commands, we add the option for subscribers to modify the data of the event, and we invoke the subscribers' callbacks in an order based on the priority that was specified when they subscribed to the command.
 For example, when a building wants to produce energy, it invokes the modifiable command to add the given amount of energy.
 The command then notifies all the registered modifiers' callbacks, one by one.
 Each subscriber alters the amount of energy how it wants, and finally, the last subscriber, which we'll call the \emph{handler}, reads the energy amount and adds it to the total.
 The handler also doesn't have to be the last subscriber, there can be more subscribers after it which react to the event, for example by displaying the amount produced.
 We will call these \emph{reactions}, and we will refer to the subscribers that get notified before the handler as \emph{modifiers}.
 We will also let modifiers cancel the command completely.
+
+This is illustrated in figure~\ref{fig:modifiable-command}.
+It shows an example of a command to add energy.
+A solar panel produces tries to produce 10 energy, but the energy amplifier has registered a modifier which increases it to 15.
+The player state handles this command by adding the energy to the player's energy amount.
+Finally, reactions are notified, in this case a reaction to show the number and one to play the sound.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=\textwidth]{img/modifiable command.pdf}
+    \caption{Modifiable command to add energy.}
+    \label{fig:modifiable-command}
+\end{center}
 
 It doesn't make sense to have more than one handler for the command, so we will say that the handles always has priority 0, and there can only ever be one.
 The reactions shouldn't need to modify the command anymore, since it has already been handled by the handler, so we don't let them modify the command, only react to it.
@@ -2100,9 +2121,22 @@ However, we don't ever need to react to a query, furthermore it would make no se
 Also, it makes no sense to handle the result using a callback that is then immediately unsubscribed.
 So, we remove these features and streamline the interface to get \emph{modifiable queries}.
 
+A modifiable command is invoked with some initial parameter that can be modified.
+This doesn't make sense for a query.
+If we query the speed of an attacker, we call the query with the attacker as an input, and the result is the attacker's speed.
+To achieve this, we register a \emph{provider} which acquires the base value from the input, before both the input and the value are sent through the modifiers.
+An example modifiable query for determining attacker speed is shown in figure~\ref{fig:modifiable-query}.
+
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=\textwidth]{img/modifiable query.pdf}
+    \caption{Modifiable query for determining attacker speed.}
+    \label{fig:modifiable-query}
+\end{center}
+
 \subsection{Event Reaction Chain}
 
 For modifiable queries, we used only the first half of the modifiable command pipeline.
-If we take just the second half, we get just an event system, but with reactions ordered by priority.
-This is also useful for us, because the reactions could create race conditions otherwise.
+If we take just the second half, we get an event system, but with reactions ordered by priority.
+This is also useful for us, because the reactions could create race conditions if their order wasn't fixed.
 We call this the \emph{event reaction chain} just to differentiate it from Unity events, Unity event system and .NET events.
