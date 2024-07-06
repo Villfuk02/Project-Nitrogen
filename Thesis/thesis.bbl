@@ -973,6 +973,39 @@
       \field{volume}{68}
       \field{year}{1999}
     \endentry
+    \entry{Quadtree}{article}{}
+      \name{author}{2}{}{%
+        {{hash=64b16582e493d396bc661f188777fee6}{%
+           family={Finkel},
+           familyi={F\bibinitperiod},
+           given={Raphael},
+           giveni={R\bibinitperiod}}}%
+        {{hash=a2ea6a4e7fe1b839acb38db376905df8}{%
+           family={Bentley},
+           familyi={B\bibinitperiod},
+           given={Jon},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{a0ab482c8aaa88679c20a58d059cf950}
+      \strng{fullhash}{a0ab482c8aaa88679c20a58d059cf950}
+      \strng{bibnamehash}{a0ab482c8aaa88679c20a58d059cf950}
+      \strng{authorbibnamehash}{a0ab482c8aaa88679c20a58d059cf950}
+      \strng{authornamehash}{a0ab482c8aaa88679c20a58d059cf950}
+      \strng{authorfullhash}{a0ab482c8aaa88679c20a58d059cf950}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Acta Inf.}
+      \field{title}{Quad Trees: A Data Structure for Retrieval on Composite Keys.}
+      \field{volume}{4}
+      \field{year}{1974}
+      \field{pages}{1\bibrangedash 9}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1007/BF00288933
+      \endverb
+    \endentry
     \entry{Mipmaps}{inproceedings}{}
       \name{author}{1}{}{%
         {{hash=6fafec0793a296fd6473dd5d1c313161}{%
@@ -1000,6 +1033,36 @@
       \field{year}{1983}
       \field{pages}{1\bibrangedash 11}
       \range{pages}{11}
+    \endentry
+    \entry{Observer}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=b6aea1a416c89509a7df1cbb69249cb6}{%
+           family={{Wikipedia contributors}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{fullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{bibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \field{extraname}{7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Observer pattern --- {Wikipedia}{,} The Free Encyclopedia}
+      \field{urlday}{6}
+      \field{urlmonth}{7}
+      \field{urlyear}{2024}
+      \field{year}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/w/index.php?title=Observer_pattern&oldid=1215840691
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/w/index.php?title=Observer_pattern&oldid=1215840691
+      \endverb
     \endentry
     \entry{SoftMask}{misc}{}
       \name{author}{1}{}{%
@@ -1069,8 +1132,8 @@
       \strng{authorbibnamehash}{11f4b50206cd90894f1f9b426d9b5651}
       \strng{authornamehash}{11f4b50206cd90894f1f9b426d9b5651}
       \strng{authorfullhash}{11f4b50206cd90894f1f9b426d9b5651}
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Editor Init}
@@ -1097,8 +1160,8 @@
       \strng{authorbibnamehash}{8849c33dfc2464b47035f51cbb4edf05}
       \strng{authornamehash}{8849c33dfc2464b47035f51cbb4edf05}
       \strng{authorfullhash}{8849c33dfc2464b47035f51cbb4edf05}
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Hamming Weight Function}

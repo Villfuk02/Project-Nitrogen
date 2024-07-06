@@ -1,6 +1,6 @@
 ## questions
-- [ ] summarize parameters to be tweaked after each section
 
+- [ ] how do příloha
 
 ## tweaks
 
@@ -25,25 +25,15 @@
 - [ ] modify attacker descriptions
 ## new since prev meeting
 - [ ] 2.4 - 2.9
-- [ ] 4
+- [ ] obrázky v 4.2
+- [ ] 4.3
+- [ ] obrázky v 3.10
 ## till next metting
-- [ ] ch4 (5.7)
-    - [x] 4.1
-    - [ ] 4.2 (3.7)
-        - [x] 4.2.1
-        - [x] 4.2.2
-        - [x] 4.2.3
-        - [x] 4.2.4
-        - [x] 4.2.5
-        - [x] 4.2.6
-        - [x] 4.2.7
-        - [x] 4.2.8
-        - [x] 4.2.9
-        - [x] 4.2.10
-        - [ ] TODOs
-    - [ ] 4.3 (4.7)
-    - [ ] 4.4 (5.7)
-- [ ] konzultace 1.7 16:00
+- [x] ch4 (5.7)
+- [ ] konzultace 1.7 16:00 (5.7)
+    - [x] quadtree citation
+    - [x] data structure figures
+    - [ ] observer pattern citation
 - [ ] ch5 (7.7)
     - [ ] attackers
     - [ ] blueprints
