@@ -2,10 +2,8 @@
 
 In this chapter we aim to describe the implementation of the demo version of our game.
 In the first section~\ref{sec:docs-proj} we describe the overall structure, and in the later sections we go into more detail about the individual parts.
-\xxx{
-    Section~\ref{sec:docs-data} describes what goes on from the application start to the end, including all procedural generation, but not what happens during a battle.
-    We will focus on battles first, in section~\ref{sec:docs-battle}.
-}
+Section~\ref{sec:docs-data} describes what goes on from the application start to the end, including all procedural generation, but not what happens during a battle.
+We will focus on battles first, in section~\ref{sec:docs-battle}.
 
 \section{Project Structure}\label{sec:docs-proj}
 
@@ -511,7 +509,7 @@ The interactions described in this section are summarized in figure~\ref{fig:blu
     \label{fig:blueprint-selection}
 \end{center}
 
-\subsection{Seed Branching and Level Initialization}
+\subsection{Seed Branching and Level Initialization}\label{sec:docs-level-init}
 
 As we described in section~\ref{sec:analysis-rng}, we use \emph{seed branching} everywhere throughout the procedural generation.
 This means that whenever some system needs RNG, it gets a seed from another system, and from this seed it creates its own RNG instance to use.

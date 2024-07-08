@@ -123,6 +123,16 @@ cross/.default={1pt}}
   },
 }
 
+\usepackage{longtable}
+\usepackage{enumitem}
+
+\usepackage{minted}
+
+\setminted{fontsize=\footnotesize}
+\floatsetup[listing]{style=ruled}
+\floatname{listing}{Code snippet}
+\BeforeBeginEnvironment{minted}{\bigskip}
+
 % You might want to use cleveref for references
 % \usepackage{cleveref}
 

@@ -12,21 +12,22 @@ namespace BattleSimulation.Towers
         [Header("Runtime variables - Predator")]
         public int kills;
 
+        static Predator()
+        {
+            Blueprint.Damage.RegisterModifier(UpdateDamage, -1000000);
+        }
+
         protected override void OnPlaced()
         {
             base.OnPlaced();
             Attacker.DIE.RegisterReaction(OnAttackerDied, 1000);
-            Blueprint.Damage.RegisterModifier(UpdateDamage, -1000000);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             if (Placed)
-            {
                 Attacker.DIE.UnregisterReaction(OnAttackerDied);
-                Blueprint.Damage.UnregisterModifier(UpdateDamage);
-            }
         }
 
         void OnAttackerDied((Attacker attacker, Damage cause) param)
@@ -46,10 +47,10 @@ namespace BattleSimulation.Towers
                 yield return s;
         }
 
-        void UpdateDamage(IBlueprintProvider provider, ref float damage)
+        static void UpdateDamage(IBlueprintProvider provider, ref float damage)
         {
-            if (provider as Blueprinted == this)
-                damage += kills;
+            if (provider is Predator p)
+                damage += p.kills;
         }
     }
 }

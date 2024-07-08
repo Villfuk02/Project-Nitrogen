@@ -5,22 +5,13 @@ namespace BattleSimulation.Buildings
 {
     public class MatterReplicator : ProductionBuilding
     {
-        [Header("Settings")]
+        [Header("Matter Replicator")]
         [SerializeField] int productionIncrease;
         [SerializeField] int totalIncrease;
 
-        protected override void OnPlaced()
+        static MatterReplicator()
         {
-            base.OnPlaced();
             Blueprint.MaterialProduction.RegisterModifier(UpdateProduction, -1000000);
-        }
-
-        protected override void OnDestroy()
-        {
-            if (Placed)
-                Blueprint.MaterialProduction.UnregisterModifier(UpdateProduction);
-
-            base.OnDestroy();
         }
 
         protected override void Produce()
@@ -29,10 +20,10 @@ namespace BattleSimulation.Buildings
             totalIncrease += productionIncrease;
         }
 
-        void UpdateProduction(IBlueprintProvider provider, ref float production)
+        static void UpdateProduction(IBlueprintProvider provider, ref float production)
         {
-            if (provider as Blueprinted == this)
-                production += totalIncrease;
+            if (provider is MatterReplicator m)
+                production += m.totalIncrease;
         }
     }
 }

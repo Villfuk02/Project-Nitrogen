@@ -6,42 +6,40 @@ namespace BattleSimulation.Attackers
 {
     public class ArmoredSkeleton : Attacker
     {
-        [Header("ArmoredSkeleton")]
+        [Header("Armored Skeleton")]
         [SerializeField] int damageReduction;
         [SerializeField] UnityEvent onShieldDropped;
         [SerializeField] bool hasShield;
 
-        public virtual void Awake()
+        static ArmoredSkeleton()
         {
             DAMAGE.RegisterModifier(TryBlockDamage, -1);
             DAMAGE.RegisterReaction(OnDamaged, 1000);
+            SPEED.RegisterModifier(UpdateSpeed, -1000000);
         }
 
-        public void OnDestroy()
+        static bool TryBlockDamage(ref (Attacker target, Damage damage) param)
         {
-            DAMAGE.UnregisterModifier(TryBlockDamage);
-            DAMAGE.UnregisterReaction(OnDamaged);
-        }
-
-        void DropShield()
-        {
-            hasShield = false;
-            onShieldDropped.Invoke();
-            stats.speed *= 2;
-        }
-
-        bool TryBlockDamage(ref (Attacker target, Damage damage) param)
-        {
-            if (param.target != this || !hasShield || param.damage.type.HasFlag(Damage.Type.HealthLoss))
+            if (param.target is not ArmoredSkeleton { hasShield: true } s || param.damage.type.HasFlag(Damage.Type.HealthLoss))
                 return true;
-            param.damage.amount -= damageReduction;
+
+            param.damage.amount -= s.damageReduction;
             return param.damage.amount > 0;
         }
 
-        void OnDamaged((Attacker target, Damage damage) param)
+        static void OnDamaged((Attacker target, Damage damage) param)
         {
-            if (hasShield && health < (stats.maxHealth + 1) / 2)
-                DropShield();
+            if (param.target is not ArmoredSkeleton { hasShield: true } s || s.health >= (s.stats.maxHealth + 1) / 2)
+                return;
+
+            s.hasShield = false;
+            s.onShieldDropped.Invoke();
+        }
+
+        static void UpdateSpeed(Attacker attacker, ref float speed)
+        {
+            if (attacker is ArmoredSkeleton { hasShield: false })
+                speed *= 2;
         }
     }
 }

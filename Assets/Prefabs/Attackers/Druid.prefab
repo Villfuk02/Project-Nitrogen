@@ -10321,7 +10321,6 @@ MonoBehaviour:
   onReachedHub:
     m_PersistentCalls:
       m_Calls: []
-  originalStats: {fileID: 0}
   stats: {fileID: 0}
   pathSegmentProgress: 0
   pathSegmentTarget: {x: 0, y: 0}

@@ -10,23 +10,19 @@ namespace BattleSimulation.Attackers
         public float fractionReduction;
         public int flatReduction;
 
-        void Awake()
+        static DamageResistance()
         {
             Attacker.DAMAGE.RegisterModifier(ReduceDamage, -10);
         }
 
-        void OnDestroy()
+        static bool ReduceDamage(ref (Attacker target, Damage damage) param)
         {
-            Attacker.DAMAGE.UnregisterModifier(ReduceDamage);
-        }
+            param.target.TryGetComponent(out DamageResistance damageResistance);
 
-
-        bool ReduceDamage(ref (Attacker target, Damage damage) param)
-        {
-            if (param.target != attacker || (param.damage.type & ~damageType) != 0)
+            if (damageResistance == null || (param.damage.type & ~damageResistance.damageType) != 0)
                 return true;
-            param.damage.amount *= 1 - fractionReduction;
-            param.damage.amount -= flatReduction;
+            param.damage.amount *= 1 - damageResistance.fractionReduction;
+            param.damage.amount -= damageResistance.flatReduction;
             return param.damage.amount > 0;
         }
     }

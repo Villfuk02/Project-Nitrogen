@@ -13,10 +13,14 @@ namespace BattleSimulation.Towers
         [Header("Runtime variables - Gatling Gun")]
         public int continuousShootingTicks;
 
+        static GatlingGun()
+        {
+            Blueprint.Interval.RegisterModifier(UpdateInterval, -1000);
+        }
+
         protected override void OnPlaced()
         {
             base.OnPlaced();
-            Blueprint.Interval.RegisterModifier(UpdateInterval, -1000);
             WaveController.ON_WAVE_FINISHED.RegisterReaction(ResetSpeed, 1000);
             ResetSpeed();
         }
@@ -25,10 +29,7 @@ namespace BattleSimulation.Towers
         {
             base.OnDestroy();
             if (Placed)
-            {
-                Blueprint.Interval.UnregisterModifier(UpdateInterval);
                 WaveController.ON_WAVE_FINISHED.UnregisterReaction(ResetSpeed);
-            }
         }
 
         protected override void FixedUpdate()
@@ -40,11 +41,11 @@ namespace BattleSimulation.Towers
                 continuousShootingTicks = Mathf.Min(continuousShootingTicks + 1, currentBlueprint.delay);
         }
 
-        void UpdateInterval(IBlueprintProvider provider, ref float interval)
+        static void UpdateInterval(IBlueprintProvider provider, ref float interval)
         {
-            if (provider is not Blueprinted b || b != this || !Placed)
+            if (provider is not GatlingGun { Placed: true } g)
                 return;
-            float speed = Mathf.Lerp(baseSpeed, 1, continuousShootingTicks / (float)currentBlueprint.delay);
+            float speed = Mathf.Lerp(g.baseSpeed, 1, g.continuousShootingTicks / (float)g.currentBlueprint.delay);
             interval = Mathf.Max(interval / speed, 1);
         }
 

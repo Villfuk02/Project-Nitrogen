@@ -1,43 +1,20 @@
 ## questions
-
-- [ ] how do příloha
-
-## tweaks
-
-- [x] extend WFC to support edge types
-- [x] rename passable, impassable and passages, incl. comments and thesis
-- [x] module heights
-- [x] blocked surfaces
-- [x] fix simulated annealing step
-- [x] implement better r_i
-- [x] implement better simulated annealing step
-- [x] reimplement wave generator
-- [x] fine tune
-- [x] copy original blueprints' values
-- [x] add queries
-- [x] make matter replicator show green
-- [x] make predator green
-- [x] make streamline show green
-- [x] don't deselect abilities
-- [x] seed disappears too soon
-- [x] find new tutorial seed
-- [ ] compare descriptions and strikethrough
-- [ ] modify attacker descriptions
+- [ ] ch5 name
+- [ ] how do příloha a žádost
 ## new since prev meeting
 - [ ] 2.4 - 2.9
 - [ ] obrázky v 4.2
 - [ ] 4.3
 - [ ] obrázky v 3.10
+- [ ] 5
 ## till next metting
 - [x] ch4 (5.7)
-- [ ] konzultace 1.7 16:00 (5.7)
-    - [x] quadtree citation
-    - [x] data structure figures
-    - [ ] observer pattern citation
 - [ ] ch5 (7.7)
-    - [ ] attackers
-    - [ ] blueprints
+    - [x] attackers
     - [ ] terrain types
+        - [ ] check everything for completeness
+    - [ ] blueprints
+    - [ ] TODOS
 - [ ] ch6 (8.7)
 - [ ] ch7 (9.7)
     - [ ] mention that parameters were tweaked to balance the game
