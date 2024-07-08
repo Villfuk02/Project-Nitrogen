@@ -512,7 +512,7 @@ The interactions described in this section are summarized in figure~\ref{fig:blu
 \subsection{Seed Branching and Level Initialization}\label{sec:docs-level-init}
 
 As we described in section~\ref{sec:analysis-rng}, we use \emph{seed branching} everywhere throughout the procedural generation.
-This means that whenever some system needs RNG, it gets a seed from another system, and from this seed it creates its own RNG instance to use.
+This means that whenever some system needs an RNG, it gets a seed from another system, and from this seed it creates its own RNG instance to use.
 Figure~\ref{fig:seed-branching} shows how the seeds get propagated across the game's systems.
 When starting a new run, the \mono{RunStarter} creates a new instance of \mono{RunPersistence}, and it is given a run seed.
 It is either randomly generated using \mono{System.Random} or selected by the player.
@@ -564,7 +564,7 @@ After each stage, the \mono{WorldGenerator} writes the generated data into the \
 From the \mono{WorldData}, other scripts can read the information about the generated world, as also mentioned in section~\ref{sec:docs-battle-scene}.
 After several stages, the \mono{WorldGenerator} invokes an event to notify other scripts that new world data is ready.
 
-The world generation stages done in background threads so that the game doesn't become unresponsive.
+The world generation stages are done in background threads so that the game doesn't become unresponsive.
 however, in Unity, we cannot instantiate objects from a background thread.
 The script \mono{WorldBuilder} reacts to the \mono{WorldGenerator}'s events, and it builds the terrain, obstacles, paths, and tiles in the main thread.
 It also reads the world data from the \mono{WorldData} script, and writes back references to the tile instances it created.

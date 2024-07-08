@@ -3,25 +3,23 @@
 - [ ] how do příloha a žádost
 ## new since prev meeting
 - [ ] 2.4 - 2.9
-- [ ] obrázky v 4.2
-- [ ] 4.3
-- [ ] obrázky v 3.10
-- [ ] 5
+- [ ] 5.2
+- [ ] 5.3
 ## till next metting
-- [x] ch4 (5.7)
-- [ ] ch5 (7.7)
+- [ ] move diagrams in ch4
+- [ ] copy image 3.15
+- [ ] ch5 (9.7)
     - [x] attackers
     - [ ] terrain types
-        - [ ] check everything for completeness
     - [ ] blueprints
     - [ ] TODOS
-- [ ] ch6 (8.7)
-- [ ] ch7 (9.7)
+- [ ] ch6 (9.7)
+- [ ] ch7 (10.7)
     - [ ] mention that parameters were tweaked to balance the game
     - [ ] iterative
     - [ ] few more fallbacks in wave generation
-- [ ] conclusion and abstract (10.7)
-- [ ] finishing touches (11.7)
+- [ ] conclusion and abstract (11.7)
+- [ ] finishing touches (12.7)
 
 
 ## finishing

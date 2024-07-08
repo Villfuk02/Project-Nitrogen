@@ -1,4 +1,4 @@
-\chapter{User Documentation --- Designer}
+\chapter{Designer Documentation}
 
 In this chapter, we describe how one might go about adding new content to the game.
 We explain how to add new Attackers, Blueprints and Terrain types, each in its own section.
@@ -180,7 +180,7 @@ To fulfill this role, assign the object to the \emph{Visual Target} field of the
         \textbf{16.}
         Now we also add attacker's highlight.
         Place the prefab \emph{HighlightCanvas} under the visual root.
-        Position in the center of the attacker model.
+        Position it in the center of the attacker model.
 
         Then, go to the child object \emph{Highlight} and adjust it.
         Make the color of its \emph{Image} fully opaque to see what the highlight will look like.
@@ -293,6 +293,10 @@ Finally, the attacker's speed is modified by the \mono{UpdateSpeed} method, whic
 
 - example script
 
+- placement example script
+
+- highlights example script
+
 - description tags
 
 \section{Terrain Types}\label{sec:docs-terrain-type}
@@ -315,9 +319,9 @@ The terrain type files use custom syntax that was designed to encode structured 
 \head{Whitespace and Comments}{}
 Line breaks often matter, but otherwise all strings of whitespace are equivalent.
 All indentation is purely for readability purposes.
-One line comments are created using the \mono{\#} character, meaning that it and all characters following it are treated as whitespace, until the end of the line.
-The \mono{\%} character is used to create multiline comments.
-Everything between two \mono{\%} characters is treated as whitespace.
+One line comments are created using the \mono{\#}~character, meaning that it and all characters following it are treated as whitespace, until the end of the line.
+The \mono{\%}~character is used to create multiline comments.
+Everything between two \mono{\%}~characters is treated as whitespace.
 
 \head{Overall Structure}
 The file is composed of several top-level properties.
@@ -337,7 +341,7 @@ obstacles { ... }
 scatterer { ... }
 \end{minted}
 
-We will explain the one-line properties in the following subsection~\xxx{TODO}, and each block property will be explained in its own subsection after that.
+We will explain the one-line properties in the following subsection, and each block property will be explained in its own subsection after that.
 We would also like to note that \emph{string} values are not enclosed in quotation marks, and they cannot contain whitespace.
 
 \subsection{One-Line Top Level Properties}
@@ -347,24 +351,29 @@ The name by which this terrain type is identified.\\
 \textbf{name}: A string.
 
 \head{\mono{free\_surfaces <keys>}}{}
-Together with \mono{blocked\_surfaces} defines the surfaces the terrain generator can use.
+Defines which surface types used by this terrain type's modules are free.
+Each surface type is represented by a single uppercase letter.
 Obstacles and buildings can be placed on free surfaces, and paths can go over them.\\
-\textbf{keys}: A string composed of uppercase letters. Each letter is one surface.
+\textbf{keys}: A string composed of uppercase letters. Each letter is one surface type.
 
 \head{\mono{blocked\_surfaces <keys>}}{}
 \emph{optional}\\
-Together with \mono{free\_surfaces} defines the surfaces the terrain generator can use.
+Defines which surface types used by this terrain type's modules are blocked.
+Each surface type is represented by a single uppercase letter.
 Obstacles and buildings cannot be placed on blocked surfaces, and paths cannot go over them.\\
-\textbf{keys}: A string composed of uppercase letters. Each letter is one surface.\\
+\textbf{keys}: A string composed of uppercase letters. Each letter is one surface type.\\
 Default value: \emph{none}.
 
 \head{\mono{free\_edges <keys>}}{}
-Together with \mono{blocked\_edges} defines the edge types allowed among terrain \emph{modules}.\\
+Defines which edge types used by this terrain type's modules are free.
+Each edge type is represented by a single uppercase letter.
+Paths can go through free edges.\\
 \textbf{keys}: A string composed of uppercase letters. Each letter is one edge type.
 
 \head{\mono{blocked\_edges <keys>}}{}
 \emph{optional}\\
-Together with \mono{free\_edges} defines the edge types allowed among terrain \emph{modules}.
+Defines which edge types used by this terrain type's modules are blocked.
+Each edge type is represented by a single uppercase letter.
 Paths cannot go through blocked edges.\\
 \textbf{keys}: A string composed of uppercase letters. Each letter is one edge type.\\
 Default value: \emph{none}.
@@ -377,7 +386,7 @@ The minimum height level is 0, so the total number of height levels is $\mono{va
 \subsection{Modules}
 
 The \mono{modules} property defines the list of terrain modules to be used for terrain generation.
-Each module is denoted by a \mono{*} character, followed by the module name and a block containing its properties.
+Each module is denoted by a \mono{*}~character followed by the module name and a block containing its properties.
 
 \begin{minted}{text}
 modules {
@@ -399,7 +408,7 @@ How likely is this module to be selected when collapsing a slot.\\
 
 \head{\mono{variants <flags>}}{}
 \emph{optional}\\
-Which symmetric variants of this module to generate.\\
+Which symmetric variants of this module can the terrain generator use.\\
 \textbf{flags}: \mono{0}, \mono{2} or \mono{4} to denote the number of rotational symmetries, and optionally \mono{f} or \mono{F} to denote reflection.
 For example, the code \mono{f4} means this module can be freely flipped and rotated.\\
 Default value: \mono{0}.
@@ -407,7 +416,7 @@ Default value: \mono{0}.
 \head{\mono{height\_offset <value>}}{}
 \emph{optional}\\
 Determines the height offset of the module mesh.
-Positive values mean the mesh is placed higher, than the module's height level, negative values mean lower.\\
+Positive values mean the mesh is placed higher than the module's height level, negative values mean lower.\\
 \textbf{value}: A floating-point number.\\
 Default value: \mono{0}.
 
@@ -417,7 +426,7 @@ The collision mesh of the module.\\
 
 \head{\mono{shape}}{}
 The shape of this module.
-Basically, the edge and corner constraints this module imposes on adjacent slots, as shown in figure~\ref{fig:wfc-module}.
+Basically, the edge and corner constraints this module imposes on adjacent slots, as shown in figure~\ref{fig:wfc-module-2}.
 The values are placed in a square to visually convey the direction they are tied to, however, they would still be parsed correctly even when placed on one line.
 \begin{minted}{text}
 shape {
@@ -438,7 +447,7 @@ Defines the height levels this module can be at.\\
 Default value: All heights from \mono{0} to \mono{max\_height}.
 
 \head{Example Module}{}
-This is the definition of the same module as shown in figure~\ref{fig:wfc-module}.
+This is the definition of the module shown in figure~\ref{fig:wfc-module-2}.
 \begin{minted}{text}
 * CornerCliffSlantUp {
     weight 32
@@ -449,6 +458,267 @@ This is the definition of the same module as shown in figure~\ref{fig:wfc-module
         D1x X D1v
          X     O
         D0x O D0x
+    }
+}
+\end{minted}
+
+\begin{center}
+    \captionsetup{type=figure}
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/Module model.png}
+        \subcaption{The 3D geometry of the module.}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{img/Module constraints.pdf}
+        \subcaption{A view from above with the constraints.}
+    \end{minipage}
+    \caption{An example module and its constraints (copy).}
+    \label{fig:wfc-module-2}
+\end{center}
+
+\subsection{Obstacles}
+
+The \mono{obstacles} property contains obstacle definitions and properties that determine their placement, as described in section~\ref{sec:analysis-obstacles}.
+The block contains one named property \mono{phases}, and the individual obstacle definitions.
+Each obstacle is denoted by a \mono{*}~character, followed by its name and block with its properties.
+
+\begin{minted}{text}
+obstacles {
+    phases {
+        <Phase1>
+        <Phase2>
+        ...
+    }
+
+    * <ObstacleName> {
+        type ...
+        min ...
+        max ...
+        base_probability ...
+        valid_surfaces ...
+        on_slants ...
+        affinities ...
+    }
+    ...
+}
+\end{minted}
+
+\head{\mono{phases}}
+Define which obstacles are placed in which phase.
+Each line represents one phase, and it consists of the names of the obstacles to be place, separated by whitespace: \mono{<Obstacle1> <Obstacle2> ...}.
+
+\head{\mono{type <type>}}{}
+Defines the obstacle type~--- one of \emph{large}, \emph{small}, \emph{small fuel-rich} and \mono{small mineral-rich}.\\
+\textbf{type}: One of strings: \mono{l}, \mono{large}, \mono{s}, \mono{small}, \mono{f}, \mono{fuel}, \mono{m} or \mono{minerals}.
+
+\head{\mono{min <value>}}{}
+\emph{optional}\\
+Minimum number of tiles with this obstacle.\\
+\textbf{value}: A non-negative integer, less than or equal to \mono{max}.\\
+Default value: \mono{0}.
+
+\head{\mono{max <value>}}{}
+\emph{optional}\\
+Maximum number of tiles with this obstacle.\\
+\textbf{value}: A non-negative integer, more than or equal to \mono{max}.\\
+Default value: \emph{no limit}.
+
+\head{\mono{base\_probability <value>}}{}
+Base probability to place this obstacle for each tile.\\
+\textbf{value}: A floating-point number.
+
+\head{\mono{valid\_surfaces <keys>}}{}
+\emph{optional}\\
+The surface types this obstacle can be placed on.\\
+\textbf{keys}: A string composed of uppercase letters. Each letter is one surface type.\\
+Default value: \emph{all surfaces}.
+
+\head{\mono{on\_slants <bool>}}{}
+\emph{optional}\\
+Determines whether this obstacle can be placed on a slanted tile.\\
+\textbf{bool}: \mono{true} or \mono{false}.\\
+Default value: \mono{true}.
+
+\head{\mono{affinities <entry1> <entry2> ...}}{}
+The affinity for each layer.
+Affinity greater than zero means the probability to place the obstacle increases with proximity to obstacle placed in the given layer.
+Analogously, negative affinity decreases the probability.\\
+Each entry is a floating-point number, and is assumed to be \mono{0} for layers for which it wasn't specified.
+
+\head{Obstacle Definition Example}{}
+\begin{minted}{text}
+* Minerals {
+    type m
+    min 6
+    max 8
+    base_probability 0.3
+    on_slants false
+    affinities -1.5 0.3
+}
+\end{minted}
+
+\subsection{Scatterer}
+
+The \mono{scatterer} property defines how obstacle models are placed on the generated terrain, as described in section~\ref{sec:analysis-obstacle-models}.
+It is a list of the model placement definitions, each denoted by a \mono{*}~character followed by a name and a block containing its properties.
+
+\begin{minted}{text}
+scatterer {
+    * <ModelName> {
+        prefab ...
+        tries_per_tile ...
+        placement_radius ...
+        persistent_radius ...
+        size_gain ...
+        radius_gain ...
+        angle_spread ...
+        value_threshold ...
+        value { ... }
+    }
+}
+\end{minted}
+
+\head{\mono{prefab <path>}}{}
+The prefab to be instantiated.\\
+\textbf{path}: The path to the prefab, relative to the asset folder \emph{Prefabs/Resources}. Must not contain file extension.
+
+\head{\mono{tries\_per\_tile <value>}}{}
+Number of attempts to place the model per tile.\\
+\textbf{value}: A positive integer.
+
+\head{\mono{placement\_radius <value>}}{}
+The base radius to check for collision with already placed models.\\
+\textbf{value}: A non-negative floating-point number.
+
+\head{\mono{persistent\_radius <value>}}{}
+The base radius of the collision the model will have once placed, used for collision checks for models placed after it.\\
+\textbf{value}: A non-negative floating-point number.
+
+\head{\mono{size\_gain <value>}}{}
+The proportion at which the scale of the placed model increases or decreases based on the noise expression value at the placement point.
+For example with \mono{size\_gain 1}, a model placed at point with noise expression value 1 will have scale 2, and at point with value -2, it will have scale 1/3.\\
+\textbf{value}: A floating-point number.
+
+\head{\mono{radius\_gain <value>}}{}
+The proportion at which the scale of the model radius increases or decreases based on the noise expression value at the placement point.
+For example with \mono{redius\_gain -1}, a model placed at point with noise expression value 1 will have its \mono{placement\_radius} and \mono{persistent\_radius} halved.\\
+\textbf{value}: A floating-point number.
+
+\head{\mono{angle\_spread <value>}}{}
+By how big of an angle can the placed model be randomly tilted.\\
+\textbf{value}: A non-negative floating-point number representing the angle in degrees.
+
+\head{\mono{value\_threshold <value>}}{}
+The model cannot be placed at points with noise expression value less than the threshold.\\
+\textbf{value}: A floating-point number.
+
+\head{\mono{value <noise\_expression\_nodes>}}{}
+The noise expression that determines the value for this model at any given point.
+The expression is the sum of the expressions provided as the argument.
+
+\head{\mono{noise\_expression\_nodes}}{}
+A block with one or more \mono{noise\_expression\_node} entries, separated by whitespace (including line breaks): \mono{\{ <node1> <node2> ... \}}.
+
+\head{\mono{noise\_expression\_node}}{}
+One of \mono{<const>}, \mono{<sum>}, \mono{<mult>}, \mono{<clamp>}, \mono{<path>}, \mono{<path>}, \mono{<obstacle>}, \mono{<height>}, or \mono{<fractal\_noise>}.
+
+\head{\mono{const <value>}}{}
+Has a constant value at every point.\\
+\textbf{value}: A floating-point number.
+
+\head{\mono{sum <noise\_expression\_nodes>}}{}
+Returns the sum of the subexpressions.
+
+\head{\mono{mult <multiplier> <noise\_expression\_nodes>}}{}
+Returns the sum of the subexpressions multiplied by the \mono{multiplier}.\\
+\textbf{multiplier}: A floating-point number.
+
+\head{\mono{clamp <min> <max> <noise\_expression\_nodes>}}{}
+Returns the sum of the subexpressions, but clamped to be between \mono{min} and \mono{max}.\\
+\textbf{min}: A floating-point number.\\
+\textbf{max}: A floating-point number.
+
+\head{\mono{path <in> <out>}}{}
+Returns the signed distance function to the tiles containing a path.
+The parameters \mono{in} and \mono{out} specify the sign and magnitude of the value inside and outside the tiles with path.\\
+\textbf{in}: A floating-point number.\\
+\textbf{out}: A floating-point number.
+
+\head{\mono{obstacle <ObstacleName> <in> <out>}}{}
+Returns the signed distance function to the tiles containing the specified obstacle.
+The parameters \mono{in} and \mono{out} specify the sign and magnitude of the value inside and outside the tiles with the obstacle.\\
+\textbf{ObstacleName}: Name of the obstacle.\\
+\textbf{in}: A floating-point number.\\
+\textbf{out}: A floating-point number.
+
+\head{\mono{height}}{}
+Returns the terrain height level at the given point, including fractional values on slopes.
+
+\head{\mono{fractal\_noise <properties>}}{}
+Returns a value generated by summing several layers of Perlin noise.\\
+\textbf{properties}: A block with the following named properties:
+\begin{minted}{text}
+fractal_noise {
+    octaves ...
+    bias ...
+    base_amplitude ...
+    amplitude_mult ...
+    base_frequency ...
+    frequency_mult ...
+}
+\end{minted}
+
+\head{\mono{octaves <value>}}{}
+The number of noise layers.\\
+\textbf{value}: A positive integer.
+
+\head{\mono{bias <value>}}{}
+A constant value added to each point.\\
+\textbf{value}: A floating-point number.
+
+\head{\mono{base\_amplitude <value>}}{}
+The amplitude of the first noise layer.
+For example, noise with amplitude 2 produces values between -2 and 2.\\
+\textbf{value}: A floating-point number.
+
+\head{\mono{amplitude\_mult <value>}}{}
+Each noise layer's amplitude is the amplitude of the previous layer multiplied by this value.\\
+\textbf{value}: A positive floating-point number.
+
+\head{\mono{base\_frequency <value>}}{}
+The frequency of the first noise layer, in other words, the reciprocal of its scale.\\
+\textbf{value}: A floating-point number.
+
+\head{\mono{frequency\_mult <value>}}{}
+Each noise layer's frequency is the frequency of the previous layer multiplied by this value.\\
+\textbf{value}: A positive floating-point number.
+
+\head{Obstacle Model Placement Example}{}
+\begin{minted}{text}
+* Minerals {
+    prefab Terrain/obstacles/Minerals
+    tries_per_tile 50
+    placement_radius 0.05
+    persistent_radius 0.15
+    size_gain 2
+    radius_gain -0.5
+    angle_spread 25
+    value_threshold 0
+    value {
+        clamp -3 0.7 {
+            obstacle Minerals 1 -1
+            fractal_noise {
+                octaves 2
+                bias 0
+                base_amplitude 0.3
+                amplitude_mult 0.777
+                base_frequency 0.61
+                frequency_mult 2.137
+            }
+            path -3 0
+        }
     }
 }
 \end{minted}
