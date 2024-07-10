@@ -35,7 +35,7 @@ In it, find the game object \emph{World > WaveGenerator} in the scene hierarchy,
         Next, select the \mono{AttackerStats} scriptable object and configure its values in the inspector.
 
         \textbf{3.1.}
-        The field \emph{Name} contains the attacker's name as it will show in game.
+        The field \emph{Name} contains the attacker's name as it will appear in game.
         It should be the same as the \mono{AttackerStats} file name if possible.
 
         \textbf{3.2.}
@@ -81,6 +81,7 @@ The prefabs of attackers are placed in the asset folder \emph{Prefabs/Attackers}
 \textbf{4.}
 To create a new prefab, right-click in the folder and select \emph{Create > Prefab}.
 We recommend giving it the same name as the attacker stats file.
+Then assign it to the \emph{Prefab} field in the \mono{Attacker}.
 
 \textbf{5.}
 To the root game object of the prefab, attach the \mono{Attacker} script.
@@ -281,23 +282,388 @@ Finally, the attacker's speed is modified by the \mono{UpdateSpeed} method, whic
 
 \section{Blueprints}
 
-- scriptable object
+In this section, we show how to add a new blueprint.
+Blueprints can be both buildings or abilities, so the step-by-step guide will branch in places where those differ.
 
-- abilities
+\subsection{Blueprint Scriptable Object}
 
-- example script
+\textbf{1.}
+First we create the blueprint scriptable object.
+Blueprints are stored in the \emph{Blueprints} assets folder, further organized into subfolders by their type.
+In the right folder, in Unity, right-click and select \emph{Create > Blueprint}.
 
-- buildings
+\textbf{2.}
+For this blueprint to appear in the game, it must be assigned to the blueprint reward controller.
+To do this, open the prefab \emph{Prefabs/RunPersistence}.
+In it, find the game object \emph{BlueprintRewards}, and add the new \mono{Blueprints} to the \emph{All Blueprints} array of its \mono{BlueprintRewardController} script.
 
-- towers
+\begin{flushleft}
+    \begin{tabular}{@{}>{\setlength\parindent{1em}}p{0.6\textwidth}p{\dimexpr 0.4\textwidth-2\tabcolsep}@{}}
+        \textbf{3.}
+        Next, select the \mono{Blueprint} scriptable object and configure its values in the inspector.
 
-- example script
+        \textbf{3.1.}
+        The field \emph{Name} contains the blueprint name as it will appear in game.
+        It should be the same as the \mono{Blueprint} file name if possible.
 
-- placement example script
+        \textbf{3.2.}
+        The \emph{Prefab} field contains a reference to the prefab that will be instantiated when the blueprint is placed.
+        We'll explain how to set up a prefab in section \xxx{TODO}.
 
-- highlights example script
+        \textbf{3.3.}
+        \emph{Icon} is the icon that represents the blueprint.
+        For buildings, it should show the building's model.
+        Blueprint icons are stored in the \emph{Sprites/Icons} asset folder, further separated by into subfolders by their type.
+        Each is $200 \times 200$ pixels in size.
 
-- description tags
+        \textbf{3.4.}
+        The field \emph{Rarity} determines the blueprint's rarity, as explained in section~\ref{sec:design-blueprints}.
+
+        \textbf{3.5.}
+        The field \emph{Type} determines the blueprint's type, which is either ability or a type of building as explained in section~\ref{sec:design-buildings}.
+
+        \textbf{3.6.}
+        \emph{Energy Cost} and \emph{Material Cost} determine the blueprint's cost.
+
+        \textbf{3.7.}
+        \emph{Starting Cooldown} determines the number of waves at the start of each level, for which the blueprint cannot be used.
+        \emph{Cooldown} determines how many waves the player has to wait after using the blueprint before they can use it again.
+
+         & \raisebox{\dimexpr -1\height+2mm}{\includegraphics[width=\linewidth]{img/Steps/blueprint inspector.png}}
+    \end{tabular}
+\end{flushleft}
+
+\textbf{3.8.}
+Fields from \emph{Range} to \emph{Energy Production} are optional numeric statistics.
+These determine various aspects of the blueprint, and they are explicitly stored in the blueprint, so that other game objects can consistently modify them.
+If a blueprint doesn't use a given statistic, its value should be set to -1.
+0 shouldn't be used.
+\emph{Damage Type} is not a number but a set of flags, and should be set to \emph{Nothing} if and only if the blueprint doesn't deal damage.
+\emph{Range} and \emph{Radius} are floating-point numbers, and the rest are integers.
+The time durations \emph{Interval}, \emph{Delay}, and \emph{Duration Ticks} are in ticks, so 20 means one second.
+
+\textbf{3.9.}
+\emph{Stats To Display} is an array of stats to be displayed in the blueprint description above the ability descriptions.
+These should contain all used stats not explicitly mentioned in the ability descriptions.
+Each stat is represented by a formatting tag prefixed with \mono{\$}, as explained in section \xxx{TODO}.
+
+\textbf{3.10.}
+The \emph{Descriptions} array should contain human-readable description of the blueprint's special abilities.
+Each ability should be a separate entry.
+Formatting tags can be used, as described in section~\ref{sec:analysis-description-tags}.
+The implemented tags are summarized in section \xxx{TODO}.
+
+\subsection{Blueprint Prefab}
+
+Blueprint prefabs have many components in common, so we recommend copying an existing attacker prefab and editing it.
+However, to explain all the components, in this section we'll create a new blueprint prefab from scratch.
+We'll start with components that are required for every blueprinted object, and then we'll show how to set up some components that are used often.
+The prefabs of abilities are placed in the asset folder \emph{Prefabs/Abilities}, and building prefabs are in the asset folder \emph{Prefabs/Buildings}, further separated into subfolders by type.
+
+\textbf{4.}
+To create a new prefab, right-click in the appropriate folder and select \emph{Create > Prefab}.
+We recommend giving it the same name as the attacker stats file.
+Then assign it to the \emph{Prefab} field in the \mono{Blueprint}.
+
+\textbf{5.}
+To the root game object of the prefab, attach a script derived from the \mono{Blueprinted} script.
+This script implements the behavior of the blueprinted object when placed.
+In most cases, the blueprinted object will have a completely unique behavior, so a custom script will have to be created.
+However, it doesn't have to reimplement everything, it can extend a script that is already implemented.
+
+This is the hierarchy of the already implemented behavior scripts, but we've omitted scripts which are specific to one blueprint:
+\dirtree{%
+    .1 Blueprinted.
+    .2 Ability.
+    .3 \emph{\textrm{2 scripts omitted\dots}}.
+    .3 TargetedAbility.
+    .4 \emph{\textrm{4 scripts omitted\dots}}.
+    .2 Building.
+    .3 \emph{\textrm{5 scripts omitted\dots}}.
+    .3 ProductionBuilding.
+    .4 \emph{\textrm{2 scripts omitted\dots}}.
+    .3 Tower.
+    .4 \emph{\textrm{5 scripts omitted\dots}}.
+    .4 ProjectileTower.
+    .5 \emph{\textrm{2 scripts omitted\dots}}.
+    .5 BasicProjectileTower.
+    .6 \emph{\textrm{4 scripts omitted\dots}}.
+}
+
+As an example, section \xxx{TODO} explains the implementation of the behavior script of the ability \emph{Meteor}.
+Similarly, section \xxx{TODO} explains the implementation of the tower \emph{Sledgehammer}.
+
+\textbf{6.}
+The next script we need to add is a script derived from \mono{Placement}.
+This script determines where the blueprint can be placed, as described in section~\ref{sec:docs-place-blueprint}.
+Several placement scripts are already implemented, and in most cases one of them has the behavior we need.
+If not, we recommend extending one of them.
+
+Below is the hierarchy of the already implemented placement scripts.
+\xxx{TODO, include explanation}
+
+\textbf{7.}
+Similarly to attackers, blueprints also need a highlight provider script.
+The purpose of highlight providers is explained in section~\ref{sec:docs-highlights}.
+One of the already implemented highlight providers should be sufficient.
+Below is the hierarchy of the already implemented highlight provider scripts.
+\xxx{TODO, include explanation}
+
+Most highlight provider scripts only show the highlights akin to what is in range of a tower, or the affected radius or objects.
+However, when placing a blueprint, we also highlight in blue the regions where the blueprint can be placed.
+For this, the highlight providers have reference to another highlight provider, whose job is to show the valid placement positions.
+The main highlight provider then combines highlights from itself and from the placement highlight provider.
+
+We can't attach two highlight providers to the root game object, because that would make it ambiguous for the \mono{HighlightController} which one to use.
+So, to add the placement highlight provider, create a new empty game object under the root object, and attach the script to it.
+
+\textbf{8.}
+Finally, every blueprint should have some visuals or a visual effect when placed.
+For those, create a new empty game object under the root object.
+Any game objects providing the visuals should go under this game object.
+Then assign this game object to the field \emph{Visuals} of the \mono{Blueprinted} script.
+This ensures that the visuals are disabled until the blueprint is placed.
+
+\textbf{9.}
+That's everything that every blueprinted object must have.
+However, we'd also like to mention, the purpose of the field \emph{Rotate Back} of the script \mono{Building}.
+When a building gets placed on a slanted tile, all game objects assigned to this field are rotated back against the slant so that their up direction faces up.
+This is important for example for targeting colliders, so they aren't misaligned.
+
+\subsection{Ability Behavior Script Example}
+In this section we'll explain the implementation of the ability \emph{Meteor}.
+The source code is for reference shown as code snippet~\ref{code:meteor}, but we've omitted the usings and namespace definition to save space.
+We can see that it's derived from \mono{TargetedAbility}, which just holds a reference to a \mono{Targeting} script and keeps its range up-to-date.
+
+\begin{listing}[H]
+    \begin{minted}{csharp}
+public class Meteor : TargetedAbility
+{
+    public int delayLeft;
+    bool waveEnded_;
+
+    protected override void OnPlaced()
+    {
+        WaveController.ON_WAVE_FINISHED.RegisterReaction(OnWaveFinished, 100);
+    }
+
+    protected void OnDestroy()
+    {
+        if (Placed)
+           WaveController.ON_WAVE_FINISHED.UnregisterReaction(OnWaveFinished);
+    }
+
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+
+        if (!Placed)
+        {
+            delayLeft = currentBlueprint.delay;
+            return;
+        }
+
+        if (delayLeft == 0 && !waveEnded_)
+            Explode();
+        delayLeft--;
+    }
+
+    void Explode()
+    {
+        foreach (var a in targeting.GetValidTargets())
+            a.TryHit(new Damage(currentBlueprint.damage,
+                currentBlueprint.damageType, this), out _);
+        Destroy(gameObject, 3f);
+    }
+
+    void OnWaveFinished()
+    {
+        waveEnded_ = true;
+        Destroy(gameObject, 3f);
+    }
+}
+    \end{minted}
+    \caption{\mono{Meteor} behavior script implementation.}
+    \label{code:meteor}
+\end{listing}
+
+\emph{Meteor}'s description reads: \enquote{Impacts the ground after 0.8 seconds, dealing damage to all attackers within radius.}
+We'll start with the method \mono{Explode} which implements what happens when the meteor impacts the ground.
+In it, we simply call \mono{TryHit} on every attacker in range of our targeting.
+We provide the method with a \mono{Damage} struct, which contains the damage amount, damage type, and source of the damage.
+Then we destroy the blueprinted object after 3 seconds.
+We don't destroy it immediately, because the meteor creates a particle effect when it explodes, and we want to let it play out.
+
+Now we just need to call \mono{Explode} after the delay, after its placed.
+To do this, we create a variable \mono{delayLeft}.
+The method \mono{FixedUpdate} gets called on every tick.
+While the ability is not placed, we set the delay to the value specified in the blueprint, so that it is up-to-date when the ability gets placed.
+Notice, that we obtain this value through \mono{currentBlueprint}, which is a snapshot of the blueprint with modifiers from other objects applied.
+When the ability is placed, \mono{delayLeft} gets decremented every tick, and once it reaches 0, the meteor explodes.
+
+However, it is possible to place a meteor right before a wave ends, and then immediately start a new wave, so it damages attackers in the new wave.
+To prevent this, we register a reaction to the \mono{ON\_WAVE\_FINISHED} event, to let us know when a wave ends.
+When that happens, we stop the meteor from exploding, and also destroy it.
+It is important to unregister the reaction when the game object gets destroyed, but only if it was registered in the first place.
+
+\subsection{Tower Behavior Script Example}
+Next, we'll explain the implementation of the tower \emph{Sledgehammer}.
+The source code is for reference shown as code snippet~\ref{code:sledgehammer}, again without usings and the namespace definition.
+The \mono{Sledgehammer} class extends \mono{Tower}, so we don't have to reimplement the behavior of buildings or keeping the associated \mono{Targeting} up-to-date with range changes.
+
+The \emph{Sledgehammer}'s description contains the following:
+\begin{quotation}
+    \enquote{Cannot be paced on slanted tiles.
+        Can be placed on tiles with small obstacles.
+        Smashes into the ground, dealing damage to all attackers in range.    }
+\end{quotation}
+The first two sentences only specify how it can be placed.
+This is easily achieved by using the \mono{SimpleBuildingPlacement} script, and configuring its settings.
+
+The third sentence describes its behavior when placed, which is implemented by the \mono{Sledgehammer} script.
+The first thing we might notice is that the script mentions shooting a lot, even though the \emph{Sledgehammer} doesn't shoot any projectiles.
+This is just for consistency with other towers.
+
+In the script settings, we provide an event that gets invoked when the tower \enquote{shoots}.
+It is used by scripts which take care of the tower's visuals.
+We also have a parameter called \mono{shotDelay}, which we'll get to later.
+
+\begin{listing}[H]
+    \begin{minted}{csharp}
+public class Sledgehammer : Tower
+{
+    [Header("Settings")]
+    [SerializeField] UnityEvent onShoot;
+    [SerializeField] int shotDelay;
+    [Header("Runtime variables")]
+    [SerializeField] int shotTimer;
+    [SerializeField] int shotDelayTimer;
+
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+        if (!Placed)
+            return;
+
+        shotTimer--;
+        shotDelayTimer--;
+
+        if (shotTimer == 1)
+            SoundController.PlaySound(SoundController.Sound.ShootProjectile,
+                0.75f, 0.5f, 0.2f, transform.position);
+
+        if (shotTimer <= 0 && targeting.GetValidTargets().Any())
+            StartShot();
+
+        if (shotDelayTimer == 0)
+            Shoot();
+    }
+
+    void StartShot()
+    {
+        shotDelayTimer = shotDelay;
+        shotTimer = currentBlueprint.interval;
+        onShoot.Invoke();
+    }
+
+    void Shoot()
+    {
+        foreach (var target in targeting.GetValidTargets())
+            if (target.TryHit(new(currentBlueprint.damage,
+                currentBlueprint.damageType, this), out var dmg))
+                damageDealt += dmg;
+
+        SoundController.PlaySound(SoundController.Sound.ImpactHuge,
+            1, 1, 0.2f, transform.position);
+    }
+}
+    \end{minted}
+    \caption{\mono{Sledgehammer} behavior script implementation.}
+    \label{code:sledgehammer}
+\end{listing}
+
+Overall, the behavior of this tower is very simple, and it's all implemented in the \mono{FixedUpdate} method:
+If the tower isn't placed yet, it does nothing.
+If the tower is ready, and it has any target in its range, it \enquote{shoots} and resets its delay to the statistic \emph{Interval} specified by its blueprint.
+This delay counts down, and once it reaches zero, the tower can \enquote{shoot} again.
+
+However, when the sledgehammer slams the ground the instant an attacker enters its range, it will only ever hit the first attacker in a group.
+So we add a small delay controlled by the \mono{shotDelay} setting.
+Furthermore, the animation of the \emph{Sledgehammer} slamming the ground takes a fraction of a second, so now the function aligns better with the animation.
+This delay is implemented by calling \mono{StartShoot} when the tower wants to \emph{shoot}, but the method only sets the delay timer to the selected delay, and only after the delay timer counts down to 0 does the tower actually \mono{Shoot}.
+
+The method \mono{Shoot} deals damage to all attackers in range, and it adds the damage dealt to the variable \mono{damageDealt}.
+This variable is defined in the \mono{Tower} class, and it is used to display how much damage has a tower dealt in total.
+Finally, the method plays a sound using the \mono{SoundContoller}.
+In the \mono{FixedUpdate}, we also make a click sound one tick before the tower is ready to shoot again, to mimic a latch in the tower's mechanism, to convey that the tower is ready.
+
+\subsection{Description Formatting Tags}
+
+In this section, we summarize the formatting tags that can be used in descriptions of attackers and blueprints.
+The table \xxx{TODO} contains tags that can be used by both attackers and blueprints, table \xxx{TODO} contains tags specific to attackers, and table \xxx{TODO} contains tags to be used by blueprints.
+
+In general, tags which contain the \mono{\#}~character become icons.
+If you prefix a tag specific to attackers or blueprints with \mono{\$}, it turns into the tag name followed by its value, instead of just the value.
+For example, \mono{[\$RNG]} turns into \enquote{Range <sprite=9>$3.4$} when used for a blueprint with range $3.4$.
+If text enclosed by square brackets is not a valid tag, it is left in the description as is, it just becomes yellow.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{>{\ttfamily}ll}
+        \toprule
+        \textbf{\rmfamily{Tag}} & \textbf{Description}                \\
+        \midrule
+        {[BRK]}                 & Line break with 150\% line spacing. \\
+        {[\#FUE]}               & Fuel icon.                          \\
+        {[\#MAT]}               & Materials icon.                     \\
+        {[\#ENE]}               & Energy icon.                        \\
+        {[\#HUL]}               & Hull icon.                          \\
+        {[\#RNG]}               & Range icon.                         \\
+        {[\#DMG]}               & Damage icon.                        \\
+        {[\#INT]}               & Interval icon.                      \\
+        {[\#DUR]}               & Duration icon.                      \\
+        {[\#HP]}                & HP icon.                            \\
+        {[\#RAD]}               & Radius icon.                        \\
+        {[\#+]}                 & Production \enquote{+} icon.        \\
+        {[\#DMT-HPL]}           & HP loss damage type icon.           \\
+        {[\#DMT-PHY]}           & Physical damage type icon.          \\
+        {[\#DMT-ENE]}           & Energy damage type icon.            \\
+        {[\#DMT-EXP]}           & Explosive damage type icon.         \\
+        \bottomrule
+    \end{tabular}
+    \caption{Universal description formatting tags.}
+    \label{tab:universal-tags}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{>{\ttfamily}lll}
+        \toprule
+        \textbf{\rmfamily{Tag}} & \textbf{Name} & \textbf{Notes}                             \\
+        \midrule
+        {[SIZ]}                 & Size          &                                            \\
+        {[SPD]}                 & Speed         &                                            \\
+        {[HP]}                  & Health        & Current HP.                                \\
+        {[MHP]}                 & Health        & Maximum HP as specified by attacker stats. \\
+        {[HP/M]}                & Health        & Current HP / maximum HP.                   \\
+        \bottomrule
+    \end{tabular}
+    \caption{Attacker description formatting tags.}
+    \label{tab:attacker-tags}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{>{\ttfamily}lll}
+        \toprule
+        \textbf{\rmfamily{Tag}} & \textbf{Name} & \textbf{Notes} \\
+        \midrule
+        \textbf{[TAG]}          & Tag           & Description.   \\
+        \bottomrule
+    \end{tabular}
+    \caption{Blueprint description formatting tags.}
+    \label{tab:blueprint-tags}
+\end{table}
 
 \section{Terrain Types}\label{sec:docs-terrain-type}
 

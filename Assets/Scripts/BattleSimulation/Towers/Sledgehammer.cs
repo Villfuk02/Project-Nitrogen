@@ -8,17 +8,11 @@ namespace BattleSimulation.Towers
     public class Sledgehammer : Tower
     {
         [Header("Settings")]
-        [SerializeField] protected UnityEvent onShoot;
-        [SerializeField] protected int shotDelay;
+        [SerializeField] UnityEvent onShoot;
+        [SerializeField] int shotDelay;
         [Header("Runtime variables")]
-        [SerializeField] protected int shotTimer;
-        [SerializeField] protected int shotDelayTimer;
-
-        protected override void OnPlaced()
-        {
-            shotDelayTimer = shotDelay + 1;
-            base.OnPlaced();
-        }
+        [SerializeField] int shotTimer;
+        [SerializeField] int shotDelayTimer;
 
         protected override void FixedUpdate()
         {
@@ -27,7 +21,7 @@ namespace BattleSimulation.Towers
                 return;
 
             shotTimer--;
-            shotDelayTimer++;
+            shotDelayTimer--;
 
             if (shotTimer == 1)
                 SoundController.PlaySound(SoundController.Sound.ShootProjectile, 0.75f, 0.5f, 0.2f, transform.position);
@@ -35,13 +29,13 @@ namespace BattleSimulation.Towers
             if (shotTimer <= 0 && targeting.GetValidTargets().Any())
                 StartShot();
 
-            if (shotDelayTimer == shotDelay)
+            if (shotDelayTimer == 0)
                 Shoot();
         }
 
         void StartShot()
         {
-            shotDelayTimer = 0;
+            shotDelayTimer = shotDelay;
             shotTimer = currentBlueprint.interval;
             onShoot.Invoke();
         }

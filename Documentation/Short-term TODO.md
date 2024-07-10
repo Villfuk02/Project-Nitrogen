@@ -1,16 +1,14 @@
 ## questions
-- [ ] ch5 name
-- [ ] how do příloha a žádost
+
 ## new since prev meeting
 - [ ] 2.4 - 2.9
 - [ ] 5.2
 - [ ] 5.3
 ## till next metting
-- [ ] move diagrams in ch4
-- [ ] copy image 3.15
+- [x] move diagrams in ch4
 - [ ] ch5 (9.7)
     - [x] attackers
-    - [ ] terrain types
+    - [x] terrain types
     - [ ] blueprints
     - [ ] TODOS
 - [ ] ch6 (9.7)

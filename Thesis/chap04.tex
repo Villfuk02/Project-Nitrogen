@@ -312,6 +312,13 @@ This lets all game systems know that they should stop, and to display the \emph{
 During a wave, the towers the player has built shoot at the attackers.
 As we described in section~\ref{sec:analysis-targeting}, the towers know that an attacker is in range, if it is within the tower's targeting collider.
 They use the \mono{Targeting} script to know which attackers are in range, which attackers are in line of sight, and which attacker they should shoot at, based on the current targeting priority.
+The interactions described in this section are summarized in figure~\ref{fig:shooting}.
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=\textwidth]{img/shooting.pdf}
+    \caption{Script interactions when a tower shoots at an enemy.}
+    \label{fig:shooting}
+\end{center}
 
 A tower's range can be composed of many \mono{TargetingCollider}s, and they can be combined with any set operations to create various range shapes.
 Figure~\ref{fig:combining-colliders} shows how we could create a range shaped like a cylinder with a hole.
@@ -336,14 +343,6 @@ Once they hit their target, they notify the tower that shot them.
 To damage an attacker, the tower should use its method \mono{TryHit}.
 The attacker then invokes the \mono{DAMAGE} command, and it also handles this command by decreasing its own HP accordingly.
 Similarly, when the player uses an ability to damage attackers, the ability determines its targets, usually using a sphere cast, and damages them via the \mono{TryHit}.
-The interactions described in this section are summarized in figure~\ref{fig:shooting}.
-
-\begin{center}
-    \captionsetup{type=figure}
-    \includegraphics[width=\textwidth]{img/shooting.pdf}
-    \caption{Script interactions when a tower shoots at an enemy.}
-    \label{fig:shooting}
-\end{center}
 
 \subsection{Info Panel}\label{sec:docs-info-panel}
 
@@ -415,6 +414,13 @@ For example, when the player selects a tower, it highlights the attackers in its
 We also want to show the affected region of the world, by coloring the terrain accordingly.
 For example for towers, we draw their range.
 This is described in section~\ref{sec:design-selection-highlights}.
+The interactions described in this section are shown in figure~\ref{fig:highlights-and-range}.
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=0.9\textwidth]{img/higlights and range.pdf}
+    \caption{Interactions between scripts for highlights and range visualization.}
+    \label{fig:highlights-and-range}
+\end{center}
 
 The \mono{HighlightController} looks at the \mono{SelectionController}'s selected and/or hovered objects every frame and determines which objects in the world should be highlighted.
 However, each selected object wants to highlight objects differently.
@@ -428,14 +434,6 @@ It highlights the selected tile, or attacker, or it shows just a point highlight
 
 Each \mono{HighlightProvider} also implements a function that returns the color of the range visualization for any given point, as described in section~\ref{sec:analysis-range}.
 The script \mono{RangeVisualization} then creates the range visualization over many frames, based on the \mono{HighlightProvider} that's currently selected according to the \mono{HighlightController}.
-The interactions described in this section are shown in figure~\ref{fig:highlights-and-range}.
-
-\begin{center}
-    \captionsetup{type=figure}
-    \includegraphics[width=0.9\textwidth]{img/higlights and range.pdf}
-    \caption{Interactions between scripts for highlights and range visualization.}
-    \label{fig:highlights-and-range}
-\end{center}
 
 In addition to our specification in section~\ref{sec:analysis-range}, when placing a blueprint, the \mono{HighlightProvider} also shows in blue the valid positions to place it.
 For this, it needs a reference to the given \mono{Placement} script to ask it which positions are valid.
@@ -490,6 +488,13 @@ The \emph{RunPersistence} object persists between scenes, and it only destroys i
 It holds all scripts that need to remember some state throughout the whole run:
 The \mono{RunPersistence} script keeps track of the player's hull and blueprints, the run seed, the current level, and it gives orders to the other scripts.
 The \mono{BlueprintRewardController} script generates blueprint rewards for the player.
+The interactions between scripts described in this section are summarized in figure~\ref{fig:blueprint-selection}.
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=\textwidth]{img/blueprint selection.pdf}
+    \caption{Interactions between scripts during blueprint selection.}
+    \label{fig:blueprint-selection}
+\end{center}
 
 After the player beats a level, the \mono{RunPersistence} asks the \mono{BlueprintRewardController} to reward the player with blueprints.
 For the rewards after the first tutorial level, the \mono{BlueprintRewardController} has a predefined blueprint selection, but for normal blueprint rewards, it picks the selection randomly, based on its seed.
@@ -500,14 +505,6 @@ It initializes the scene by instantiating \emph{BlueprintDisplay} prefabs which 
 When the player clicks on one of the blueprints, it notifies the \mono{BlueprintSelectionController}, which handles the selection logic.
 It also modifies the blueprints' outlines to communicate to the player what is selectable or selected, and it makes the info panel show relevant information.
 Once the player confirms their selection by clicking on a button, it returns what the player chose in a callback to the \mono{RunPersistence}, which updates the player's blueprint collection and proceeds to the next level.
-
-The interactions described in this section are summarized in figure~\ref{fig:blueprint-selection}.
-\begin{center}
-    \captionsetup{type=figure}
-    \includegraphics[width=\textwidth]{img/blueprint selection.pdf}
-    \caption{Interactions between scripts during blueprint selection.}
-    \label{fig:blueprint-selection}
-\end{center}
 
 \subsection{Seed Branching and Level Initialization}\label{sec:docs-level-init}
 
