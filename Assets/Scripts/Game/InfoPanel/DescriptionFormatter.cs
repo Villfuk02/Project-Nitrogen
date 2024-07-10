@@ -54,7 +54,7 @@ namespace Game.InfoPanel
             { "PRO", (s => FormatProduction(BP.FuelProduction.Query(s), BP.MaterialProduction.Query(s), BP.EnergyProduction.Query(s), s.GetBaseBlueprint().fuelProduction, s.GetBaseBlueprint().materialProduction, s.GetBaseBlueprint().energyProduction), "Production") },
             { "SCD", (s => $"{BP.StartingCooldown.Query(s)} waves", "Starting cooldown") },
             { "CD", (s => $"{FormatIntStat(null, BP.Cooldown.Query(s), s.GetBaseBlueprint().cooldown, Improvement.Less)} waves", "Cooldown") },
-            { "+CD", (s => FormatCooldownSuffix(BP.Cooldown.Query(s), s.GetBaseBlueprint().cooldown), "Cooldown SUFFIX") },
+            { "+CD", (s => FormatCooldownSuffix(BP.Cooldown.Query(s), s.GetBaseBlueprint().cooldown), "Cooldown suffix") },
             { "FUE", (s => FormatIntStat(Icon.Fuel, BP.FuelProduction.Query(s), s.GetBaseBlueprint().fuelProduction, Improvement.More), "Fuel production") },
             { "MAT", (s => FormatIntStat(Icon.Materials, BP.MaterialProduction.Query(s), s.GetBaseBlueprint().materialProduction, Improvement.More), "Material production") },
             { "ENE", (s => FormatIntStat(Icon.Energy, BP.EnergyProduction.Query(s), s.GetBaseBlueprint().energyProduction, Improvement.More), "Energy production") }

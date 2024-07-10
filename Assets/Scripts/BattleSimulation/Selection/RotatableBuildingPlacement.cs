@@ -3,7 +3,7 @@ using Utils;
 
 namespace BattleSimulation.Selection
 {
-    public class RotatableBuildingPlacement : SimpleBuildingPlacement
+    public class RotatableBuildingPlacement : ObstacleSpecificBuildingPlacement
     {
         [Header("Settings")]
         [SerializeField] int rotations;

@@ -1,12 +1,13 @@
-using BattleVisuals.Selection.Highlightable;
 using System.Collections.Generic;
+using BattleVisuals.Selection.Highlightable;
 using UnityEngine;
 
 namespace BattleVisuals.Selection
 {
-    public class PlaceAnywhereHighlightProvider : HighlightProvider
+    public class PlaceAnywhereHighlightProvider : PlacementHighlightProvider
     {
         public override int AreaSamplesPerFrame => 20;
+
         public override IEnumerable<(IHighlightable, HighlightType)> GetHighlights()
         {
             yield break;

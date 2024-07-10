@@ -1,6 +1,6 @@
-using System;
 using System.Linq;
 using BattleSimulation.World;
+using Game.Blueprint;
 using UnityEngine;
 using Utils;
 
@@ -17,19 +17,18 @@ namespace BattleSimulation.Selection
                 return false;
             if (!onSlants && tile.slant != WorldUtils.Slant.None)
                 return false;
-            Type t = blueprinted.GetType();
-            if (WorldUtils.ADJACENT_DIRS.Any(d => HasBuildingType(t, tile.pos + d)))
+            if (WorldUtils.ADJACENT_DIRS.Any(d => HasOriginalBlueprint(blueprinted.originalBlueprint, tile.pos + d)))
                 return false;
             return true;
         }
 
-        bool HasBuildingType(Type type, Vector2Int tilePos)
+        bool HasOriginalBlueprint(Blueprint originalBlueprint, Vector2Int tilePos)
         {
             if (!Tiles.TILES.TryGet(tilePos, out Tile t))
                 return false;
             if (t.Building == null)
                 return false;
-            return ReferenceEquals(t.Building.GetType(), type);
+            return ReferenceEquals(t.Building.originalBlueprint, originalBlueprint);
         }
     }
 }

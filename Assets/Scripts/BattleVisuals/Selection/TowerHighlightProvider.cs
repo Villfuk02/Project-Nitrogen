@@ -11,7 +11,7 @@ namespace BattleVisuals.Selection
     {
         [Header("References")]
         [SerializeField] Tower t;
-        [SerializeField] HighlightProvider placementHighlightProvider;
+        [SerializeField] PlacementHighlightProvider placementHighlightProvider;
         public override int AreaSamplesPerFrame => 128;
 
         public override IEnumerable<(IHighlightable, HighlightType)> GetHighlights()

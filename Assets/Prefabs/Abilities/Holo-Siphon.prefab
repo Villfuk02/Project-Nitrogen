@@ -53,12 +53,12 @@ MonoBehaviour:
   onTargetLost:
     m_PersistentCalls:
       m_Calls: []
+  currentRange: 0
   target: {fileID: 0}
   radiusTrigger: {fileID: 475032649220956779}
   heightTrigger: {fileID: 475032648339523277}
   canTargetDownwards: 1
   canTargetUpwards: 1
-  currentRange: 0
 --- !u!1 &475032647752064191
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,7 +429,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visuals: {fileID: 475032649205546438}
-  lastBlueprintHash: 0
+  baseBlueprint: {fileID: 0}
+  currentBlueprint: {fileID: 0}
   rotateBack:
   - {fileID: 6639963613643339105}
   permanent: 0
@@ -447,7 +448,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 475032649215164951}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fab0ab09dbff02143af01e634b8f76f6, type: 3}
+  m_Script: {fileID: 11500000, guid: 175ce151fac799444bceebb5f5f05aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   blueprinted: {fileID: 2992026775721385814}
@@ -456,8 +457,8 @@ MonoBehaviour:
       m_Calls: []
   selectAttackers: 0
   selectedTile: {fileID: 0}
+  obstacleTypes: 00000000020000000400000005000000
   onSlants: 1
-  allowedObstacles: 00000000020000000400000005000000
 --- !u!114 &2692797349279770925
 MonoBehaviour:
   m_ObjectHideFlags: 0

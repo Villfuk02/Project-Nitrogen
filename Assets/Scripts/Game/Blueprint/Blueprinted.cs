@@ -7,7 +7,7 @@ namespace Game.Blueprint
     {
         [Header("References")]
         [SerializeField] GameObject visuals;
-        protected Blueprint originalBlueprint;
+        public Blueprint originalBlueprint;
         public Blueprint baseBlueprint;
         public Blueprint currentBlueprint;
         public bool Placed { get; private set; }

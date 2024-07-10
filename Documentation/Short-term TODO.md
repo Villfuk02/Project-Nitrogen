@@ -1,23 +1,17 @@
 ## questions
 
 ## new since prev meeting
-- [ ] 2.4 - 2.9
-- [ ] 5.2
-- [ ] 5.3
+- [ ] ch5 inheritance trees
+
 ## till next metting
-- [x] move diagrams in ch4
-- [ ] ch5 (9.7)
-    - [x] attackers
-    - [x] terrain types
-    - [ ] blueprints
-    - [ ] TODOS
-- [ ] ch6 (9.7)
-- [ ] ch7 (10.7)
+- [x] ch5 (10.7)
+- [ ] ch6 (10.7)
+- [ ] ch7 (11.7)
     - [ ] mention that parameters were tweaked to balance the game
     - [ ] iterative
     - [ ] few more fallbacks in wave generation
-- [ ] conclusion and abstract (11.7)
-- [ ] finishing touches (12.7)
+- [ ] conclusion and abstract (12.7)
+- [ ] finishing touches (13.7)
 
 
 ## finishing

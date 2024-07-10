@@ -1,7 +1,7 @@
+using System.Collections.Generic;
 using BattleSimulation.Attackers;
 using BattleSimulation.Targeting;
 using BattleVisuals.Selection.Highlightable;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace BattleVisuals.Selection
@@ -10,8 +10,9 @@ namespace BattleVisuals.Selection
     {
         [SerializeField] protected Targeting t;
         [SerializeField] bool highlightAttackers;
-        [SerializeField] protected HighlightProvider placementHighlightProvider;
+        [SerializeField] protected PlacementHighlightProvider placementHighlightProvider;
         public override int AreaSamplesPerFrame => 128;
+
         public override IEnumerable<(IHighlightable, HighlightType)> GetHighlights()
         {
             if (!highlightAttackers)

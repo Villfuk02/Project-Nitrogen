@@ -81,6 +81,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visuals: {fileID: 475032649205546438}
+  baseBlueprint: {fileID: 0}
+  currentBlueprint: {fileID: 0}
   rotateBack: []
   permanent: 0
   energyProduced: 0
@@ -93,14 +95,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 475032649215164951}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c1c7896c57f6254fa18751d71c2a328, type: 3}
+  m_Script: {fileID: 11500000, guid: 175ce151fac799444bceebb5f5f05aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   blueprinted: {fileID: 5056433855505364203}
   onPlaced:
     m_PersistentCalls:
       m_Calls: []
+  selectAttackers: 0
   selectedTile: {fileID: 0}
+  obstacleTypes: 00000000
   onSlants: 1
 --- !u!114 &5395418316105941493
 MonoBehaviour:

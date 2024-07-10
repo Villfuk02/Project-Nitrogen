@@ -8,7 +8,7 @@ using Utils;
 
 namespace BattleVisuals.Selection
 {
-    public class TilePlacementHighlightProvider : HighlightProvider
+    public class TilePlacementHighlightProvider : PlacementHighlightProvider
     {
         [SerializeField] protected Building b;
         [SerializeField] TilePlacement placement;

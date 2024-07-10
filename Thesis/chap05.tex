@@ -61,7 +61,7 @@ In the demo version, all attackers have weight 1.
 The \emph{Descriptions} array should contain human-readable description of the attacker's special abilities.
 Each ability should be a separate entry.
 Formatting tags can be used, as described in section~\ref{sec:analysis-description-tags}.
-The implemented tags are summarized in section \xxx{TODO}.
+The implemented tags are summarized in section~\ref{sec:docs-format-tags}.
 
 \textbf{3.7.}
 The \emph{Icon} represents the attacker in the incoming wave preview and the info panel.
@@ -87,7 +87,7 @@ Then assign it to the \emph{Prefab} field in the \mono{Attacker}.
 To the root game object of the prefab, attach the \mono{Attacker} script.
 If the attacker requires more complex behavior, it can be achieved by either adding other scripts onto the attacker game object, or by using a script derived from \mono{Attacker} which implements this behavior.
 For example, the \emph{Armored Skeleton} attacker has special abilities which are implemented in the \mono{ArmoredSkeleton} script.
-Implementation of this script is described in section \xxx{TODO}.
+Implementation of this script is described in section~\ref{sec:docs-armored-skeleton}.
 This script has various settings and references which we'll fill out as we continue.
 
 \begin{flushleft}
@@ -117,7 +117,7 @@ Next, attach the \mono{Selectable} script and assign the \mono{Attacker} script 
 The last script the attacker game object needs is a \mono{HighlightProvider} script.
 The purpose of highlight providers is explained in section~\ref{sec:docs-highlights}.
 For most attackers, the \mono{AttackerHighlightProvider}, which provides no additional highlights, is sufficient.
-Example highlight provider implementation is described in section \xxx{TODO}.
+If custom highlights are needed, implement a custom script derived from \mono{HighlightProvider}.
 
 \begin{flushleft}
     \begin{tabular}{@{}>{\setlength\parindent{1em}}p{0.6\textwidth}p{\dimexpr 0.4\textwidth-2\tabcolsep}@{}}
@@ -204,7 +204,7 @@ To fulfill this role, assign the object to the \emph{Visual Target} field of the
     \end{tabular}
 \end{flushleft}
 
-\subsection{Attacker Behavior Script Example}
+\subsection{Attacker Behavior Script Example}\label{sec:docs-armored-skeleton}
 
 In this section we describe how is the \emph{Armored Skeleton} attacker behavior script implemented.
 The source code is for reference shown as code snippet~\ref{code:armored-skeleton}, but we've omitted the usings and namespace definition to save space.
@@ -283,7 +283,7 @@ Finally, the attacker's speed is modified by the \mono{UpdateSpeed} method, whic
 \section{Blueprints}
 
 In this section, we show how to add a new blueprint.
-Blueprints can be both buildings or abilities, so the step-by-step guide will branch in places where those differ.
+Blueprints can be both buildings or abilities.
 
 \subsection{Blueprint Scriptable Object}
 
@@ -308,7 +308,7 @@ In it, find the game object \emph{BlueprintRewards}, and add the new \mono{Bluep
 
         \textbf{3.2.}
         The \emph{Prefab} field contains a reference to the prefab that will be instantiated when the blueprint is placed.
-        We'll explain how to set up a prefab in section \xxx{TODO}.
+        We'll explain how to set up a prefab in section~\ref{sec:docs-blueprinted-prefab}.
 
         \textbf{3.3.}
         \emph{Icon} is the icon that represents the blueprint.
@@ -345,15 +345,15 @@ The time durations \emph{Interval}, \emph{Delay}, and \emph{Duration Ticks} are 
 \textbf{3.9.}
 \emph{Stats To Display} is an array of stats to be displayed in the blueprint description above the ability descriptions.
 These should contain all used stats not explicitly mentioned in the ability descriptions.
-Each stat is represented by a formatting tag prefixed with \mono{\$}, as explained in section \xxx{TODO}.
+Each stat is represented by a formatting tag prefixed with \mono{\$}, as explained in section~\ref{sec:docs-format-tags}.
 
 \textbf{3.10.}
 The \emph{Descriptions} array should contain human-readable description of the blueprint's special abilities.
 Each ability should be a separate entry.
 Formatting tags can be used, as described in section~\ref{sec:analysis-description-tags}.
-The implemented tags are summarized in section \xxx{TODO}.
+The implemented tags are summarized in section~\ref{sec:docs-format-tags}.
 
-\subsection{Blueprint Prefab}
+\subsection{Blueprint Prefab}\label{sec:docs-blueprinted-prefab}
 
 Blueprint prefabs have many components in common, so we recommend copying an existing attacker prefab and editing it.
 However, to explain all the components, in this section we'll create a new blueprint prefab from scratch.
@@ -371,43 +371,75 @@ This script implements the behavior of the blueprinted object when placed.
 In most cases, the blueprinted object will have a completely unique behavior, so a custom script will have to be created.
 However, it doesn't have to reimplement everything, it can extend a script that is already implemented.
 
-This is the hierarchy of the already implemented behavior scripts, but we've omitted scripts which are specific to one blueprint:
+Below is the inheritance tree of the scripts derived from \mono{Blueprinted}.
+Scripts that implement the behavior of one specific blueprinted object are grouped together by their base class to save space.
 \dirtree{%
-    .1 Blueprinted.
-    .2 Ability.
-    .3 \emph{\textrm{2 scripts omitted\dots}}.
-    .3 TargetedAbility.
-    .4 \emph{\textrm{4 scripts omitted\dots}}.
-    .2 Building.
-    .3 \emph{\textrm{5 scripts omitted\dots}}.
-    .3 ProductionBuilding.
-    .4 \emph{\textrm{2 scripts omitted\dots}}.
-    .3 Tower.
-    .4 \emph{\textrm{5 scripts omitted\dots}}.
-    .4 ProjectileTower.
-    .5 \emph{\textrm{2 scripts omitted\dots}}.
-    .5 BasicProjectileTower.
-    .6 \emph{\textrm{4 scripts omitted\dots}}.
+    .1 \textbf{Blueprinted}.
+    .2 \textbf{Ability}.
+    .3 OrbitalLaser, Streamline.
+    .3 \textbf{TargetedAbility}.
+    .4 Catalyst, Greande, LightningStorm, Meteor.
+    .2 \textbf{Building}.
+    .3 Amplifier, EnergyHarvester, Radar, SolarPanel,\\SurfaceDrill.
+    .3 \textbf{ProductionBuilding}.
+    .4 DustRefinery, MatterReplicator.
+    .3 \textbf{Tower}.
+    .4 FrostbiteFrontier, HoloSiphon, Sledgehammer,\\StaticSparker, UltraRay.
+    .4 \textbf{ProjectileTower}.
+    .5 Galvanizer, Mortar.
+    .5 \textbf{BasicProjectileTower}.
+    .6 DoubleSentry, GatlingGun, Predator, Sniper.
 }
+\
 
-As an example, section \xxx{TODO} explains the implementation of the behavior script of the ability \emph{Meteor}.
-Similarly, section \xxx{TODO} explains the implementation of the tower \emph{Sledgehammer}.
+As an example, section~\ref{sec:docs-meteor} explains the implementation of the ability \emph{Meteor}.
+Similarly, section~\ref{sec:docs-sledgehammer} explains the implementation of the tower \emph{Sledgehammer}.
 
 \textbf{6.}
 The next script we need to add is a script derived from \mono{Placement}.
 This script determines where the blueprint can be placed, as described in section~\ref{sec:docs-place-blueprint}.
 Several placement scripts are already implemented, and in most cases one of them has the behavior we need.
 If not, we recommend extending one of them.
-
-Below is the hierarchy of the already implemented placement scripts.
-\xxx{TODO, include explanation}
+Below is a summary of the already implemented placement scripts, organized into an inheritance tree.
+Abstract classes are in \emph{italics}.
+\dirtree{%
+    .1 \emph{Placement}.
+    .2 GlobalPlacement\textrm{~--- Doesn't need a position or target.}.
+    .2 SimplePointPlacement\textrm{~--- Place on any point in the world.}.
+    .2 \emph{TilePlacement}\textrm{~--- Place on tiles.}.
+    .3 \emph{BuildingPlacement}\textrm{~--- For buildings.}.
+    .4 HeightBasedBuildingPlacement\textrm{~--- Limit valid tiles by height.}.
+    .5 SolarPanelPlacement\textrm{~--- Used by \emph{Solar Panel}. Tells the solar panel at which height level it's being placed.}.
+    .4 ObstacleSpecificBuildingPlacement\textrm{~--- Configure on which\\\-\ \ obstacles it can be placed, and whether it can be placed on\\\-\ \ slanted tiles.}.
+    .5 SurfaceDrillPlacement\textrm{~--- Used by \emph{Surface Drill}. Tells the drill if it's being placed on minerals or fuel.}.
+    .5 RotatableBuildingPlacment\textrm{~--- Also select a fixed orientation when placing.}.
+    .4 SpacedBuildingPlacement\textrm{~--- Cannot be placed next to a building with the same original blueprint.}.
+    .3 RotatableTilePlacement\textrm{~--- Also select a fixed orientation when\\placing.}.
+}
+\
 
 \textbf{7.}
 Similarly to attackers, blueprints also need a highlight provider script.
 The purpose of highlight providers is explained in section~\ref{sec:docs-highlights}.
 One of the already implemented highlight providers should be sufficient.
-Below is the hierarchy of the already implemented highlight provider scripts.
-\xxx{TODO, include explanation}
+Below is a summary of the already implemented highlight provider scripts, organized into an inheritance tree.
+Abstract classes are in \emph{italics}.
+\dirtree{%
+    .1 \emph{HighlightProvider}.
+    .2 AttackerHighlightProvider\textrm{~--- Used by attackers, highlights only the attacker.}.
+    .2 OrbiltalLaserHighlightProvider\textrm{~--- Used by \emph{Orbital Laser}.}.
+    .2 \emph{PlacementHighlightProvider}\textrm{~--- Used by other highlight providers\\\-\ \ as described below.}.
+    .3 PlaceAnywhereHighlightProvider\textrm{~--- For blueprints that can be\\placed anywhere.}.
+    .3 TilePlacementHighlightProvider\textrm{~--- For blueprints that are placed\\\-\ \ on tiles.}.
+    .4 \emph{BuildingAffectingHighlightProvider}\textrm{~--- For buildings that\\\-\ \ affect other buildings in some way.}.
+    .5 AmplifierHighlightProvider\textrm{~--- Used by \emph{Amplifier}.}.
+    .5 RadarHighlightProvider\textrm{~--- Used by \emph{Radar}.}.
+    .2 TargetingHighlightProvider\textrm{~--- For blueprints that have a targeting and\\\-\ \ want to display their range.}.
+    .3 RadiusHighlightProvider\textrm{~--- For blueprints that can target anything in a circle centered on their position.}.
+    .2 TileHighlightProvider\textrm{~--- Used by tiles. Delegates work to the highlight provider of the building placed on the tile.}.
+    .2 TowerHighlightProvider\textrm{~--- Used by towers, displays their range.}.
+}
+\
 
 Most highlight provider scripts only show the highlights akin to what is in range of a tower, or the affected radius or objects.
 However, when placing a blueprint, we also highlight in blue the regions where the blueprint can be placed.
@@ -430,7 +462,7 @@ However, we'd also like to mention, the purpose of the field \emph{Rotate Back} 
 When a building gets placed on a slanted tile, all game objects assigned to this field are rotated back against the slant so that their up direction faces up.
 This is important for example for targeting colliders, so they aren't misaligned.
 
-\subsection{Ability Behavior Script Example}
+\subsection{Ability Behavior Script Example}\label{sec:docs-meteor}
 In this section we'll explain the implementation of the ability \emph{Meteor}.
 The source code is for reference shown as code snippet~\ref{code:meteor}, but we've omitted the usings and namespace definition to save space.
 We can see that it's derived from \mono{TargetedAbility}, which just holds a reference to a \mono{Targeting} script and keeps its range up-to-date.
@@ -506,7 +538,8 @@ To prevent this, we register a reaction to the \mono{ON\_WAVE\_FINISHED} event, 
 When that happens, we stop the meteor from exploding, and also destroy it.
 It is important to unregister the reaction when the game object gets destroyed, but only if it was registered in the first place.
 
-\subsection{Tower Behavior Script Example}
+\subsection{Tower Behavior Script Example}\label{sec:docs-sledgehammer}
+
 Next, we'll explain the implementation of the tower \emph{Sledgehammer}.
 The source code is for reference shown as code snippet~\ref{code:sledgehammer}, again without usings and the namespace definition.
 The \mono{Sledgehammer} class extends \mono{Tower}, so we don't have to reimplement the behavior of buildings or keeping the associated \mono{Targeting} up-to-date with range changes.
@@ -597,10 +630,10 @@ This variable is defined in the \mono{Tower} class, and it is used to display ho
 Finally, the method plays a sound using the \mono{SoundContoller}.
 In the \mono{FixedUpdate}, we also make a click sound one tick before the tower is ready to shoot again, to mimic a latch in the tower's mechanism, to convey that the tower is ready.
 
-\subsection{Description Formatting Tags}
+\subsection{Description Formatting Tags}\label{sec:docs-format-tags}
 
 In this section, we summarize the formatting tags that can be used in descriptions of attackers and blueprints.
-The table \xxx{TODO} contains tags that can be used by both attackers and blueprints, table \xxx{TODO} contains tags specific to attackers, and table \xxx{TODO} contains tags to be used by blueprints.
+The table~\ref{tab:universal-tags} contains tags that can be used by both attackers and blueprints, table~\ref{tab:attacker-tags} contains tags specific to attackers, and table~\ref{tab:blueprint-tags} contains tags to be used by blueprints.
 
 In general, tags which contain the \mono{\#}~character become icons.
 If you prefix a tag specific to attackers or blueprints with \mono{\$}, it turns into the tag name followed by its value, instead of just the value.
@@ -645,7 +678,7 @@ If text enclosed by square brackets is not a valid tag, it is left in the descri
         {[SPD]}                 & Speed         &                                            \\
         {[HP]}                  & Health        & Current HP.                                \\
         {[MHP]}                 & Health        & Maximum HP as specified by attacker stats. \\
-        {[HP/M]}                & Health        & Current HP / maximum HP.                   \\
+        {[HP/M]}                & Health        & \enquote{<current HP> / <maximum HP>}.     \\
         \bottomrule
     \end{tabular}
     \caption{Attacker description formatting tags.}
@@ -656,9 +689,25 @@ If text enclosed by square brackets is not a valid tag, it is left in the descri
     \centering
     \begin{tabular}{>{\ttfamily}lll}
         \toprule
-        \textbf{\rmfamily{Tag}} & \textbf{Name} & \textbf{Notes} \\
+        \textbf{\rmfamily{Tag}} & \textbf{Name}       & \textbf{Notes}                                \\
         \midrule
-        \textbf{[TAG]}          & Tag           & Description.   \\
+        {[NAM]}                 & Name                & The name of the blueprint.                    \\
+        {[RNG]}                 & Range               &                                               \\
+        {[DMG]}                 & Damage              &                                               \\
+        {[DTL]}                 & Damage type         &                                               \\
+        {[DTI]}                 & Damage type         & Icons only.                                   \\
+        {[INT]}                 & Interval            &                                               \\
+        {[DPS]}                 & Damage/s            & Calculated from damage and interval.          \\
+        {[RAD]}                 & Radius              &                                               \\
+        {[DEL]}                 & Delay               &                                               \\
+        {[DUR]}                 & Duration            & Either in ticks or waves, whichever is set.   \\
+        {[PRO]}                 & Production          & Fuel, material and energy production.         \\
+        {[SCD]}                 & Starting cooldown   &                                               \\
+        {[CD]}                  & Cooldown            &                                               \\
+        {[+CD]}                 & Cooldown suffix     & \enquote{/ <cooldown> waves} if cooldown > 0. \\
+        {[FUE]}                 & Fuel production     &                                               \\
+        {[MAT]}                 & Material production &                                               \\
+        {[ENE]}                 & Energy production   &                                               \\
         \bottomrule
     \end{tabular}
     \caption{Blueprint description formatting tags.}
@@ -871,7 +920,7 @@ obstacles {
 }
 \end{minted}
 
-\head{\mono{phases}}
+\head{\mono{phases}}{}
 Define which obstacles are placed in which phase.
 Each line represents one phase, and it consists of the names of the obstacles to be place, separated by whitespace: \mono{<Obstacle1> <Obstacle2> ...}.
 
