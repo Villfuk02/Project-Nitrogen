@@ -6,12 +6,12 @@
 ## till next metting
 - [x] ch5 (10.7)
 - [ ] ch6 (10.7)
-- [ ] ch7 (11.7)
+- [ ] ch7 (12.7)
     - [ ] mention that parameters were tweaked to balance the game
     - [ ] iterative
     - [ ] few more fallbacks in wave generation
-- [ ] conclusion and abstract (12.7)
-- [ ] finishing touches (13.7)
+- [ ] conclusion and abstract (13.7)
+- [ ] finishing touches (14.7)
 
 
 ## finishing
