@@ -34,7 +34,7 @@ MonoBehaviour:
   energyProduction: -1
   statsToDisplay: []
   descriptions:
-  - 'Improves other bluperints for the rest of the battle:'
+  - 'Improves other blueprints for the rest of the battle:'
   - Makes them [#MAT]2 cheaper.
   - Increases [#RNG]Range and [#RAD]Radius by 5%.
   - Decreases [#INT]Interval by 10%, to a minimum of 0.25s.

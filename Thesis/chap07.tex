@@ -1,13 +1,178 @@
 \chapter{Playtesting}
 
-- why playtest
+In this section, we'll describe how we playtested the demo version of our game, and what we've learned from the playtest.
+Of course, we playtested the game's features during development.
+However, letting outside players test the game lets us test it on different hardware, and it is absolutely necessary to determine what's unintuitive about the game and to balance its difficulty.
 
-- how did it go
+\section{Playtesting Procedure}
 
-- we fixed some bugs and tweaked the difficulty
+For the purposes of playtesting, the game was shared with the author's friends.
+We started with only few playtested, which got access to the version we call 0.2.0.
+From their feedback, we mainly fixed bugs they discovered, and changed some game controls.
+We also tweaked the overall game difficulty by changing the wave generation parameters.
 
-- common problems - info panel obstructs, hard to inspect attackers, more...
+The game was gradually shared with more players, and the changes became smaller and smaller.
+It became apparent that the game would benefit from some cheap and efficient towers, so the \emph{Double Sentry} was created, and the \emph{Static Sparker} was changed, both to fill this role.
+We also implemented a few small changes suggested by the playtesters.
+For example, the amount of fuel required scales with the level.
 
-- maybe fuel is unnecessary (and energy limit)
+Later in the playtesting, we mostly changed the statistics of individual towers or attackers.
+Some changes had to be made to prevent degenerate situations, for example it was possible to make abilities free using the ability \emph{Streamline}.
+Most changes were just to bring the blueprint to a power level that was adequate, or to make them useful in the situation they were designed to be used in.
 
-- compare with design goals (players got learned)
+Throughout the playtesting, we improved the demo version the best we could, without implementing new complex or game-changing features.
+The final version available to the playtesters and included in the attachments is version 0.2.14, indicating that it has gone through 14 revisions.
+In the remainder of this chapter, we'll discuss more of the feedback we've gathered throughout the playtesting.
+
+\section{Takeaways}
+
+Overall, all playtesters found the game enjoyable.
+Some players only played one run, but most played several runs, trying to explore what the game has to offer and to reach higher levels.
+Several players spent more than 4 hours playing the game.
+Of course, their enjoyment was amplified by them being friends with the author and discussing the game together.
+
+\subsection{Tutorial}
+The game's mechanics were understood well thanks to the in-game tutorial, however it isn't perfect at teaching the players.
+For some players with experience with tower defense games, it felt boring and unnecessary.
+Some players were initially confused by the game controls and parts of the user interface.
+These issues were addressed in the updated during the playtesting period.
+Also, the players generally forgot some information mentioned by the tutorial, because it wasn't relevant to them, and then they had to rediscover it on their own or by asking.
+
+\subsection{Common Problems}
+Even after the small updates, the game still has many issues.
+In this section we'll discuss the most common issues with the game, based on feedback from the playtesters.
+In the next subsection we'll talk about some additional design decisions we should think about before continuing development.
+
+\head{Attacker Preview Information}{}
+The first time a player encounters a new attacker type, the game displays its details in the info panel.
+However, the playtesters still most often complained about not being able to read information about the incoming attackers.
+They can see the incoming attacker's icon in the wave preview, but that isn't helpful unless they remember the attacker's stats and abilities.
+The fix is simple in theory:
+Make it possible to display the attacker information by hovering over their icons in the wave preview.
+
+The players also complained that it is hard to select fast moving attackers.
+We expected this issue, and we plan to solve it by letting them pause the game.
+
+\head{Attacker Appearance}{}
+Some attackers mentioned they like the game's simple low-poly aesthetic.
+However, the attackers stood out as unfinished.
+The models are really basic, and they aren't animated.
+They don't even turn when they change direction of travel.
+This is an issue we can solve as we continue to work on the game.
+
+\head{Info Panel is Obtrusive}{}
+Few playtesters mentioned the info panel is sometimes very obtrusive.
+This issue has no obvious solution.
+If we make it substantially smaller, the text on it might be too small compared to other UI elements.
+It could be a lot smaller before becoming unreadable, so there should be a viable compromise.
+However, we feel like there should be a way to make it less obtrusive without making it a lot smaller.
+A solution is yet to be determined.
+
+\head{Camera Rotation and Zoom}{}
+Some players complained that the camera rotating in 90 degree increments is too limiting.
+On the other hand, some felt the camera rotation was unnecessary.
+We could easily let the camera rotate smoothly by any angle, however that would ruin the isometric look we try to imitate.
+This will probably be solved by adding a setting that lets you change between these two modes.
+
+Furthermore, some players didn't like how the camera pitch angle changed when zooming in and out.
+Sometimes they wanted the camera to zoom in but keep the pitch angle the same, and sometimes they wanted to zoom out, but keep a top-down view.
+We will probably solve this by separating the zoom from the camera pitch angle controls.
+
+\head{Fast-Forward Option}{}
+As expected, some players wished to fast-forward more boring parts of the game.
+This is a feature we have been planning to add, so this at least confirms that it won't be useless.
+
+\head{Campaign Progression}{}
+Some players expressed that it's not fun to build their defenses in one level, and then start over in the next level with little to no change.
+Also, that the rewards for winning a level sometimes aren't very impactful.
+This problem should be solved by fleshing out the games' campaign.
+We'll make the levels more distinct from each other, and the player will have more options to improve their arsenal between the levels.
+We also plan to increase the player's starting material throughout the campaign.
+This means they'll have more options before the first wave.
+
+\subsection{Further Design Decisions}
+
+In this subsection we'll discuss some observations we made throughout the playtesting that were not explicitly mentioned by the playtesters.
+
+\head{Fuel Might be Unnecessary}{}
+In later levels of the demo version, it is very important to mine fuel in order to beat them.
+However, currently it is best to focus on economy and defense, and only start mining fuel one those are somewhat taken care of.
+So the fuel doesn't add much depth to the strategy.
+
+We might want to change how fuel works to make it create more interesting decisions.
+However, it is also possible we will remove the fuel mechanic entirely, because it adds unnecessary complexity, and we might be able to reach the strategic depth we desire even without it.
+
+\head{Energy Limit Problems}{}
+Currently, abilities are less useful in the later waves of a level than we'd hope.
+Their usefulness is further limited by the energy limit.
+Currently, it doesn't do much, but it heavily decreases the effectiveness of strategies that generate a lot of energy.
+We will design more abilities that are useful in the late game, but we will probably also remove the energy limit.
+
+\head{Towers are Too Expensive}{}
+In the harder levels, the game is difficult from the first waves, and the player doesn't produce many materials, so every material counts.
+Most of the time, they can't afford to buy an expensive tower, except when their economy is so strong they are almost guaranteed to win the level.
+This means that cheap towers are very important and more expensive towers are almost never useful.
+So, we should either make towers cheaper, or more likely, improve the player's economy.
+
+\head{Performance Issues}{}
+No playtester complained about performance issues, and the game runs well, however we've noticed that the game can stutter a little when a lot of attackers all die at once.
+We should keep an eye on stutters like this and remove them by optimizing the code that causes them.
+
+\section{Assessment of Design Goals}
+
+In section~\ref{sec:design-goals}, we introduced 5 design goals specific for this game.
+In this section, we'd like to assess how much does the demo version fulfill these goals, and what we'll do in further development to reach them.
+
+\subsection{Strategic Depth in Every Battle}
+
+During the playtesting, it was clear that the player's strategy changed as they played more and learned.
+Players were still able to improve even after playing the game for several hours.
+This indicates that even the demo version has a lot of strategic depth.
+Many playtesters also explicitly stated that the liked the strategic aspect of balancing the defense and economy.
+However, as stated in the previous section, the fuel mechanic didn't add much to the game.
+We feel like the demo version game provides a lot of strategic depth in every battle, and it will only improve as we add more distinct levels and more customization.
+
+\subsection{Strategic Depth in Every Run}
+
+Currently, there is not much strategic depth present throughout the run.
+Once the player identifies which blueprints are good, they just always pick the most useful one.
+This is to be expected, because the game is still missing the two main features we selected to provide this strategic depth:
+The progression through the run is uninteresting, and the player doesn't have any agency except for picking blueprints.
+Furthermore, their arsenal doesn't scale in a way that makes some blueprints more powerful in the early game, and others in the late game.
+Both of these issues should be solved by fleshing out the campaign.
+
+\subsection{Make Various Builds Viable}
+
+Even though there is a small amount of blueprints, the players were still able to find three build-defining blueprint combinations.
+The blueprints were balanced throughout the playtesting, so that the blueprints involved in the builds are useful on their own.
+But when combined, they were significantly more powerful.
+One of these combinations is \emph{Ultra-Ray} + \emph{Amplifier}, another is \emph{Sledgehammer} + \emph{Radar}.
+Then there's \emph{Streamline}, which is really powerful when the player knows how to best use it.
+
+As we develop the game further, we'll add more blueprints.
+We hope to increase the number of different builds, and we hope to expand the number of blueprints which go well together within each build.
+Currently, a good build consists of cheap and efficient towers and economic buildings, finished off with a powerful two-blueprint combination.
+We want more blueprints of a build to work together, not just one or two with the rest being entirely separate from them.
+Overall, this is very promising, but more work needs to be done to reach the full potential of the blueprint collection system.
+
+\subsection{Force Exploration}
+
+Some players specifically praised the randomized blueprint selection, that they like how that makes them use a different strategy every time.
+However, we feel like there isn't enough different blueprints and other build customization options for this to be true.
+Experienced players figured out that for early levels they need to find some cheap and efficient towers, and then, they are able to survive long enough to get exactly what they want almost every time.
+
+This issue can be solved by adding more blueprints and making the synergies between them span more blueprints.
+This way it will be more difficult to assemble a combination that is one of the most powerful combinations in the game, because the player will need to find more blueprints, and each of them will be more rare.
+Since they will almost never get the exact build they wish for, they will have to work with what they get, forcing them to explore more builds.
+
+\subsection{Provide a Challenge}
+
+The levels in the demo version of the game get gradually harder.
+So eventually, a player will reach levels which are adequately challenging.
+According to the playtesters, the game also doesn't feel unfair.
+This is great, but some players expressed that the early levels get boring.
+
+So in further development, we should make sure that if a level is easy for someone, they can get through it as fast as possible.
+The option to speed up the game will help with that.
+We still have to work on the game difficulty progression, once we flesh out the campaign.
+Furthermore, we still want to introduce a difficulty selection system similar to \emph{ascension} in \emph{Slay the Spire}.

@@ -2,14 +2,14 @@
 
 ## new since prev meeting
 - [ ] ch5 inheritance trees
+- [ ] ch6 tables
+- [ ] ch7
+- [ ] ch8
+- [ ] abstrakt
+- [ ] METADATA
 
 ## till next metting
-- [x] ch5 (10.7)
-- [ ] ch6 (10.7)
 - [ ] ch7 (12.7)
-    - [ ] mention that parameters were tweaked to balance the game
-    - [ ] iterative
-    - [ ] few more fallbacks in wave generation
 - [ ] conclusion and abstract (13.7)
 - [ ] finishing touches (14.7)
 

@@ -40,5 +40,5 @@ MonoBehaviour:
   descriptions:
   - Can be placed on tiles with small obstacles.
   - When placed, instantly deals damage to all attackers within range.
-  - Conjures a tower for [DUR]. Attacker targetted by it must stay within range for
+  - Conjures a tower for [DUR]. Attacker targeted by it must stay within range for
     [DEL] to take damage.
