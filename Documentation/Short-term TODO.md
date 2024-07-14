@@ -9,13 +9,13 @@
 - [ ] METADATA
 
 ## till next metting
-- [ ] ch7 (12.7)
-- [ ] conclusion and abstract (13.7)
-- [ ] finishing touches (14.7)
+- [x] ch7 (12.7)
+- [ ] conclusion (13.7)
+- [ ] abstract (14.7)
+- [ ] finishing touches
 
 
 ## finishing
-- [ ] ask about uploads
 - [ ] update tex template (check page and chapter numbers)
 - [ ] metatdata
 - [ ] attachments
