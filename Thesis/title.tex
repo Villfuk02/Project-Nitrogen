@@ -5,34 +5,34 @@
 % We usually do not typeset the hard cover, but if you want to do it, change \iffalse to \iftrue
 \iffalse
 
-\pagestyle{empty}
-\hypersetup{pageanchor=false}
-\begin{center}
+    \pagestyle{empty}
+    \hypersetup{pageanchor=false}
+    \begin{center}
 
-\large
-Charles University
+        \large
+        Charles University
 
-\medskip
+        \medskip
 
-Faculty of Mathematics and Physics
+        Faculty of Mathematics and Physics
 
-\vfill
+        \vfill
 
-{\huge\bf\ThesisTypeTitle}
+        {\huge\bf\ThesisTypeTitle}
 
-\vfill
+        \vfill
 
-{\huge\bf\ThesisTitle\par}
+        {\huge\bf\ThesisTitle\par}
 
-\vfill
-\vfill
+        \vfill
+        \vfill
 
-\hbox to \hsize{\YearSubmitted\hfil \ThesisAuthor}
+        \hbox to \hsize{\YearSubmitted\hfil \ThesisAuthor}
 
-\end{center}
+    \end{center}
 
-\newpage\openright
-\setcounter{page}{1}
+    \newpage\openright
+    \setcounter{page}{1}
 
 \fi
 
@@ -42,39 +42,39 @@ Faculty of Mathematics and Physics
 \hypersetup{pageanchor=false}
 \begin{center}
 
-\centerline{\mbox{\includegraphics[width=166mm]{img/logo-en.pdf}}}
+    \centerline{\mbox{\includegraphics[width=166mm]{img/logo-en.pdf}}}
 
-\vspace{-8mm}
-\vfill
+    \vspace{-8mm}
+    \vfill
 
-{\bf\Large\ThesisTypeTitle}
+    {\bf\Large\ThesisTypeTitle}
 
-\vfill
+    \vfill
 
-{\LARGE\ThesisAuthor}
+    {\LARGE\ThesisAuthor}
 
-\vspace{15mm}
+    \vspace{15mm}
 
-{\LARGE\bfseries\ThesisTitle\par}
+    {\LARGE\bfseries\ThesisTitle\par}
 
-\vfill
+    \vfill
 
-\Department
+    \Department
 
-\vfill
+    \vfill
 
-{
-\centerline{\vbox{\halign{\hbox to 0.45\hsize{\hfil #}&\hskip 0.5em\parbox[t]{0.45\hsize}{\raggedright #}\cr
-Supervisor of the \ThesisTypeName{} thesis:&\Supervisor \cr
-\ifx\ThesisType\TypeRig\else
-\noalign{\vspace{2mm}}
-Study programme:&\StudyProgramme \cr
-\fi
-}}}}
+    {
+        \centerline{\vbox{\halign{\hbox to 0.45\hsize{\hfil #}&\hskip 0.5em\parbox[t]{0.45\hsize}{\raggedright #}\cr
+                    Supervisor of the \ThesisTypeName{} thesis:&\Supervisor \cr
+                    \ifx\ThesisType\TypeRig\else
+                        \noalign{\vspace{2mm}}
+                        Study programme:&\StudyProgramme \cr
+                    \fi
+                }}}}
 
-\vfill
+    \vfill
 
-Prague \YearSubmitted
+    Prague \YearSubmitted
 
 \end{center}
 
@@ -97,8 +97,8 @@ work as a school work pursuant to Section 60 subsection 1 of the Copyright~Act.
 \vspace{10mm}
 
 \hbox{\hbox to 0.5\hsize{%
-In \hbox to 6em{\dotfill} date \hbox to 6em{\dotfill}
-\hss}\hbox to 0.5\hsize{\dotfill\quad}}
+        In \hbox to 6em{\dotfill} date \hbox to 6em{\dotfill}
+        \hss}\hbox to 0.5\hsize{\dotfill\quad}}
 \smallskip
 \hbox{\hbox to 0.5\hsize{}\hbox to 0.5\hsize{\hfil Author's signature\hfil}}
 
@@ -148,30 +148,30 @@ Keywords:
 
 \ifx\StudyLanguage\LangCS
 
-\vtop to 0.49\vsize{
-\setlength\parindent{0mm}
-\setlength\parskip{5mm}
+    \vtop to 0.49\vsize{
+    \setlength\parindent{0mm}
+    \setlength\parskip{5mm}
 
-Název práce:
-\ThesisTitleCS
+    Název práce:
+    \ThesisTitleCS
 
-Autor:
-\ThesisAuthor
+    Autor:
+    \ThesisAuthor
 
-\DeptTypeCS:
-\DepartmentCS
+    \DeptTypeCS:
+    \DepartmentCS
 
-Vedoucí bakalářské práce:
-\Supervisor, \SupervisorsDepartment
+    Vedoucí bakalářské práce:
+    \Supervisor, \SupervisorsDepartmentCS
 
-Abstrakt:
-\AbstractCS
+    Abstrakt:
+    \AbstractCS
 
-Klíčová slova:
-{\def\sep{\unskip, }\ThesisKeywordsCS}
+    Klíčová slova:
+    {\def\sep{\unskip, }\ThesisKeywordsCS}
 
-\vfil
-}
+    \vfil
+    }
 
 \fi
 
@@ -179,4 +179,5 @@ Klíčová slova:
 
 \newpage
 
-%%% Further pages will be numbered, which LaTeX automatically enables at the next chapter start
+%%% Further pages will be numbered
+\pagestyle{plain}
