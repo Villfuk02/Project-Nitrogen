@@ -132,7 +132,7 @@ The world terrain is created in the scene under the \emph{World} game object, in
 Also, an instance of the \emph{Tile} prefab is created for each world tile, and references to the tiles are also stored in \mono{WorldData} script for easy access.
 For the rest of this section, we assume the scene is already initialized and ready for the player's inputs.
 
-During the battle, there are also some game objects which persist between scenes and don't originally come from the \emph{Battle} scene.
+In battle, there are also some game objects which persist between scenes and don't originally come from the \emph{Battle} scene.
 These are the \mono{SceneController} and \mono{SoundController} we introduced in section~\ref{sec:docs-scripts}.
 Additionally, there is \emph{Run Persistence} game object, which contains scripts that persist throughout the player's run.
 The only script relevant during battle it has is \mono{RunPersistence}, which keeps track of the player's blueprints and hull.
@@ -496,7 +496,7 @@ The interactions between scripts described in this section are summarized in fig
     \label{fig:blueprint-selection}
 \end{center}
 
-After the player beats a level, the \mono{RunPersistence} asks the \mono{BlueprintRewardController} to reward the player with blueprints.
+After the player beats a level, the \mono{RunPersistence} asks the \mono{BlueprintReward-} \mono{Controller} to reward the player with blueprints.
 For the rewards after the first tutorial level, the \mono{BlueprintRewardController} has a predefined blueprint selection, but for normal blueprint rewards, it picks the selection randomly, based on its seed.
 It then changes the scene to the \emph{Blueprint Selection} scene, and initializes the \mono{BlueprintSelectionController} script in it with the selection.
 
@@ -539,7 +539,7 @@ The world generator then reads the information, and calls other generator script
 
 \begin{center}
     \captionsetup{type=figure}
-    \includegraphics[width=\textwidth]{img/world generator.pdf}
+    \includegraphics[width=0.9\textwidth]{img/world generator.pdf}
     \caption{Script interactions during world generation.}
     \label{fig:world-generator}
 \end{center}

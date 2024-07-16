@@ -34,6 +34,8 @@ The map generator will also define the maximum number of path branches, since th
 This is mainly to limit the complexity of the path network in some levels.
 There are many more factors which influence the difficulty of the battle, but they are more difficult to quantify, and we believe their influence is not as great.
 
+\pagebreak
+
 The map and the map generator will not be a part of the demo, but we still want to let the players play more levels and collect blueprints, until they inevitably lose.
 So, we will just create a simple system that will set up the levels with gradually harder attacker waves, shorter paths and different numbers of paths.
 
@@ -986,6 +988,9 @@ Here, a phase is just a set of obstacle types.
 Here, the function \textsc{GetPlacementProbability} also checks if the placement would be valid.
 If not, it returns 0.
 
+Of course, there are some optimizations we can make.
+For example, we don't have to go through all tiles, only those that don't have an obstacle and don't have a path going through them.
+
 \begin{algorithm}[H]
     \caption{Obstacle placement}
     \label{alg:obstacle-placement}
@@ -1017,9 +1022,6 @@ If not, it returns 0.
         \Statex
     \end{algorithmic}
 \end{algorithm}
-
-Of course, there are some optimizations we can make.
-For example, we don't have to go through all tiles, only those that don't have an obstacle and don't have a path going through them.
 
 \subsection{Generating Obstacle Models}\label{sec:analysis-obstacle-models}
 
@@ -1342,12 +1344,6 @@ Neither of the defenses are able to beat it now.
 Figure~\ref{fig:model-3-s2} shows that increasing the speed $s$ to 2 causes problems for towers with small path coverage $l_t$.
 We can see that the damage rate of defense $T_2$ has decreased because each attacker spends less than $g$ seconds in the range of the only tower.
 
-In figure~\ref{fig:model-3-g0.5} we can see that with smaller spacing of $0.5$ seconds between the attackers, damage rate becomes less effective.
-A similar effect can be seen when we decrease the number of attackers.
-As shown in figure~\ref{fig:model-3-n1}, when the wave contains only one attacker, damage rate is irrelevant.
-On the other hand, when there are many attackers, the damage rate becomes much more important than capacity.
-In figure~\ref{fig:model-3-n12} we can see $T_1$ cannot beat a wave with 12 attackers, but $T_2$ can.
-
 \begin{center}
     \captionsetup{type=figure}
     \begin{minipage}{.33\textwidth}
@@ -1389,6 +1385,12 @@ In figure~\ref{fig:model-3-n12} we can see $T_1$ cannot beat a wave with 12 atta
     \caption{Which defenses can beat various attacker waves, according to model 3.}
     \label{fig:model3}
 \end{center}
+
+In figure~\ref{fig:model-3-g0.5} we can see that with smaller spacing of $0.5$ seconds between the attackers, damage rate becomes less effective.
+A similar effect can be seen when we decrease the number of attackers.
+As shown in figure~\ref{fig:model-3-n1}, when the wave contains only one attacker, damage rate is irrelevant.
+On the other hand, when there are many attackers, the damage rate becomes much more important than capacity.
+In figure~\ref{fig:model-3-n12} we can see $T_1$ cannot beat a wave with 12 attackers, but $T_2$ can.
 
 Thus, we need both parameters $R$ and $C$ to accurately describe which defenses can beat the wave and which cannot.
 
@@ -2042,18 +2044,18 @@ The root node of our quadtree is the only pixel in the highest layer, and each o
 This is illustrated in figure~\ref{fig:quadtree-mipmap}.
 Here we mark non-leaf nodes with red color and pixels with no corresponding nodes in blue.
 
+Now, the CPU only has to change one pixel for each node.
+However, the GPU has to access the texture multiple times per each pixel again, but that shouldn't be a problem.
+Including the mipmaps also makes the texture one third larger than without them.
+Whenever we change a part of a texture, it has to be copied to the GPU again.
+Since we do this every frame, bandwidth will probably be the limiting factor, but for our small 87\,KiB texture this shouldn't be an issue.
+
 \begin{center}
     \captionsetup{type=figure}
     \includegraphics[width=0.8\textwidth]{img/quadtree mipmaps.pdf}
     \caption{Quadtree stored in a mipmapped texture.}
     \label{fig:quadtree-mipmap}
 \end{center}
-
-Now, the CPU only has to change one pixel for each node.
-However, the GPU has to access the texture multiple times per each pixel again, but that shouldn't be a problem.
-Including the mipmaps also makes the texture one third larger than without them.
-Whenever we change a part of a texture, it has to be copied to the GPU again.
-Since we do this every frame, bandwidth will probably be the limiting factor, but for our small 87\,KiB texture this shouldn't be an issue.
 
 \subsection{Computing Everything on the GPU}
 

@@ -329,7 +329,7 @@ In it, find the game object \emph{BlueprintRewards}, and add the new \mono{Bluep
         \emph{Starting Cooldown} determines the number of waves at the start of each level, for which the blueprint cannot be used.
         \emph{Cooldown} determines how many waves the player has to wait after using the blueprint before they can use it again.
 
-         & \raisebox{\dimexpr -1\height+2mm}{\includegraphics[width=\linewidth]{img/Steps/blueprint inspector.png}}
+         & \raisebox{\dimexpr -1\height+2mm}{\includegraphics[width=0.92\linewidth]{img/Steps/blueprint inspector.png}}
     \end{tabular}
 \end{flushleft}
 
@@ -424,6 +424,7 @@ The purpose of highlight providers is explained in section~\ref{sec:docs-highlig
 One of the already implemented highlight providers should be sufficient.
 Below is a summary of the already implemented highlight provider scripts, organized into an inheritance tree.
 Abstract classes are in \emph{italics}.
+\pagebreak
 \dirtree{%
     .1 \emph{HighlightProvider}.
     .2 AttackerHighlightProvider\textrm{~--- Used by attackers, highlights only the attacker.}.
@@ -861,6 +862,8 @@ Defines the height levels this module can be at.\\
 \textbf{digits}: A sequence of digits, each representing one valid height.\\
 Default value: All heights from \mono{0} to \mono{max\_height}.
 
+\pagebreak
+
 \head{Example Module}{}
 This is the definition of the module shown in figure~\ref{fig:wfc-module-2}.
 \begin{minted}{text}
@@ -962,6 +965,8 @@ Affinity greater than zero means the probability to place the obstacle increases
 Analogously, negative affinity decreases the probability.\\
 Each entry is a floating-point number, and is assumed to be \mono{0} for layers for which it wasn't specified.
 
+\pagebreak
+
 \head{Obstacle Definition Example}{}
 \begin{minted}{text}
 * Minerals {
@@ -1037,7 +1042,7 @@ The expression is the sum of the expressions provided as the argument.
 A block with one or more \mono{noise\_expression\_node} entries, separated by whitespace (including line breaks): \mono{\{ <node1> <node2> ... \}}.
 
 \head{\mono{noise\_expression\_node}}{}
-One of \mono{<const>}, \mono{<sum>}, \mono{<mult>}, \mono{<clamp>}, \mono{<path>}, \mono{<path>}, \mono{<obstacle>}, \mono{<height>}, or \mono{<fractal\_noise>}.
+One of \mono{<const>}, \mono{<sum>}, \mono{<mult>}, \mono{<clamp>}, \mono{<path>}, \mono{<path>}, \mono{<obstacle>},\\\mono{<height>}, or \mono{<fractal\_noise>}.
 
 \head{\mono{const <value>}}{}
 Has a constant value at every point.\\

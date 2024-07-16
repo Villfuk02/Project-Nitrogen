@@ -143,6 +143,10 @@ cross/.default={1pt}}
 %
 % The basic format according to the ISO 690 standard with numbered references
 \usepackage[natbib,style=iso-numeric,sorting=none]{biblatex}
+
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+
 % ISO 690 with alphanumeric references (abbreviations of authors' names)
 %\usepackage[natbib,style=iso-alphabetic]{biblatex}
 % ISO 690 with references Author (year)
@@ -204,10 +208,11 @@ cross/.default={1pt}}
 \addcontentsline{toc}{chapter}{Attachments}
 
 The attachments of this thesis are in a \mono{.zip} archive called \mono{attachments.zip}.
-In it, there are two folders:
+In it, there are two folders and a \emph{readme} text file:
 \begin{itemize}
     \item \textbf{Build}~--- The demo build of the game. Instructions on how to run it can be found in chapter~\ref{user-docs}.
     \item \textbf{Project}~--- The source unity project. Created in the Unity editor version \mono{2021.3.8f1}.
+    \item \textbf{README.txt}~--- A summary of the attachments and contact information.
 \end{itemize}
 
 \end{document}
