@@ -1,20 +1,13 @@
-- [x] conclusion conclusion
-- [x] readme
-- [ ] commas
-- [ ] https://blog.wordvice.com/when-to-use-commas-colons-semicolons-and-dashes/#:~:text=Use%20an%20em%20dash%20instead,less%20formal%20than%20a%20colon.
-- [ ] make author names consistent
-- [ ] TODOs
-- [ ] fix image fonts
-- [ ] figure font size
-- [ ] figure names
-- [ ] numbers and units
-- [ ] 1st
-- [ ] i.e.
-- [ ] dots in abbreviations
-- [ ] repeat citations where applicable
-- [ ] find some good grammar checker
-- [ ] ~ and hboxes
-- [ ] float positioning
-- [ ] validate
-- [ ] attachment format
-- [ ] CHECK XMP
+- [ ] Discuss with someone experienced
+- [ ] FIND AN ARTIST AND AN IDENTITY
+- [ ] plan out the MAD DASH TO EARLY ACCESS
+- [ ] Fix repository
+- [ ] scriptable singletons???
+- [ ] custom editor for terrain types (scriptable objects)
+- [ ] readonly fields
+- [ ] set static gameobjects static
+- [ ] feedbacks
+    - [ ] camera rotation
+- [ ] object pools?
+- [ ] DOTS?
+- [ ] varied path following

@@ -3,8 +3,13 @@
 
 for upgrading [[Blueprint]]s
 
-collect multiples of [[Blueprint]] and then upgrade them using [[Generic monetary unit]]s
-- linear or branching?
+some linear or branching, some blueprints have more upgrades, some less
+### mechanism
+a distinct blueprint like any other, but it can only appear when you have the previous tier and you build it on top of the previous tier
+ - augments are carried over, each upgrade can have extra augment slots
+
+### other ideas
+collect multiples of [[Blueprint]] and then upgrade them using [[Generic monetary unit]]s?
 - use separate slot?
 - apply during [[Battle]] or permanently?
 

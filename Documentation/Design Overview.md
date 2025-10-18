@@ -11,6 +11,7 @@ Genre: Rogue-like tower defense
     - enemies move along predetermined paths
     - they can directly attack only your base
 
-[[Setting]]
+In this rogue-like tower defense game, your mission is to reach the galaxy’s center and uncover its hidden secrets. To get there, you'll land on alien worlds to refuel — but every drop is hard-earned. Build towers with powerful abilities, optimize your build, fight unique bosses, and unravel the dark mystery behind it all.
+
 [[Story]]
 [[Game Structure]]
